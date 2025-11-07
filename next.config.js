@@ -1,8 +1,9 @@
 /**
- * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially useful
- * for Docker builds.
+ * Next.js configuration
+ * 
+ * Note: Environment variable validation happens when env.js is imported in the app code,
+ * not here. This prevents build failures when env vars aren't available during config evaluation.
  */
-import "./src/env.js";
 
 /** @type {import("next").NextConfig} */
 const config = {};

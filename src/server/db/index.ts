@@ -17,10 +17,14 @@ import * as schema from "./schema";
  * - SQLite/LibSQL: URLs starting with "file:" or "libsql://"
  */
 
-// Detect database type from URL
-const isPostgres = env.DATABASE_URL.startsWith("postgresql://");
+// Lazy database connection - only created when first accessed
+// This prevents build-time connection attempts in Vercel
+let _db: ReturnType<typeof drizzlePg> | ReturnType<typeof drizzleSqlite> | null = null;
 
 function createDatabase() {
+  // Detect database type from URL
+  const isPostgres = env.DATABASE_URL.startsWith("postgresql://");
+
   if (isPostgres) {
     // PostgreSQL/Supabase configuration
     const globalForDb = globalThis as unknown as {
@@ -52,4 +56,12 @@ function createDatabase() {
   }
 }
 
-export const db = createDatabase() as any;
+// Use a Proxy to lazily create the database connection only when accessed
+export const db = new Proxy({} as any, {
+  get(_target, prop) {
+    if (!_db) {
+      _db = createDatabase();
+    }
+    return (_db as any)[prop];
+  },
+});

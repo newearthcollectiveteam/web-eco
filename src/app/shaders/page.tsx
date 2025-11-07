@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Card, CardContent } from "~/components/ui/card";
 import { DomainLayout } from "~/components/domain-layout";
+import { BackButton } from "~/components/back-button";
 import { ArrowRight, Sparkles, Zap } from "lucide-react";
 
 // GLSL Shader showcase items
@@ -64,6 +65,7 @@ const SHADERS = [
 export default function ShadersPage() {
   return (
     <DomainLayout>
+      <BackButton />
       <div className="via-background dark:via-background min-h-screen bg-gradient-to-br from-slate-50 to-gray-100 dark:from-slate-950 dark:to-gray-900">
         <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
           {/* Header */}

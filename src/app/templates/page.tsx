@@ -1,6 +1,7 @@
 import { Card, CardContent } from "~/components/ui/card";
 import { Badge } from "~/components/ui/badge";
 import { DomainLayout } from "~/components/domain-layout";
+import { BackButton } from "~/components/back-button";
 import Link from "next/link";
 import {
   Rocket,
@@ -54,6 +55,7 @@ const TEMPLATES = [
 export default function TemplatesPage() {
   return (
     <DomainLayout>
+      <BackButton />
       <div className="via-background dark:via-background min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 p-6 dark:from-blue-950/20 dark:to-indigo-950/20">
         <div className="mx-auto max-w-7xl space-y-8">
           {/* Header */}
@@ -93,7 +95,7 @@ export default function TemplatesPage() {
             {TEMPLATES.map((template) => {
               const Icon = template.icon;
               return (
-                <Link key={template.id} href={template.href} target="_blank">
+                <Link key={template.id} href={template.href}>
                   <Card
                     className={`group h-full cursor-pointer border-${template.color}-200 transition-all duration-300 hover:scale-105 hover:shadow-xl dark:border-${template.color}-800/50`}
                   >

@@ -30,7 +30,6 @@ export function DomainLayout({ children }: DomainLayoutProps) {
               className="flex items-center space-x-2 text-xl font-bold"
             >
               <span className="text-2xl">{domainConfig.logo}</span>
-              <span className="hidden sm:inline">{domainConfig.name}</span>
             </Link>
           </div>
 

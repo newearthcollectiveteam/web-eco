@@ -3,7 +3,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card";
 import { Badge } from "~/components/ui/badge";
 import Link from "next/link";
-import { Zap, Code2, Rocket, ArrowRight, Sparkles } from "lucide-react";
+import { Zap, Code2, Rocket, ArrowRight, Sparkles, Palette } from "lucide-react";
 
 export function TestHomePage() {
   const features = [
@@ -34,6 +34,15 @@ export function TestHomePage() {
       color: "purple",
       count: "4 templates",
     },
+    {
+      title: "Brand Assets",
+      description: "Visual identity & brand guidelines",
+      details: "Complete brand asset library including logos, colors, favicons in multiple formats (SVG, PNG, PDF).",
+      href: "/brand",
+      icon: Palette,
+      color: "amber",
+      count: "Brand Kit",
+    },
   ];
 
   return (
@@ -62,7 +71,7 @@ export function TestHomePage() {
         {/* Features Grid */}
         <section className="mb-16">
           <h2 className="mb-8 text-center text-3xl font-bold">Available Features</h2>
-          <div className="grid gap-8 md:grid-cols-3">
+          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
             {features.map((feature) => {
               const Icon = feature.icon;
               const colorMap: Record<string, { gradient: string; border: string; badge: string }> = {
@@ -80,6 +89,11 @@ export function TestHomePage() {
                   gradient: "from-purple-500 to-pink-600",
                   border: "border-purple-200 dark:border-purple-800/50",
                   badge: "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-200",
+                },
+                amber: {
+                  gradient: "from-amber-500 to-yellow-600",
+                  border: "border-amber-200 dark:border-amber-800/50",
+                  badge: "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-200",
                 },
               };
               const colors = colorMap[feature.color] ?? colorMap.violet!;

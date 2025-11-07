@@ -6,16 +6,12 @@ import Link from "next/link";
 import { Zap, Code2, Rocket, ArrowRight, Sparkles } from "lucide-react";
 
 export function TestHomePage() {
-  // Check if we're on localhost to add domain parameter
-  const isLocalhost = typeof window !== 'undefined' && window.location.hostname.includes('localhost');
-  const domainParam = isLocalhost ? '?domain=test.joinnewearthcollective.com' : '';
-
   const features = [
     {
       title: "GLSL Shaders",
       description: "WebGL shader animations and effects",
       details: "8 interactive shader demonstrations including sacred geometry, fractals, neural networks, and generative art.",
-      href: `/shaders${domainParam}`,
+      href: "/shaders",
       icon: Zap,
       color: "violet",
       count: "8 shaders",
@@ -24,7 +20,7 @@ export function TestHomePage() {
       title: "Component Playground",
       description: "Interactive UI component demos",
       details: "Test and explore animation effects, particle systems, and interactive components in development.",
-      href: `/playground${domainParam}`,
+      href: "/playground",
       icon: Code2,
       color: "blue",
       count: "9 demos",
@@ -33,7 +29,7 @@ export function TestHomePage() {
       title: "Page Templates",
       description: "Full-page template collection",
       details: "Pre-built templates for portfolios, SaaS products, startups, and developer profiles.",
-      href: `/templates${domainParam}`,
+      href: "/templates",
       icon: Rocket,
       color: "purple",
       count: "4 templates",
@@ -126,8 +122,7 @@ export function TestHomePage() {
           <div className="border-border bg-muted/50 mx-auto max-w-3xl rounded-lg border p-6">
             <h3 className="mb-2 font-semibold">Development Environment</h3>
             <p className="text-muted-foreground text-sm">
-              This is the test environment for New Earth Collective. Features are under active development.
-              The main site at joinnewearthcollective.com will be configured separately.
+              This is the development environment for New Earth Collective. Features are under active development.
             </p>
           </div>
         </section>

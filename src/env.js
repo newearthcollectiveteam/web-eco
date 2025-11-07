@@ -28,8 +28,7 @@ export const env = createEnv({
    * middlewares) or client-side so we need to destruct manually.
    */
   runtimeEnv: {
-    // Support both DATABASE_URL and POSTGRES_URL (Vercel Supabase integration uses POSTGRES_URL)
-    DATABASE_URL: process.env.DATABASE_URL ?? process.env.POSTGRES_URL,
+    DATABASE_URL: process.env.DATABASE_URL,
     NODE_ENV: process.env.NODE_ENV,
     NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
     NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,

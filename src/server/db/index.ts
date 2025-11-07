@@ -62,6 +62,7 @@ export const db = new Proxy({} as any, {
     if (!_db) {
       _db = createDatabase();
     }
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return (_db as any)[prop];
   },
-});
+}) as ReturnType<typeof drizzlePg> | ReturnType<typeof drizzleSqlite>;

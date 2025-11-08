@@ -38,9 +38,10 @@ export const DOMAIN_CONFIG = {
     tagline: "Development & Testing Environment",
     nav: [
       { name: "Home", href: "/" },
-      { name: "Playground", href: "/playground" },
-      { name: "Shaders", href: "/shaders" },
+      { name: "Brand", href: "/brand" },
       { name: "Templates", href: "/templates" },
+      { name: "Shaders", href: "/shaders" },
+      { name: "Playground", href: "/playground" },
     ],
   },
 } as const;

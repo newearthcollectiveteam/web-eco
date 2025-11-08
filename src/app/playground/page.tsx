@@ -1,10 +1,12 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { Card, CardContent } from "~/components/ui/card";
+import { Badge } from "~/components/ui/badge";
 import { DomainLayout } from "~/components/domain-layout";
 import { BackButton } from "~/components/back-button";
-import { ArrowRight, Code2 } from "lucide-react";
+import { ArrowRight, Code2, Sparkles } from "lucide-react";
 import { PLAYGROUND_ITEMS } from "~/components/playground/playground-layout";
 
 export default function PlaygroundPage() {
@@ -14,21 +16,36 @@ export default function PlaygroundPage() {
   return (
     <DomainLayout>
       <BackButton />
-      <div className="via-background dark:via-background min-h-screen bg-gradient-to-br from-slate-50 to-gray-100 dark:from-slate-950 dark:to-gray-900">
+      <div className="min-h-screen bg-gradient-to-br from-white via-neutral-50 to-white dark:from-black dark:via-neutral-950 dark:to-black">
         <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
           {/* Header */}
-          <div className="mb-16 text-center">
-            <div className="mb-6 flex items-center justify-center gap-3">
-              <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-500 to-purple-600 shadow-lg">
-                <Code2 className="h-8 w-8 text-white" />
+          <div className="mb-20 text-center">
+            <div className="mb-8 inline-flex items-center justify-center">
+              <div className="relative h-20 w-20">
+                <Image
+                  src="/brand/symbol.svg"
+                  alt="New Earth Collective"
+                  fill
+                  className="object-contain drop-shadow-lg"
+                />
               </div>
-              <h1 className="bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-5xl font-bold text-transparent dark:from-violet-400 dark:to-purple-400">
-                Component Playground
-              </h1>
             </div>
-            <p className="text-muted-foreground mx-auto max-w-2xl text-xl">
+            <h1 className="mb-4 text-6xl font-bold text-black dark:text-white" style={{ fontFamily: 'Airwaves, sans-serif', letterSpacing: '0.1em' }}>
+              Component Playground
+            </h1>
+            <p className="mx-auto mb-6 max-w-2xl text-xl text-neutral-600 dark:text-neutral-400">
               Explore interactive UI components and animation effects
             </p>
+            <div className="flex items-center justify-center gap-3">
+              <Badge className="border-[#facf39]/40 bg-[#facf39]/10 text-[#facf39]">
+                <Code2 className="mr-1.5 h-3.5 w-3.5" />
+                Interactive
+              </Badge>
+              <Badge className="border-black/20 bg-black/5 text-black dark:border-white/20 dark:bg-white/5 dark:text-white">
+                <Sparkles className="mr-1.5 h-3.5 w-3.5" />
+                Animated
+              </Badge>
+            </div>
           </div>
 
           {/* Component Grid */}
@@ -37,39 +54,47 @@ export default function PlaygroundPage() {
               const Icon = item.icon;
               const colorMap: Record<
                 string,
-                { dark: string; gradient: string }
+                { gradient: string; border: string; text: string }
               > = {
                 amber: {
-                  dark: "#f59e0b",
-                  gradient: "from-amber-500 to-amber-600",
+                  gradient: "from-[#facf39] to-[#f59e0b]",
+                  border: "border-[#facf39]/20 dark:border-[#facf39]/30",
+                  text: "#facf39",
                 },
                 emerald: {
-                  dark: "#10b981",
-                  gradient: "from-emerald-500 to-emerald-600",
+                  gradient: "from-[#059669] to-[#10b981]",
+                  border: "border-[#059669]/20 dark:border-[#059669]/30",
+                  text: "#059669",
                 },
                 orange: {
-                  dark: "#f97316",
-                  gradient: "from-orange-500 to-orange-600",
+                  gradient: "from-[#ea580c] to-[#f97316]",
+                  border: "border-[#ea580c]/20 dark:border-[#ea580c]/30",
+                  text: "#ea580c",
                 },
                 blue: {
-                  dark: "#3b82f6",
-                  gradient: "from-blue-500 to-blue-600",
+                  gradient: "from-[#0891b2] to-[#06b6d4]",
+                  border: "border-[#0891b2]/20 dark:border-[#0891b2]/30",
+                  text: "#0891b2",
                 },
                 purple: {
-                  dark: "#8b5cf6",
-                  gradient: "from-purple-500 to-purple-600",
+                  gradient: "from-[#6d28d9] to-[#a855f7]",
+                  border: "border-[#6d28d9]/20 dark:border-[#6d28d9]/30",
+                  text: "#6d28d9",
                 },
                 indigo: {
-                  dark: "#6366f1",
-                  gradient: "from-indigo-500 to-indigo-600",
+                  gradient: "from-[#4338ca] to-[#6366f1]",
+                  border: "border-[#4338ca]/20 dark:border-[#4338ca]/30",
+                  text: "#4338ca",
                 },
                 violet: {
-                  dark: "#7c3aed",
-                  gradient: "from-violet-500 to-violet-600",
+                  gradient: "from-[#6d28d9] to-[#7c3aed]",
+                  border: "border-[#6d28d9]/20 dark:border-[#6d28d9]/30",
+                  text: "#6d28d9",
                 },
                 pink: {
-                  dark: "#ec4899",
-                  gradient: "from-pink-500 to-pink-600",
+                  gradient: "from-[#db2777] to-[#ec4899]",
+                  border: "border-[#db2777]/20 dark:border-[#db2777]/30",
+                  text: "#db2777",
                 },
               };
 
@@ -77,26 +102,20 @@ export default function PlaygroundPage() {
 
               return (
                 <Link key={item.id} href={item.href}>
-                  <Card
-                    className="group h-full cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-xl"
-                    style={{
-                      borderColor: colors.dark,
-                      borderWidth: "1px",
-                    }}
-                  >
-                    <CardContent className="flex h-full flex-col p-6">
-                      <div className="mb-4 flex items-center gap-3">
-                        <div
-                          className={`flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br ${colors.gradient}`}
-                        >
-                          <Icon className="h-5 w-5 text-white" />
+                  <Card className={`group flex h-full cursor-pointer flex-col border-2 transition-all duration-300 hover:scale-105 hover:shadow-2xl ${colors.border}`}>
+                    <CardContent className="flex flex-1 flex-col p-6">
+                      <div className="mb-4 flex flex-none items-center gap-3">
+                        <div className={`flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br ${colors.gradient} shadow-lg`}>
+                          <Icon className="h-6 w-6 text-white" />
                         </div>
-                        <h3 className="text-lg font-semibold">{item.name}</h3>
+                        <h3 className="text-xl font-bold text-black dark:text-white" style={{ fontFamily: 'Airwaves, sans-serif', letterSpacing: '0.05em' }}>
+                          {item.name}
+                        </h3>
                       </div>
-                      <p className="text-muted-foreground mb-4 flex-1 text-sm leading-relaxed">
+                      <p className="mb-4 flex-1 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
                         {item.description}
                       </p>
-                      <div className="flex items-center gap-2 text-sm font-medium text-violet-600 dark:text-violet-400">
+                      <div className="flex items-center gap-2 text-sm font-medium transition-colors" style={{ color: colors.text }}>
                         <span>Explore</span>
                         <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                       </div>
@@ -108,11 +127,28 @@ export default function PlaygroundPage() {
           </div>
 
           {/* Footer Note */}
-          <div className="text-muted-foreground pt-16 text-center text-sm">
-            <p>
-              Interactive component demonstrations - implementations coming soon
-            </p>
-          </div>
+          <Card className="mx-auto mt-16 max-w-3xl border-2 border-[#facf39]/20 bg-gradient-to-br from-white to-neutral-50 shadow-lg dark:from-neutral-900 dark:to-black">
+            <CardContent className="p-8">
+              <div className="flex items-start gap-6">
+                <div className="relative h-12 w-12 shrink-0">
+                  <Image
+                    src="/brand/symbol.svg"
+                    alt="New Earth Collective"
+                    fill
+                    className="object-contain drop-shadow-lg"
+                  />
+                </div>
+                <div className="text-left">
+                  <h3 className="mb-2 text-xl font-bold text-black dark:text-white" style={{ fontFamily: 'Airwaves, sans-serif', letterSpacing: '0.05em' }}>
+                    Component Library
+                  </h3>
+                  <p className="text-sm text-neutral-600 dark:text-neutral-400">
+                    Interactive component demonstrations showcasing animation effects and UI patterns.
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </DomainLayout>

@@ -3,17 +3,36 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card";
 import { Badge } from "~/components/ui/badge";
 import Link from "next/link";
-import { Zap, Code2, Rocket, ArrowRight, Sparkles, Palette } from "lucide-react";
+import Image from "next/image";
+import { Zap, Code2, Rocket, ArrowRight, Palette, Sparkles } from "lucide-react";
 
 export function TestHomePage() {
   const features = [
     {
+      title: "Brand Assets",
+      description: "Visual identity & brand guidelines",
+      details: "Complete brand asset library including logos, colors, favicons in multiple formats (SVG, PNG, PDF).",
+      href: "/brand",
+      icon: Palette,
+      color: "golden",
+      count: "Brand Kit",
+    },
+    {
+      title: "Page Templates",
+      description: "Full-page template collection",
+      details: "Pre-built templates for portfolios, SaaS products, startups, and developer profiles.",
+      href: "/templates",
+      icon: Rocket,
+      color: "emerald",
+      count: "4 templates",
+    },
+    {
       title: "GLSL Shaders",
-      description: "WebGL shader animations and effects",
+      description: "WebGL shader animations",
       details: "8 interactive shader demonstrations including sacred geometry, fractals, neural networks, and generative art.",
       href: "/shaders",
       icon: Zap,
-      color: "violet",
+      color: "cosmic-purple",
       count: "8 shaders",
     },
     {
@@ -22,103 +41,154 @@ export function TestHomePage() {
       details: "Test and explore animation effects, particle systems, and interactive components in development.",
       href: "/playground",
       icon: Code2,
-      color: "blue",
+      color: "cosmic-blue",
       count: "9 demos",
-    },
-    {
-      title: "Page Templates",
-      description: "Full-page template collection",
-      details: "Pre-built templates for portfolios, SaaS products, startups, and developer profiles.",
-      href: "/templates",
-      icon: Rocket,
-      color: "purple",
-      count: "4 templates",
-    },
-    {
-      title: "Brand Assets",
-      description: "Visual identity & brand guidelines",
-      details: "Complete brand asset library including logos, colors, favicons in multiple formats (SVG, PNG, PDF).",
-      href: "/brand",
-      icon: Palette,
-      color: "amber",
-      count: "Brand Kit",
     },
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-gray-50 dark:from-slate-950 dark:via-gray-900 dark:to-slate-900">
+    <div className="min-h-screen bg-gradient-to-br from-white via-neutral-50 to-white dark:from-black dark:via-neutral-950 dark:to-black">
       <div className="container mx-auto px-4 py-16">
         {/* Header */}
-        <section className="mb-16 text-center">
-          <div className="mb-6 flex items-center justify-center gap-3">
-            <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-500 to-purple-600 shadow-lg">
-              <Sparkles className="h-8 w-8 text-white" />
+        <section className="mb-20 text-center">
+          <div className="mb-8 inline-flex items-center justify-center">
+            <div className="relative h-20 w-20">
+              <Image
+                src="/brand/symbol.svg"
+                alt="New Earth Collective"
+                fill
+                className="object-contain drop-shadow-lg"
+              />
             </div>
           </div>
-          <h1 className="mb-4 bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-6xl font-bold text-transparent dark:from-violet-400 dark:to-purple-400">
+          <h1 className="mb-4 text-6xl font-bold text-black dark:text-white" style={{ fontFamily: 'Airwaves, sans-serif', letterSpacing: '0.1em' }}>
             Development Hub
           </h1>
-          <p className="text-muted-foreground mx-auto mb-6 max-w-2xl text-xl">
+          <p className="mx-auto mb-6 max-w-2xl text-xl text-neutral-600 dark:text-neutral-400">
             New Earth Collective - Under Development
           </p>
           <div className="flex items-center justify-center gap-2">
-            <Badge variant="secondary" className="bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-200">
+            <Badge className="border-[#facf39]/40 bg-[#facf39]/10 text-[#facf39]">
               test.joinnewearthcollective.com
             </Badge>
           </div>
         </section>
 
-        {/* Features Grid */}
+        {/* Sites Section */}
+        <section className="mb-20">
+          <h2 className="mb-8 text-center text-4xl font-bold" style={{ fontFamily: 'Bourton, sans-serif', color: '#facf39' }}>
+            Sites
+          </h2>
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {/* Dope Ass Landing Page */}
+            <Link href="/dope-ass-landing">
+              <Card className="group flex h-full cursor-pointer flex-col border-2 border-[#facf39]/20 transition-all duration-300 hover:scale-105 hover:shadow-2xl dark:border-[#facf39]/30">
+                <CardContent className="flex flex-1 flex-col p-6">
+                  <div className="mb-4 flex flex-none items-center gap-3">
+                    <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-[#facf39] to-[#f59e0b] shadow-lg">
+                      <Sparkles className="h-7 w-7 text-black" />
+                    </div>
+                    <h3 className="text-xl font-bold text-black dark:text-white" style={{ fontFamily: 'Airwaves, sans-serif', letterSpacing: '0.05em' }}>
+                      Dope Ass Landing
+                    </h3>
+                  </div>
+                  <p className="mb-4 flex-1 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
+                    Epic landing page with countdown timer and sacred geometry vibes
+                  </p>
+                  <div className="flex items-center justify-between">
+                    <Badge className="bg-[#facf39]/10 text-[#facf39] dark:bg-[#facf39]/20">
+                      Live Demo
+                    </Badge>
+                    <div className="flex items-center gap-2 text-sm font-medium transition-colors" style={{ color: '#facf39' }}>
+                      <span>Explore</span>
+                      <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
+
+            {/* Coming Soon Placeholder */}
+            <Card className="flex h-full cursor-pointer flex-col border-2 border-dashed border-neutral-300 bg-neutral-50/50 transition-all duration-300 hover:border-[#facf39]/40 hover:bg-neutral-50 dark:border-neutral-700 dark:bg-neutral-900/50 dark:hover:border-[#facf39]/40 dark:hover:bg-neutral-900">
+              <CardContent className="flex flex-1 flex-col items-center justify-center p-8 text-center">
+                <div className="relative mb-4 h-16 w-16 opacity-50">
+                  <Image
+                    src="/brand/symbol.svg"
+                    alt="Coming Soon"
+                    fill
+                    className="object-contain"
+                  />
+                </div>
+                <h3 className="mb-2 text-lg font-bold text-neutral-600 dark:text-neutral-400" style={{ fontFamily: 'Airwaves, sans-serif', letterSpacing: '0.05em' }}>
+                  Coming Soon
+                </h3>
+                <p className="text-sm text-neutral-500 dark:text-neutral-500">
+                  More sites under development
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+        </section>
+
+        {/* Assets Grid */}
         <section className="mb-16">
-          <h2 className="mb-8 text-center text-3xl font-bold">Available Features</h2>
+          <h2 className="mb-8 text-center text-4xl font-bold" style={{ fontFamily: 'Bourton, sans-serif', color: '#facf39' }}>
+            Assets
+          </h2>
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
             {features.map((feature) => {
               const Icon = feature.icon;
-              const colorMap: Record<string, { gradient: string; border: string; badge: string }> = {
-                violet: {
-                  gradient: "from-violet-500 to-purple-600",
-                  border: "border-violet-200 dark:border-violet-800/50",
-                  badge: "bg-violet-100 text-violet-800 dark:bg-violet-900/30 dark:text-violet-200",
+              const colorMap: Record<string, { gradient: string; border: string; badge: string; text: string }> = {
+                "cosmic-purple": {
+                  gradient: "from-[#6d28d9] to-[#a855f7]",
+                  border: "border-[#6d28d9]/20 dark:border-[#6d28d9]/30",
+                  badge: "bg-[#6d28d9]/10 text-[#6d28d9] dark:bg-[#6d28d9]/20 dark:text-[#a855f7]",
+                  text: "#6d28d9",
                 },
-                blue: {
-                  gradient: "from-blue-500 to-cyan-600",
-                  border: "border-blue-200 dark:border-blue-800/50",
-                  badge: "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-200",
+                "cosmic-blue": {
+                  gradient: "from-[#0891b2] to-[#06b6d4]",
+                  border: "border-[#0891b2]/20 dark:border-[#0891b2]/30",
+                  badge: "bg-[#0891b2]/10 text-[#0891b2] dark:bg-[#0891b2]/20 dark:text-[#06b6d4]",
+                  text: "#0891b2",
                 },
-                purple: {
-                  gradient: "from-purple-500 to-pink-600",
-                  border: "border-purple-200 dark:border-purple-800/50",
-                  badge: "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-200",
+                "emerald": {
+                  gradient: "from-[#059669] to-[#10b981]",
+                  border: "border-[#059669]/20 dark:border-[#059669]/30",
+                  badge: "bg-[#059669]/10 text-[#059669] dark:bg-[#059669]/20 dark:text-[#10b981]",
+                  text: "#059669",
                 },
-                amber: {
-                  gradient: "from-amber-500 to-yellow-600",
-                  border: "border-amber-200 dark:border-amber-800/50",
-                  badge: "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-200",
+                "golden": {
+                  gradient: "from-[#facf39] to-[#f59e0b]",
+                  border: "border-[#facf39]/20 dark:border-[#facf39]/30",
+                  badge: "bg-[#facf39]/10 text-[#facf39] dark:bg-[#facf39]/20 dark:text-[#facf39]",
+                  text: "#facf39",
                 },
               };
-              const colors = colorMap[feature.color] ?? colorMap.violet!;
+              const colors = colorMap[feature.color] ?? colorMap.golden!;
 
               return (
                 <Link key={feature.title} href={feature.href}>
-                  <Card className={`group h-full cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-2xl ${colors.border}`}>
-                    <CardHeader>
+                  <Card className={`group flex h-full cursor-pointer flex-col border-2 transition-all duration-300 hover:scale-105 hover:shadow-2xl ${colors.border}`}>
+                    <CardHeader className="flex-none">
                       <div className={`mb-4 flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br ${colors.gradient} shadow-lg`}>
                         <Icon className="h-7 w-7 text-white" />
                       </div>
-                      <CardTitle className="text-2xl">{feature.title}</CardTitle>
-                      <CardDescription className="text-base">
+                      <CardTitle className="text-xl font-bold text-black dark:text-white" style={{ fontFamily: 'Airwaves, sans-serif', letterSpacing: '0.05em' }}>
+                        {feature.title}
+                      </CardTitle>
+                      <CardDescription className="text-sm text-neutral-600 dark:text-neutral-400">
                         {feature.description}
                       </CardDescription>
                     </CardHeader>
-                    <CardContent className="space-y-4">
-                      <p className="text-muted-foreground text-sm leading-relaxed">
+                    <CardContent className="flex flex-1 flex-col space-y-4">
+                      <p className="flex-1 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
                         {feature.details}
                       </p>
                       <div className="flex items-center justify-between">
-                        <Badge variant="secondary" className={colors.badge}>
+                        <Badge className={colors.badge}>
                           {feature.count}
                         </Badge>
-                        <div className="flex items-center gap-2 text-sm font-medium text-violet-600 dark:text-violet-400">
+                        <div className="flex items-center gap-2 text-sm font-medium transition-colors" style={{ color: colors.text }}>
                           <span>Explore</span>
                           <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                         </div>
@@ -133,12 +203,28 @@ export function TestHomePage() {
 
         {/* Footer Note */}
         <section className="text-center">
-          <div className="border-border bg-muted/50 mx-auto max-w-3xl rounded-lg border p-6">
-            <h3 className="mb-2 font-semibold">Development Environment</h3>
-            <p className="text-muted-foreground text-sm">
-              This is the development environment for New Earth Collective. Features are under active development.
-            </p>
-          </div>
+          <Card className="mx-auto max-w-3xl border-2 border-[#facf39]/20 bg-gradient-to-br from-white to-neutral-50 shadow-lg dark:from-neutral-900 dark:to-black">
+            <CardContent className="p-8">
+              <div className="flex items-start gap-6">
+                <div className="relative h-12 w-12 shrink-0">
+                  <Image
+                    src="/brand/symbol.svg"
+                    alt="New Earth Collective"
+                    fill
+                    className="object-contain drop-shadow-lg"
+                  />
+                </div>
+                <div className="text-left">
+                  <h3 className="mb-2 text-xl font-bold text-black dark:text-white" style={{ fontFamily: 'Airwaves, sans-serif', letterSpacing: '0.05em' }}>
+                    Development Environment
+                  </h3>
+                  <p className="text-sm text-neutral-600 dark:text-neutral-400">
+                    This is the development environment for New Earth Collective. Features are under active development.
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </section>
       </div>
     </div>

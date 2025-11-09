@@ -1,7 +1,6 @@
 "use client";
 
 import { Card, CardContent } from "~/components/ui/card";
-import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import Image from "next/image";
 import { ArrowRight, Calendar, MapPin, Clock, Sparkles, Star, Music, Heart, Users } from "lucide-react";
@@ -119,14 +118,14 @@ export function LaunchLanding1Content({ timeLeft }: LaunchLanding1ContentProps) 
               </h2>
             </div>
             <div className="space-y-4 text-lg leading-relaxed text-neutral-300">
-              <p className="text-xl font-bold text-white">This isn't just a party. It's a pulse.</p>
+              <p className="text-xl font-bold text-white">This isn&apos;t just a party. It&apos;s a pulse.</p>
               <p>
                 The New Earth is rising—a new way of living, loving, and leading rooted in unity,
                 creativity, and heart-centered connection. And it begins right here, with us, in
                 Boulder.
               </p>
               <p>
-                You're invited to be the <span className="font-bold text-[#facf39]">heart</span> of
+                You&apos;re invited to be the <span className="font-bold text-[#facf39]">heart</span> of
                 the New Earth Collective. A diverse, potent, and playful community of facilitators,
                 artists, healers, mystics, and visionaries ready to co-create something greater than
                 ourselves.
@@ -185,7 +184,7 @@ export function LaunchLanding1Content({ timeLeft }: LaunchLanding1ContentProps) 
               field.
             </p>
             <p className="mb-8 text-lg font-semibold text-white">
-              This isn't <span className="italic">our</span> party. It's{' '}
+              This isn&apos;t <span className="italic">our</span> party. It&apos;s{' '}
               <span className="italic">ours</span> to co-create.
             </p>
             <Button
@@ -229,7 +228,7 @@ export function LaunchLanding1Content({ timeLeft }: LaunchLanding1ContentProps) 
                   'Connect with soul-aligned beings',
                   'Share & receive healing, guidance, and support',
                   'Activate purpose & amplify service',
-                  "Host weekly connection calls, men's & women's circles, and more",
+                  'Host weekly connection calls, men&apos;s & women&apos;s circles, and more',
                 ].map((item, index) => (
                   <li key={index} className="flex items-start gap-3">
                     <Sparkles className="mt-1 h-4 w-4 shrink-0 text-[#facf39]" />
@@ -280,7 +279,7 @@ export function LaunchLanding1Content({ timeLeft }: LaunchLanding1ContentProps) 
               className="w-full bg-gradient-to-r from-[#facf39] to-[#f59e0b] font-bold text-black transition-all hover:scale-105 md:w-auto"
               style={{ fontFamily: 'Airwaves, sans-serif', letterSpacing: '0.05em' }}
             >
-              I'm In
+              I&apos;m In
               <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
           </CardContent>
@@ -302,7 +301,7 @@ export function LaunchLanding1Content({ timeLeft }: LaunchLanding1ContentProps) 
           className="mt-8 text-2xl italic text-neutral-300"
           style={{ fontFamily: 'Bourton, sans-serif' }}
         >
-          Let's co-create Heaven on Earth, together. 🌿
+          Let&apos;s co-create Heaven on Earth, together. 🌿
         </p>
       </section>
     </>

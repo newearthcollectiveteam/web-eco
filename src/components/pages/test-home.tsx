@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/com
 import { Badge } from "~/components/ui/badge";
 import Link from "next/link";
 import Image from "next/image";
-import { Zap, Code2, Rocket, ArrowRight, Palette, Sparkles, ChevronDown } from "lucide-react";
+import { Zap, Code2, Rocket, ArrowRight, Palette, Sparkles, ChevronDown, ExternalLink } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -117,10 +117,51 @@ export function TestHomePage() {
           </div>
         </section>
 
-        {/* Sites Section */}
+        {/* Live Sites Section */}
         <section className="mb-20">
           <h2 className="mb-8 text-center text-4xl font-bold" style={{ fontFamily: 'Bourton, sans-serif', color: '#facf39' }}>
-            Sites
+            Live Sites
+          </h2>
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {/* New Earth Collective Main Site */}
+            <Card className="group flex h-full flex-col border-2 border-[#10b981]/20 transition-all duration-300 hover:shadow-2xl dark:border-[#10b981]/30">
+              <CardContent className="flex flex-1 flex-col p-6">
+                <div className="mb-4 flex flex-none items-center gap-3">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-[#059669] to-[#10b981] shadow-lg">
+                    <ExternalLink className="h-7 w-7 text-white" />
+                  </div>
+                  <h3 className="text-xl font-bold text-black dark:text-white" style={{ fontFamily: 'Airwaves, sans-serif', letterSpacing: '0.05em' }}>
+                    New Earth Collective
+                  </h3>
+                </div>
+                <p className="mb-4 flex-1 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
+                  Official New Earth Collective community platform - Join the movement for conscious evolution and regenerative systems.
+                </p>
+
+                <div className="flex items-center justify-between">
+                  <Badge className="bg-[#10b981]/10 text-[#10b981] dark:bg-[#10b981]/20">
+                    Live
+                  </Badge>
+                  <a
+                    href="https://joinnewearthcollective.com/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 text-sm font-medium transition-colors hover:opacity-80"
+                    style={{ color: '#10b981' }}
+                  >
+                    <span>Visit Site</span>
+                    <ExternalLink className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                  </a>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </section>
+
+        {/* Sites Under Development Section */}
+        <section className="mb-20">
+          <h2 className="mb-8 text-center text-4xl font-bold" style={{ fontFamily: 'Bourton, sans-serif', color: '#facf39' }}>
+            Sites Under Development
           </h2>
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {/* Dope Ass Landing Page with Dropdown */}

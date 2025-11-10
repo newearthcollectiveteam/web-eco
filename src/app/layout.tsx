@@ -6,6 +6,7 @@ import { Geist } from "next/font/google";
 import { ThemeProvider } from "next-themes";
 
 import { TRPCReactProvider } from "~/trpc/react";
+import { AuthProvider } from "~/lib/auth/hooks";
 
 export const metadata: Metadata = {
   title: "New Earth Collective",
@@ -31,7 +32,9 @@ export default function RootLayout({
           disableTransitionOnChange
           storageKey="theme"
         >
-          <TRPCReactProvider>{children}</TRPCReactProvider>
+          <AuthProvider>
+            <TRPCReactProvider>{children}</TRPCReactProvider>
+          </AuthProvider>
         </ThemeProvider>
       </body>
     </html>

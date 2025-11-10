@@ -4,9 +4,52 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/com
 import { Badge } from "~/components/ui/badge";
 import Link from "next/link";
 import Image from "next/image";
-import { Zap, Code2, Rocket, ArrowRight, Palette, Sparkles } from "lucide-react";
+import { Zap, Code2, Rocket, ArrowRight, Palette, Sparkles, ChevronDown } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export function TestHomePage() {
+  const router = useRouter();
+  const [selectedVariation, setSelectedVariation] = useState("/dope-ass-landing");
+  const [selectedJoinCommunity, setSelectedJoinCommunity] = useState("/join-community-1");
+  const [selectedLaunchLanding, setSelectedLaunchLanding] = useState("/launch-landing-1");
+
+  const landingPageVariations = [
+    { name: "Original (Golden)", path: "/dope-ass-landing" },
+    { name: "Earth to Sky Gradient", path: "/dope-ass-landing/earth-sky" },
+    { name: "Deep Ocean Gradient", path: "/dope-ass-landing/deep-ocean" },
+    { name: "Emerald-Teal Gradient", path: "/dope-ass-landing/emerald-teal" },
+    { name: "Blue-Cyan Gradient", path: "/dope-ass-landing/blue-cyan" },
+    { name: "Emerald", path: "/dope-ass-landing/emerald" },
+    { name: "Cosmic Blue", path: "/dope-ass-landing/cosmic-blue" },
+    { name: "Teal", path: "/dope-ass-landing/teal" },
+    { name: "Forest Green", path: "/dope-ass-landing/forest-green" },
+  ];
+
+  const joinCommunityVariations = [
+    { name: "Original (Golden)", path: "/join-community-1" },
+    { name: "Earth to Sky Gradient", path: "/join-community-1/earth-sky" },
+    { name: "Deep Ocean Gradient", path: "/join-community-1/deep-ocean" },
+    { name: "Emerald-Teal Gradient", path: "/join-community-1/emerald-teal" },
+    { name: "Blue-Cyan Gradient", path: "/join-community-1/blue-cyan" },
+    { name: "Emerald", path: "/join-community-1/emerald" },
+    { name: "Cosmic Blue", path: "/join-community-1/cosmic-blue" },
+    { name: "Teal", path: "/join-community-1/teal" },
+    { name: "Forest Green", path: "/join-community-1/forest-green" },
+  ];
+
+  const launchLandingVariations = [
+    { name: "Original (Golden)", path: "/launch-landing-1" },
+    { name: "Earth to Sky Gradient", path: "/launch-landing-1/earth-sky" },
+    { name: "Deep Ocean Gradient", path: "/launch-landing-1/deep-ocean" },
+    { name: "Emerald-Teal Gradient", path: "/launch-landing-1/emerald-teal" },
+    { name: "Blue-Cyan Gradient", path: "/launch-landing-1/blue-cyan" },
+    { name: "Emerald", path: "/launch-landing-1/emerald" },
+    { name: "Cosmic Blue", path: "/launch-landing-1/cosmic-blue" },
+    { name: "Teal", path: "/launch-landing-1/teal" },
+    { name: "Forest Green", path: "/launch-landing-1/forest-green" },
+  ];
+
   const features = [
     {
       title: "Brand Assets",
@@ -80,51 +123,162 @@ export function TestHomePage() {
             Sites
           </h2>
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {/* Dope Ass Landing Page */}
-            <Link href="/dope-ass-landing">
-              <Card className="group flex h-full cursor-pointer flex-col border-2 border-[#facf39]/20 transition-all duration-300 hover:scale-105 hover:shadow-2xl dark:border-[#facf39]/30">
-                <CardContent className="flex flex-1 flex-col p-6">
-                  <div className="mb-4 flex flex-none items-center gap-3">
-                    <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-[#facf39] to-[#f59e0b] shadow-lg">
-                      <Sparkles className="h-7 w-7 text-black" />
-                    </div>
-                    <h3 className="text-xl font-bold text-black dark:text-white" style={{ fontFamily: 'Airwaves, sans-serif', letterSpacing: '0.05em' }}>
-                      Dope Ass Landing
-                    </h3>
+            {/* Dope Ass Landing Page with Dropdown */}
+            <Card className="group flex h-full flex-col border-2 border-[#facf39]/20 transition-all duration-300 hover:shadow-2xl dark:border-[#facf39]/30">
+              <CardContent className="flex flex-1 flex-col p-6">
+                <div className="mb-4 flex flex-none items-center gap-3">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-[#facf39] to-[#f59e0b] shadow-lg">
+                    <Sparkles className="h-7 w-7 text-black" />
                   </div>
-                  <p className="mb-4 flex-1 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
-                    Epic landing page with countdown timer and sacred geometry vibes
-                  </p>
-                  <div className="flex items-center justify-between">
-                    <Badge className="bg-[#facf39]/10 text-[#facf39] dark:bg-[#facf39]/20">
-                      Live Demo
-                    </Badge>
-                    <div className="flex items-center gap-2 text-sm font-medium transition-colors" style={{ color: '#facf39' }}>
-                      <span>Explore</span>
-                      <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </Link>
-
-            {/* Coming Soon Placeholder */}
-            <Card className="flex h-full cursor-pointer flex-col border-2 border-dashed border-neutral-300 bg-neutral-50/50 transition-all duration-300 hover:border-[#facf39]/40 hover:bg-neutral-50 dark:border-neutral-700 dark:bg-neutral-900/50 dark:hover:border-[#facf39]/40 dark:hover:bg-neutral-900">
-              <CardContent className="flex flex-1 flex-col items-center justify-center p-8 text-center">
-                <div className="relative mb-4 h-16 w-16 opacity-50">
-                  <Image
-                    src="/brand/symbol.svg"
-                    alt="Coming Soon"
-                    fill
-                    className="object-contain"
-                  />
+                  <h3 className="text-xl font-bold text-black dark:text-white" style={{ fontFamily: 'Airwaves, sans-serif', letterSpacing: '0.05em' }}>
+                    Dope Ass Landing
+                  </h3>
                 </div>
-                <h3 className="mb-2 text-lg font-bold text-neutral-600 dark:text-neutral-400" style={{ fontFamily: 'Airwaves, sans-serif', letterSpacing: '0.05em' }}>
-                  Coming Soon
-                </h3>
-                <p className="text-sm text-neutral-500 dark:text-neutral-500">
-                  More sites under development
+                <p className="mb-4 flex-1 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
+                  Epic landing page with countdown timer and sacred geometry vibes - now in 9 color variations!
                 </p>
+
+                {/* Dropdown to select variation */}
+                <div className="mb-4">
+                  <label htmlFor="variation-select" className="mb-2 block text-xs font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
+                    Select Color Variation
+                  </label>
+                  <div className="relative">
+                    <select
+                      id="variation-select"
+                      value={selectedVariation}
+                      onChange={(e) => setSelectedVariation(e.target.value)}
+                      className="w-full appearance-none rounded-lg border-2 border-[#facf39]/20 bg-white px-4 py-2.5 pr-10 text-sm font-medium text-black transition-colors hover:border-[#facf39]/40 focus:border-[#facf39] focus:outline-none dark:border-[#facf39]/30 dark:bg-neutral-900 dark:text-white dark:hover:border-[#facf39]/50"
+                    >
+                      {landingPageVariations.map((variation) => (
+                        <option key={variation.path} value={variation.path}>
+                          {variation.name}
+                        </option>
+                      ))}
+                    </select>
+                    <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 text-[#facf39]" />
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <Badge className="bg-[#facf39]/10 text-[#facf39] dark:bg-[#facf39]/20">
+                    9 Variations
+                  </Badge>
+                  <button
+                    onClick={() => router.push(selectedVariation)}
+                    className="flex items-center gap-2 text-sm font-medium transition-colors hover:opacity-80"
+                    style={{ color: '#facf39' }}
+                  >
+                    <span>View Demo</span>
+                    <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                  </button>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* JoinCommunity 1 with Dropdown */}
+            <Card className="group flex h-full flex-col border-2 border-[#facf39]/20 transition-all duration-300 hover:shadow-2xl dark:border-[#facf39]/30">
+              <CardContent className="flex flex-1 flex-col p-6">
+                <div className="mb-4 flex flex-none items-center gap-3">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-[#059669] to-[#14b8a6] shadow-lg">
+                    <Sparkles className="h-7 w-7 text-white" />
+                  </div>
+                  <h3 className="text-xl font-bold text-black dark:text-white" style={{ fontFamily: 'Airwaves, sans-serif', letterSpacing: '0.05em' }}>
+                    Join Community 1
+                  </h3>
+                </div>
+                <p className="mb-4 flex-1 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
+                  Full community landing page with waitlist CTA - now in 9 color variations!
+                </p>
+
+                {/* Dropdown to select variation */}
+                <div className="mb-4">
+                  <label htmlFor="join-community-select" className="mb-2 block text-xs font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
+                    Select Color Variation
+                  </label>
+                  <div className="relative">
+                    <select
+                      id="join-community-select"
+                      value={selectedJoinCommunity}
+                      onChange={(e) => setSelectedJoinCommunity(e.target.value)}
+                      className="w-full appearance-none rounded-lg border-2 border-[#facf39]/20 bg-white px-4 py-2.5 pr-10 text-sm font-medium text-black transition-colors hover:border-[#facf39]/40 focus:border-[#facf39] focus:outline-none dark:border-[#facf39]/30 dark:bg-neutral-900 dark:text-white dark:hover:border-[#facf39]/50"
+                    >
+                      {joinCommunityVariations.map((variation) => (
+                        <option key={variation.path} value={variation.path}>
+                          {variation.name}
+                        </option>
+                      ))}
+                    </select>
+                    <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 text-[#facf39]" />
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <Badge className="bg-[#facf39]/10 text-[#facf39] dark:bg-[#facf39]/20">
+                    9 Variations
+                  </Badge>
+                  <button
+                    onClick={() => router.push(selectedJoinCommunity)}
+                    className="flex items-center gap-2 text-sm font-medium transition-colors hover:opacity-80"
+                    style={{ color: '#facf39' }}
+                  >
+                    <span>View Demo</span>
+                    <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                  </button>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Launch Landing 1 with Dropdown */}
+            <Card className="group flex h-full flex-col border-2 border-[#facf39]/20 transition-all duration-300 hover:shadow-2xl dark:border-[#facf39]/30">
+              <CardContent className="flex flex-1 flex-col p-6">
+                <div className="mb-4 flex flex-none items-center gap-3">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-[#facf39] to-[#f59e0b] shadow-lg">
+                    <Sparkles className="h-7 w-7 text-black" />
+                  </div>
+                  <h3 className="text-xl font-bold text-black dark:text-white" style={{ fontFamily: 'Airwaves, sans-serif', letterSpacing: '0.05em' }}>
+                    Launch Landing 1
+                  </h3>
+                </div>
+                <p className="mb-4 flex-1 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
+                  Event landing page with countdown timer for Dec 20th launch party - 9 color variations!
+                </p>
+
+                {/* Dropdown to select variation */}
+                <div className="mb-4">
+                  <label htmlFor="launch-landing-select" className="mb-2 block text-xs font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
+                    Select Color Variation
+                  </label>
+                  <div className="relative">
+                    <select
+                      id="launch-landing-select"
+                      value={selectedLaunchLanding}
+                      onChange={(e) => setSelectedLaunchLanding(e.target.value)}
+                      className="w-full appearance-none rounded-lg border-2 border-[#facf39]/20 bg-white px-4 py-2.5 pr-10 text-sm font-medium text-black transition-colors hover:border-[#facf39]/40 focus:border-[#facf39] focus:outline-none dark:border-[#facf39]/30 dark:bg-neutral-900 dark:text-white dark:hover:border-[#facf39]/50"
+                    >
+                      {launchLandingVariations.map((variation) => (
+                        <option key={variation.path} value={variation.path}>
+                          {variation.name}
+                        </option>
+                      ))}
+                    </select>
+                    <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 text-[#facf39]" />
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <Badge className="bg-[#facf39]/10 text-[#facf39] dark:bg-[#facf39]/20">
+                    9 Variations
+                  </Badge>
+                  <button
+                    onClick={() => router.push(selectedLaunchLanding)}
+                    className="flex items-center gap-2 text-sm font-medium transition-colors hover:opacity-80"
+                    style={{ color: '#facf39' }}
+                  >
+                    <span>View Demo</span>
+                    <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                  </button>
+                </div>
               </CardContent>
             </Card>
           </div>

@@ -7,11 +7,17 @@ import Image from "next/image";
 
 interface DomainLayoutProps {
   children: React.ReactNode;
+  headerClassName?: string;
+  footerClassName?: string;
 }
 
-export function DomainLayout({ children }: DomainLayoutProps) {
+export function DomainLayout({ children, headerClassName, footerClassName }: DomainLayoutProps) {
   // Use test domain configuration
   const domainConfig = getDomainConfig("test.joinnewearthcollective.com");
+
+  // Default header/footer styles
+  const defaultHeaderClass = "border-b border-black/10 bg-white/80 backdrop-blur-sm dark:border-white/10 dark:bg-black/80";
+  const defaultFooterClass = "mt-auto border-t border-black/10 bg-white/80 backdrop-blur-sm dark:border-white/10 dark:bg-black/80";
 
   return (
     <div
@@ -22,7 +28,7 @@ export function DomainLayout({ children }: DomainLayoutProps) {
       }}
     >
       {/* Header Navigation */}
-      <header className="border-b border-black/10 bg-white/80 backdrop-blur-sm dark:border-white/10 dark:bg-black/80">
+      <header className={headerClassName || defaultHeaderClass}>
         <div className="container mx-auto flex h-16 items-center px-4">
           {/* Left side: Logo */}
           <div className="flex flex-1 items-center">
@@ -68,7 +74,7 @@ export function DomainLayout({ children }: DomainLayoutProps) {
       <main>{children}</main>
 
       {/* Footer */}
-      <footer className="mt-auto border-t border-black/10 bg-white/80 backdrop-blur-sm dark:border-white/10 dark:bg-black/80">
+      <footer className={footerClassName || defaultFooterClass}>
         <div className="container mx-auto px-4 py-12">
           <div className="flex flex-col items-center justify-between space-y-6 md:flex-row md:space-y-0">
             <div className="flex items-center space-x-3">

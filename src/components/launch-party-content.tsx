@@ -76,6 +76,12 @@ export function LaunchPartyContent() {
           </Link>
           <nav className="flex items-center gap-6">
             <Link
+              href="/about"
+              className="text-sm font-medium text-neutral-300 transition-colors hover:text-[#facf39]"
+            >
+              About
+            </Link>
+            <Link
               href="/community"
               className="text-sm font-medium text-neutral-300 transition-colors hover:text-[#facf39]"
             >

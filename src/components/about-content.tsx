@@ -321,42 +321,6 @@ export function AboutContent() {
             </Card>
           </section>
 
-          {/* Soul Essence */}
-          <section className="mb-20">
-            <Card className="border-2 border-[#facf39]/40 bg-gradient-to-br from-[#facf39]/10 to-[#f59e0b]/10 shadow-2xl backdrop-blur-md">
-              <CardContent className="p-8 md:p-12">
-                <h2
-                  className="mb-6 text-center text-3xl font-bold text-white md:text-4xl"
-                  style={{ fontFamily: "Bourton, sans-serif" }}
-                >
-                  Soul Essence
-                </h2>
-                <div className="space-y-6 text-center">
-                  <div>
-                    <p className="mb-3 text-sm font-semibold tracking-wider text-[#facf39] uppercase">
-                      Key Soul Words
-                    </p>
-                    <p className="text-lg leading-relaxed text-neutral-200 dark:text-neutral-200">
-                      Harmonic Collective Intelligence • Miracle consciousness •
-                      Divine connection • Collective Sovereignty • Natural overflow
-                      • Wisdom traditions • Regenerative • Overflow from base •
-                      Grounded in reality • Love as practice • Unconditional Love •
-                      New Earth • Kingdom of Heaven • Facilitating Synchronicity
-                    </p>
-                  </div>
-                  <div>
-                    <p className="mb-3 text-sm font-semibold tracking-wider text-[#facf39] uppercase">
-                      Energy Signature
-                    </p>
-                    <p className="text-2xl font-bold text-white">
-                      Synergistic • Synarchy • Grounded • Heaven on Earth
-                    </p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </section>
-
           {/* CTA */}
           <section className="mb-20 text-center">
             <p

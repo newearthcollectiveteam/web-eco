@@ -95,12 +95,12 @@ export function CommunityLandingContent() {
   };
 
   return (
-    <div className="px-4 py-16">
-      <div className="container mx-auto max-w-4xl">
-        {/* Hero Section */}
-        <section className="mb-20 min-h-[90vh] flex flex-col items-center justify-center text-center">
-          <div className="mb-8 inline-flex items-center justify-center">
-            <div className="relative h-20 w-20 drop-shadow-2xl">
+    <>
+      {/* Header Navigation */}
+      <header className="fixed top-0 left-0 right-0 z-50 border-b border-[#facf39]/10 bg-black/80 backdrop-blur-md">
+        <div className="container mx-auto flex items-center justify-between px-4 py-4">
+          <Link href="/community" className="flex items-center gap-3">
+            <div className="relative h-10 w-10">
               <Image
                 src="/brand/symbol.svg"
                 alt="New Earth Collective"
@@ -108,15 +108,63 @@ export function CommunityLandingContent() {
                 className="object-contain"
               />
             </div>
-          </div>
-          <h1
-            className="mb-4 text-6xl font-bold text-white drop-shadow-2xl md:text-7xl"
-            style={{ fontFamily: "Bourton, sans-serif" }}
-          >
-            THE NEW EARTH
-            <br />
-            COLLECTIVE
-          </h1>
+            <span
+              className="text-xl font-bold text-white"
+              style={{
+                fontFamily: "Airwaves, sans-serif",
+                letterSpacing: "0.05em",
+              }}
+            >
+              NEW EARTH COLLECTIVE
+            </span>
+          </Link>
+          <nav className="flex items-center gap-6">
+            <Link
+              href="/launch-party"
+              className="text-sm font-medium text-neutral-300 transition-colors hover:text-[#facf39]"
+            >
+              Launch Party
+            </Link>
+            <Button
+              size="sm"
+              onClick={scrollToForm}
+              className="bg-gradient-to-r from-[#facf39] to-[#f59e0b] font-bold text-black transition-all hover:scale-105"
+              style={{
+                fontFamily: "Airwaves, sans-serif",
+                letterSpacing: "0.05em",
+              }}
+            >
+              Join Waitlist
+            </Button>
+          </nav>
+        </div>
+      </header>
+
+      <div className="px-4 py-16">
+        <div className="container mx-auto max-w-4xl">
+          {/* Hero Section */}
+          <section className="mb-20 min-h-[90vh] flex flex-col items-center justify-center text-center">
+            <div className="mb-8 inline-flex items-center justify-center">
+              <div className="relative h-20 w-20 drop-shadow-2xl">
+                <Image
+                  src="/brand/symbol.svg"
+                  alt="New Earth Collective"
+                  fill
+                  className="object-contain"
+                />
+              </div>
+            </div>
+            <h1
+              className="mb-4 text-6xl font-bold text-white drop-shadow-2xl md:text-7xl"
+              style={{
+                fontFamily: "Airwaves, sans-serif",
+                letterSpacing: "0.05em",
+              }}
+            >
+              THE NEW EARTH
+              <br />
+              COLLECTIVE
+            </h1>
           <p className="mx-auto mb-8 max-w-2xl text-2xl text-neutral-300 dark:text-neutral-300 italic">
             A global sanctuary for awakened souls ready to connect, co-create,
             and rise together.
@@ -585,34 +633,35 @@ export function CommunityLandingContent() {
           </Badge>
         </section>
 
-        {/* Footer */}
-        <footer className="border-t border-[#facf39]/20 pt-12 pb-8">
-          <div className="flex flex-col items-center justify-center gap-6 text-center">
-            <div className="flex items-center gap-6">
-              <a
-                href="https://instagram.com/newearthcollectiveco"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-2 text-neutral-300 dark:text-neutral-300 transition-colors hover:text-[#facf39]"
-              >
-                <Instagram className="h-5 w-5" />
-                <span>@newearthcollectiveco</span>
-              </a>
-              <a
-                href="mailto:community@joinnewearthcollective.com"
-                className="flex items-center gap-2 text-neutral-300 dark:text-neutral-300 transition-colors hover:text-[#facf39]"
-              >
-                <Mail className="h-5 w-5" />
-                <span>community@joinnewearthcollective.com</span>
-              </a>
+          {/* Footer */}
+          <footer className="border-t border-[#facf39]/20 pt-12 pb-8">
+            <div className="flex flex-col items-center justify-center gap-6 text-center">
+              <div className="flex items-center gap-6">
+                <a
+                  href="https://instagram.com/newearthcollectiveco"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 text-neutral-300 dark:text-neutral-300 transition-colors hover:text-[#facf39]"
+                >
+                  <Instagram className="h-5 w-5" />
+                  <span>@newearthcollectiveco</span>
+                </a>
+                <a
+                  href="mailto:community@joinnewearthcollective.com"
+                  className="flex items-center gap-2 text-neutral-300 dark:text-neutral-300 transition-colors hover:text-[#facf39]"
+                >
+                  <Mail className="h-5 w-5" />
+                  <span>community@joinnewearthcollective.com</span>
+                </a>
+              </div>
+              <p className="text-sm text-neutral-500 dark:text-neutral-500">
+                © {new Date().getFullYear()} New Earth Collective. All rights
+                reserved.
+              </p>
             </div>
-            <p className="text-sm text-neutral-500 dark:text-neutral-500">
-              © {new Date().getFullYear()} New Earth Collective. All rights
-              reserved.
-            </p>
-          </div>
-        </footer>
+          </footer>
+        </div>
       </div>
-    </div>
+    </>
   );
 }

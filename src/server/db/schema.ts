@@ -101,3 +101,21 @@ export const contactActivities = createTable("contact_activity", {
     .default(sql`CURRENT_TIMESTAMP`)
     .notNull(),
 });
+
+/**
+ * Waitlist Intake - Community waitlist form submissions
+ * Stores raw form data for the New Earth Collective community waitlist
+ */
+export const waitlistIntake = createTable("waitlist_intake", {
+  id: serial("id").primaryKey(),
+  name: varchar("name", { length: 255 }).notNull(),
+  email: varchar("email", { length: 255 }).notNull(),
+  phone: varchar("phone", { length: 50 }),
+  message: text("message"), // Why they want to join
+  source: varchar("source", { length: 100 }).notNull(), // Which landing page they came from
+  contactId: integer("contact_id"), // Links to contacts.id after processing
+  processed: boolean("processed").default(false).notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+});

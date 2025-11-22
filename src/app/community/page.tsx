@@ -6,7 +6,7 @@ export default function CommunityLandingPage() {
   return (
     <div className="relative min-h-screen overflow-hidden bg-gradient-to-b from-neutral-900 via-neutral-950 to-black dark:from-black dark:via-neutral-950 dark:to-black">
       {/* Flower of Life Shader Background - Only in Hero Section */}
-      <div className="absolute inset-x-0 top-0 h-screen opacity-20 dark:opacity-15">
+      <div className="absolute inset-x-0 top-0 h-screen opacity-30 dark:opacity-25">
         <iframe
           src="/shaders/flower-of-life/embed"
           className="h-full w-full border-0"

@@ -93,100 +93,11 @@ export const contacts = createTable("contact", {
 export const contactActivities = createTable("contact_activity", {
   id: serial("id").primaryKey(),
   contactId: integer("contact_id").notNull(), // References contacts.id
-  activityType: varchar("activity_type", { length: 50 }).notNull(), // form_submission, email_sent, email_opened, email_clicked, note_added
-  source: varchar("source", { length: 100 }), // Which form/sequence
+  activityType: varchar("activity_type", { length: 50 }).notNull(), // form_submission, note_added, etc.
+  source: varchar("source", { length: 100 }), // Which form/page
   description: text("description"),
   metadata: jsonb("metadata"), // Additional activity data
   createdAt: timestamp("created_at", { withTimezone: true })
     .default(sql`CURRENT_TIMESTAMP`)
     .notNull(),
-});
-
-/**
- * Email Sequence System Tables
- */
-
-/**
- * Email sequence configurations
- * Defines reusable email sequences (e.g., "welcome-series", "launch-countdown")
- */
-export const emailSequences = createTable("email_sequence", {
-  id: serial("id").primaryKey(),
-  name: varchar("name", { length: 100 }).notNull().unique(), // e.g., "test-sequence", "welcome-series"
-  description: text("description"),
-  isActive: boolean("is_active").default(true).notNull(),
-  // Array of email configurations in the sequence
-  // Format: [{ emailNumber: 1, delayMinutes: 0, subject: "...", templateName: "..." }, ...]
-  emails: jsonb("emails").notNull(),
-  createdAt: timestamp("created_at", { withTimezone: true })
-    .default(sql`CURRENT_TIMESTAMP`)
-    .notNull(),
-  updatedAt: timestamp("updated_at", { withTimezone: true })
-    .default(sql`CURRENT_TIMESTAMP`)
-    .$onUpdate(() => new Date()),
-});
-
-/**
- * Scheduled emails to be sent
- * Individual emails queued for delivery
- */
-export const scheduledEmails = createTable("scheduled_email", {
-  id: serial("id").primaryKey(),
-  contactId: integer("contact_id"), // References contacts.id - links to master CRM
-  sequenceName: varchar("sequence_name", { length: 100 }).notNull(), // References email_sequences.name
-  emailNumber: integer("email_number").notNull(), // Which email in the sequence (1, 2, 3, etc.)
-  recipientEmail: varchar("recipient_email", { length: 255 }).notNull(),
-  recipientName: varchar("recipient_name", { length: 255 }),
-  subject: varchar("subject", { length: 255 }).notNull(),
-  templateName: varchar("template_name", { length: 100 }).notNull(),
-  // Additional data to pass to email template (form submission data, etc.)
-  templateData: jsonb("template_data"),
-  scheduledFor: timestamp("scheduled_for", { withTimezone: true }).notNull(),
-  status: varchar("status", { length: 50 }).default("pending").notNull(), // pending, sent, failed, cancelled
-  retryCount: integer("retry_count").default(0).notNull(),
-  lastRetryAt: timestamp("last_retry_at", { withTimezone: true }),
-  sentAt: timestamp("sent_at", { withTimezone: true }),
-  error: text("error"),
-  createdAt: timestamp("created_at", { withTimezone: true })
-    .default(sql`CURRENT_TIMESTAMP`)
-    .notNull(),
-});
-
-/**
- * Email send log
- * Track all email send attempts for monitoring and debugging
- */
-export const emailSendLog = createTable("email_send_log", {
-  id: serial("id").primaryKey(),
-  contactId: integer("contact_id"), // References contacts.id - links to master CRM
-  scheduledEmailId: integer("scheduled_email_id"), // References scheduled_emails.id (null if not from sequence)
-  recipientEmail: varchar("recipient_email", { length: 255 }).notNull(),
-  recipientName: varchar("recipient_name", { length: 255 }),
-  subject: varchar("subject", { length: 255 }).notNull(),
-  provider: varchar("provider", { length: 50 }).notNull(), // mailjet, sendgrid, resend, etc.
-  status: varchar("status", { length: 50 }).notNull(), // success, failed, rate_limited
-  providerResponse: jsonb("provider_response"), // Store provider's response for debugging
-  error: text("error"),
-  sentAt: timestamp("sent_at", { withTimezone: true })
-    .default(sql`CURRENT_TIMESTAMP`)
-    .notNull(),
-});
-
-/**
- * Rate limit tracking
- * Monitor email sends to avoid hitting provider limits
- */
-export const rateLimitTracker = createTable("rate_limit_tracker", {
-  id: serial("id").primaryKey(),
-  provider: varchar("provider", { length: 50 }).notNull(), // mailjet, sendgrid, etc.
-  period: varchar("period", { length: 20 }).notNull(), // daily, monthly, hourly
-  periodStart: timestamp("period_start", { withTimezone: true }).notNull(),
-  emailCount: integer("email_count").default(0).notNull(),
-  limit: integer("limit").notNull(), // The max allowed for this period
-  createdAt: timestamp("created_at", { withTimezone: true })
-    .default(sql`CURRENT_TIMESTAMP`)
-    .notNull(),
-  updatedAt: timestamp("updated_at", { withTimezone: true })
-    .default(sql`CURRENT_TIMESTAMP`)
-    .$onUpdate(() => new Date()),
 });

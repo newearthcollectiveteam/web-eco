@@ -455,35 +455,22 @@ export function TestHomePage() {
                 </div>
                 <p className="mb-4 flex-1 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
                   Production-ready community landing page with shader hero,
-                  waitlist form, and launch party info. Includes dedicated launch
-                  party page.
+                  waitlist form, and launch party info. Includes navigation to
+                  dedicated launch party page.
                 </p>
-
-                {/* Two buttons side by side */}
-                <div className="mb-4 flex gap-2">
-                  <button
-                    onClick={() => router.push("/community")}
-                    className="flex flex-1 items-center justify-center gap-2 rounded-lg border-2 border-[#10b981]/30 bg-[#10b981]/10 px-4 py-2.5 text-sm font-medium text-[#059669] transition-all hover:border-[#10b981]/50 hover:bg-[#10b981]/20 dark:text-[#10b981]"
-                  >
-                    <Users className="h-4 w-4" />
-                    <span>Community</span>
-                  </button>
-                  <button
-                    onClick={() => router.push("/launch-party")}
-                    className="flex flex-1 items-center justify-center gap-2 rounded-lg border-2 border-[#facf39]/30 bg-[#facf39]/10 px-4 py-2.5 text-sm font-medium text-[#facf39] transition-all hover:border-[#facf39]/50 hover:bg-[#facf39]/20"
-                  >
-                    <Sparkles className="h-4 w-4" />
-                    <span>Launch Party</span>
-                  </button>
-                </div>
 
                 <div className="flex items-center justify-between">
                   <Badge className="bg-[#10b981]/10 text-[#10b981] dark:bg-[#10b981]/20">
                     Production Ready
                   </Badge>
-                  <div className="text-xs text-neutral-500 dark:text-neutral-400">
-                    Golden Palette Only
-                  </div>
+                  <button
+                    onClick={() => router.push("/community")}
+                    className="flex items-center gap-2 text-sm font-medium transition-colors hover:opacity-80"
+                    style={{ color: "#10b981" }}
+                  >
+                    <span>View Site</span>
+                    <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                  </button>
                 </div>
               </CardContent>
             </Card>

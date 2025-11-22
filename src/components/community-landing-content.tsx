@@ -183,6 +183,40 @@ export function CommunityLandingContent() {
           </Button>
         </section>
 
+        {/* Video Section */}
+        <section className="mb-20">
+          <Card className="overflow-hidden border-2 border-[#facf39]/20 bg-black/60 dark:bg-black/80 shadow-2xl backdrop-blur-md">
+            <CardContent className="p-0">
+              <div className="relative aspect-video w-full">
+                <video
+                  controls
+                  className="h-full w-full"
+                  poster="/brand/symbol.svg"
+                  preload="metadata"
+                >
+                  <source
+                    src="https://www.dropbox.com/scl/fi/ebnkujkyjau0awt5nsor6/A-New-earth_video-essay_V2.mp3.mp4?rlkey=vqgjoz2lgs30m1ayqta23my5m&raw=1"
+                    type="video/mp4"
+                  />
+                  Your browser does not support the video tag.
+                </video>
+              </div>
+              <div className="p-6">
+                <h3
+                  className="mb-2 text-xl font-bold text-white"
+                  style={{ fontFamily: "Bourton, sans-serif" }}
+                >
+                  A Vision for the New Earth
+                </h3>
+                <p className="text-sm text-neutral-300 dark:text-neutral-300">
+                  Discover the vision behind our community and what we're
+                  building together.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        </section>
+
         {/* You're Not Alone Section */}
         <section className="mb-20">
           <Card className="border-2 border-[#facf39]/20 bg-black/60 dark:bg-black/80 shadow-2xl backdrop-blur-md">

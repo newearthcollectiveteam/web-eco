@@ -11,17 +11,17 @@ export function NewEarthHomePage() {
             <h1 className="bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-6xl font-bold text-transparent dark:from-violet-400 dark:to-purple-400">
               New Earth Collective
             </h1>
-            <p className="text-muted-foreground text-2xl">
-              Coming Soon
-            </p>
+            <p className="text-muted-foreground text-2xl">Coming Soon</p>
 
             <Card className="border-violet-200 dark:border-violet-800/50">
               <CardContent className="p-8">
                 <p className="text-muted-foreground text-lg leading-relaxed">
-                  We&apos;re building something special. This space is currently under development.
+                  We&apos;re building something special. This space is currently
+                  under development.
                   <br />
                   <br />
-                  Check back soon to discover our vision for community and consciousness.
+                  Check back soon to discover our vision for community and
+                  consciousness.
                 </p>
               </CardContent>
             </Card>

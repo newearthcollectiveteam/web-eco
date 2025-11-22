@@ -29,7 +29,7 @@ export default function AuthCodeErrorPage() {
           </div>
 
           <Button asChild className="w-full bg-violet-600 hover:bg-violet-700">
-            <Link href="/admin/login">Return to Login</Link>
+            <Link href="/login">Return to Login</Link>
           </Button>
         </CardContent>
       </Card>

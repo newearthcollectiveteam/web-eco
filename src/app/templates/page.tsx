@@ -71,11 +71,18 @@ export default function TemplatesPage() {
                 />
               </div>
             </div>
-            <h1 className="text-6xl font-bold text-black dark:text-white" style={{ fontFamily: 'Airwaves, sans-serif', letterSpacing: '0.1em' }}>
+            <h1
+              className="text-6xl font-bold text-black dark:text-white"
+              style={{
+                fontFamily: "Airwaves, sans-serif",
+                letterSpacing: "0.1em",
+              }}
+            >
               Template Gallery
             </h1>
             <p className="mx-auto max-w-2xl text-xl text-neutral-600 dark:text-neutral-400">
-              Full-page templates for portfolios, startups, and business landing pages
+              Full-page templates for portfolios, startups, and business landing
+              pages
             </p>
             <div className="flex items-center justify-center gap-3">
               <Badge className="border-[#facf39]/40 bg-[#facf39]/10 text-[#facf39]">
@@ -93,43 +100,66 @@ export default function TemplatesPage() {
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
             {TEMPLATES.map((template) => {
               const Icon = template.icon;
-              const colorMap: Record<string, { gradient: string; border: string; badge: string; text: string }> = {
+              const colorMap: Record<
+                string,
+                {
+                  gradient: string;
+                  border: string;
+                  badge: string;
+                  text: string;
+                }
+              > = {
                 "cosmic-blue": {
                   gradient: "from-[#0891b2] to-[#06b6d4]",
                   border: "border-[#0891b2]/20 dark:border-[#0891b2]/30",
-                  badge: "bg-[#0891b2]/10 text-[#0891b2] dark:bg-[#0891b2]/20 dark:text-[#06b6d4]",
+                  badge:
+                    "bg-[#0891b2]/10 text-[#0891b2] dark:bg-[#0891b2]/20 dark:text-[#06b6d4]",
                   text: "#0891b2",
                 },
-                "emerald": {
+                emerald: {
                   gradient: "from-[#059669] to-[#10b981]",
                   border: "border-[#059669]/20 dark:border-[#059669]/30",
-                  badge: "bg-[#059669]/10 text-[#059669] dark:bg-[#059669]/20 dark:text-[#10b981]",
+                  badge:
+                    "bg-[#059669]/10 text-[#059669] dark:bg-[#059669]/20 dark:text-[#10b981]",
                   text: "#059669",
                 },
                 "cosmic-purple": {
                   gradient: "from-[#6d28d9] to-[#a855f7]",
                   border: "border-[#6d28d9]/20 dark:border-[#6d28d9]/30",
-                  badge: "bg-[#6d28d9]/10 text-[#6d28d9] dark:bg-[#6d28d9]/20 dark:text-[#a855f7]",
+                  badge:
+                    "bg-[#6d28d9]/10 text-[#6d28d9] dark:bg-[#6d28d9]/20 dark:text-[#a855f7]",
                   text: "#6d28d9",
                 },
                 "sunset-orange": {
                   gradient: "from-[#ea580c] to-[#f97316]",
                   border: "border-[#ea580c]/20 dark:border-[#ea580c]/30",
-                  badge: "bg-[#ea580c]/10 text-[#ea580c] dark:bg-[#ea580c]/20 dark:text-[#f97316]",
+                  badge:
+                    "bg-[#ea580c]/10 text-[#ea580c] dark:bg-[#ea580c]/20 dark:text-[#f97316]",
                   text: "#ea580c",
                 },
               };
-              const colors = colorMap[template.color] ?? colorMap["cosmic-blue"]!;
+              const colors =
+                colorMap[template.color] ?? colorMap["cosmic-blue"]!;
 
               return (
                 <Link key={template.id} href={template.href}>
-                  <Card className={`group flex h-full cursor-pointer flex-col border-2 transition-all duration-300 hover:scale-105 hover:shadow-2xl ${colors.border}`}>
+                  <Card
+                    className={`group flex h-full cursor-pointer flex-col border-2 transition-all duration-300 hover:scale-105 hover:shadow-2xl ${colors.border}`}
+                  >
                     <CardContent className="flex flex-1 flex-col p-6">
                       <div className="mb-4 flex-none">
-                        <div className={`mb-3 flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br ${colors.gradient} shadow-lg`}>
+                        <div
+                          className={`mb-3 flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br ${colors.gradient} shadow-lg`}
+                        >
                           <Icon className="h-7 w-7 text-white" />
                         </div>
-                        <h3 className="text-xl font-bold text-black dark:text-white" style={{ fontFamily: 'Airwaves, sans-serif', letterSpacing: '0.05em' }}>
+                        <h3
+                          className="text-xl font-bold text-black dark:text-white"
+                          style={{
+                            fontFamily: "Airwaves, sans-serif",
+                            letterSpacing: "0.05em",
+                          }}
+                        >
                           {template.title}
                         </h3>
                       </div>
@@ -147,7 +177,10 @@ export default function TemplatesPage() {
                             </Badge>
                           ))}
                         </div>
-                        <div className="flex items-center gap-2 text-sm font-medium transition-colors" style={{ color: colors.text }}>
+                        <div
+                          className="flex items-center gap-2 text-sm font-medium transition-colors"
+                          style={{ color: colors.text }}
+                        >
                           <ExternalLink className="h-4 w-4" />
                           <span>Open Template</span>
                         </div>
@@ -172,11 +205,18 @@ export default function TemplatesPage() {
                   />
                 </div>
                 <div className="text-left">
-                  <h3 className="mb-2 text-xl font-bold text-black dark:text-white" style={{ fontFamily: 'Airwaves, sans-serif', letterSpacing: '0.05em' }}>
+                  <h3
+                    className="mb-2 text-xl font-bold text-black dark:text-white"
+                    style={{
+                      fontFamily: "Airwaves, sans-serif",
+                      letterSpacing: "0.05em",
+                    }}
+                  >
                     Template Information
                   </h3>
                   <p className="text-sm text-neutral-600 dark:text-neutral-400">
-                    All templates open in a new window for immersive full-page previews. Built with Next.js, TypeScript, and Tailwind CSS.
+                    All templates open in a new window for immersive full-page
+                    previews. Built with Next.js, TypeScript, and Tailwind CSS.
                   </p>
                 </div>
               </div>

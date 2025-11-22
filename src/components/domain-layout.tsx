@@ -2,6 +2,7 @@
 
 import { getDomainConfig } from "~/lib/domains";
 import { ThemeToggle } from "./theme-toggle";
+import { SignOutButton } from "./auth/signout-button";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -11,13 +12,19 @@ interface DomainLayoutProps {
   footerClassName?: string;
 }
 
-export function DomainLayout({ children, headerClassName, footerClassName }: DomainLayoutProps) {
+export function DomainLayout({
+  children,
+  headerClassName,
+  footerClassName,
+}: DomainLayoutProps) {
   // Use test domain configuration
   const domainConfig = getDomainConfig("test.joinnewearthcollective.com");
 
   // Default header/footer styles
-  const defaultHeaderClass = "border-b border-black/10 bg-white/80 backdrop-blur-sm dark:border-white/10 dark:bg-black/80";
-  const defaultFooterClass = "mt-auto border-t border-black/10 bg-white/80 backdrop-blur-sm dark:border-white/10 dark:bg-black/80";
+  const defaultHeaderClass =
+    "border-b border-black/10 bg-white/80 backdrop-blur-sm dark:border-white/10 dark:bg-black/80";
+  const defaultFooterClass =
+    "mt-auto border-t border-black/10 bg-white/80 backdrop-blur-sm dark:border-white/10 dark:bg-black/80";
 
   return (
     <div
@@ -32,10 +39,7 @@ export function DomainLayout({ children, headerClassName, footerClassName }: Dom
         <div className="container mx-auto flex h-16 items-center px-4">
           {/* Left side: Logo */}
           <div className="flex flex-1 items-center">
-            <Link
-              href="/"
-              className="flex items-center space-x-3"
-            >
+            <Link href="/" className="flex items-center space-x-3">
               <div className="relative h-8 w-8">
                 <Image
                   src="/brand/symbol.svg"
@@ -44,7 +48,13 @@ export function DomainLayout({ children, headerClassName, footerClassName }: Dom
                   className="object-contain"
                 />
               </div>
-              <span className="text-xl font-bold text-black dark:text-white" style={{ fontFamily: 'Airwaves, sans-serif', letterSpacing: '0.05em' }}>
+              <span
+                className="text-xl font-bold text-black dark:text-white"
+                style={{
+                  fontFamily: "Airwaves, sans-serif",
+                  letterSpacing: "0.05em",
+                }}
+              >
                 New Earth Collective
               </span>
             </Link>
@@ -63,8 +73,9 @@ export function DomainLayout({ children, headerClassName, footerClassName }: Dom
             ))}
           </nav>
 
-          {/* Right side: Theme Toggle */}
-          <div className="flex flex-1 items-center justify-end">
+          {/* Right side: Sign Out & Theme Toggle */}
+          <div className="flex flex-1 items-center justify-end gap-3">
+            <SignOutButton />
             <ThemeToggle />
           </div>
         </div>
@@ -86,19 +97,34 @@ export function DomainLayout({ children, headerClassName, footerClassName }: Dom
                   className="object-contain"
                 />
               </div>
-              <span className="text-lg font-bold text-black dark:text-white" style={{ fontFamily: 'Airwaves, sans-serif', letterSpacing: '0.05em' }}>
+              <span
+                className="text-lg font-bold text-black dark:text-white"
+                style={{
+                  fontFamily: "Airwaves, sans-serif",
+                  letterSpacing: "0.05em",
+                }}
+              >
                 New Earth Collective
               </span>
             </div>
-            <p className="text-sm text-neutral-600 dark:text-neutral-400" style={{ fontFamily: 'Bourton, sans-serif', color: '#facf39' }}>
+            <p
+              className="text-sm text-neutral-600 dark:text-neutral-400"
+              style={{ fontFamily: "Bourton, sans-serif", color: "#facf39" }}
+            >
               {domainConfig.tagline}
             </p>
             <div className="flex space-x-6 text-sm text-neutral-600 dark:text-neutral-400">
               <span>© 2025</span>
-              <Link href="/privacy" className="transition-colors hover:text-[#facf39]">
+              <Link
+                href="/privacy"
+                className="transition-colors hover:text-[#facf39]"
+              >
                 Privacy
               </Link>
-              <Link href="/terms" className="transition-colors hover:text-[#facf39]">
+              <Link
+                href="/terms"
+                className="transition-colors hover:text-[#facf39]"
+              >
                 Terms
               </Link>
             </div>

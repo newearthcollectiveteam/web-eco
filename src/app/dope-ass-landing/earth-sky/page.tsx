@@ -51,7 +51,7 @@ export default function EarthSkyLandingPage() {
           <iframe
             src="/shaders/flower-of-life/embed"
             className="h-full w-full border-0"
-            style={{ pointerEvents: 'none' }}
+            style={{ pointerEvents: "none" }}
           />
         </div>
 
@@ -80,7 +80,7 @@ export default function EarthSkyLandingPage() {
             </Badge>
             <h1
               className="mb-4 text-7xl font-bold text-white drop-shadow-2xl"
-              style={{ fontFamily: 'Bourton, sans-serif' }}
+              style={{ fontFamily: "Bourton, sans-serif" }}
             >
               EARTH TO SKY
               <br />
@@ -98,25 +98,27 @@ export default function EarthSkyLandingPage() {
             <CardContent className="p-8">
               <div className="mb-4 flex items-center justify-center gap-2 text-[#facf39]">
                 <Clock className="h-5 w-5" />
-                <span className="text-sm font-semibold uppercase tracking-wider">Launch Countdown</span>
+                <span className="text-sm font-semibold tracking-wider uppercase">
+                  Launch Countdown
+                </span>
               </div>
               <div className="grid grid-cols-4 gap-4">
                 {[
-                  { label: 'Days', value: timeLeft.days },
-                  { label: 'Hours', value: timeLeft.hours },
-                  { label: 'Minutes', value: timeLeft.minutes },
-                  { label: 'Seconds', value: timeLeft.seconds },
+                  { label: "Days", value: timeLeft.days },
+                  { label: "Hours", value: timeLeft.hours },
+                  { label: "Minutes", value: timeLeft.minutes },
+                  { label: "Seconds", value: timeLeft.seconds },
                 ].map((item) => (
                   <div key={item.label} className="flex flex-col items-center">
                     <div className="mb-2 flex h-20 w-20 items-center justify-center rounded-xl bg-gradient-to-br from-[#facf39] to-[#f59e0b] shadow-lg">
                       <span
                         className="text-3xl font-bold text-black"
-                        style={{ fontFamily: 'Bourton, sans-serif' }}
+                        style={{ fontFamily: "Bourton, sans-serif" }}
                       >
-                        {String(item.value).padStart(2, '0')}
+                        {String(item.value).padStart(2, "0")}
                       </span>
                     </div>
-                    <span className="text-xs font-semibold uppercase tracking-wider text-neutral-400">
+                    <span className="text-xs font-semibold tracking-wider text-neutral-400 uppercase">
                       {item.label}
                     </span>
                   </div>
@@ -129,7 +131,10 @@ export default function EarthSkyLandingPage() {
           <Button
             size="lg"
             className="group bg-gradient-to-r from-[#facf39] to-[#f59e0b] px-8 py-6 text-lg font-bold text-black shadow-2xl transition-all hover:scale-105 hover:shadow-[#facf39]/50"
-            style={{ fontFamily: 'Airwaves, sans-serif', letterSpacing: '0.05em' }}
+            style={{
+              fontFamily: "Airwaves, sans-serif",
+              letterSpacing: "0.05em",
+            }}
           >
             Notify Me
             <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />

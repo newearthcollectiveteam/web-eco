@@ -171,7 +171,8 @@ export default function ShaderPage() {
               The Way
             </h1>
             <p className="text-xl text-white/80">
-              A journey through flowing light, spiraling paths, and infinite consciousness
+              A journey through flowing light, spiraling paths, and infinite
+              consciousness
             </p>
           </div>
         </div>

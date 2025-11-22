@@ -23,19 +23,23 @@ export function JoinCommunity1Content() {
         </div>
         <h1
           className="mb-4 text-6xl font-bold text-white drop-shadow-2xl md:text-7xl"
-          style={{ fontFamily: 'Bourton, sans-serif' }}
+          style={{ fontFamily: "Bourton, sans-serif" }}
         >
           THE NEW EARTH
           <br />
           COLLECTIVE
         </h1>
-        <p className="mx-auto mb-8 max-w-2xl text-2xl italic text-neutral-300">
-          A global sanctuary for awakened souls ready to connect, co-create, and rise together.
+        <p className="mx-auto mb-8 max-w-2xl text-2xl text-neutral-300 italic">
+          A global sanctuary for awakened souls ready to connect, co-create, and
+          rise together.
         </p>
         <Button
           size="lg"
           className="group bg-gradient-to-r from-[#facf39] to-[#f59e0b] px-8 py-6 text-lg font-bold text-black shadow-2xl transition-all hover:scale-105 hover:shadow-[#facf39]/50"
-          style={{ fontFamily: 'Airwaves, sans-serif', letterSpacing: '0.05em' }}
+          style={{
+            fontFamily: "Airwaves, sans-serif",
+            letterSpacing: "0.05em",
+          }}
         >
           Join the Waitlist
           <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
@@ -50,7 +54,7 @@ export function JoinCommunity1Content() {
               <Heart className="h-8 w-8 text-[#facf39]" />
               <h2
                 className="text-3xl font-bold text-white md:text-4xl"
-                style={{ fontFamily: 'Bourton, sans-serif' }}
+                style={{ fontFamily: "Bourton, sans-serif" }}
               >
                 You&apos;re Not Alone. You&apos;re Early.
               </h2>
@@ -58,22 +62,26 @@ export function JoinCommunity1Content() {
             <div className="space-y-4 text-lg leading-relaxed text-neutral-300">
               <p>The world has changed. You feel it.</p>
               <p>
-                You&apos;ve started waking up. You see through the old systems. You crave real
-                connection and a place to belong.
+                You&apos;ve started waking up. You see through the old systems.
+                You crave real connection and a place to belong.
               </p>
               <p className="font-semibold text-white">This is that place.</p>
               <p>
-                The <span className="text-[#facf39]">New Earth Collective</span> is a
-                grounded, heart-led digital community built for people on the path of
-                awakening. A space to meet others who get it, share your truth, and be
-                supported while stepping into the next version of you.
+                The <span className="text-[#facf39]">New Earth Collective</span>{" "}
+                is a grounded, heart-led digital community built for people on
+                the path of awakening. A space to meet others who get it, share
+                your truth, and be supported while stepping into the next
+                version of you.
               </p>
             </div>
             <div className="mt-8">
               <Button
                 size="lg"
                 className="w-full bg-gradient-to-r from-[#facf39] to-[#f59e0b] font-bold text-black transition-all hover:scale-105 md:w-auto"
-                style={{ fontFamily: 'Airwaves, sans-serif', letterSpacing: '0.05em' }}
+                style={{
+                  fontFamily: "Airwaves, sans-serif",
+                  letterSpacing: "0.05em",
+                }}
               >
                 Be First In Line
                 <ArrowRight className="ml-2 h-5 w-5" />
@@ -91,24 +99,26 @@ export function JoinCommunity1Content() {
               <Users className="h-8 w-8 text-[#facf39]" />
               <h2
                 className="text-3xl font-bold text-white md:text-4xl"
-                style={{ fontFamily: 'Bourton, sans-serif' }}
+                style={{ fontFamily: "Bourton, sans-serif" }}
               >
                 What Is the New Earth Collective?
               </h2>
             </div>
             <p className="mb-6 text-lg leading-relaxed text-neutral-300">
-              An online Skool community where seekers, healers, creatives, and conscious
-              humans gather to grow and serve—together.
+              An online Skool community where seekers, healers, creatives, and
+              conscious humans gather to grow and serve—together.
             </p>
             <div className="mb-6">
-              <p className="mb-4 text-lg font-semibold text-white">Inside, you&apos;ll find:</p>
+              <p className="mb-4 text-lg font-semibold text-white">
+                Inside, you&apos;ll find:
+              </p>
               <ul className="space-y-3">
                 {[
-                  'Weekly community calls to connect and be seen',
-                  'Bi-weekly men&apos;s and women&apos;s circles',
-                  'Relationship coaching calls for real partnership',
-                  'Guided breathwork, meditations, astrology & more',
-                  'A space to offer your gifts and receive others&apos;',
+                  "Weekly community calls to connect and be seen",
+                  "Bi-weekly men&apos;s and women&apos;s circles",
+                  "Relationship coaching calls for real partnership",
+                  "Guided breathwork, meditations, astrology & more",
+                  "A space to offer your gifts and receive others&apos;",
                 ].map((item, index) => (
                   <li key={index} className="flex items-start gap-3">
                     <Sparkles className="mt-1 h-5 w-5 shrink-0 text-[#facf39]" />
@@ -117,13 +127,16 @@ export function JoinCommunity1Content() {
                 ))}
               </ul>
             </div>
-            <p className="mb-8 text-lg font-semibold italic text-white">
+            <p className="mb-8 text-lg font-semibold text-white italic">
               It&apos;s not just content. It&apos;s connection.
             </p>
             <Button
               size="lg"
               className="w-full bg-gradient-to-r from-[#facf39] to-[#f59e0b] font-bold text-black transition-all hover:scale-105 md:w-auto"
-              style={{ fontFamily: 'Airwaves, sans-serif', letterSpacing: '0.05em' }}
+              style={{
+                fontFamily: "Airwaves, sans-serif",
+                letterSpacing: "0.05em",
+              }}
             >
               Save Your Spot
               <ArrowRight className="ml-2 h-5 w-5" />
@@ -140,7 +153,7 @@ export function JoinCommunity1Content() {
               <Star className="h-8 w-8 text-[#facf39]" />
               <h2
                 className="text-3xl font-bold text-white md:text-4xl"
-                style={{ fontFamily: 'Bourton, sans-serif' }}
+                style={{ fontFamily: "Bourton, sans-serif" }}
               >
                 Become a Founding Member
               </h2>
@@ -150,16 +163,21 @@ export function JoinCommunity1Content() {
                 The first 100 members get free lifetime access to everything.
               </p>
               <p>
-                After that, it becomes $20/month, and will rise as the community grows.
+                After that, it becomes $20/month, and will rise as the community
+                grows.
               </p>
               <p className="font-semibold text-white">
-                Act now, and you become a foundational part of something designed to last.
+                Act now, and you become a foundational part of something
+                designed to last.
               </p>
             </div>
             <Button
               size="lg"
               className="w-full bg-gradient-to-r from-[#facf39] to-[#f59e0b] font-bold text-black shadow-lg transition-all hover:scale-105"
-              style={{ fontFamily: 'Airwaves, sans-serif', letterSpacing: '0.05em' }}
+              style={{
+                fontFamily: "Airwaves, sans-serif",
+                letterSpacing: "0.05em",
+              }}
             >
               Claim Lifetime Access
               <Star className="ml-2 h-5 w-5" />
@@ -176,7 +194,7 @@ export function JoinCommunity1Content() {
               <Zap className="h-8 w-8 text-[#facf39]" />
               <h2
                 className="text-3xl font-bold text-white md:text-4xl"
-                style={{ fontFamily: 'Bourton, sans-serif' }}
+                style={{ fontFamily: "Bourton, sans-serif" }}
               >
                 Why This, Why Now?
               </h2>
@@ -185,8 +203,8 @@ export function JoinCommunity1Content() {
               <p>Because awakening alone is hard.</p>
               <p>Because your voice, gifts, and presence matter.</p>
               <p>
-                Because the world needs communities built on truth, connection, and mutual
-                support.
+                Because the world needs communities built on truth, connection,
+                and mutual support.
               </p>
               <p className="text-xl font-bold text-white">
                 This isn&apos;t just a group. It&apos;s a movement.
@@ -196,7 +214,10 @@ export function JoinCommunity1Content() {
               <Button
                 size="lg"
                 className="w-full bg-gradient-to-r from-[#facf39] to-[#f59e0b] font-bold text-black transition-all hover:scale-105 md:w-auto"
-                style={{ fontFamily: 'Airwaves, sans-serif', letterSpacing: '0.05em' }}
+                style={{
+                  fontFamily: "Airwaves, sans-serif",
+                  letterSpacing: "0.05em",
+                }}
               >
                 Join the Movement
                 <ArrowRight className="ml-2 h-5 w-5" />
@@ -212,16 +233,16 @@ export function JoinCommunity1Content() {
           <CardContent className="p-8 md:p-12">
             <h2
               className="mb-6 text-3xl font-bold text-white md:text-4xl"
-              style={{ fontFamily: 'Bourton, sans-serif' }}
+              style={{ fontFamily: "Bourton, sans-serif" }}
             >
               Who Is This For?
             </h2>
             <ul className="mb-8 space-y-3">
               {[
-                'The seekers who feel like outsiders',
-                'The newly awakened looking for direction',
-                'The empaths and artists ready to be seen',
-                'The quiet leaders who know they came here for more',
+                "The seekers who feel like outsiders",
+                "The newly awakened looking for direction",
+                "The empaths and artists ready to be seen",
+                "The quiet leaders who know they came here for more",
               ].map((item, index) => (
                 <li key={index} className="flex items-start gap-3">
                   <Sparkles className="mt-1 h-5 w-5 shrink-0 text-[#facf39]" />
@@ -235,7 +256,10 @@ export function JoinCommunity1Content() {
             <Button
               size="lg"
               className="w-full bg-gradient-to-r from-[#facf39] to-[#f59e0b] font-bold text-black transition-all hover:scale-105 md:w-auto"
-              style={{ fontFamily: 'Airwaves, sans-serif', letterSpacing: '0.05em' }}
+              style={{
+                fontFamily: "Airwaves, sans-serif",
+                letterSpacing: "0.05em",
+              }}
             >
               Enter the Portal
               <ArrowRight className="ml-2 h-5 w-5" />
@@ -247,8 +271,8 @@ export function JoinCommunity1Content() {
       {/* Final CTA */}
       <section className="text-center">
         <p
-          className="mb-6 text-2xl italic text-neutral-300"
-          style={{ fontFamily: 'Bourton, sans-serif' }}
+          className="mb-6 text-2xl text-neutral-300 italic"
+          style={{ fontFamily: "Bourton, sans-serif" }}
         >
           The New Earth is here. Let&apos;s build it together.
         </p>

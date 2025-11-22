@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { useAuth } from '~/lib/auth/hooks';
-import { ProtectedRoute } from '~/components/auth/protected-route';
-import { SignOutButton } from '~/components/auth/signout-button';
-import Image from 'next/image';
-import { Mail, IdCard, Calendar, Shield, LogIn } from 'lucide-react';
-import { Badge } from '~/components/ui/badge';
+import { useAuth } from "~/lib/auth/hooks";
+import { ProtectedRoute } from "~/components/auth/protected-route";
+import { SignOutButton } from "~/components/auth/signout-button";
+import Image from "next/image";
+import { Mail, IdCard, Calendar, Shield, LogIn } from "lucide-react";
+import { Badge } from "~/components/ui/badge";
 
 function ProfileContent() {
   const { user } = useAuth();
@@ -31,7 +31,10 @@ function ProfileContent() {
           </div>
           <h1
             className="mb-4 text-4xl font-bold text-black dark:text-white"
-            style={{ fontFamily: 'Airwaves, sans-serif', letterSpacing: '0.05em' }}
+            style={{
+              fontFamily: "Airwaves, sans-serif",
+              letterSpacing: "0.05em",
+            }}
           >
             Profile
           </h1>
@@ -45,12 +48,15 @@ function ProfileContent() {
           <div className="mb-8 flex items-center justify-between border-b border-neutral-200 pb-6 dark:border-neutral-800">
             <h2
               className="text-2xl font-bold text-black dark:text-white"
-              style={{ fontFamily: 'Airwaves, sans-serif', letterSpacing: '0.05em' }}
+              style={{
+                fontFamily: "Airwaves, sans-serif",
+                letterSpacing: "0.05em",
+              }}
             >
               Account Information
             </h2>
             <Badge className="bg-[#facf39]/10 text-[#facf39] dark:bg-[#facf39]/20">
-              {user.email_confirmed_at ? 'Verified' : 'Pending'}
+              {user.email_confirmed_at ? "Verified" : "Pending"}
             </Badge>
           </div>
 
@@ -95,10 +101,10 @@ function ProfileContent() {
                   Account Created
                 </label>
                 <p className="mt-1 text-base font-semibold text-black dark:text-white">
-                  {new Date(user.created_at).toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
+                  {new Date(user.created_at).toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
                   })}
                 </p>
               </div>
@@ -116,16 +122,16 @@ function ProfileContent() {
                 <p className="mt-1 text-base font-semibold text-black dark:text-white">
                   {user.last_sign_in_at
                     ? new Date(user.last_sign_in_at).toLocaleDateString(
-                        'en-US',
+                        "en-US",
                         {
-                          year: 'numeric',
-                          month: 'long',
-                          day: 'numeric',
-                          hour: '2-digit',
-                          minute: '2-digit',
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                          hour: "2-digit",
+                          minute: "2-digit",
                         }
                       )
-                    : 'Never'}
+                    : "Never"}
                 </p>
               </div>
             </div>
@@ -142,11 +148,11 @@ function ProfileContent() {
                   </label>
                   <p className="mt-1 text-base font-semibold text-[#facf39]">
                     {new Date(user.email_confirmed_at).toLocaleDateString(
-                      'en-US',
+                      "en-US",
                       {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric',
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
                       }
                     )}
                   </p>

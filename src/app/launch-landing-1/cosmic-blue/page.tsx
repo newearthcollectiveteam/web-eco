@@ -12,7 +12,7 @@ export default function CosmicBlueLaunchLanding1Page() {
     seconds: 0,
   });
 
-  const targetDate = new Date('2025-12-20T12:00:00');
+  const targetDate = new Date("2025-12-20T12:00:00");
 
   useEffect(() => {
     const calculateTimeLeft = () => {
@@ -38,7 +38,11 @@ export default function CosmicBlueLaunchLanding1Page() {
     >
       <div className="relative min-h-screen overflow-hidden bg-[#0891b2]">
         <div className="absolute inset-0 opacity-15">
-          <iframe src="/shaders/flower-of-life/embed" className="h-full w-full border-0" style={{ pointerEvents: 'none' }} />
+          <iframe
+            src="/shaders/flower-of-life/embed"
+            className="h-full w-full border-0"
+            style={{ pointerEvents: "none" }}
+          />
         </div>
         <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/40" />
         <div className="relative z-10 px-4 py-16">

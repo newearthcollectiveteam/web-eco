@@ -82,11 +82,18 @@ export default function ShadersPage() {
                 />
               </div>
             </div>
-            <h1 className="mb-4 text-6xl font-bold text-black dark:text-white" style={{ fontFamily: 'Airwaves, sans-serif', letterSpacing: '0.1em' }}>
+            <h1
+              className="mb-4 text-6xl font-bold text-black dark:text-white"
+              style={{
+                fontFamily: "Airwaves, sans-serif",
+                letterSpacing: "0.1em",
+              }}
+            >
               GLSL Shaders
             </h1>
             <p className="mx-auto mb-6 max-w-2xl text-xl text-neutral-600 dark:text-neutral-400">
-              Explore beautiful WebGL shader animations powered by GLSL in Shadertoy format
+              Explore beautiful WebGL shader animations powered by GLSL in
+              Shadertoy format
             </p>
             <div className="flex items-center justify-center gap-3">
               <Badge className="border-[#facf39]/40 bg-[#facf39]/10 text-[#facf39]">
@@ -145,24 +152,38 @@ export default function ShadersPage() {
                 },
               };
 
-              const colors = colorMap[shader.color] ?? colorMap["cosmic-purple"]!;
+              const colors =
+                colorMap[shader.color] ?? colorMap["cosmic-purple"]!;
 
               return (
                 <Link key={shader.id} href={shader.href}>
-                  <Card className={`group flex h-full cursor-pointer flex-col border-2 transition-all duration-300 hover:scale-105 hover:shadow-2xl ${colors.border}`}>
+                  <Card
+                    className={`group flex h-full cursor-pointer flex-col border-2 transition-all duration-300 hover:scale-105 hover:shadow-2xl ${colors.border}`}
+                  >
                     <CardContent className="flex flex-1 flex-col p-6">
                       <div className="mb-4 flex flex-none items-center gap-3">
-                        <div className={`flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br ${colors.gradient} shadow-lg`}>
+                        <div
+                          className={`flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br ${colors.gradient} shadow-lg`}
+                        >
                           <Sparkles className="h-6 w-6 text-white" />
                         </div>
-                        <h3 className="text-xl font-bold text-black dark:text-white" style={{ fontFamily: 'Airwaves, sans-serif', letterSpacing: '0.05em' }}>
+                        <h3
+                          className="text-xl font-bold text-black dark:text-white"
+                          style={{
+                            fontFamily: "Airwaves, sans-serif",
+                            letterSpacing: "0.05em",
+                          }}
+                        >
                           {shader.title}
                         </h3>
                       </div>
                       <p className="mb-4 flex-1 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
                         {shader.description}
                       </p>
-                      <div className="flex items-center gap-2 text-sm font-medium transition-colors" style={{ color: colors.text }}>
+                      <div
+                        className="flex items-center gap-2 text-sm font-medium transition-colors"
+                        style={{ color: colors.text }}
+                      >
                         <span>Explore</span>
                         <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                       </div>
@@ -186,11 +207,18 @@ export default function ShadersPage() {
                   />
                 </div>
                 <div className="text-left">
-                  <h3 className="mb-2 text-xl font-bold text-black dark:text-white" style={{ fontFamily: 'Airwaves, sans-serif', letterSpacing: '0.05em' }}>
+                  <h3
+                    className="mb-2 text-xl font-bold text-black dark:text-white"
+                    style={{
+                      fontFamily: "Airwaves, sans-serif",
+                      letterSpacing: "0.05em",
+                    }}
+                  >
                     About These Shaders
                   </h3>
                   <p className="text-sm text-neutral-600 dark:text-neutral-400">
-                    Interactive GLSL shader animations rendered in real-time using WebGL technology.
+                    Interactive GLSL shader animations rendered in real-time
+                    using WebGL technology.
                   </p>
                 </div>
               </div>

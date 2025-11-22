@@ -11,6 +11,10 @@ export const env = createEnv({
     NODE_ENV: z
       .enum(["development", "test", "production"])
       .default("development"),
+    MAILJET_API_KEY: z.string().min(1, "Mailjet API key is required"),
+    MAILJET_SECRET_KEY: z.string().min(1, "Mailjet secret key is required"),
+    MAILJET_FROM_EMAIL: z.string().email("Valid sender email is required"),
+    MAILJET_FROM_NAME: z.string().min(1, "Sender name is required"),
   },
 
   /**
@@ -21,6 +25,7 @@ export const env = createEnv({
   client: {
     NEXT_PUBLIC_SUPABASE_URL: z.string().url(),
     NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().min(1),
+    NEXT_PUBLIC_BASE_URL: z.string().url(),
   },
 
   /**
@@ -32,6 +37,11 @@ export const env = createEnv({
     NODE_ENV: process.env.NODE_ENV,
     NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
     NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+    MAILJET_API_KEY: process.env.MAILJET_API_KEY,
+    MAILJET_SECRET_KEY: process.env.MAILJET_SECRET_KEY,
+    MAILJET_FROM_EMAIL: process.env.MAILJET_FROM_EMAIL,
+    MAILJET_FROM_NAME: process.env.MAILJET_FROM_NAME,
+    NEXT_PUBLIC_BASE_URL: process.env.NEXT_PUBLIC_BASE_URL,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially

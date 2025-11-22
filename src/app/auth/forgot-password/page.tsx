@@ -1,13 +1,13 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { createClient } from '~/lib/supabase/client';
-import Link from 'next/link';
-import Image from 'next/image';
-import { Mail, CheckCircle } from 'lucide-react';
+import { useState } from "react";
+import { createClient } from "~/lib/supabase/client";
+import Link from "next/link";
+import Image from "next/image";
+import { Mail, CheckCircle } from "lucide-react";
 
 export default function ForgotPasswordPage() {
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -33,7 +33,7 @@ export default function ForgotPasswordPage() {
       setSuccess(true);
       setLoading(false);
     } catch {
-      setError('An unexpected error occurred');
+      setError("An unexpected error occurred");
       setLoading(false);
     }
   };
@@ -49,17 +49,21 @@ export default function ForgotPasswordPage() {
               </div>
               <h2
                 className="text-2xl font-bold text-black dark:text-white"
-                style={{ fontFamily: 'Airwaves, sans-serif', letterSpacing: '0.05em' }}
+                style={{
+                  fontFamily: "Airwaves, sans-serif",
+                  letterSpacing: "0.05em",
+                }}
               >
                 Check your email
               </h2>
               <p className="mt-2 text-sm text-neutral-600 dark:text-neutral-400">
-                We&apos;ve sent a password reset link to <strong>{email}</strong>.
-                Please check your email and follow the instructions to reset your password.
+                We&apos;ve sent a password reset link to{" "}
+                <strong>{email}</strong>. Please check your email and follow the
+                instructions to reset your password.
               </p>
               <div className="mt-6">
                 <Link
-                  href="/admin/login"
+                  href="/login"
                   className="text-sm font-medium text-[#facf39] transition-colors hover:text-[#ffe067]"
                 >
                   Return to login
@@ -89,12 +93,16 @@ export default function ForgotPasswordPage() {
             </div>
             <h1
               className="text-3xl font-bold text-black dark:text-white"
-              style={{ fontFamily: 'Airwaves, sans-serif', letterSpacing: '0.05em' }}
+              style={{
+                fontFamily: "Airwaves, sans-serif",
+                letterSpacing: "0.05em",
+              }}
             >
               Forgot your password?
             </h1>
             <p className="mt-2 text-sm text-neutral-600 dark:text-neutral-400">
-              Enter your email address and we&apos;ll send you a link to reset your password
+              Enter your email address and we&apos;ll send you a link to reset
+              your password
             </p>
           </div>
 
@@ -126,7 +134,7 @@ export default function ForgotPasswordPage() {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="block w-full rounded-md border border-neutral-300 bg-white py-2 pl-10 pr-3 shadow-sm transition-colors focus:border-[#facf39] focus:outline-none focus:ring-2 focus:ring-[#facf39]/20 dark:border-neutral-700 dark:bg-neutral-900 dark:text-white dark:focus:border-[#facf39] sm:text-sm"
+                  className="block w-full rounded-md border border-neutral-300 bg-white py-2 pr-3 pl-10 shadow-sm transition-colors focus:border-[#facf39] focus:ring-2 focus:ring-[#facf39]/20 focus:outline-none sm:text-sm dark:border-neutral-700 dark:bg-neutral-900 dark:text-white dark:focus:border-[#facf39]"
                   placeholder="you@example.com"
                 />
               </div>
@@ -135,15 +143,15 @@ export default function ForgotPasswordPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full rounded-md bg-[#facf39] px-4 py-2 text-sm font-semibold text-black shadow-sm transition-all hover:bg-[#ffe067] focus:outline-none focus:ring-2 focus:ring-[#facf39]/50 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:focus:ring-offset-black"
+              className="w-full rounded-md bg-[#facf39] px-4 py-2 text-sm font-semibold text-black shadow-sm transition-all hover:bg-[#ffe067] focus:ring-2 focus:ring-[#facf39]/50 focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 dark:focus:ring-offset-black"
             >
-              {loading ? 'Sending...' : 'Send reset link'}
+              {loading ? "Sending..." : "Send reset link"}
             </button>
           </form>
 
           <div className="mt-6 text-center">
             <Link
-              href="/admin/login"
+              href="/login"
               className="text-sm font-medium text-[#facf39] transition-colors hover:text-[#ffe067]"
             >
               Back to login

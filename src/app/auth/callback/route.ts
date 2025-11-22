@@ -5,7 +5,7 @@ export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get("code");
   const domain = searchParams.get("domain"); // Get domain from callback URL
-  const next = searchParams.get("next") ?? "/admin";
+  const next = searchParams.get("next") ?? "/onboarding";
 
   if (code) {
     const supabase = await createClient();

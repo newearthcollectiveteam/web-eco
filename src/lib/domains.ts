@@ -94,10 +94,10 @@ export function getDomainFromHeaders(headers: Headers): DomainValue {
 }
 
 /**
- * Check if current path is admin area
+ * Check if current path is login area
  */
-export function isAdminPath(pathname: string): boolean {
-  return pathname.startsWith("/admin");
+export function isLoginPath(pathname: string): boolean {
+  return pathname.startsWith("/login");
 }
 
 /**
@@ -106,5 +106,5 @@ export function isAdminPath(pathname: string): boolean {
 export const DEV_URLS = {
   main: "http://localhost:3000",
   test: "http://localhost:3000?domain=test.joinnewearthcollective.com",
-  admin: "http://localhost:3000/admin",
+  login: "http://localhost:3000/login",
 } as const;

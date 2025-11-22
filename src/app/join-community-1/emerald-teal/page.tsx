@@ -14,7 +14,7 @@ export default function EmeraldTealJoinCommunity1Page() {
           <iframe
             src="/shaders/flower-of-life/embed"
             className="h-full w-full border-0"
-            style={{ pointerEvents: 'none' }}
+            style={{ pointerEvents: "none" }}
           />
         </div>
         <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/40" />

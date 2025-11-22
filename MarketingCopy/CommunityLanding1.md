@@ -1,5 +1,5 @@
 **The New Earth Collective**
-*A global sanctuary for awakened souls ready to connect, co-create, and rise together.*
+_A global sanctuary for awakened souls ready to connect, co-create, and rise together._
 
 ---
 
@@ -23,11 +23,11 @@ An online Skool community where seekers, healers, creatives, and conscious human
 
 Inside, you’ll find:
 
-* Weekly community calls to connect and be seen
-* Bi-weekly men’s and women’s circles
-* Relationship coaching calls for real partnership
-* Guided breathwork, meditations, astrology & more
-* A space to offer your gifts and receive others'
+- Weekly community calls to connect and be seen
+- Bi-weekly men’s and women’s circles
+- Relationship coaching calls for real partnership
+- Guided breathwork, meditations, astrology & more
+- A space to offer your gifts and receive others'
 
 It’s not just content. It’s connection.
 
@@ -63,10 +63,10 @@ This isn’t just a group. It’s a movement.
 
 ### **Who Is This For?**
 
-* The seekers who feel like outsiders
-* The newly awakened looking for direction
-* The empaths and artists ready to be seen
-* The quiet leaders who know they came here for more
+- The seekers who feel like outsiders
+- The newly awakened looking for direction
+- The empaths and artists ready to be seen
+- The quiet leaders who know they came here for more
 
 If that’s you, this is your space.
 
@@ -74,4 +74,4 @@ If that’s you, this is your space.
 
 ---
 
-*The New Earth is here. Let’s build it together.*
+_The New Earth is here. Let’s build it together._

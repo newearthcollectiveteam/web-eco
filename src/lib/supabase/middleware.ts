@@ -38,5 +38,17 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  return { supabaseResponse, user };
+  // If user exists, check their approval status
+  let approvalStatus = null;
+  if (user) {
+    const { data: profile } = await supabase
+      .from("web-eco_user_profile")
+      .select("approval_status")
+      .eq("id", user.id)
+      .single();
+
+    approvalStatus = profile?.approval_status || null;
+  }
+
+  return { supabaseResponse, user, approvalStatus };
 }

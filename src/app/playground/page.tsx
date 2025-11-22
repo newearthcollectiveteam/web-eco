@@ -30,7 +30,13 @@ export default function PlaygroundPage() {
                 />
               </div>
             </div>
-            <h1 className="mb-4 text-6xl font-bold text-black dark:text-white" style={{ fontFamily: 'Airwaves, sans-serif', letterSpacing: '0.1em' }}>
+            <h1
+              className="mb-4 text-6xl font-bold text-black dark:text-white"
+              style={{
+                fontFamily: "Airwaves, sans-serif",
+                letterSpacing: "0.1em",
+              }}
+            >
               Component Playground
             </h1>
             <p className="mx-auto mb-6 max-w-2xl text-xl text-neutral-600 dark:text-neutral-400">
@@ -102,20 +108,33 @@ export default function PlaygroundPage() {
 
               return (
                 <Link key={item.id} href={item.href}>
-                  <Card className={`group flex h-full cursor-pointer flex-col border-2 transition-all duration-300 hover:scale-105 hover:shadow-2xl ${colors.border}`}>
+                  <Card
+                    className={`group flex h-full cursor-pointer flex-col border-2 transition-all duration-300 hover:scale-105 hover:shadow-2xl ${colors.border}`}
+                  >
                     <CardContent className="flex flex-1 flex-col p-6">
                       <div className="mb-4 flex flex-none items-center gap-3">
-                        <div className={`flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br ${colors.gradient} shadow-lg`}>
+                        <div
+                          className={`flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br ${colors.gradient} shadow-lg`}
+                        >
                           <Icon className="h-6 w-6 text-white" />
                         </div>
-                        <h3 className="text-xl font-bold text-black dark:text-white" style={{ fontFamily: 'Airwaves, sans-serif', letterSpacing: '0.05em' }}>
+                        <h3
+                          className="text-xl font-bold text-black dark:text-white"
+                          style={{
+                            fontFamily: "Airwaves, sans-serif",
+                            letterSpacing: "0.05em",
+                          }}
+                        >
                           {item.name}
                         </h3>
                       </div>
                       <p className="mb-4 flex-1 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
                         {item.description}
                       </p>
-                      <div className="flex items-center gap-2 text-sm font-medium transition-colors" style={{ color: colors.text }}>
+                      <div
+                        className="flex items-center gap-2 text-sm font-medium transition-colors"
+                        style={{ color: colors.text }}
+                      >
                         <span>Explore</span>
                         <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                       </div>
@@ -139,11 +158,18 @@ export default function PlaygroundPage() {
                   />
                 </div>
                 <div className="text-left">
-                  <h3 className="mb-2 text-xl font-bold text-black dark:text-white" style={{ fontFamily: 'Airwaves, sans-serif', letterSpacing: '0.05em' }}>
+                  <h3
+                    className="mb-2 text-xl font-bold text-black dark:text-white"
+                    style={{
+                      fontFamily: "Airwaves, sans-serif",
+                      letterSpacing: "0.05em",
+                    }}
+                  >
                     Component Library
                   </h3>
                   <p className="text-sm text-neutral-600 dark:text-neutral-400">
-                    Interactive component demonstrations showcasing animation effects and UI patterns.
+                    Interactive component demonstrations showcasing animation
+                    effects and UI patterns.
                   </p>
                 </div>
               </div>

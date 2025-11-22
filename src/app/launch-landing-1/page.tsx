@@ -13,7 +13,7 @@ export default function LaunchLanding1Page() {
   });
 
   // Set target date - December 20th, 2025 at 12 PM
-  const targetDate = new Date('2025-12-20T12:00:00');
+  const targetDate = new Date("2025-12-20T12:00:00");
 
   useEffect(() => {
     const calculateTimeLeft = () => {
@@ -43,7 +43,7 @@ export default function LaunchLanding1Page() {
           <iframe
             src="/shaders/flower-of-life/embed"
             className="h-full w-full border-0"
-            style={{ pointerEvents: 'none' }}
+            style={{ pointerEvents: "none" }}
           />
         </div>
 

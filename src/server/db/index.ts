@@ -19,7 +19,10 @@ import * as schema from "./schema";
 
 // Lazy database connection - only created when first accessed
 // This prevents build-time connection attempts in Vercel
-let _db: ReturnType<typeof drizzlePg> | ReturnType<typeof drizzleSqlite> | null = null;
+let _db:
+  | ReturnType<typeof drizzlePg>
+  | ReturnType<typeof drizzleSqlite>
+  | null = null;
 
 function createDatabase() {
   // Detect database type from URL

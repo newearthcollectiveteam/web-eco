@@ -12,7 +12,7 @@ export default function JoinCommunity1Page() {
           <iframe
             src="/shaders/flower-of-life/embed"
             className="h-full w-full border-0"
-            style={{ pointerEvents: 'none' }}
+            style={{ pointerEvents: "none" }}
           />
         </div>
 

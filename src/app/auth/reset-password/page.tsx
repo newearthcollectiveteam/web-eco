@@ -1,14 +1,14 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { createClient } from '~/lib/supabase/client';
-import { useRouter } from 'next/navigation';
-import Image from 'next/image';
-import { Lock } from 'lucide-react';
+import { useState } from "react";
+import { createClient } from "~/lib/supabase/client";
+import { useRouter } from "next/navigation";
+import Image from "next/image";
+import { Lock } from "lucide-react";
 
 export default function ResetPasswordPage() {
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -20,13 +20,13 @@ export default function ResetPasswordPage() {
     setLoading(true);
 
     if (password !== confirmPassword) {
-      setError('Passwords do not match');
+      setError("Passwords do not match");
       setLoading(false);
       return;
     }
 
     if (password.length < 6) {
-      setError('Password must be at least 6 characters long');
+      setError("Password must be at least 6 characters long");
       setLoading(false);
       return;
     }
@@ -42,9 +42,9 @@ export default function ResetPasswordPage() {
         return;
       }
 
-      router.push('/admin/login?message=Password updated successfully');
+      router.push("/login?message=Password updated successfully");
     } catch {
-      setError('An unexpected error occurred');
+      setError("An unexpected error occurred");
       setLoading(false);
     }
   };
@@ -66,7 +66,10 @@ export default function ResetPasswordPage() {
             </div>
             <h1
               className="text-3xl font-bold text-black dark:text-white"
-              style={{ fontFamily: 'Airwaves, sans-serif', letterSpacing: '0.05em' }}
+              style={{
+                fontFamily: "Airwaves, sans-serif",
+                letterSpacing: "0.05em",
+              }}
             >
               Reset your password
             </h1>
@@ -103,7 +106,7 @@ export default function ResetPasswordPage() {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="block w-full rounded-md border border-neutral-300 bg-white py-2 pl-10 pr-3 shadow-sm transition-colors focus:border-[#facf39] focus:outline-none focus:ring-2 focus:ring-[#facf39]/20 dark:border-neutral-700 dark:bg-neutral-900 dark:text-white dark:focus:border-[#facf39] sm:text-sm"
+                  className="block w-full rounded-md border border-neutral-300 bg-white py-2 pr-3 pl-10 shadow-sm transition-colors focus:border-[#facf39] focus:ring-2 focus:ring-[#facf39]/20 focus:outline-none sm:text-sm dark:border-neutral-700 dark:bg-neutral-900 dark:text-white dark:focus:border-[#facf39]"
                   placeholder="••••••••"
                 />
               </div>
@@ -131,7 +134,7 @@ export default function ResetPasswordPage() {
                   required
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="block w-full rounded-md border border-neutral-300 bg-white py-2 pl-10 pr-3 shadow-sm transition-colors focus:border-[#facf39] focus:outline-none focus:ring-2 focus:ring-[#facf39]/20 dark:border-neutral-700 dark:bg-neutral-900 dark:text-white dark:focus:border-[#facf39] sm:text-sm"
+                  className="block w-full rounded-md border border-neutral-300 bg-white py-2 pr-3 pl-10 shadow-sm transition-colors focus:border-[#facf39] focus:ring-2 focus:ring-[#facf39]/20 focus:outline-none sm:text-sm dark:border-neutral-700 dark:bg-neutral-900 dark:text-white dark:focus:border-[#facf39]"
                   placeholder="••••••••"
                 />
               </div>
@@ -140,9 +143,9 @@ export default function ResetPasswordPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full rounded-md bg-[#facf39] px-4 py-2 text-sm font-semibold text-black shadow-sm transition-all hover:bg-[#ffe067] focus:outline-none focus:ring-2 focus:ring-[#facf39]/50 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:focus:ring-offset-black"
+              className="w-full rounded-md bg-[#facf39] px-4 py-2 text-sm font-semibold text-black shadow-sm transition-all hover:bg-[#ffe067] focus:ring-2 focus:ring-[#facf39]/50 focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 dark:focus:ring-offset-black"
             >
-              {loading ? 'Updating password...' : 'Update password'}
+              {loading ? "Updating password..." : "Update password"}
             </button>
           </form>
         </div>

@@ -88,6 +88,7 @@ npm run db:studio
 ### Environment Variables
 
 The project is pre-configured with:
+
 - Supabase URL and Anon Key
 - SQLite database for development
 

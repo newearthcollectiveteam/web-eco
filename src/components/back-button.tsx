@@ -9,7 +9,10 @@ interface BackButtonProps {
   label?: string;
 }
 
-export function BackButton({ href = "/", label = "Back to Hub" }: BackButtonProps) {
+export function BackButton({
+  href = "/",
+  label = "Back to Hub",
+}: BackButtonProps) {
   const router = useRouter();
 
   const handleClick = () => {

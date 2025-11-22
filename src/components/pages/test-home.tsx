@@ -1,18 +1,37 @@
 "use client";
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "~/components/ui/card";
 import { Badge } from "~/components/ui/badge";
 import Link from "next/link";
 import Image from "next/image";
-import { Zap, Code2, Rocket, ArrowRight, Palette, Sparkles, ChevronDown, ExternalLink } from "lucide-react";
+import {
+  Zap,
+  Code2,
+  Rocket,
+  ArrowRight,
+  Palette,
+  Sparkles,
+  ChevronDown,
+  ExternalLink,
+  Mail,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export function TestHomePage() {
   const router = useRouter();
-  const [selectedVariation, setSelectedVariation] = useState("/dope-ass-landing");
-  const [selectedJoinCommunity, setSelectedJoinCommunity] = useState("/join-community-1");
-  const [selectedLaunchLanding, setSelectedLaunchLanding] = useState("/launch-landing-1");
+  const [selectedVariation, setSelectedVariation] =
+    useState("/dope-ass-landing");
+  const [selectedJoinCommunity, setSelectedJoinCommunity] =
+    useState("/join-community-1");
+  const [selectedLaunchLanding, setSelectedLaunchLanding] =
+    useState("/launch-landing-1");
 
   const landingPageVariations = [
     { name: "Original (Golden)", path: "/dope-ass-landing" },
@@ -54,7 +73,8 @@ export function TestHomePage() {
     {
       title: "Brand Assets",
       description: "Visual identity & brand guidelines",
-      details: "Complete brand asset library including logos, colors, favicons in multiple formats (SVG, PNG, PDF).",
+      details:
+        "Complete brand asset library including logos, colors, favicons in multiple formats (SVG, PNG, PDF).",
       href: "/brand",
       icon: Palette,
       color: "golden",
@@ -63,7 +83,8 @@ export function TestHomePage() {
     {
       title: "Page Templates",
       description: "Full-page template collection",
-      details: "Pre-built templates for portfolios, SaaS products, startups, and developer profiles.",
+      details:
+        "Pre-built templates for portfolios, SaaS products, startups, and developer profiles.",
       href: "/templates",
       icon: Rocket,
       color: "emerald",
@@ -72,7 +93,8 @@ export function TestHomePage() {
     {
       title: "GLSL Shaders",
       description: "WebGL shader animations",
-      details: "8 interactive shader demonstrations including sacred geometry, fractals, neural networks, and generative art.",
+      details:
+        "8 interactive shader demonstrations including sacred geometry, fractals, neural networks, and generative art.",
       href: "/shaders",
       icon: Zap,
       color: "cosmic-purple",
@@ -81,7 +103,8 @@ export function TestHomePage() {
     {
       title: "Component Playground",
       description: "Interactive UI component demos",
-      details: "Test and explore animation effects, particle systems, and interactive components in development.",
+      details:
+        "Test and explore animation effects, particle systems, and interactive components in development.",
       href: "/playground",
       icon: Code2,
       color: "cosmic-blue",
@@ -104,7 +127,13 @@ export function TestHomePage() {
               />
             </div>
           </div>
-          <h1 className="mb-4 text-6xl font-bold text-black dark:text-white" style={{ fontFamily: 'Airwaves, sans-serif', letterSpacing: '0.1em' }}>
+          <h1
+            className="mb-4 text-6xl font-bold text-black dark:text-white"
+            style={{
+              fontFamily: "Airwaves, sans-serif",
+              letterSpacing: "0.1em",
+            }}
+          >
             Development Hub
           </h1>
           <p className="mx-auto mb-6 max-w-2xl text-xl text-neutral-600 dark:text-neutral-400">
@@ -119,7 +148,10 @@ export function TestHomePage() {
 
         {/* Live Sites Section */}
         <section className="mb-20">
-          <h2 className="mb-8 text-center text-4xl font-bold" style={{ fontFamily: 'Bourton, sans-serif', color: '#facf39' }}>
+          <h2
+            className="mb-8 text-center text-4xl font-bold"
+            style={{ fontFamily: "Bourton, sans-serif", color: "#facf39" }}
+          >
             Live Sites
           </h2>
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -130,12 +162,19 @@ export function TestHomePage() {
                   <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-[#059669] to-[#10b981] shadow-lg">
                     <ExternalLink className="h-7 w-7 text-white" />
                   </div>
-                  <h3 className="text-xl font-bold text-black dark:text-white" style={{ fontFamily: 'Airwaves, sans-serif', letterSpacing: '0.05em' }}>
+                  <h3
+                    className="text-xl font-bold text-black dark:text-white"
+                    style={{
+                      fontFamily: "Airwaves, sans-serif",
+                      letterSpacing: "0.05em",
+                    }}
+                  >
                     New Earth Collective
                   </h3>
                 </div>
                 <p className="mb-4 flex-1 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
-                  Official New Earth Collective community platform - Join the movement for conscious evolution and regenerative systems.
+                  Official New Earth Collective community platform - Join the
+                  movement for conscious evolution and regenerative systems.
                 </p>
 
                 <div className="flex items-center justify-between">
@@ -147,7 +186,47 @@ export function TestHomePage() {
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center gap-2 text-sm font-medium transition-colors hover:opacity-80"
-                    style={{ color: '#10b981' }}
+                    style={{ color: "#10b981" }}
+                  >
+                    <span>Visit Site</span>
+                    <ExternalLink className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                  </a>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Wear New Earth */}
+            <Card className="group flex h-full flex-col border-2 border-[#facf39]/20 transition-all duration-300 hover:shadow-2xl dark:border-[#facf39]/30">
+              <CardContent className="flex flex-1 flex-col p-6">
+                <div className="mb-4 flex flex-none items-center gap-3">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-[#facf39] to-[#f59e0b] shadow-lg">
+                    <ExternalLink className="h-7 w-7 text-black" />
+                  </div>
+                  <h3
+                    className="text-xl font-bold text-black dark:text-white"
+                    style={{
+                      fontFamily: "Airwaves, sans-serif",
+                      letterSpacing: "0.05em",
+                    }}
+                  >
+                    Wear New Earth
+                  </h3>
+                </div>
+                <p className="mb-4 flex-1 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
+                  Conscious fashion and apparel for the New Earth movement -
+                  Wear your values, embody the change.
+                </p>
+
+                <div className="flex items-center justify-between">
+                  <Badge className="bg-[#facf39]/10 text-[#facf39] dark:bg-[#facf39]/20">
+                    Live
+                  </Badge>
+                  <a
+                    href="https://wearnewearth.com/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 text-sm font-medium transition-colors hover:opacity-80"
+                    style={{ color: "#facf39" }}
                   >
                     <span>Visit Site</span>
                     <ExternalLink className="h-4 w-4 transition-transform group-hover:translate-x-1" />
@@ -160,7 +239,10 @@ export function TestHomePage() {
 
         {/* Sites Under Development Section */}
         <section className="mb-20">
-          <h2 className="mb-8 text-center text-4xl font-bold" style={{ fontFamily: 'Bourton, sans-serif', color: '#facf39' }}>
+          <h2
+            className="mb-8 text-center text-4xl font-bold"
+            style={{ fontFamily: "Bourton, sans-serif", color: "#facf39" }}
+          >
             Sites Under Development
           </h2>
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -171,17 +253,27 @@ export function TestHomePage() {
                   <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-[#facf39] to-[#f59e0b] shadow-lg">
                     <Sparkles className="h-7 w-7 text-black" />
                   </div>
-                  <h3 className="text-xl font-bold text-black dark:text-white" style={{ fontFamily: 'Airwaves, sans-serif', letterSpacing: '0.05em' }}>
+                  <h3
+                    className="text-xl font-bold text-black dark:text-white"
+                    style={{
+                      fontFamily: "Airwaves, sans-serif",
+                      letterSpacing: "0.05em",
+                    }}
+                  >
                     Dope Ass Landing
                   </h3>
                 </div>
                 <p className="mb-4 flex-1 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
-                  Epic landing page with countdown timer and sacred geometry vibes - now in 9 color variations!
+                  Epic landing page with countdown timer and sacred geometry
+                  vibes - now in 9 color variations!
                 </p>
 
                 {/* Dropdown to select variation */}
                 <div className="mb-4">
-                  <label htmlFor="variation-select" className="mb-2 block text-xs font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
+                  <label
+                    htmlFor="variation-select"
+                    className="mb-2 block text-xs font-semibold tracking-wider text-neutral-500 uppercase dark:text-neutral-400"
+                  >
                     Select Color Variation
                   </label>
                   <div className="relative">
@@ -197,7 +289,7 @@ export function TestHomePage() {
                         </option>
                       ))}
                     </select>
-                    <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 text-[#facf39]" />
+                    <ChevronDown className="pointer-events-none absolute top-1/2 right-3 h-5 w-5 -translate-y-1/2 text-[#facf39]" />
                   </div>
                 </div>
 
@@ -208,7 +300,7 @@ export function TestHomePage() {
                   <button
                     onClick={() => router.push(selectedVariation)}
                     className="flex items-center gap-2 text-sm font-medium transition-colors hover:opacity-80"
-                    style={{ color: '#facf39' }}
+                    style={{ color: "#facf39" }}
                   >
                     <span>View Demo</span>
                     <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
@@ -224,17 +316,27 @@ export function TestHomePage() {
                   <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-[#059669] to-[#14b8a6] shadow-lg">
                     <Sparkles className="h-7 w-7 text-white" />
                   </div>
-                  <h3 className="text-xl font-bold text-black dark:text-white" style={{ fontFamily: 'Airwaves, sans-serif', letterSpacing: '0.05em' }}>
+                  <h3
+                    className="text-xl font-bold text-black dark:text-white"
+                    style={{
+                      fontFamily: "Airwaves, sans-serif",
+                      letterSpacing: "0.05em",
+                    }}
+                  >
                     Join Community 1
                   </h3>
                 </div>
                 <p className="mb-4 flex-1 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
-                  Full community landing page with waitlist CTA - now in 9 color variations!
+                  Full community landing page with waitlist CTA - now in 9 color
+                  variations!
                 </p>
 
                 {/* Dropdown to select variation */}
                 <div className="mb-4">
-                  <label htmlFor="join-community-select" className="mb-2 block text-xs font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
+                  <label
+                    htmlFor="join-community-select"
+                    className="mb-2 block text-xs font-semibold tracking-wider text-neutral-500 uppercase dark:text-neutral-400"
+                  >
                     Select Color Variation
                   </label>
                   <div className="relative">
@@ -250,7 +352,7 @@ export function TestHomePage() {
                         </option>
                       ))}
                     </select>
-                    <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 text-[#facf39]" />
+                    <ChevronDown className="pointer-events-none absolute top-1/2 right-3 h-5 w-5 -translate-y-1/2 text-[#facf39]" />
                   </div>
                 </div>
 
@@ -261,7 +363,7 @@ export function TestHomePage() {
                   <button
                     onClick={() => router.push(selectedJoinCommunity)}
                     className="flex items-center gap-2 text-sm font-medium transition-colors hover:opacity-80"
-                    style={{ color: '#facf39' }}
+                    style={{ color: "#facf39" }}
                   >
                     <span>View Demo</span>
                     <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
@@ -277,17 +379,27 @@ export function TestHomePage() {
                   <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-[#facf39] to-[#f59e0b] shadow-lg">
                     <Sparkles className="h-7 w-7 text-black" />
                   </div>
-                  <h3 className="text-xl font-bold text-black dark:text-white" style={{ fontFamily: 'Airwaves, sans-serif', letterSpacing: '0.05em' }}>
+                  <h3
+                    className="text-xl font-bold text-black dark:text-white"
+                    style={{
+                      fontFamily: "Airwaves, sans-serif",
+                      letterSpacing: "0.05em",
+                    }}
+                  >
                     Launch Landing 1
                   </h3>
                 </div>
                 <p className="mb-4 flex-1 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
-                  Event landing page with countdown timer for Dec 20th launch party - 9 color variations!
+                  Event landing page with countdown timer for Dec 20th launch
+                  party - 9 color variations!
                 </p>
 
                 {/* Dropdown to select variation */}
                 <div className="mb-4">
-                  <label htmlFor="launch-landing-select" className="mb-2 block text-xs font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
+                  <label
+                    htmlFor="launch-landing-select"
+                    className="mb-2 block text-xs font-semibold tracking-wider text-neutral-500 uppercase dark:text-neutral-400"
+                  >
                     Select Color Variation
                   </label>
                   <div className="relative">
@@ -303,7 +415,7 @@ export function TestHomePage() {
                         </option>
                       ))}
                     </select>
-                    <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 text-[#facf39]" />
+                    <ChevronDown className="pointer-events-none absolute top-1/2 right-3 h-5 w-5 -translate-y-1/2 text-[#facf39]" />
                   </div>
                 </div>
 
@@ -314,7 +426,7 @@ export function TestHomePage() {
                   <button
                     onClick={() => router.push(selectedLaunchLanding)}
                     className="flex items-center gap-2 text-sm font-medium transition-colors hover:opacity-80"
-                    style={{ color: '#facf39' }}
+                    style={{ color: "#facf39" }}
                   >
                     <span>View Demo</span>
                     <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
@@ -325,37 +437,100 @@ export function TestHomePage() {
           </div>
         </section>
 
+        {/* Form Builder Section */}
+        <section className="mb-20">
+          <h2
+            className="mb-8 text-center text-4xl font-bold"
+            style={{ fontFamily: "Bourton, sans-serif", color: "#facf39" }}
+          >
+            Form Builder
+          </h2>
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <Card className="group flex h-full flex-col border-2 border-[#06b6d4]/20 transition-all duration-300 hover:shadow-2xl dark:border-[#06b6d4]/30">
+              <CardContent className="flex flex-1 flex-col p-6">
+                <div className="mb-4 flex flex-none items-center gap-3">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-[#0891b2] to-[#06b6d4] shadow-lg">
+                    <Mail className="h-7 w-7 text-white" />
+                  </div>
+                  <h3
+                    className="text-xl font-bold text-black dark:text-white"
+                    style={{
+                      fontFamily: "Airwaves, sans-serif",
+                      letterSpacing: "0.05em",
+                    }}
+                  >
+                    Email Sequence Test
+                  </h3>
+                </div>
+                <p className="mb-4 flex-1 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
+                  Test automated email timing: 4 emails in 10 minutes, then 2
+                  more at 24h & 36h.
+                </p>
+
+                <div className="flex items-center justify-between">
+                  <Badge className="bg-[#06b6d4]/10 text-[#06b6d4] dark:bg-[#06b6d4]/20">
+                    Testing
+                  </Badge>
+                  <button
+                    onClick={() => router.push("/form-builder")}
+                    className="flex items-center gap-2 text-sm font-medium transition-colors hover:opacity-80"
+                    style={{ color: "#06b6d4" }}
+                  >
+                    <span>Test Sequence</span>
+                    <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                  </button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </section>
+
         {/* Assets Grid */}
         <section className="mb-16">
-          <h2 className="mb-8 text-center text-4xl font-bold" style={{ fontFamily: 'Bourton, sans-serif', color: '#facf39' }}>
+          <h2
+            className="mb-8 text-center text-4xl font-bold"
+            style={{ fontFamily: "Bourton, sans-serif", color: "#facf39" }}
+          >
             Assets
           </h2>
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
             {features.map((feature) => {
               const Icon = feature.icon;
-              const colorMap: Record<string, { gradient: string; border: string; badge: string; text: string }> = {
+              const colorMap: Record<
+                string,
+                {
+                  gradient: string;
+                  border: string;
+                  badge: string;
+                  text: string;
+                }
+              > = {
                 "cosmic-purple": {
                   gradient: "from-[#6d28d9] to-[#a855f7]",
                   border: "border-[#6d28d9]/20 dark:border-[#6d28d9]/30",
-                  badge: "bg-[#6d28d9]/10 text-[#6d28d9] dark:bg-[#6d28d9]/20 dark:text-[#a855f7]",
+                  badge:
+                    "bg-[#6d28d9]/10 text-[#6d28d9] dark:bg-[#6d28d9]/20 dark:text-[#a855f7]",
                   text: "#6d28d9",
                 },
                 "cosmic-blue": {
                   gradient: "from-[#0891b2] to-[#06b6d4]",
                   border: "border-[#0891b2]/20 dark:border-[#0891b2]/30",
-                  badge: "bg-[#0891b2]/10 text-[#0891b2] dark:bg-[#0891b2]/20 dark:text-[#06b6d4]",
+                  badge:
+                    "bg-[#0891b2]/10 text-[#0891b2] dark:bg-[#0891b2]/20 dark:text-[#06b6d4]",
                   text: "#0891b2",
                 },
-                "emerald": {
+                emerald: {
                   gradient: "from-[#059669] to-[#10b981]",
                   border: "border-[#059669]/20 dark:border-[#059669]/30",
-                  badge: "bg-[#059669]/10 text-[#059669] dark:bg-[#059669]/20 dark:text-[#10b981]",
+                  badge:
+                    "bg-[#059669]/10 text-[#059669] dark:bg-[#059669]/20 dark:text-[#10b981]",
                   text: "#059669",
                 },
-                "golden": {
+                golden: {
                   gradient: "from-[#facf39] to-[#f59e0b]",
                   border: "border-[#facf39]/20 dark:border-[#facf39]/30",
-                  badge: "bg-[#facf39]/10 text-[#facf39] dark:bg-[#facf39]/20 dark:text-[#facf39]",
+                  badge:
+                    "bg-[#facf39]/10 text-[#facf39] dark:bg-[#facf39]/20 dark:text-[#facf39]",
                   text: "#facf39",
                 },
               };
@@ -363,12 +538,22 @@ export function TestHomePage() {
 
               return (
                 <Link key={feature.title} href={feature.href}>
-                  <Card className={`group flex h-full cursor-pointer flex-col border-2 transition-all duration-300 hover:scale-105 hover:shadow-2xl ${colors.border}`}>
+                  <Card
+                    className={`group flex h-full cursor-pointer flex-col border-2 transition-all duration-300 hover:scale-105 hover:shadow-2xl ${colors.border}`}
+                  >
                     <CardHeader className="flex-none">
-                      <div className={`mb-4 flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br ${colors.gradient} shadow-lg`}>
+                      <div
+                        className={`mb-4 flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br ${colors.gradient} shadow-lg`}
+                      >
                         <Icon className="h-7 w-7 text-white" />
                       </div>
-                      <CardTitle className="text-xl font-bold text-black dark:text-white" style={{ fontFamily: 'Airwaves, sans-serif', letterSpacing: '0.05em' }}>
+                      <CardTitle
+                        className="text-xl font-bold text-black dark:text-white"
+                        style={{
+                          fontFamily: "Airwaves, sans-serif",
+                          letterSpacing: "0.05em",
+                        }}
+                      >
                         {feature.title}
                       </CardTitle>
                       <CardDescription className="text-sm text-neutral-600 dark:text-neutral-400">
@@ -380,10 +565,11 @@ export function TestHomePage() {
                         {feature.details}
                       </p>
                       <div className="flex items-center justify-between">
-                        <Badge className={colors.badge}>
-                          {feature.count}
-                        </Badge>
-                        <div className="flex items-center gap-2 text-sm font-medium transition-colors" style={{ color: colors.text }}>
+                        <Badge className={colors.badge}>{feature.count}</Badge>
+                        <div
+                          className="flex items-center gap-2 text-sm font-medium transition-colors"
+                          style={{ color: colors.text }}
+                        >
                           <span>Explore</span>
                           <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                         </div>
@@ -410,11 +596,18 @@ export function TestHomePage() {
                   />
                 </div>
                 <div className="text-left">
-                  <h3 className="mb-2 text-xl font-bold text-black dark:text-white" style={{ fontFamily: 'Airwaves, sans-serif', letterSpacing: '0.05em' }}>
+                  <h3
+                    className="mb-2 text-xl font-bold text-black dark:text-white"
+                    style={{
+                      fontFamily: "Airwaves, sans-serif",
+                      letterSpacing: "0.05em",
+                    }}
+                  >
                     Development Environment
                   </h3>
                   <p className="text-sm text-neutral-600 dark:text-neutral-400">
-                    This is the development environment for New Earth Collective. Features are under active development.
+                    This is the development environment for New Earth
+                    Collective. Features are under active development.
                   </p>
                 </div>
               </div>

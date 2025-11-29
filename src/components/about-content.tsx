@@ -1,9 +1,7 @@
 "use client";
 
 import { Card, CardContent } from "~/components/ui/card";
-import { Button } from "~/components/ui/button";
 import Image from "next/image";
-import Link from "next/link";
 import {
   Heart,
   Sparkles,
@@ -23,57 +21,6 @@ import {
 export function AboutContent() {
   return (
     <>
-      {/* Header Navigation */}
-      <header className="fixed top-0 left-0 right-0 z-50 border-b border-[#facf39]/10 bg-black/80 backdrop-blur-md">
-        <div className="container mx-auto flex items-center justify-between px-4 py-4">
-          <Link href="/community" className="flex items-center gap-3">
-            <div className="relative h-10 w-10">
-              <Image
-                src="/brand/symbol.svg"
-                alt="New Earth Collective"
-                fill
-                className="object-contain"
-              />
-            </div>
-            <span
-              className="text-xl font-bold text-white"
-              style={{
-                fontFamily: "Airwaves, sans-serif",
-                letterSpacing: "0.05em",
-              }}
-            >
-              NEW EARTH COLLECTIVE
-            </span>
-          </Link>
-          <nav className="flex items-center gap-6">
-            <Link
-              href="/community"
-              className="text-sm font-medium text-neutral-300 transition-colors hover:text-[#facf39]"
-            >
-              Community
-            </Link>
-            <Link
-              href="/launch-party"
-              className="text-sm font-medium text-neutral-300 transition-colors hover:text-[#facf39]"
-            >
-              Launch Party
-            </Link>
-            <Link href="/community#waitlist-form">
-              <Button
-                size="sm"
-                className="bg-gradient-to-r from-[#facf39] to-[#f59e0b] font-bold text-black transition-all hover:scale-105"
-                style={{
-                  fontFamily: "Airwaves, sans-serif",
-                  letterSpacing: "0.05em",
-                }}
-              >
-                Join Waitlist
-              </Button>
-            </Link>
-          </nav>
-        </div>
-      </header>
-
       <div className="px-4 py-16">
         <div className="container mx-auto max-w-4xl">
           {/* Hero Section */}
@@ -95,7 +42,9 @@ export function AboutContent() {
                 letterSpacing: "0.05em",
               }}
             >
-              ABOUT US
+              <span className="bg-gradient-to-r from-[#f3a51c] via-[#f6c43f] to-[#f6e45b] bg-clip-text text-transparent">
+                ABOUT US
+              </span>
             </h1>
             <p className="mx-auto max-w-2xl text-2xl text-neutral-300 dark:text-neutral-300 italic">
               A movement toward the New Earth — a society based on compassion,
@@ -186,7 +135,7 @@ export function AboutContent() {
                   </p>
                   <p className="text-xl font-semibold text-white">
                     This collective is more than a group — it&apos;s a movement
-                    toward the "New Earth," a society based on compassion, purpose,
+                    toward the &quot;New Earth,&quot; a society based on compassion, purpose,
                     and unity.
                   </p>
                 </div>
@@ -197,7 +146,7 @@ export function AboutContent() {
                     className="mb-4 text-2xl font-bold text-[#facf39]"
                     style={{ fontFamily: "Bourton, sans-serif" }}
                   >
-                    The Forest & Mycelial Vision
+                    The Forest &amp; Mycelial Vision
                   </h3>
                   <div className="space-y-4 text-neutral-200 dark:text-neutral-200">
                     <p>
@@ -319,28 +268,6 @@ export function AboutContent() {
                 </div>
               </CardContent>
             </Card>
-          </section>
-
-          {/* CTA */}
-          <section className="mb-20 text-center">
-            <p
-              className="mb-6 text-2xl text-neutral-300 dark:text-neutral-300 italic"
-              style={{ fontFamily: "Bourton, sans-serif" }}
-            >
-              Ready to join the movement?
-            </p>
-            <Link href="/community#waitlist-form">
-              <Button
-                size="lg"
-                className="bg-gradient-to-r from-[#facf39] to-[#f59e0b] px-8 py-6 text-lg font-bold text-black shadow-2xl transition-all hover:scale-105"
-                style={{
-                  fontFamily: "Airwaves, sans-serif",
-                  letterSpacing: "0.05em",
-                }}
-              >
-                Join the Waitlist
-              </Button>
-            </Link>
           </section>
 
           {/* Footer */}

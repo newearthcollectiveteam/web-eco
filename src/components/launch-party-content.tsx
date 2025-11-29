@@ -27,10 +27,10 @@ export function LaunchPartyContent() {
     seconds: 0,
   });
 
-  // Set target date - December 20th, 2025 at 12 PM
-  const targetDate = new Date("2025-12-20T12:00:00");
-
   useEffect(() => {
+    // Set target date - December 20th, 2025 at 1 PM
+    const targetDate = new Date("2025-12-20T13:00:00");
+
     const calculateTimeLeft = () => {
       const difference = targetDate.getTime() - new Date().getTime();
 
@@ -52,6 +52,37 @@ export function LaunchPartyContent() {
 
   return (
     <>
+      <style jsx global>{`
+        .cta-shimmer {
+          position: relative;
+          display: inline-block;
+          color: inherit;
+          overflow: hidden;
+        }
+        .cta-shimmer::after {
+          content: "";
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(
+            90deg,
+            transparent 0%,
+            rgba(255, 255, 255, 0.7) 45%,
+            transparent 65%
+          );
+          transform: translateX(-120%);
+          animation: ctaSheen 2.8s ease-in-out infinite;
+          mix-blend-mode: screen;
+          pointer-events: none;
+        }
+        @keyframes ctaSheen {
+          0% {
+            transform: translateX(-120%);
+          }
+          100% {
+            transform: translateX(120%);
+          }
+        }
+      `}</style>
       {/* Header Navigation */}
       <header className="fixed top-0 left-0 right-0 z-50 border-b border-[#facf39]/10 bg-black/80 backdrop-blur-md">
         <div className="container mx-auto flex items-center justify-between px-4 py-4">
@@ -65,7 +96,7 @@ export function LaunchPartyContent() {
               />
             </div>
             <span
-              className="text-xl font-bold text-white"
+              className="text-xl font-bold bg-gradient-to-r from-[#f3a51c] via-[#f6c43f] to-[#f6e45b] bg-clip-text text-transparent"
               style={{
                 fontFamily: "Airwaves, sans-serif",
                 letterSpacing: "0.05em",
@@ -75,20 +106,8 @@ export function LaunchPartyContent() {
             </span>
           </Link>
           <nav className="flex items-center gap-6">
-            <Link
-              href="/about"
-              className="text-sm font-medium text-neutral-300 transition-colors hover:text-[#facf39]"
-            >
-              About
-            </Link>
-            <Link
-              href="/community"
-              className="text-sm font-medium text-neutral-300 transition-colors hover:text-[#facf39]"
-            >
-              Community
-            </Link>
             <a
-              href="https://partiful.com"
+              href="https://www.skool.com/new-earth-collective-8653"
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -100,7 +119,7 @@ export function LaunchPartyContent() {
                   letterSpacing: "0.05em",
                 }}
               >
-                RSVP
+                Join the Community
               </Button>
             </a>
           </nav>
@@ -110,7 +129,7 @@ export function LaunchPartyContent() {
       <div className="px-4 py-16">
         <div className="container mx-auto max-w-4xl">
           {/* Hero Section */}
-          <section className="mb-20 text-center">
+          <section className="mb-16 text-center pt-12 md:pt-14">
           <div className="mb-10 inline-flex items-center justify-center">
             <div className="relative h-20 w-20 drop-shadow-2xl">
               <Image
@@ -128,7 +147,9 @@ export function LaunchPartyContent() {
                 letterSpacing: "0.05em",
               }}
             >
-              NEW EARTH COLLECTIVE
+              <span className="bg-gradient-to-r from-[#f3a51c] via-[#f6c43f] to-[#f6e45b] bg-clip-text text-transparent">
+                NEW EARTH COLLECTIVE
+              </span>
             </span>
             <br />
             <span style={{ fontFamily: "Bourton, sans-serif" }}>
@@ -140,15 +161,53 @@ export function LaunchPartyContent() {
             Vibe Connection
           </p>
 
+          <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:justify-center">
+            <a
+              href="https://www.skool.com/new-earth-collective-8653"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Button
+                size="lg"
+                className="group w-full sm:w-auto bg-gradient-to-r from-[#f3a51c] via-[#f6c43f] to-[#f6e45b] px-8 py-6 text-lg font-bold text-black shadow-2xl transition-all hover:scale-105 hover:shadow-[#facf39]/50"
+                style={{
+                  fontFamily: "Airwaves, sans-serif",
+                  letterSpacing: "0.05em",
+              }}
+            >
+                <span className="cta-shimmer">Join the Skool Community</span>
+                <ExternalLink className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+              </Button>
+            </a>
+            <a
+              href="https://partiful.com"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Button
+                size="lg"
+                variant="outline"
+                className="group w-full sm:w-auto border-2 border-[#facf39] bg-black/40 px-8 py-6 text-lg font-bold text-[#facf39] shadow-lg transition-all hover:scale-105 hover:bg-[#facf39]/10"
+                style={{
+                  fontFamily: "Airwaves, sans-serif",
+                  letterSpacing: "0.05em",
+                }}
+              >
+                RSVP on Partiful
+                <ExternalLink className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+              </Button>
+            </a>
+          </div>
+
           {/* Event Details */}
-          <div className="mb-10 flex flex-col items-center justify-center gap-4 text-lg text-neutral-300 dark:text-neutral-300 sm:flex-row sm:gap-8">
+          <div className="mb-6 flex flex-col items-center justify-center gap-4 text-lg text-neutral-300 dark:text-neutral-300 sm:flex-row sm:gap-8">
             <div className="flex items-center gap-2">
               <Calendar className="h-5 w-5 text-[#facf39]" />
               <span>December 20th, 2025</span>
             </div>
             <div className="flex items-center gap-2">
               <Clock className="h-5 w-5 text-[#facf39]" />
-              <span>12 PM to 12 AM</span>
+              <span>1 PM to 12 AM</span>
             </div>
             <div className="flex items-center gap-2">
               <MapPin className="h-5 w-5 text-[#facf39]" />
@@ -157,7 +216,7 @@ export function LaunchPartyContent() {
           </div>
 
           {/* Countdown Timer */}
-          <div className="mb-8 flex w-full justify-center">
+          <div className="mb-6 flex w-full justify-center">
             <Card className="w-full border-2 border-[#facf39]/20 bg-black/60 dark:bg-black/80 shadow-2xl backdrop-blur-md sm:w-auto">
               <CardContent className="p-8">
                 <div className="mb-4 flex items-center justify-center gap-2 text-[#facf39]">
@@ -190,40 +249,6 @@ export function LaunchPartyContent() {
                 </div>
               </CardContent>
             </Card>
-          </div>
-
-          <div className="flex flex-col gap-4 sm:flex-row sm:justify-center">
-            <a
-              href="https://partiful.com"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <Button
-                size="lg"
-                className="group w-full sm:w-auto bg-gradient-to-r from-[#facf39] to-[#f59e0b] px-8 py-6 text-lg font-bold text-black shadow-2xl transition-all hover:scale-105 hover:shadow-[#facf39]/50"
-                style={{
-                  fontFamily: "Airwaves, sans-serif",
-                  letterSpacing: "0.05em",
-                }}
-              >
-                RSVP on Partiful
-                <ExternalLink className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
-              </Button>
-            </a>
-            <Link href="/community">
-              <Button
-                size="lg"
-                variant="outline"
-                className="group w-full sm:w-auto border-2 border-[#facf39] bg-black/40 px-8 py-6 text-lg font-bold text-[#facf39] shadow-lg transition-all hover:scale-105 hover:bg-[#facf39]/10"
-                style={{
-                  fontFamily: "Airwaves, sans-serif",
-                  letterSpacing: "0.05em",
-                }}
-              >
-                Join the Community
-                <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
-              </Button>
-            </Link>
           </div>
         </section>
 
@@ -258,7 +283,7 @@ export function LaunchPartyContent() {
                 </p>
                 <p>
                   This launch party is our first spark. A sacred celebration. A
-                  living ceremony. A 12-hour journey of self-activation, group
+                  living ceremony. An 11-hour journey of self-activation, group
                   coherence, soul nourishment, and pure ecstatic expression.
                 </p>
               </div>
@@ -286,9 +311,9 @@ export function LaunchPartyContent() {
                 {[
                   "Soul-stirring workshops to awaken your gifts",
                   "Coded conversations & deep connective magic",
-                  "Potluck community feast & visionary speech",
+                  "Charcuterie boards to graze & visionary speech",
                   "Curated bass music to move your body & spirit",
-                  "Integration lounges, tea service, tarot, cuddle zones",
+                  "Integration lounges, tea service, vibrational therapy, cuddle zones",
                   "Acro, aerials, jugglers, and joyful circus energy",
                 ].map((item, index) => (
                   <li key={index} className="flex items-start gap-3">
@@ -308,19 +333,19 @@ export function LaunchPartyContent() {
                 It&apos;s <span className="italic">ours</span> to co-create.
               </p>
               <a
-                href="https://partiful.com"
+                href="https://www.skool.com/new-earth-collective-8653"
                 target="_blank"
                 rel="noopener noreferrer"
               >
                 <Button
                   size="lg"
-                  className="w-full bg-gradient-to-r from-[#facf39] to-[#f59e0b] font-bold text-black transition-all hover:scale-105 md:w-auto"
+                  className="w-full bg-gradient-to-r from-[#f3a51c] via-[#f6c43f] to-[#f6e45b] font-bold text-black transition-all hover:scale-105 md:w-auto"
                   style={{
                     fontFamily: "Airwaves, sans-serif",
                     letterSpacing: "0.05em",
                   }}
                 >
-                  Say Yes to the Frequency
+                  <span className="cta-shimmer">Join the Skool Community</span>
                   <ExternalLink className="ml-2 h-5 w-5" />
                 </Button>
               </a>
@@ -347,8 +372,8 @@ export function LaunchPartyContent() {
                   <span className="italic">is</span> the gift.
                 </p>
                 <p className="text-xl font-bold text-[#facf39]">
-                  Your Entry = Joining the Skool Community + Bringing a Dish to
-                  Share
+                  Your Entry = Joining the Skool Community + RSVP on Partiful
+                  (contribute suggested donation if in capacity)
                 </p>
                 <p>
                   This Skool group will be the living ecosystem of the New Earth
@@ -375,19 +400,24 @@ export function LaunchPartyContent() {
                 </p>
               </div>
               <div className="flex flex-col gap-4 sm:flex-row">
-                <Link href="/community" className="flex-1">
+                <a
+                  href="https://www.skool.com/new-earth-collective-8653"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-1"
+                >
                   <Button
                     size="lg"
-                    className="w-full bg-gradient-to-r from-[#facf39] to-[#f59e0b] font-bold text-black shadow-lg transition-all hover:scale-105"
+                    className="w-full bg-gradient-to-r from-[#f3a51c] via-[#f6c43f] to-[#f6e45b] font-bold text-black shadow-lg transition-all hover:scale-105"
                     style={{
                       fontFamily: "Airwaves, sans-serif",
                       letterSpacing: "0.05em",
                     }}
                   >
-                    Join the Community
+                    <span className="cta-shimmer">Join the Skool Community</span>
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>
-                </Link>
+                </a>
                 <a
                   href="https://partiful.com"
                   target="_blank"
@@ -437,19 +467,19 @@ export function LaunchPartyContent() {
                 </p>
               </div>
               <a
-                href="https://partiful.com"
+                href="https://www.skool.com/new-earth-collective-8653"
                 target="_blank"
                 rel="noopener noreferrer"
               >
                 <Button
                   size="lg"
-                  className="w-full bg-gradient-to-r from-[#facf39] to-[#f59e0b] font-bold text-black transition-all hover:scale-105 md:w-auto"
+                  className="w-full bg-gradient-to-r from-[#f3a51c] via-[#f6c43f] to-[#f6e45b] font-bold text-black transition-all hover:scale-105 md:w-auto"
                   style={{
                     fontFamily: "Airwaves, sans-serif",
                     letterSpacing: "0.05em",
                   }}
                 >
-                  I&apos;m In
+                  <span className="cta-shimmer">I&apos;m In</span>
                   <ExternalLink className="ml-2 h-5 w-5" />
                 </Button>
               </a>
@@ -465,7 +495,7 @@ export function LaunchPartyContent() {
                 <p className="font-semibold text-[#facf39]">
                   Skool Signup Required for Entry
                 </p>
-                <p>Bring a nourishing potluck dish to contribute</p>
+                <p>Event is FREE - Contribute suggested $25 donation if in capacity!</p>
                 <p>
                   Final party details will be shared via Partiful closer to the
                   event

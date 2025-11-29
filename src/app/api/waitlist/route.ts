@@ -7,13 +7,31 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { db } from "~/server/db";
-import { waitlistIntake, contacts, contactActivities } from "~/server/db/schema";
-import { eq } from "drizzle-orm";
+import {
+  waitlistIntake,
+  contacts,
+  contactActivities,
+  contactSources,
+} from "~/server/db/schema";
+import { eq, sql } from "drizzle-orm";
+import { triggerKlaviyoWaitlistFlow } from "~/lib/klaviyo/klaviyo-service";
+import { identifyUser, trackEvent } from "~/lib/tracking/analytics-service";
+import { COOKIE_NAMES, parseCookies, setCookieHeader, COOKIE_OPTIONS } from "~/lib/tracking/utils";
+import { generateUnsubscribeToken, getClientIP } from "~/lib/consent/consent-utils";
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { name, email, phone, message, source = "community-landing" } = body;
+    const {
+      name,
+      email,
+      phone,
+      message,
+      willingToFillQuestionnaire = false,
+      emailConsent = false,
+      smsConsent = false,
+      source = "community-landing",
+    } = body;
 
     // Validate required fields
     if (!name || !email) {
@@ -32,7 +50,13 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Consent is implicit via form submission disclaimer
+    // Both email and SMS consent are set to true by default
+
     console.log(`📋 Waitlist submission from ${email} (${name})`);
+
+    // Get client IP for consent tracking
+    const clientIP = getClientIP(request.headers);
 
     // Step 1: Create or update contact in master CRM
     let contactId: number;
@@ -42,19 +66,56 @@ export async function POST(request: NextRequest) {
 
     if (existingContact) {
       // Update existing contact
+      const updateData: {
+        name: string;
+        phone: string;
+        lastContactDate: Date;
+        emailConsent?: boolean;
+        smsConsent?: boolean;
+        consentGrantedAt?: Date;
+        consentIpAddress?: string | null;
+        unsubscribeToken?: string;
+        metadata: {
+          waitlistMessage?: string;
+          waitlistSource: string;
+          willingToFillQuestionnaire: boolean;
+        };
+        updatedAt: Date;
+      } = {
+        name: name,
+        phone: phone || existingContact.phone,
+        lastContactDate: new Date(),
+        metadata: {
+          ...(existingContact.metadata as object),
+          waitlistMessage: message,
+          waitlistSource: source,
+          willingToFillQuestionnaire,
+        },
+        updatedAt: new Date(),
+      };
+
+      // Update consent if provided and not previously unsubscribed
+      if (emailConsent && !existingContact.unsubscribedEmail) {
+        updateData.emailConsent = true;
+      }
+      if (smsConsent && !existingContact.unsubscribedSms) {
+        updateData.smsConsent = true;
+      }
+
+      // Set consent tracking fields if consent was just granted
+      if ((emailConsent || smsConsent) && !existingContact.consentGrantedAt) {
+        updateData.consentGrantedAt = new Date();
+        updateData.consentIpAddress = clientIP;
+      }
+
+      // Generate unsubscribe token if not exists
+      if (!existingContact.unsubscribeToken) {
+        updateData.unsubscribeToken = generateUnsubscribeToken();
+      }
+
       await db
         .update(contacts)
-        .set({
-          name: name,
-          phone: phone || existingContact.phone,
-          lastContactDate: new Date(),
-          metadata: {
-            ...(existingContact.metadata as object),
-            waitlistMessage: message,
-            waitlistSource: source,
-          },
-          updatedAt: new Date(),
-        })
+        .set(updateData)
         .where(eq(contacts.id, existingContact.id));
 
       contactId = existingContact.id;
@@ -67,12 +128,18 @@ export async function POST(request: NextRequest) {
           email,
           name,
           phone,
-          source,
+          firstSource: source,
           status: "lead",
           tags: ["waitlist"],
+          emailConsent,
+          smsConsent,
+          consentGrantedAt: new Date(),
+          consentIpAddress: clientIP,
+          unsubscribeToken: generateUnsubscribeToken(),
           metadata: {
             waitlistMessage: message,
             waitlistSource: source,
+            willingToFillQuestionnaire,
           },
         })
         .returning();
@@ -81,23 +148,59 @@ export async function POST(request: NextRequest) {
       console.log(`✨ Created new contact (ID: ${contactId})`);
     }
 
-    // Step 2: Store in waitlist intake table
+    // Step 2: Track this source for the contact
+    await db
+      .insert(contactSources)
+      .values({
+        contactId,
+        source,
+        firstInteraction: new Date(),
+        lastInteraction: new Date(),
+        interactionCount: 1,
+      })
+      .onConflictDoUpdate({
+        target: [contactSources.contactId, contactSources.source],
+        set: {
+          lastInteraction: new Date(),
+          interactionCount: sql`${contactSources.interactionCount} + 1`,
+          updatedAt: new Date(),
+        },
+      });
+
+    console.log(`📊 Source tracked: ${source}`);
+
+    // Step 2.5: Link anonymous visitor to contact (identify user)
+    const cookies = parseCookies(request.headers.get('cookie'));
+    const anonymousId = cookies[COOKIE_NAMES.ANONYMOUS_ID];
+    const sessionId = cookies[COOKIE_NAMES.SESSION_ID];
+
+    if (anonymousId) {
+      await identifyUser({
+        anonymousId,
+        contactId,
+        source: 'waitlist',
+      });
+      console.log(`🔗 Linked anonymous ID ${anonymousId} to contact ${contactId}`);
+    }
+
+    // Step 3: Store in waitlist intake table
     const [waitlistEntry] = await db
       .insert(waitlistIntake)
       .values({
+        contactId,
         name,
         email,
         phone,
         message,
+        willingToFillQuestionnaire,
         source,
-        contactId,
         processed: true, // Mark as processed since we already created the contact
       })
       .returning();
 
     console.log(`✅ Waitlist entry created (ID: ${waitlistEntry!.id})`);
 
-    // Step 3: Log activity
+    // Step 4: Log activity
     await db.insert(contactActivities).values({
       contactId,
       activityType: "waitlist_signup",
@@ -105,18 +208,68 @@ export async function POST(request: NextRequest) {
       description: `Joined waitlist via ${source}`,
       metadata: {
         message,
+        willingToFillQuestionnaire,
         waitlistEntryId: waitlistEntry!.id,
       },
     });
 
     console.log(`📝 Activity logged for contact ${contactId}`);
 
-    return NextResponse.json({
+    // Step 4.5: Track form submission event
+    if (anonymousId) {
+      await trackEvent(
+        {
+          sessionId,
+          anonymousId,
+          contactId,
+        },
+        {
+          eventType: 'form_submit',
+          eventName: 'Waitlist Signup',
+          domain: request.headers.get('host') || undefined,
+          path: '/api/waitlist',
+          properties: {
+            formType: 'waitlist',
+            willingToFillQuestionnaire,
+            source,
+          },
+        }
+      );
+      console.log(`📊 Form submission event tracked`);
+    }
+
+    // Step 5: Klaviyo Integration (non-blocking)
+    // Trigger Klaviyo flow - don't await to avoid blocking the response
+    triggerKlaviyoWaitlistFlow({
+      email,
+      name,
+      phone: phone || "",
+      message: message || "",
+      willingToFillQuestionnaire,
+      source,
+    }).catch((error) => {
+      // Log error but don't fail the request
+      console.error("⚠️  Klaviyo trigger failed (non-critical):", error);
+    });
+
+    const response = NextResponse.json({
       success: true,
       message: "Successfully joined the waitlist!",
       contactId,
       waitlistId: waitlistEntry!.id,
     });
+
+    // Set contact ID cookie for future tracking
+    response.headers.append(
+      'Set-Cookie',
+      setCookieHeader(
+        COOKIE_NAMES.CONTACT_ID,
+        contactId.toString(),
+        COOKIE_OPTIONS.contactId
+      )
+    );
+
+    return response;
   } catch (error) {
     console.error("Error processing waitlist submission:", error);
     return NextResponse.json(

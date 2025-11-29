@@ -21,6 +21,7 @@ import {
   ExternalLink,
   Mail,
   Users,
+  Images,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -235,6 +236,232 @@ export function TestHomePage() {
                 </div>
               </CardContent>
             </Card>
+
+            {/* Community Page */}
+            <Card className="group flex h-full flex-col border-2 border-[#10b981]/20 transition-all duration-300 hover:shadow-2xl dark:border-[#10b981]/30">
+              <CardContent className="flex flex-1 flex-col p-6">
+                <div className="mb-4 flex flex-none items-center gap-3">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-[#059669] to-[#10b981] shadow-lg">
+                    <Users className="h-7 w-7 text-white" />
+                  </div>
+                  <h3
+                    className="text-xl font-bold text-black dark:text-white"
+                    style={{
+                      fontFamily: "Airwaves, sans-serif",
+                      letterSpacing: "0.05em",
+                    }}
+                  >
+                    Community
+                  </h3>
+                </div>
+                <p className="mb-4 flex-1 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
+                  Global community landing page with sacred geometry background,
+                  waitlist form, and event information.
+                </p>
+
+                <div className="flex items-center justify-between gap-2">
+                  <Badge className="bg-[#10b981]/10 text-[#10b981] dark:bg-[#10b981]/20">
+                    Launch
+                  </Badge>
+                  <div className="flex gap-3">
+                    <button
+                      onClick={() => router.push("/launch/community")}
+                      className="flex items-center gap-1 text-sm font-medium transition-colors hover:opacity-80"
+                      style={{ color: "#10b981" }}
+                    >
+                      <span>Live</span>
+                    </button>
+                    <span className="text-neutral-300">|</span>
+                    <button
+                      onClick={() => router.push("/community")}
+                      className="flex items-center gap-1 text-sm font-medium transition-colors hover:opacity-80"
+                      style={{ color: "#059669" }}
+                    >
+                      <span>Dev</span>
+                    </button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Launch Party Page */}
+            <Card className="group flex h-full flex-col border-2 border-[#10b981]/20 transition-all duration-300 hover:shadow-2xl dark:border-[#10b981]/30">
+              <CardContent className="flex flex-1 flex-col p-6">
+                <div className="mb-4 flex flex-none items-center gap-3">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-[#059669] to-[#10b981] shadow-lg">
+                    <Sparkles className="h-7 w-7 text-white" />
+                  </div>
+                  <h3
+                    className="text-xl font-bold text-black dark:text-white"
+                    style={{
+                      fontFamily: "Airwaves, sans-serif",
+                      letterSpacing: "0.05em",
+                    }}
+                  >
+                    Launch Party
+                  </h3>
+                </div>
+                <p className="mb-4 flex-1 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
+                  Local community launch event page with details, RSVP, and
+                  sacred geometry visuals.
+                </p>
+
+                <div className="flex items-center justify-between gap-2">
+                  <Badge className="bg-[#10b981]/10 text-[#10b981] dark:bg-[#10b981]/20">
+                    Launch
+                  </Badge>
+                  <div className="flex gap-3">
+                    <button
+                      onClick={() => router.push("/launch/launch-party")}
+                      className="flex items-center gap-1 text-sm font-medium transition-colors hover:opacity-80"
+                      style={{ color: "#10b981" }}
+                    >
+                      <span>Live</span>
+                    </button>
+                    <span className="text-neutral-300">|</span>
+                    <button
+                      onClick={() => router.push("/launch-party")}
+                      className="flex items-center gap-1 text-sm font-medium transition-colors hover:opacity-80"
+                      style={{ color: "#059669" }}
+                    >
+                      <span>Dev</span>
+                    </button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Questionnaire Page */}
+            <Card className="group flex h-full flex-col border-2 border-[#10b981]/20 transition-all duration-300 hover:shadow-2xl dark:border-[#10b981]/30">
+              <CardContent className="flex flex-1 flex-col p-6">
+                <div className="mb-4 flex flex-none items-center gap-3">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-[#059669] to-[#10b981] shadow-lg">
+                    <Mail className="h-7 w-7 text-white" />
+                  </div>
+                  <h3
+                    className="text-xl font-bold text-black dark:text-white"
+                    style={{
+                      fontFamily: "Airwaves, sans-serif",
+                      letterSpacing: "0.05em",
+                    }}
+                  >
+                    Questionnaire
+                  </h3>
+                </div>
+                <p className="mb-4 flex-1 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
+                  Community alignment survey for new members - deep questions
+                  about values, intentions, and commitment.
+                </p>
+
+                <div className="flex items-center justify-between gap-2">
+                  <Badge className="bg-[#10b981]/10 text-[#10b981] dark:bg-[#10b981]/20">
+                    Launch
+                  </Badge>
+                  <div className="flex gap-3">
+                    <button
+                      onClick={() => router.push("/launch/questionnaire")}
+                      className="flex items-center gap-1 text-sm font-medium transition-colors hover:opacity-80"
+                      style={{ color: "#10b981" }}
+                    >
+                      <span>Live</span>
+                    </button>
+                    <span className="text-neutral-300">|</span>
+                    <button
+                      onClick={() => router.push("/questionnaire")}
+                      className="flex items-center gap-1 text-sm font-medium transition-colors hover:opacity-80"
+                      style={{ color: "#059669" }}
+                    >
+                      <span>Dev</span>
+                    </button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* About Page */}
+            <Card className="group flex h-full flex-col border-2 border-[#10b981]/20 transition-all duration-300 hover:shadow-2xl dark:border-[#10b981]/30">
+              <CardContent className="flex flex-1 flex-col p-6">
+                <div className="mb-4 flex flex-none items-center gap-3">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-[#059669] to-[#10b981] shadow-lg">
+                    <Users className="h-7 w-7 text-white" />
+                  </div>
+                  <h3
+                    className="text-xl font-bold text-black dark:text-white"
+                    style={{
+                      fontFamily: "Airwaves, sans-serif",
+                      letterSpacing: "0.05em",
+                    }}
+                  >
+                    About
+                  </h3>
+                </div>
+                <p className="mb-4 flex-1 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
+                  About New Earth Collective - mission, vision, values, and
+                  the principles that guide our community.
+                </p>
+
+                <div className="flex items-center justify-between gap-2">
+                  <Badge className="bg-[#10b981]/10 text-[#10b981] dark:bg-[#10b981]/20">
+                    Launch
+                  </Badge>
+                  <div className="flex gap-3">
+                    <button
+                      onClick={() => router.push("/launch/about")}
+                      className="flex items-center gap-1 text-sm font-medium transition-colors hover:opacity-80"
+                      style={{ color: "#10b981" }}
+                    >
+                      <span>Live</span>
+                    </button>
+                    <span className="text-neutral-300">|</span>
+                    <button
+                      onClick={() => router.push("/about")}
+                      className="flex items-center gap-1 text-sm font-medium transition-colors hover:opacity-80"
+                      style={{ color: "#059669" }}
+                    >
+                      <span>Dev</span>
+                    </button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Unsubscribe Page */}
+            <Card className="group flex h-full flex-col border-2 border-red-500/20 transition-all duration-300 hover:shadow-2xl dark:border-red-500/30">
+              <CardContent className="flex flex-1 flex-col p-6">
+                <div className="mb-4 flex flex-none items-center gap-3">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-red-600 to-red-500 shadow-lg">
+                    <Mail className="h-7 w-7 text-white" />
+                  </div>
+                  <h3
+                    className="text-xl font-bold text-black dark:text-white"
+                    style={{
+                      fontFamily: "Airwaves, sans-serif",
+                      letterSpacing: "0.05em",
+                    }}
+                  >
+                    Unsubscribe
+                  </h3>
+                </div>
+                <p className="mb-4 flex-1 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
+                  Unsubscribe page for email and SMS opt-out. Accessible via trackable links in communications (GDPR/CAN-SPAM compliant).
+                </p>
+
+                <div className="flex items-center justify-between gap-2">
+                  <Badge className="bg-red-500/10 text-red-500 dark:bg-red-500/20">
+                    Utility
+                  </Badge>
+                  <div className="flex gap-3">
+                    <button
+                      onClick={() => router.push("/unsubscribe")}
+                      className="flex items-center gap-1 text-sm font-medium transition-colors hover:opacity-80"
+                      style={{ color: "#ef4444" }}
+                    >
+                      <span>View</span>
+                    </button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </section>
 
@@ -247,6 +474,162 @@ export function TestHomePage() {
             Sites Under Development
           </h2>
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {/* Global Landing (Production Ready) */}
+            <Card className="group flex h-full flex-col border-2 border-[#10b981]/20 transition-all duration-300 hover:shadow-2xl dark:border-[#10b981]/30">
+              <CardContent className="flex flex-1 flex-col p-6">
+                <div className="mb-4 flex flex-none items-center gap-3">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-[#059669] to-[#10b981] shadow-lg">
+                    <Users className="h-7 w-7 text-white" />
+                  </div>
+                  <h3
+                    className="text-xl font-bold text-black dark:text-white"
+                    style={{
+                      fontFamily: "Airwaves, sans-serif",
+                      letterSpacing: "0.05em",
+                    }}
+                  >
+                    Global
+                  </h3>
+                </div>
+                <p className="mb-4 flex-1 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
+                  Production-ready community landing page with shader hero,
+                  waitlist form, and launch party info. Includes navigation to
+                  dedicated launch party page.
+                </p>
+
+                <div className="flex items-center justify-between">
+                  <Badge className="bg-[#10b981]/10 text-[#10b981] dark:bg-[#10b981]/20">
+                    Production Ready
+                  </Badge>
+                  <button
+                    onClick={() => router.push("/community")}
+                    className="flex items-center gap-2 text-sm font-medium transition-colors hover:opacity-80"
+                    style={{ color: "#10b981" }}
+                  >
+                    <span>View Site</span>
+                    <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                  </button>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Local Landing (Production Ready) */}
+            <Card className="group flex h-full flex-col border-2 border-[#10b981]/20 transition-all duration-300 hover:shadow-2xl dark:border-[#10b981]/30">
+              <CardContent className="flex flex-1 flex-col p-6">
+                <div className="mb-4 flex flex-none items-center gap-3">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-[#059669] to-[#10b981] shadow-lg">
+                    <Users className="h-7 w-7 text-white" />
+                  </div>
+                  <h3
+                    className="text-xl font-bold text-black dark:text-white"
+                    style={{
+                      fontFamily: "Airwaves, sans-serif",
+                      letterSpacing: "0.05em",
+                    }}
+                  >
+                    Local
+                  </h3>
+                </div>
+                <p className="mb-4 flex-1 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
+                  Production-ready community landing page with shader hero,
+                  waitlist form, and launch party info. Includes navigation to
+                  dedicated launch party page.
+                </p>
+
+                <div className="flex items-center justify-between">
+                  <Badge className="bg-[#10b981]/10 text-[#10b981] dark:bg-[#10b981]/20">
+                    Production Ready
+                  </Badge>
+                  <button
+                    onClick={() => router.push("/launch-party")}
+                    className="flex items-center gap-2 text-sm font-medium transition-colors hover:opacity-80"
+                    style={{ color: "#10b981" }}
+                  >
+                    <span>View Site</span>
+                    <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                  </button>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Questionnaire (Production Ready) */}
+            <Card className="group flex h-full flex-col border-2 border-[#10b981]/20 transition-all duration-300 hover:shadow-2xl dark:border-[#10b981]/30">
+              <CardContent className="flex flex-1 flex-col p-6">
+                <div className="mb-4 flex flex-none items-center gap-3">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-[#059669] to-[#10b981] shadow-lg">
+                    <Users className="h-7 w-7 text-white" />
+                  </div>
+                  <h3
+                    className="text-xl font-bold text-black dark:text-white"
+                    style={{
+                      fontFamily: "Airwaves, sans-serif",
+                      letterSpacing: "0.05em",
+                    }}
+                  >
+                    Questionnaire
+                  </h3>
+                </div>
+                <p className="mb-4 flex-1 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
+                  Production-ready community landing page with shader hero,
+                  waitlist form, and launch party info. Includes navigation to
+                  dedicated launch party page.
+                </p>
+
+                <div className="flex items-center justify-between">
+                  <Badge className="bg-[#10b981]/10 text-[#10b981] dark:bg-[#10b981]/20">
+                    Production Ready
+                  </Badge>
+                  <button
+                    onClick={() => router.push("/questionnaire")}
+                    className="flex items-center gap-2 text-sm font-medium transition-colors hover:opacity-80"
+                    style={{ color: "#10b981" }}
+                  >
+                    <span>View Site</span>
+                    <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                  </button>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* About (Production Ready) */}
+            <Card className="group flex h-full flex-col border-2 border-[#10b981]/20 transition-all duration-300 hover:shadow-2xl dark:border-[#10b981]/30">
+              <CardContent className="flex flex-1 flex-col p-6">
+                <div className="mb-4 flex flex-none items-center gap-3">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-[#059669] to-[#10b981] shadow-lg">
+                    <Users className="h-7 w-7 text-white" />
+                  </div>
+                  <h3
+                    className="text-xl font-bold text-black dark:text-white"
+                    style={{
+                      fontFamily: "Airwaves, sans-serif",
+                      letterSpacing: "0.05em",
+                    }}
+                  >
+                    About
+                  </h3>
+                </div>
+                <p className="mb-4 flex-1 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
+                  Production-ready community landing page with shader hero,
+                  waitlist form, and launch party info. Includes navigation to
+                  dedicated launch party page.
+                </p>
+
+                <div className="flex items-center justify-between">
+                  <Badge className="bg-[#10b981]/10 text-[#10b981] dark:bg-[#10b981]/20">
+                    Production Ready
+                  </Badge>
+                  <button
+                    onClick={() => router.push("/about")}
+                    className="flex items-center gap-2 text-sm font-medium transition-colors hover:opacity-80"
+                    style={{ color: "#10b981" }}
+                  >
+                    <span>View Site</span>
+                    <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                  </button>
+                </div>
+              </CardContent>
+            </Card>
+
             {/* Dope Ass Landing Page with Dropdown */}
             <Card className="group flex h-full flex-col border-2 border-[#facf39]/20 transition-all duration-300 hover:shadow-2xl dark:border-[#facf39]/30">
               <CardContent className="flex flex-1 flex-col p-6">
@@ -435,13 +818,24 @@ export function TestHomePage() {
                 </div>
               </CardContent>
             </Card>
+          </div>
+        </section>
 
-            {/* Community Landing (Production Ready) */}
-            <Card className="group flex h-full flex-col border-2 border-[#10b981]/20 transition-all duration-300 hover:shadow-2xl dark:border-[#10b981]/30">
+        {/* Photo Gallery Section */}
+        <section className="mb-20">
+          <h2
+            className="mb-8 text-center text-4xl font-bold"
+            style={{ fontFamily: "Bourton, sans-serif", color: "#facf39" }}
+          >
+            Photo Gallery
+          </h2>
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {/* Gallery 1 */}
+            <Card className="group flex h-full flex-col border-2 border-[#8b5cf6]/20 transition-all duration-300 hover:shadow-2xl dark:border-[#8b5cf6]/30">
               <CardContent className="flex flex-1 flex-col p-6">
                 <div className="mb-4 flex flex-none items-center gap-3">
-                  <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-[#059669] to-[#10b981] shadow-lg">
-                    <Users className="h-7 w-7 text-white" />
+                  <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-[#7c3aed] to-[#8b5cf6] shadow-lg">
+                    <Images className="h-7 w-7 text-white" />
                   </div>
                   <h3
                     className="text-xl font-bold text-black dark:text-white"
@@ -450,25 +844,24 @@ export function TestHomePage() {
                       letterSpacing: "0.05em",
                     }}
                   >
-                    Community Landing
+                    Gallery 1
                   </h3>
                 </div>
                 <p className="mb-4 flex-1 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
-                  Production-ready community landing page with shader hero,
-                  waitlist form, and launch party info. Includes navigation to
-                  dedicated launch party page.
+                  Beautiful rotating carousel of community photos with smooth,
+                  natural motion. Features 58 photos from gatherings and events.
                 </p>
 
                 <div className="flex items-center justify-between">
-                  <Badge className="bg-[#10b981]/10 text-[#10b981] dark:bg-[#10b981]/20">
-                    Production Ready
+                  <Badge className="bg-[#8b5cf6]/10 text-[#8b5cf6] dark:bg-[#8b5cf6]/20">
+                    58 Photos
                   </Badge>
                   <button
-                    onClick={() => router.push("/community")}
+                    onClick={() => router.push("/gallery/gallery-1")}
                     className="flex items-center gap-2 text-sm font-medium transition-colors hover:opacity-80"
-                    style={{ color: "#10b981" }}
+                    style={{ color: "#8b5cf6" }}
                   >
-                    <span>View Site</span>
+                    <span>View Gallery</span>
                     <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                   </button>
                 </div>

@@ -95,7 +95,7 @@ export async function upsertContact(params: CreateContactParams): Promise<{
         email,
         name: name || null,
         phone: phone || null,
-        source,
+        firstSource: source,
         status: status || "lead",
         tags: tags || [],
         metadata: metadata || null,
@@ -221,11 +221,11 @@ export async function searchContacts(params: {
   let query = db.select().from(contacts);
 
   if (source) {
-    query = query.where(eq(contacts.source, source));
+    query = query.where(eq(contacts.firstSource, source)) as any;
   }
 
   if (status) {
-    query = query.where(eq(contacts.status, status));
+    query = query.where(eq(contacts.status, status)) as any;
   }
 
   // Note: For tag filtering with JSONB, you'd use a more complex query

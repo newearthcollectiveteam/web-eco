@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { getDomainConfig } from "~/lib/domains";
 import { ThemeToggle } from "./theme-toggle";
 import { SignOutButton } from "./auth/signout-button";
@@ -17,8 +18,14 @@ export function DomainLayout({
   headerClassName,
   footerClassName,
 }: DomainLayoutProps) {
-  // Use test domain configuration
-  const domainConfig = getDomainConfig("test.joinnewearthcollective.com");
+  const [domainConfig, setDomainConfig] = useState(() =>
+    getDomainConfig("joinnewearthcollective.com")
+  );
+
+  useEffect(() => {
+    const hostname = window.location.hostname || "joinnewearthcollective.com";
+    setDomainConfig(getDomainConfig(hostname));
+  }, []);
 
   // Default header/footer styles
   const defaultHeaderClass =

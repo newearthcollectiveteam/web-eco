@@ -26,7 +26,9 @@ let _db:
 
 function createDatabase() {
   // Detect database type from URL
-  const isPostgres = env.DATABASE_URL.startsWith("postgresql://");
+  const isPostgres =
+    env.DATABASE_URL.startsWith("postgresql://") ||
+    env.DATABASE_URL.startsWith("postgres://");
 
   if (isPostgres) {
     // PostgreSQL/Supabase configuration
@@ -59,6 +61,9 @@ function createDatabase() {
   }
 }
 
+// Type helper to get the database type with schema
+type DatabaseType = ReturnType<typeof drizzlePg<typeof schema>>;
+
 // Use a Proxy to lazily create the database connection only when accessed
 export const db = new Proxy({} as any, {
   get(_target, prop) {
@@ -68,4 +73,4 @@ export const db = new Proxy({} as any, {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return (_db as any)[prop];
   },
-}) as ReturnType<typeof drizzlePg> | ReturnType<typeof drizzleSqlite>;
+}) as DatabaseType;

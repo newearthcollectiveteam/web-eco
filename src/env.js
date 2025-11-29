@@ -15,6 +15,7 @@ export const env = createEnv({
     MAILJET_SECRET_KEY: z.string().min(1, "Mailjet secret key is required"),
     MAILJET_FROM_EMAIL: z.string().email("Valid sender email is required"),
     MAILJET_FROM_NAME: z.string().min(1, "Sender name is required"),
+    IP_HASH_SALT: z.string().optional(),
   },
 
   /**
@@ -26,6 +27,7 @@ export const env = createEnv({
     NEXT_PUBLIC_SUPABASE_URL: z.string().url(),
     NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().min(1),
     NEXT_PUBLIC_BASE_URL: z.string().url(),
+    NEXT_PUBLIC_COOKIE_DOMAIN: z.string().optional(),
   },
 
   /**
@@ -42,6 +44,8 @@ export const env = createEnv({
     MAILJET_FROM_EMAIL: process.env.MAILJET_FROM_EMAIL,
     MAILJET_FROM_NAME: process.env.MAILJET_FROM_NAME,
     NEXT_PUBLIC_BASE_URL: process.env.NEXT_PUBLIC_BASE_URL,
+    NEXT_PUBLIC_COOKIE_DOMAIN: process.env.NEXT_PUBLIC_COOKIE_DOMAIN,
+    IP_HASH_SALT: process.env.IP_HASH_SALT,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially

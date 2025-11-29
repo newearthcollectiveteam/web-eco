@@ -49,7 +49,7 @@ export async function GET(request: NextRequest) {
     const conditions = [];
 
     if (source) {
-      conditions.push(eq(contacts.source, source));
+      conditions.push(eq(contacts.firstSource, source));
     }
 
     if (status) {
@@ -66,7 +66,7 @@ export async function GET(request: NextRequest) {
     }
 
     if (conditions.length > 0) {
-      query = query.where(or(...conditions));
+      query = query.where(or(...conditions)) as any;
     }
 
     const allContacts = await query
@@ -80,8 +80,8 @@ export async function GET(request: NextRequest) {
     const contactsByStatus: Record<string, number> = {};
 
     allContacts.forEach((contact) => {
-      contactsBySource[contact.source] =
-        (contactsBySource[contact.source] || 0) + 1;
+      contactsBySource[contact.firstSource] =
+        (contactsBySource[contact.firstSource] || 0) + 1;
       contactsByStatus[contact.status] =
         (contactsByStatus[contact.status] || 0) + 1;
     });

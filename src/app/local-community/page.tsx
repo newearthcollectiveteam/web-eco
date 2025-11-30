@@ -8,7 +8,7 @@ export default function LocalCommunityLandingPage() {
       {/* Flower of Life Shader Background - Only in Hero Section */}
       <div className="absolute inset-x-0 top-0 h-screen opacity-30 dark:opacity-25">
         <iframe
-          src="/shaders/flower-of-life/embed"
+          src="/shaders/flower-of-life/embed?domain=test.joinnewearthcollective.com"
           className="h-full w-full border-0"
           style={{ pointerEvents: "none" }}
           title="Sacred Geometry Background"

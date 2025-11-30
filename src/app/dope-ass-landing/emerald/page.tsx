@@ -49,7 +49,7 @@ export default function EmeraldLandingPage() {
         {/* Flower of Life Shader Background - Subtle & Non-Distracting */}
         <div className="absolute inset-0 opacity-20">
           <iframe
-            src="/shaders/flower-of-life/embed"
+            src="/shaders/flower-of-life/embed?domain=test.joinnewearthcollective.com"
             className="h-full w-full border-0"
             style={{ pointerEvents: "none" }}
           />

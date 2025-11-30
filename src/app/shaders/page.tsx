@@ -7,6 +7,8 @@ import { Badge } from "~/components/ui/badge";
 import { DomainLayout } from "~/components/domain-layout";
 import { BackButton } from "~/components/back-button";
 import { ArrowRight, Sparkles, Zap } from "lucide-react";
+import { useSearchParams } from "next/navigation";
+import { useEffect, useState, Suspense } from "react";
 
 // GLSL Shader showcase items
 const SHADERS = [
@@ -64,7 +66,35 @@ const SHADERS = [
   },
 ];
 
-export default function ShadersPage() {
+function ShadersPageContent() {
+  const searchParams = useSearchParams();
+  const [domainParam, setDomainParam] = useState(
+    () => searchParams.get("domain") || ""
+  );
+
+  useEffect(() => {
+    const paramFromSearch = searchParams.get("domain");
+    if (paramFromSearch) {
+      setDomainParam(paramFromSearch);
+      return;
+    }
+
+    if (typeof window !== "undefined") {
+      const host = window.location.hostname.toLowerCase();
+      if (host.includes("test.joinnewearthcollective.com")) {
+        setDomainParam("test.joinnewearthcollective.com");
+      }
+    }
+  }, [searchParams]);
+
+  const withDomainQuery = (href: string) => {
+    if (!domainParam) return href;
+    if (href.includes("domain=")) return href;
+    return href.includes("?")
+      ? `${href}&domain=${encodeURIComponent(domainParam)}`
+      : `${href}?domain=${encodeURIComponent(domainParam)}`;
+  };
+
   return (
     <DomainLayout>
       <BackButton />
@@ -156,7 +186,7 @@ export default function ShadersPage() {
                 colorMap[shader.color] ?? colorMap["cosmic-purple"]!;
 
               return (
-                <Link key={shader.id} href={shader.href}>
+                <Link key={shader.id} href={withDomainQuery(shader.href)}>
                   <Card
                     className={`group flex h-full cursor-pointer flex-col border-2 transition-all duration-300 hover:scale-105 hover:shadow-2xl ${colors.border}`}
                   >
@@ -227,5 +257,13 @@ export default function ShadersPage() {
         </div>
       </div>
     </DomainLayout>
+  );
+}
+
+export default function ShadersPage() {
+  return (
+    <Suspense fallback={null}>
+      <ShadersPageContent />
+    </Suspense>
   );
 }

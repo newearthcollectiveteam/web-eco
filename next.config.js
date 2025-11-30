@@ -16,6 +16,15 @@ const config = {
     // Temporarily ignore ESLint errors during build
     ignoreDuringBuilds: true,
   },
+  async rewrites() {
+    return [
+      // Friendly gallery paths: /gallery-1 -> /gallery/gallery-1
+      {
+        source: "/gallery-:slug",
+        destination: "/gallery/gallery-:slug",
+      },
+    ];
+  },
 };
 
 export default config;

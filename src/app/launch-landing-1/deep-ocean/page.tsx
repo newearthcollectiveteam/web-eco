@@ -39,7 +39,7 @@ export default function DeepOceanLaunchLanding1Page() {
       <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-[#1e3a8a] to-[#0f766e]">
         <div className="absolute inset-0 opacity-15">
           <iframe
-            src="/shaders/flower-of-life/embed"
+            src="/shaders/flower-of-life/embed?domain=test.joinnewearthcollective.com"
             className="h-full w-full border-0"
             style={{ pointerEvents: "none" }}
           />

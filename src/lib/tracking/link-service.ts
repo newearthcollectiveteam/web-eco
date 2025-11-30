@@ -210,7 +210,7 @@ export async function generateWaitlistWelcomeLink(params: {
 }): Promise<string> {
   return await generateTrackedLink({
     contactId: params.contactId,
-    destinationPath: '/community',
+    destinationPath: '/global',
     emailType: 'waitlist-welcome',
     emailSubject: `Welcome to New Earth Collective, ${params.name}!`,
     linkText: 'Explore Our Community',

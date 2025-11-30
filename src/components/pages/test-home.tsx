@@ -22,6 +22,8 @@ import {
   Mail,
   Users,
   Images,
+  Globe2,
+  Map,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -34,6 +36,29 @@ export function TestHomePage() {
     useState("/join-community-1");
   const [selectedLaunchLanding, setSelectedLaunchLanding] =
     useState("/launch-landing-1");
+
+  // Helper to navigate with proper domain parameter
+  const navigateToPath = (path: string) => {
+    if (typeof window === "undefined") return;
+    const hostname = window.location.hostname;
+    const isLocal = hostname === "localhost" || hostname === "127.0.0.1";
+    const hasDomainQuery = path.includes("domain=");
+    const isExternal = path.startsWith("http://") || path.startsWith("https://");
+
+    // If the path already has a domain param or is external, just go there as-is on localhost
+    if (isLocal) {
+      if (hasDomainQuery || isExternal) {
+        window.location.href = path;
+        return;
+      }
+      const separator = path.includes("?") ? "&" : "?";
+      window.location.href = `${path}${separator}domain=test.joinnewearthcollective.com`;
+      return;
+    }
+
+    // Non-local: keep normal navigation
+    router.push(path);
+  };
 
   const landingPageVariations = [
     { name: "Original (Golden)", path: "/dope-ass-landing" },
@@ -148,6 +173,53 @@ export function TestHomePage() {
           </div>
         </section>
 
+        {/* Ecosystem Domain Map Section */}
+        <section className="mb-20">
+          <h2
+            className="mb-8 text-center text-4xl font-bold"
+            style={{ fontFamily: "Bourton, sans-serif", color: "#facf39" }}
+          >
+            Ecosystem Map
+          </h2>
+          <div className="grid gap-6 md:grid-cols-1">
+            <Card className="group mx-auto flex h-full w-full max-w-2xl flex-col border-2 border-[#facf39]/20 transition-all duration-300 hover:shadow-2xl dark:border-[#facf39]/30">
+              <CardContent className="flex flex-1 flex-col p-6">
+                <div className="mb-4 flex flex-none items-center gap-3">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-[#f3a51c] via-[#f6c43f] to-[#f6e45b] shadow-lg">
+                    <Map className="h-7 w-7 text-black" />
+                  </div>
+                  <h3
+                    className="text-xl font-bold text-black dark:text-white"
+                    style={{
+                      fontFamily: "Airwaves, sans-serif",
+                      letterSpacing: "0.05em",
+                    }}
+                  >
+                    Complete Site Map
+                  </h3>
+                </div>
+                <p className="mb-4 flex-1 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
+                  View the complete ecosystem map showing all pages across joinnewearthcollective.com, launch.joinnewearthcollective.com, and test.joinnewearthcollective.com domains.
+                </p>
+
+                <div className="flex items-center justify-between">
+                  <Badge className="bg-[#facf39]/10 text-[#facf39] dark:bg-[#facf39]/20">
+                    Full Map
+                  </Badge>
+                  <button
+                    onClick={() => navigateToPath("/ecosystem-map")}
+                    className="flex items-center gap-2 text-sm font-medium transition-colors hover:opacity-80"
+                    style={{ color: "#facf39" }}
+                  >
+                    <span>View Map</span>
+                    <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                  </button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </section>
+
         {/* Live Sites Section */}
         <section className="mb-20">
           <h2
@@ -158,11 +230,11 @@ export function TestHomePage() {
           </h2>
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {/* New Earth Collective Main Site */}
-            <Card className="group flex h-full flex-col border-2 border-[#10b981]/20 transition-all duration-300 hover:shadow-2xl dark:border-[#10b981]/30">
+            <Card className="group flex h-full flex-col border-2 border-[#facf39]/20 transition-all duration-300 hover:shadow-2xl dark:border-[#facf39]/30">
               <CardContent className="flex flex-1 flex-col p-6">
                 <div className="mb-4 flex flex-none items-center gap-3">
-                  <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-[#059669] to-[#10b981] shadow-lg">
-                    <ExternalLink className="h-7 w-7 text-white" />
+                  <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-[#f3a51c] via-[#f6c43f] to-[#f6e45b] shadow-lg">
+                    <ExternalLink className="h-7 w-7 text-black" />
                   </div>
                   <h3
                     className="text-xl font-bold text-black dark:text-white"
@@ -171,7 +243,7 @@ export function TestHomePage() {
                       letterSpacing: "0.05em",
                     }}
                   >
-                    New Earth Collective
+                    Full Ecosystem
                   </h3>
                 </div>
                 <p className="mb-4 flex-1 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
@@ -180,19 +252,30 @@ export function TestHomePage() {
                 </p>
 
                 <div className="flex items-center justify-between">
-                  <Badge className="bg-[#10b981]/10 text-[#10b981] dark:bg-[#10b981]/20">
+                  <Badge className="bg-[#facf39]/10 text-[#facf39] dark:bg-[#facf39]/20">
                     Live
                   </Badge>
-                  <a
-                    href="https://joinnewearthcollective.com/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2 text-sm font-medium transition-colors hover:opacity-80"
-                    style={{ color: "#10b981" }}
-                  >
-                    <span>Visit Site</span>
-                    <ExternalLink className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-                  </a>
+                  <div className="flex gap-3">
+                    <a
+                      href="https://joinnewearthcollective.com/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-1 text-sm font-medium transition-colors hover:opacity-80"
+                      style={{ color: "#facf39" }}
+                    >
+                      <span>Live</span>
+                    </a>
+                    <span className="text-neutral-300">|</span>
+                    <button
+                      onClick={() =>
+                        navigateToPath("/?domain=joinnewearthcollective.com")
+                      }
+                      className="flex items-center gap-1 text-sm font-medium transition-colors hover:opacity-80"
+                      style={{ color: "#facf39" }}
+                    >
+                      <span>Dev</span>
+                    </button>
+                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -211,7 +294,7 @@ export function TestHomePage() {
                       letterSpacing: "0.05em",
                     }}
                   >
-                    Wear New Earth
+                    Merch
                   </h3>
                 </div>
                 <p className="mb-4 flex-1 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
@@ -219,30 +302,43 @@ export function TestHomePage() {
                   Wear your values, embody the change.
                 </p>
 
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between gap-3">
                   <Badge className="bg-[#facf39]/10 text-[#facf39] dark:bg-[#facf39]/20">
                     Live
                   </Badge>
-                  <a
-                    href="https://wearnewearth.com/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2 text-sm font-medium transition-colors hover:opacity-80"
-                    style={{ color: "#facf39" }}
-                  >
-                    <span>Visit Site</span>
-                    <ExternalLink className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-                  </a>
+                  <div className="flex items-center gap-3">
+                    <a
+                      href="https://merch.joinnewearthcollective.com/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-1 text-sm font-medium transition-colors hover:opacity-80"
+                      style={{ color: "#facf39" }}
+                    >
+                      <span>Current</span>
+                      <ExternalLink className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                    </a>
+                    <span className="text-neutral-300">|</span>
+                    <a
+                      href="https://wearnewearth.com/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-1 text-sm font-medium transition-colors hover:opacity-80"
+                      style={{ color: "#facf39" }}
+                    >
+                      <span>Future</span>
+                      <ExternalLink className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                    </a>
+                  </div>
                 </div>
               </CardContent>
             </Card>
 
-            {/* Community Page */}
-            <Card className="group flex h-full flex-col border-2 border-[#10b981]/20 transition-all duration-300 hover:shadow-2xl dark:border-[#10b981]/30">
+            {/* Global Landing Page */}
+            <Card className="group flex h-full flex-col border-2 border-[#facf39]/20 transition-all duration-300 hover:shadow-2xl dark:border-[#facf39]/30">
               <CardContent className="flex flex-1 flex-col p-6">
                 <div className="mb-4 flex flex-none items-center gap-3">
-                  <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-[#059669] to-[#10b981] shadow-lg">
-                    <Users className="h-7 w-7 text-white" />
+                  <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-[#f3a51c] via-[#f6c43f] to-[#f6e45b] shadow-lg">
+                    <Users className="h-7 w-7 text-black" />
                   </div>
                   <h3
                     className="text-xl font-bold text-black dark:text-white"
@@ -251,31 +347,33 @@ export function TestHomePage() {
                       letterSpacing: "0.05em",
                     }}
                   >
-                    Community
+                    Global Landing Page
                   </h3>
                 </div>
                 <p className="mb-4 flex-1 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
-                  Global community landing page with sacred geometry background,
+                  Global landing page with sacred geometry background,
                   waitlist form, and event information.
                 </p>
 
                 <div className="flex items-center justify-between gap-2">
-                  <Badge className="bg-[#10b981]/10 text-[#10b981] dark:bg-[#10b981]/20">
+                  <Badge className="bg-[#facf39]/10 text-[#facf39] dark:bg-[#facf39]/20">
                     Launch
                   </Badge>
                   <div className="flex gap-3">
-                    <button
-                      onClick={() => router.push("/launch/community")}
+                    <a
+                      href="https://launch.joinnewearthcollective.com/global"
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="flex items-center gap-1 text-sm font-medium transition-colors hover:opacity-80"
-                      style={{ color: "#10b981" }}
+                      style={{ color: "#facf39" }}
                     >
                       <span>Live</span>
-                    </button>
+                    </a>
                     <span className="text-neutral-300">|</span>
                     <button
-                      onClick={() => router.push("/community")}
+                      onClick={() => window.location.href = "/global?domain=launch.joinnewearthcollective.com"}
                       className="flex items-center gap-1 text-sm font-medium transition-colors hover:opacity-80"
-                      style={{ color: "#059669" }}
+                      style={{ color: "#facf39" }}
                     >
                       <span>Dev</span>
                     </button>
@@ -284,12 +382,12 @@ export function TestHomePage() {
               </CardContent>
             </Card>
 
-            {/* Launch Party Page */}
-            <Card className="group flex h-full flex-col border-2 border-[#10b981]/20 transition-all duration-300 hover:shadow-2xl dark:border-[#10b981]/30">
+            {/* Boulder Launch Party Page */}
+            <Card className="group flex h-full flex-col border-2 border-[#facf39]/20 transition-all duration-300 hover:shadow-2xl dark:border-[#facf39]/30">
               <CardContent className="flex flex-1 flex-col p-6">
                 <div className="mb-4 flex flex-none items-center gap-3">
-                  <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-[#059669] to-[#10b981] shadow-lg">
-                    <Sparkles className="h-7 w-7 text-white" />
+                  <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-[#f3a51c] via-[#f6c43f] to-[#f6e45b] shadow-lg">
+                    <Sparkles className="h-7 w-7 text-black" />
                   </div>
                   <h3
                     className="text-xl font-bold text-black dark:text-white"
@@ -298,31 +396,33 @@ export function TestHomePage() {
                       letterSpacing: "0.05em",
                     }}
                   >
-                    Launch Party
+                    Boulder Launch Party
                   </h3>
                 </div>
                 <p className="mb-4 flex-1 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
-                  Local community launch event page with details, RSVP, and
+                  Boulder, CO community launch event page with details, RSVP, and
                   sacred geometry visuals.
                 </p>
 
                 <div className="flex items-center justify-between gap-2">
-                  <Badge className="bg-[#10b981]/10 text-[#10b981] dark:bg-[#10b981]/20">
+                  <Badge className="bg-[#facf39]/10 text-[#facf39] dark:bg-[#facf39]/20">
                     Launch
                   </Badge>
                   <div className="flex gap-3">
-                    <button
-                      onClick={() => router.push("/launch/launch-party")}
+                    <a
+                      href="https://launch.joinnewearthcollective.com/boulder-launch-party"
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="flex items-center gap-1 text-sm font-medium transition-colors hover:opacity-80"
-                      style={{ color: "#10b981" }}
+                      style={{ color: "#facf39" }}
                     >
                       <span>Live</span>
-                    </button>
+                    </a>
                     <span className="text-neutral-300">|</span>
                     <button
-                      onClick={() => router.push("/launch-party")}
+                      onClick={() => window.location.href = "/boulder-launch-party?domain=launch.joinnewearthcollective.com"}
                       className="flex items-center gap-1 text-sm font-medium transition-colors hover:opacity-80"
-                      style={{ color: "#059669" }}
+                      style={{ color: "#facf39" }}
                     >
                       <span>Dev</span>
                     </button>
@@ -332,11 +432,11 @@ export function TestHomePage() {
             </Card>
 
             {/* Questionnaire Page */}
-            <Card className="group flex h-full flex-col border-2 border-[#10b981]/20 transition-all duration-300 hover:shadow-2xl dark:border-[#10b981]/30">
+            <Card className="group flex h-full flex-col border-2 border-[#facf39]/20 transition-all duration-300 hover:shadow-2xl dark:border-[#facf39]/30">
               <CardContent className="flex flex-1 flex-col p-6">
                 <div className="mb-4 flex flex-none items-center gap-3">
-                  <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-[#059669] to-[#10b981] shadow-lg">
-                    <Mail className="h-7 w-7 text-white" />
+                  <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-[#f3a51c] via-[#f6c43f] to-[#f6e45b] shadow-lg">
+                    <Mail className="h-7 w-7 text-black" />
                   </div>
                   <h3
                     className="text-xl font-bold text-black dark:text-white"
@@ -354,22 +454,24 @@ export function TestHomePage() {
                 </p>
 
                 <div className="flex items-center justify-between gap-2">
-                  <Badge className="bg-[#10b981]/10 text-[#10b981] dark:bg-[#10b981]/20">
+                  <Badge className="bg-[#facf39]/10 text-[#facf39] dark:bg-[#facf39]/20">
                     Launch
                   </Badge>
                   <div className="flex gap-3">
-                    <button
-                      onClick={() => router.push("/launch/questionnaire")}
+                    <a
+                      href="https://launch.joinnewearthcollective.com/questionnaire"
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="flex items-center gap-1 text-sm font-medium transition-colors hover:opacity-80"
-                      style={{ color: "#10b981" }}
+                      style={{ color: "#facf39" }}
                     >
                       <span>Live</span>
-                    </button>
+                    </a>
                     <span className="text-neutral-300">|</span>
                     <button
-                      onClick={() => router.push("/questionnaire")}
+                      onClick={() => window.location.href = "/questionnaire?domain=launch.joinnewearthcollective.com"}
                       className="flex items-center gap-1 text-sm font-medium transition-colors hover:opacity-80"
-                      style={{ color: "#059669" }}
+                      style={{ color: "#facf39" }}
                     >
                       <span>Dev</span>
                     </button>
@@ -379,11 +481,11 @@ export function TestHomePage() {
             </Card>
 
             {/* About Page */}
-            <Card className="group flex h-full flex-col border-2 border-[#10b981]/20 transition-all duration-300 hover:shadow-2xl dark:border-[#10b981]/30">
+            <Card className="group flex h-full flex-col border-2 border-[#facf39]/20 transition-all duration-300 hover:shadow-2xl dark:border-[#facf39]/30">
               <CardContent className="flex flex-1 flex-col p-6">
                 <div className="mb-4 flex flex-none items-center gap-3">
-                  <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-[#059669] to-[#10b981] shadow-lg">
-                    <Users className="h-7 w-7 text-white" />
+                  <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-[#f3a51c] via-[#f6c43f] to-[#f6e45b] shadow-lg">
+                    <Users className="h-7 w-7 text-black" />
                   </div>
                   <h3
                     className="text-xl font-bold text-black dark:text-white"
@@ -401,22 +503,24 @@ export function TestHomePage() {
                 </p>
 
                 <div className="flex items-center justify-between gap-2">
-                  <Badge className="bg-[#10b981]/10 text-[#10b981] dark:bg-[#10b981]/20">
-                    Launch
+                  <Badge className="bg-[#facf39]/10 text-[#facf39] dark:bg-[#facf39]/20">
+                    Main Site
                   </Badge>
                   <div className="flex gap-3">
-                    <button
-                      onClick={() => router.push("/launch/about")}
+                    <a
+                      href="https://joinnewearthcollective.com/about"
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="flex items-center gap-1 text-sm font-medium transition-colors hover:opacity-80"
-                      style={{ color: "#10b981" }}
+                      style={{ color: "#facf39" }}
                     >
                       <span>Live</span>
-                    </button>
+                    </a>
                     <span className="text-neutral-300">|</span>
                     <button
-                      onClick={() => router.push("/about")}
+                      onClick={() => window.location.href = "/about?domain=joinnewearthcollective.com"}
                       className="flex items-center gap-1 text-sm font-medium transition-colors hover:opacity-80"
-                      style={{ color: "#059669" }}
+                      style={{ color: "#facf39" }}
                     >
                       <span>Dev</span>
                     </button>
@@ -426,11 +530,11 @@ export function TestHomePage() {
             </Card>
 
             {/* Unsubscribe Page */}
-            <Card className="group flex h-full flex-col border-2 border-red-500/20 transition-all duration-300 hover:shadow-2xl dark:border-red-500/30">
+            <Card className="group flex h-full flex-col border-2 border-[#facf39]/20 transition-all duration-300 hover:shadow-2xl dark:border-[#facf39]/30">
               <CardContent className="flex flex-1 flex-col p-6">
                 <div className="mb-4 flex flex-none items-center gap-3">
-                  <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-red-600 to-red-500 shadow-lg">
-                    <Mail className="h-7 w-7 text-white" />
+                  <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-[#f3a51c] via-[#f6c43f] to-[#f6e45b] shadow-lg">
+                    <Mail className="h-7 w-7 text-black" />
                   </div>
                   <h3
                     className="text-xl font-bold text-black dark:text-white"
@@ -447,16 +551,26 @@ export function TestHomePage() {
                 </p>
 
                 <div className="flex items-center justify-between gap-2">
-                  <Badge className="bg-red-500/10 text-red-500 dark:bg-red-500/20">
+                  <Badge className="bg-[#facf39]/10 text-[#facf39] dark:bg-[#facf39]/20">
                     Utility
                   </Badge>
                   <div className="flex gap-3">
-                    <button
-                      onClick={() => router.push("/unsubscribe")}
+                    <a
+                      href="https://launch.joinnewearthcollective.com/unsubscribe"
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="flex items-center gap-1 text-sm font-medium transition-colors hover:opacity-80"
-                      style={{ color: "#ef4444" }}
+                      style={{ color: "#facf39" }}
                     >
-                      <span>View</span>
+                      <span>Live</span>
+                    </a>
+                    <span className="text-neutral-300">|</span>
+                    <button
+                      onClick={() => window.location.href = "/unsubscribe?domain=launch.joinnewearthcollective.com"}
+                      className="flex items-center gap-1 text-sm font-medium transition-colors hover:opacity-80"
+                      style={{ color: "#facf39" }}
+                    >
+                      <span>Dev</span>
                     </button>
                   </div>
                 </div>
@@ -474,162 +588,6 @@ export function TestHomePage() {
             Sites Under Development
           </h2>
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {/* Global Landing (Production Ready) */}
-            <Card className="group flex h-full flex-col border-2 border-[#10b981]/20 transition-all duration-300 hover:shadow-2xl dark:border-[#10b981]/30">
-              <CardContent className="flex flex-1 flex-col p-6">
-                <div className="mb-4 flex flex-none items-center gap-3">
-                  <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-[#059669] to-[#10b981] shadow-lg">
-                    <Users className="h-7 w-7 text-white" />
-                  </div>
-                  <h3
-                    className="text-xl font-bold text-black dark:text-white"
-                    style={{
-                      fontFamily: "Airwaves, sans-serif",
-                      letterSpacing: "0.05em",
-                    }}
-                  >
-                    Global
-                  </h3>
-                </div>
-                <p className="mb-4 flex-1 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
-                  Production-ready community landing page with shader hero,
-                  waitlist form, and launch party info. Includes navigation to
-                  dedicated launch party page.
-                </p>
-
-                <div className="flex items-center justify-between">
-                  <Badge className="bg-[#10b981]/10 text-[#10b981] dark:bg-[#10b981]/20">
-                    Production Ready
-                  </Badge>
-                  <button
-                    onClick={() => router.push("/community")}
-                    className="flex items-center gap-2 text-sm font-medium transition-colors hover:opacity-80"
-                    style={{ color: "#10b981" }}
-                  >
-                    <span>View Site</span>
-                    <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-                  </button>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Local Landing (Production Ready) */}
-            <Card className="group flex h-full flex-col border-2 border-[#10b981]/20 transition-all duration-300 hover:shadow-2xl dark:border-[#10b981]/30">
-              <CardContent className="flex flex-1 flex-col p-6">
-                <div className="mb-4 flex flex-none items-center gap-3">
-                  <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-[#059669] to-[#10b981] shadow-lg">
-                    <Users className="h-7 w-7 text-white" />
-                  </div>
-                  <h3
-                    className="text-xl font-bold text-black dark:text-white"
-                    style={{
-                      fontFamily: "Airwaves, sans-serif",
-                      letterSpacing: "0.05em",
-                    }}
-                  >
-                    Local
-                  </h3>
-                </div>
-                <p className="mb-4 flex-1 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
-                  Production-ready community landing page with shader hero,
-                  waitlist form, and launch party info. Includes navigation to
-                  dedicated launch party page.
-                </p>
-
-                <div className="flex items-center justify-between">
-                  <Badge className="bg-[#10b981]/10 text-[#10b981] dark:bg-[#10b981]/20">
-                    Production Ready
-                  </Badge>
-                  <button
-                    onClick={() => router.push("/launch-party")}
-                    className="flex items-center gap-2 text-sm font-medium transition-colors hover:opacity-80"
-                    style={{ color: "#10b981" }}
-                  >
-                    <span>View Site</span>
-                    <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-                  </button>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Questionnaire (Production Ready) */}
-            <Card className="group flex h-full flex-col border-2 border-[#10b981]/20 transition-all duration-300 hover:shadow-2xl dark:border-[#10b981]/30">
-              <CardContent className="flex flex-1 flex-col p-6">
-                <div className="mb-4 flex flex-none items-center gap-3">
-                  <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-[#059669] to-[#10b981] shadow-lg">
-                    <Users className="h-7 w-7 text-white" />
-                  </div>
-                  <h3
-                    className="text-xl font-bold text-black dark:text-white"
-                    style={{
-                      fontFamily: "Airwaves, sans-serif",
-                      letterSpacing: "0.05em",
-                    }}
-                  >
-                    Questionnaire
-                  </h3>
-                </div>
-                <p className="mb-4 flex-1 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
-                  Production-ready community landing page with shader hero,
-                  waitlist form, and launch party info. Includes navigation to
-                  dedicated launch party page.
-                </p>
-
-                <div className="flex items-center justify-between">
-                  <Badge className="bg-[#10b981]/10 text-[#10b981] dark:bg-[#10b981]/20">
-                    Production Ready
-                  </Badge>
-                  <button
-                    onClick={() => router.push("/questionnaire")}
-                    className="flex items-center gap-2 text-sm font-medium transition-colors hover:opacity-80"
-                    style={{ color: "#10b981" }}
-                  >
-                    <span>View Site</span>
-                    <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-                  </button>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* About (Production Ready) */}
-            <Card className="group flex h-full flex-col border-2 border-[#10b981]/20 transition-all duration-300 hover:shadow-2xl dark:border-[#10b981]/30">
-              <CardContent className="flex flex-1 flex-col p-6">
-                <div className="mb-4 flex flex-none items-center gap-3">
-                  <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-[#059669] to-[#10b981] shadow-lg">
-                    <Users className="h-7 w-7 text-white" />
-                  </div>
-                  <h3
-                    className="text-xl font-bold text-black dark:text-white"
-                    style={{
-                      fontFamily: "Airwaves, sans-serif",
-                      letterSpacing: "0.05em",
-                    }}
-                  >
-                    About
-                  </h3>
-                </div>
-                <p className="mb-4 flex-1 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
-                  Production-ready community landing page with shader hero,
-                  waitlist form, and launch party info. Includes navigation to
-                  dedicated launch party page.
-                </p>
-
-                <div className="flex items-center justify-between">
-                  <Badge className="bg-[#10b981]/10 text-[#10b981] dark:bg-[#10b981]/20">
-                    Production Ready
-                  </Badge>
-                  <button
-                    onClick={() => router.push("/about")}
-                    className="flex items-center gap-2 text-sm font-medium transition-colors hover:opacity-80"
-                    style={{ color: "#10b981" }}
-                  >
-                    <span>View Site</span>
-                    <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-                  </button>
-                </div>
-              </CardContent>
-            </Card>
-
             {/* Dope Ass Landing Page with Dropdown */}
             <Card className="group flex h-full flex-col border-2 border-[#facf39]/20 transition-all duration-300 hover:shadow-2xl dark:border-[#facf39]/30">
               <CardContent className="flex flex-1 flex-col p-6">
@@ -682,7 +640,7 @@ export function TestHomePage() {
                     9 Variations
                   </Badge>
                   <button
-                    onClick={() => router.push(selectedVariation)}
+                    onClick={() => navigateToPath(selectedVariation)}
                     className="flex items-center gap-2 text-sm font-medium transition-colors hover:opacity-80"
                     style={{ color: "#facf39" }}
                   >
@@ -745,7 +703,7 @@ export function TestHomePage() {
                     9 Variations
                   </Badge>
                   <button
-                    onClick={() => router.push(selectedJoinCommunity)}
+                    onClick={() => navigateToPath(selectedJoinCommunity)}
                     className="flex items-center gap-2 text-sm font-medium transition-colors hover:opacity-80"
                     style={{ color: "#facf39" }}
                   >
@@ -808,7 +766,7 @@ export function TestHomePage() {
                     9 Variations
                   </Badge>
                   <button
-                    onClick={() => router.push(selectedLaunchLanding)}
+                    onClick={() => navigateToPath(selectedLaunchLanding)}
                     className="flex items-center gap-2 text-sm font-medium transition-colors hover:opacity-80"
                     style={{ color: "#facf39" }}
                   >
@@ -857,7 +815,7 @@ export function TestHomePage() {
                     58 Photos
                   </Badge>
                   <button
-                    onClick={() => router.push("/gallery/gallery-1")}
+                    onClick={() => navigateToPath("/gallery-1")}
                     className="flex items-center gap-2 text-sm font-medium transition-colors hover:opacity-80"
                     style={{ color: "#8b5cf6" }}
                   >
@@ -905,7 +863,7 @@ export function TestHomePage() {
                     Testing
                   </Badge>
                   <button
-                    onClick={() => router.push("/form-builder")}
+                    onClick={() => navigateToPath("/form-builder")}
                     className="flex items-center gap-2 text-sm font-medium transition-colors hover:opacity-80"
                     style={{ color: "#06b6d4" }}
                   >
@@ -970,10 +928,11 @@ export function TestHomePage() {
               const colors = colorMap[feature.color] ?? colorMap.golden!;
 
               return (
-                <Link key={feature.title} href={feature.href}>
-                  <Card
-                    className={`group flex h-full cursor-pointer flex-col border-2 transition-all duration-300 hover:scale-105 hover:shadow-2xl ${colors.border}`}
-                  >
+                <Card
+                  key={feature.title}
+                  onClick={() => navigateToPath(feature.href)}
+                  className={`group flex h-full cursor-pointer flex-col border-2 transition-all duration-300 hover:scale-105 hover:shadow-2xl ${colors.border}`}
+                >
                     <CardHeader className="flex-none">
                       <div
                         className={`mb-4 flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br ${colors.gradient} shadow-lg`}
@@ -1009,7 +968,6 @@ export function TestHomePage() {
                       </div>
                     </CardContent>
                   </Card>
-                </Link>
               );
             })}
           </div>

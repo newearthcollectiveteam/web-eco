@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import {
   Card,
   CardContent,
@@ -10,12 +10,12 @@ import {
 } from "~/components/ui/card";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
+import { BackButton } from "~/components/back-button";
 import Link from "next/link";
 import Image from "next/image";
 import {
   Mail,
   Send,
-  ArrowLeft,
   CheckCircle,
   AlertCircle,
   Eye,
@@ -127,15 +127,10 @@ export default function FormBuilderPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-white via-neutral-50 to-white dark:from-black dark:via-neutral-950 dark:to-black">
       <div className="container mx-auto px-4 py-16">
-        {/* Back Button */}
-        <div className="mb-8">
-          <Link href="/">
-            <Button variant="outline" className="gap-2">
-              <ArrowLeft className="h-4 w-4" />
-              Back to Hub
-            </Button>
-          </Link>
-        </div>
+        {/* Back Button (shared styling) */}
+        <Suspense fallback={null}>
+          <BackButton label="Back to Hub" />
+        </Suspense>
 
         {/* Header */}
         <section className="mb-12 text-center">

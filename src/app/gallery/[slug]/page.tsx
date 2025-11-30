@@ -4,9 +4,7 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { ArrowLeft } from "lucide-react";
 import { api as trpc } from "~/trpc/react";
-import { Button } from "~/components/ui/button";
 import {
   Carousel,
   CarouselContent,
@@ -16,6 +14,7 @@ import {
   CarouselDots,
   type CarouselApi,
 } from "~/components/ui/carousel";
+import { BackButton } from "~/components/back-button";
 
 export default function GalleryPage() {
   const params = useParams();
@@ -99,33 +98,31 @@ export default function GalleryPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-emerald-50/20 to-slate-100 dark:from-slate-950 dark:via-emerald-950/20 dark:to-slate-900">
+    <div className="min-h-screen bg-gradient-to-br from-white via-neutral-50 to-white dark:from-black dark:via-neutral-950 dark:to-black">
       {/* Header */}
-      <div className="relative z-20 bg-white/80 backdrop-blur-md dark:bg-slate-900/80">
-        <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-          {/* Back Button */}
-          <div className="mb-6">
-            <Link href="/">
-              <Button variant="outline" className="gap-2">
-                <ArrowLeft className="h-4 w-4" />
-                Back to Hub
-              </Button>
-            </Link>
-          </div>
-
-          <div className="text-center">
-            <h1 className="mb-2 text-4xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-5xl">
+      <div className="relative z-20 border-b border-[#facf39]/20 bg-white/80 backdrop-blur-md dark:border-[#facf39]/20 dark:bg-black/80">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-8 sm:px-6 lg:px-8">
+          <BackButton label="Back to Hub" />
+          <div className="text-center flex-1">
+            <h1
+              className="mb-2 text-4xl font-bold tracking-tight text-black dark:text-white sm:text-5xl"
+              style={{
+                fontFamily: "Airwaves, sans-serif",
+                letterSpacing: "0.05em",
+              }}
+            >
               {gallery.title}
             </h1>
             {gallery.description && (
-              <p className="mx-auto max-w-2xl text-lg text-slate-600 dark:text-slate-400">
+              <p className="mx-auto max-w-2xl text-lg text-neutral-600 dark:text-neutral-400">
                 {gallery.description}
               </p>
             )}
-            <p className="mt-2 text-sm text-slate-500 dark:text-slate-500">
+            <p className="mt-2 text-sm text-neutral-500 dark:text-neutral-500">
               {gallery.images.length} photos
             </p>
           </div>
+          <div className="w-[116px]" /> {/* spacer to balance BackButton width */}
         </div>
       </div>
 
@@ -181,7 +178,7 @@ export default function GalleryPage() {
           }
         `}</style>
 
-        <div className="relative overflow-visible rounded-2xl">
+        <div className="relative overflow-visible rounded-2xl border-2 border-[#facf39]/20 bg-white/70 shadow-xl backdrop-blur-sm dark:border-[#facf39]/20 dark:bg-neutral-900/60">
           <div style={{ perspective: "2000px", perspectiveOrigin: "center" }}>
             <Carousel
               setApi={setCarouselApi}
@@ -202,7 +199,7 @@ export default function GalleryPage() {
                     key={image.id}
                     className="basis-full pl-4 sm:basis-4/5 md:basis-3/4 lg:basis-2/3"
                   >
-                    <div className="rounded-xl bg-white/50 p-2 shadow-2xl backdrop-blur-sm dark:bg-slate-900/50">
+                    <div className="rounded-xl bg-white/80 p-2 shadow-2xl backdrop-blur-sm dark:bg-neutral-900/80">
                       <div className="image-container overflow-hidden rounded-lg">
                         <Image
                           src={image.imageUrl}
@@ -212,10 +209,10 @@ export default function GalleryPage() {
                           className="transition-transform duration-700"
                           priority={index < 5}
                           style={{
-                            width: '100%',
-                            height: 'auto',
-                            maxHeight: '600px',
-                            objectFit: 'contain',
+                            width: "100%",
+                            height: "auto",
+                            maxHeight: "600px",
+                            objectFit: "contain",
                           }}
                         />
                       </div>
@@ -223,7 +220,7 @@ export default function GalleryPage() {
                       {/* Caption if available */}
                       {image.caption && (
                         <div className="p-4">
-                          <p className="text-center text-sm font-medium text-slate-700 dark:text-slate-300">
+                          <p className="text-center text-sm font-medium text-neutral-700 dark:text-neutral-300">
                             {image.caption}
                           </p>
                         </div>
@@ -243,7 +240,7 @@ export default function GalleryPage() {
 
         {/* Gallery Info */}
         <div className="mt-8 text-center">
-          <p className="text-sm text-slate-500 dark:text-slate-400">
+          <p className="text-sm text-neutral-500 dark:text-neutral-400">
             Continuously scrolling with smooth motion • Hover to pause • Click arrows or drag to navigate
           </p>
         </div>

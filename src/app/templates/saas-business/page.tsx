@@ -1,5 +1,7 @@
 "use client";
 
+import { Suspense } from "react";
+
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { Button } from "~/components/ui/button";
 import { Badge } from "~/components/ui/badge";
@@ -28,7 +30,9 @@ import {
 export default function SaasBusinessPage() {
   return (
     <div className="min-h-screen bg-white dark:bg-gray-950">
-      <BackButton href="/templates" label="Back to Templates" />
+      <Suspense fallback={null}>
+        <BackButton href="/templates" label="Back to Templates" />
+      </Suspense>
       {/* Hero Section */}
       <div className="relative overflow-hidden bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-blue-950">
         <div className="bg-grid-pattern absolute inset-0 opacity-10"></div>

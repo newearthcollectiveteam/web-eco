@@ -1,18 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { createClient } from "~/lib/supabase/client";
 import { useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { Mail, Lock } from "lucide-react";
 
-export default function LoginPage() {
+function LoginPageContent() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const searchParams = useSearchParams();
   const supabase = createClient();
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -33,7 +35,23 @@ export default function LoginPage() {
       }
 
       if (data.session) {
-        router.push("/");
+        const domainParam = searchParams.get("domain")?.toLowerCase() || "";
+        const nextParam = searchParams.get("next");
+        const hostname =
+          typeof window !== "undefined"
+            ? window.location.hostname.toLowerCase()
+            : "";
+
+        const isTest =
+          hostname.includes("test.joinnewearthcollective.com") ||
+          domainParam.includes("test.joinnewearthcollective.com") ||
+          domainParam === "test";
+
+        // Always return to the test hub unless an explicit next is provided
+        const redirectTarget =
+          nextParam || "/?domain=test.joinnewearthcollective.com";
+
+        router.push(redirectTarget);
         router.refresh();
       }
     } catch {
@@ -164,5 +182,13 @@ export default function LoginPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={null}>
+      <LoginPageContent />
+    </Suspense>
   );
 }

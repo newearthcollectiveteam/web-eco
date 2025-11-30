@@ -1,5 +1,7 @@
 "use client";
 
+import { Suspense } from "react";
+
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { Button } from "~/components/ui/button";
@@ -32,7 +34,9 @@ export default function StartupPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50 dark:from-purple-950 dark:via-pink-950 dark:to-orange-950">
-      <BackButton href="/templates" label="Back to Templates" />
+      <Suspense fallback={null}>
+        <BackButton href="/templates" label="Back to Templates" />
+      </Suspense>
       {/* Hero Section */}
       <div className="relative overflow-hidden px-6 py-20 lg:py-32">
         <div className="absolute inset-0">

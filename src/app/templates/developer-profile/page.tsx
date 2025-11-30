@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { Button } from "~/components/ui/button";
 import { Badge } from "~/components/ui/badge";
@@ -27,7 +28,9 @@ import {
 export default function DeveloperProfilePage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-gray-100 dark:from-slate-950 dark:to-gray-950">
-      <BackButton href="/templates" label="Back to Templates" />
+      <Suspense fallback={null}>
+        <BackButton href="/templates" label="Back to Templates" />
+      </Suspense>
       {/* Hero Section */}
       <div className="relative overflow-hidden bg-gradient-to-r from-blue-600 to-purple-700 px-6 py-20">
         <div className="absolute inset-0 bg-black/20"></div>

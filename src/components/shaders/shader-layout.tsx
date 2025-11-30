@@ -3,19 +3,45 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "~/components/ui/button";
+import { useEffect, useState, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 
 interface ShaderLayoutProps {
   children: React.ReactNode;
 }
 
-export function ShaderLayout({ children }: ShaderLayoutProps) {
+function ShaderLayoutInner({ children }: ShaderLayoutProps) {
+  const searchParams = useSearchParams();
+  const [domainParam, setDomainParam] = useState(
+    () => searchParams.get("domain") || ""
+  );
+
+  useEffect(() => {
+    const paramFromSearch = searchParams.get("domain");
+    if (paramFromSearch) {
+      setDomainParam(paramFromSearch);
+      return;
+    }
+
+    if (typeof window !== "undefined") {
+      const host = window.location.hostname.toLowerCase();
+      if (host.includes("test.joinnewearthcollective.com")) {
+        setDomainParam("test.joinnewearthcollective.com");
+      }
+    }
+  }, [searchParams]);
+
+  const backHref = domainParam
+    ? `/shaders?domain=${encodeURIComponent(domainParam)}`
+    : "/shaders";
+
   return (
     <div className="relative h-screen w-full overflow-hidden">
       {/* Fullscreen shader content */}
       {children}
 
       {/* Floating back button at bottom left */}
-      <Link href="/shaders" className="fixed bottom-8 left-8 z-50">
+      <Link href={backHref} className="fixed bottom-8 left-8 z-50">
         <Button
           variant="secondary"
           size="lg"
@@ -26,5 +52,13 @@ export function ShaderLayout({ children }: ShaderLayoutProps) {
         </Button>
       </Link>
     </div>
+  );
+}
+
+export function ShaderLayout({ children }: ShaderLayoutProps) {
+  return (
+    <Suspense fallback={null}>
+      <ShaderLayoutInner>{children}</ShaderLayoutInner>
+    </Suspense>
   );
 }

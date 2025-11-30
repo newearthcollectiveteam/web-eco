@@ -32,6 +32,7 @@ import {
 
 export function CommunityLandingContent() {
   const router = useRouter();
+  const [questionnaireBaseUrl, setQuestionnaireBaseUrl] = useState("/questionnaire");
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -48,6 +49,19 @@ export function CommunityLandingContent() {
 
   const primaryAuroraClass =
     "btn-aurora relative overflow-hidden bg-gradient-to-r from-[#f3a51c] via-[#f6c43f] to-[#f6e45b] text-black shadow-[0_10px_40px_rgba(246,196,63,0.25)]";
+
+  // Set correct questionnaire URL based on environment
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const hostname = window.location.hostname;
+    const isLocal = hostname === "localhost" || hostname === "127.0.0.1";
+
+    if (isLocal) {
+      setQuestionnaireBaseUrl("/questionnaire?domain=launch.joinnewearthcollective.com");
+    } else {
+      setQuestionnaireBaseUrl("/questionnaire");
+    }
+  }, []);
 
   // Fetch gallery data
   const { data: gallery } = trpc.gallery.getWithImages.useQuery({
@@ -142,7 +156,8 @@ export function CommunityLandingContent() {
         });
 
         // Redirect to questionnaire page
-        router.push(`/questionnaire?${params.toString()}`);
+        const separator = questionnaireBaseUrl.includes("?") ? "&" : "?";
+        window.location.href = `${questionnaireBaseUrl}${separator}${params.toString()}`;
       } else {
         setSubmitStatus({
           type: "error",
@@ -233,7 +248,7 @@ export function CommunityLandingContent() {
       <style jsx global>{`
         [data-hero-cta] {
           position: relative;
-          overflow: visible !important;
+          overflow: hidden;
           isolation: isolate;
         }
         [data-hero-cta] > * {
@@ -257,7 +272,21 @@ export function CommunityLandingContent() {
           100% { transform: scale(0.95); opacity: 0.55; }
         }
         [data-hero-cta]::after {
-          content: none;
+          content: "";
+          position: absolute;
+          top: 0;
+          left: -100%;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(90deg, transparent, rgba(255,255,255,0.65), transparent);
+          animation: buttonShimmer 10s ease-in-out infinite;
+          z-index: 3;
+          pointer-events: none;
+        }
+        @keyframes buttonShimmer {
+          0% { left: -100%; }
+          50% { left: 100%; }
+          100% { left: -100%; }
         }
         .hero-text-shimmer {
           position: relative;
@@ -287,7 +316,7 @@ export function CommunityLandingContent() {
       {/* Header Navigation */}
       <header className="fixed top-0 left-0 right-0 z-50 border-b border-[#facf39]/10 bg-black/80 backdrop-blur-md">
         <div className="container mx-auto flex items-center justify-between px-4 py-4">
-          <Link href="/community" className="flex items-center gap-3">
+          <div className="flex items-center gap-3">
             <div className="relative h-10 w-10">
               <Image
                 src="/brand/symbol.svg"
@@ -305,7 +334,7 @@ export function CommunityLandingContent() {
             >
               NEW EARTH COLLECTIVE
             </span>
-          </Link>
+          </div>
           <nav className="flex items-center gap-6">
             <Button
               size="sm"
@@ -363,7 +392,7 @@ export function CommunityLandingContent() {
               letterSpacing: "0.05em",
             }}
           >
-            <span className="hero-text-shimmer">Join the Waitlist</span>
+            <span>Join the Waitlist</span>
             <ArrowRight className="ml-2 h-5 w-5 text-black transition-transform group-hover:translate-x-1" />
           </Button>
         </section>
@@ -375,13 +404,12 @@ export function CommunityLandingContent() {
               <div className="relative aspect-video w-full bg-black">
                 <video
                   controls
-                  className="h-full w-full object-contain"
-                  poster="/brand/symbol.svg"
+                  className="h-full w-full object-contain bg-black"
+                  poster="/brand/symbol.png"
                   preload="metadata"
                   style={{
-                    maxHeight: "600px",
-                    margin: "0 auto",
-                    display: "block",
+                    objectFit: "contain",
+                    objectPosition: "center",
                   }}
                 >
                   <source

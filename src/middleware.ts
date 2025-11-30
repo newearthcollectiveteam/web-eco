@@ -16,7 +16,33 @@ const PUBLIC_ROUTES = [
   "/auth/pending-approval",
   "/onboarding",
   "/launch",
-  "/shaders/flower-of-life/embed",
+  "/global",
+  "/questionnaire",
+  "/unsubscribe",
+  "/boulder-launch-party",
+  "/about",
+  "/utils/flower-of-life",
+];
+
+/**
+ * Public embeds that should be accessible without auth and outside test domain
+ */
+const PUBLIC_EMBED_ROUTES = ["/shaders/flower-of-life/embed"];
+
+/**
+ * Routes that only work on test domain
+ */
+const TEST_ONLY_ROUTES = [
+  "/dope-ass-landing",
+  "/join-community-1",
+  "/launch-landing-1",
+  "/gallery",
+  "/gallery-",
+  "/form-builder",
+  "/brand",
+  "/templates",
+  "/shaders",
+  "/playground",
 ];
 
 /**
@@ -27,13 +53,48 @@ function isPublicRoute(pathname: string): boolean {
 }
 
 /**
+ * Check if a path is a public embed that should bypass auth and test-only gating
+ */
+function isPublicEmbed(pathname: string): boolean {
+  return PUBLIC_EMBED_ROUTES.some((route) => pathname.startsWith(route));
+}
+
+/**
+ * Check if a path is test-only
+ */
+function isTestOnlyRoute(pathname: string): boolean {
+  return TEST_ONLY_ROUTES.some((route) => pathname.startsWith(route));
+}
+
+/**
  * Middleware for authentication and analytics
  * Protects entire site behind login except for auth pages
  * Tracks all page views and user interactions
  */
 export async function middleware(request: NextRequest) {
-  const hostname = request.headers.get("host") || "";
+  const hostname = (request.headers.get("host") || "").toLowerCase();
   const pathname = request.nextUrl.pathname;
+  const domainParam =
+    request.nextUrl.searchParams.get("domain")?.toLowerCase() || "";
+
+  const isTestHost = hostname.includes("test.joinnewearthcollective.com");
+  const isLaunchHost = hostname.includes("launch.joinnewearthcollective.com");
+  const isMainHost =
+    hostname.includes("joinnewearthcollective.com") &&
+    !isTestHost &&
+    !isLaunchHost;
+
+  // Domain override support for local dev via ?domain=
+  const isTestDomain =
+    isTestHost ||
+    domainParam.includes("test.joinnewearthcollective.com") ||
+    domainParam === "test";
+  const isLaunchDomain =
+    isLaunchHost ||
+    domainParam.includes("launch.joinnewearthcollective.com") ||
+    domainParam === "launch";
+  const isMainDomain =
+    isMainHost && !isTestDomain && !isLaunchDomain;
 
   // Run analytics tracking (non-blocking, tracks all visits)
   let analyticsResponse: NextResponse;
@@ -50,12 +111,41 @@ export async function middleware(request: NextRequest) {
 
   if (process.env.NODE_ENV === "development") {
     console.log(
-      `🌐 [Middleware] ${hostname}${pathname} | User: ${user?.email || "None"} | Status: ${approvalStatus || "N/A"}`
+      `🌐 [Middleware] ${hostname}${pathname} | Domain: ${isTestDomain ? "test" : isLaunchDomain ? "launch" : isMainDomain ? "main" : "other"} | User: ${user?.email || "None"} | Status: ${approvalStatus || "N/A"}`
     );
   }
 
+  // Block test-only routes on non-test domains
+  // Allow public embed routes even on non-test domains
+  if (isTestOnlyRoute(pathname) && !isTestDomain && !isPublicEmbed(pathname)) {
+    return new NextResponse("Not Found", { status: 404 });
+  }
+
+  // Redirect launch paths off the test domain to the launch subdomain
+  if (isTestHost && pathname.startsWith("/launch")) {
+    const targetUrl = new URL(request.nextUrl.toString());
+    targetUrl.hostname = "launch.joinnewearthcollective.com";
+    const redirectResponse = NextResponse.redirect(targetUrl);
+    analyticsResponse.headers.forEach((value, key) => {
+      if (key.toLowerCase() === 'set-cookie') {
+        redirectResponse.headers.append(key, value);
+      }
+    });
+    return redirectResponse;
+  }
+
+  // Public access for non-test domains (main, launch, others)
+  if (!isTestDomain) {
+    analyticsResponse.headers.forEach((value, key) => {
+      if (key.toLowerCase() === 'set-cookie') {
+        supabaseResponse.headers.append(key, value);
+      }
+    });
+    return supabaseResponse;
+  }
+
   // Allow access to public routes
-  if (isPublicRoute(pathname)) {
+  if (isPublicRoute(pathname) || isPublicEmbed(pathname)) {
     // If already logged in and trying to access login/signup, redirect to home
     if ((pathname === "/login" || pathname === "/auth/signup") && user) {
       const homeUrl = `${request.nextUrl.protocol}//${hostname}/`;

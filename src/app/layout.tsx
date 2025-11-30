@@ -11,7 +11,14 @@ import { AuthProvider } from "~/lib/auth/hooks";
 export const metadata: Metadata = {
   title: "New Earth Collective",
   description: "Building a Regenerative Future Together",
-  icons: [{ rel: "icon", url: "/favicon.ico" }],
+  icons: {
+    icon: [
+      { rel: "icon", url: "/brand/symbol.png" },
+      { rel: "icon", url: "/brand/symbol.svg", type: "image/svg+xml" },
+    ],
+    shortcut: "/brand/symbol.png",
+    apple: "/brand/symbol.png",
+  },
 };
 
 const geist = Geist({

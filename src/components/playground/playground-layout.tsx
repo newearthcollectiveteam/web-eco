@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { Button } from "~/components/ui/button";
 import { Badge } from "~/components/ui/badge";
 import { BackButton } from "~/components/back-button";
@@ -118,14 +118,41 @@ interface PlaygroundLayoutProps {
   description?: string;
 }
 
-export function PlaygroundLayout({
+function PlaygroundLayoutInner({
   children,
   title,
   description,
 }: PlaygroundLayoutProps) {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const isOverview = pathname === "/playground";
   const [sidebarOpen, setSidebarOpen] = useState(!isOverview);
+  const [domainParam, setDomainParam] = useState(
+    () => searchParams.get("domain") || ""
+  );
+
+  useEffect(() => {
+    const paramFromSearch = searchParams.get("domain");
+    if (paramFromSearch) {
+      setDomainParam(paramFromSearch);
+      return;
+    }
+
+    if (typeof window !== "undefined") {
+      const host = window.location.hostname.toLowerCase();
+      if (host.includes("test.joinnewearthcollective.com")) {
+        setDomainParam("test.joinnewearthcollective.com");
+      }
+    }
+  }, [searchParams]);
+
+  const withDomainQuery = (href: string) => {
+    if (!domainParam) return href;
+    if (href.includes("domain=")) return href;
+    return href.includes("?")
+      ? `${href}&domain=${encodeURIComponent(domainParam)}`
+      : `${href}?domain=${encodeURIComponent(domainParam)}`;
+  };
 
   const getCurrentItem = () => {
     return (
@@ -173,7 +200,7 @@ export function PlaygroundLayout({
                 const Icon = item.icon;
 
                 return (
-                  <Link key={item.id} href={item.href}>
+                  <Link key={item.id} href={withDomainQuery(item.href)}>
                     <div
                       className={`group hover:bg-accent flex items-center rounded-lg p-3 transition-all duration-200 ${
                         isActive
@@ -246,6 +273,20 @@ export function PlaygroundLayout({
         <div className="flex-1 overflow-auto">{children}</div>
       </div>
     </div>
+  );
+}
+
+export function PlaygroundLayout({
+  children,
+  title,
+  description,
+}: PlaygroundLayoutProps) {
+  return (
+    <Suspense fallback={null}>
+      <PlaygroundLayoutInner title={title} description={description}>
+        {children}
+      </PlaygroundLayoutInner>
+    </Suspense>
   );
 }
 

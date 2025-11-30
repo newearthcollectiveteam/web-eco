@@ -5,6 +5,7 @@
 
 export const DOMAINS = {
   NEW_EARTH_COLLECTIVE: "joinnewearthcollective.com",
+  LAUNCH: "launch.joinnewearthcollective.com",
   TEST_DOMAIN: "test.joinnewearthcollective.com",
 } as const;
 
@@ -24,9 +25,19 @@ export const DOMAIN_CONFIG = {
     tagline: "Co-creating Sustainable Communities & Systems",
     nav: [
       { name: "About", href: "/about" },
-      { name: "Vision", href: "/vision" },
-      { name: "Projects", href: "/projects" },
-      { name: "Join", href: "/join" },
+    ],
+  },
+  [DOMAINS.LAUNCH]: {
+    name: "New Earth Collective | Launch",
+    description: "Launch experience for the New Earth Collective",
+    theme: "launch",
+    primaryColor: "#facf39", // golden
+    logo: "NEC-LAUNCH",
+    tagline: "Join the launch experience",
+    nav: [
+      { name: "Home", href: "/" },
+      { name: "Global", href: "/global" },
+      { name: "Questionnaire", href: "/questionnaire" },
     ],
   },
   [DOMAINS.TEST_DOMAIN]: {
@@ -58,6 +69,10 @@ export function getDomainConfig(hostname: string) {
     );
     const domain = searchParams.get("domain");
 
+    if (domain?.includes("launch")) {
+      return DOMAIN_CONFIG[DOMAINS.LAUNCH];
+    }
+
     // Check if domain parameter includes "test"
     if (domain?.includes("test")) {
       return DOMAIN_CONFIG[DOMAINS.TEST_DOMAIN];
@@ -71,6 +86,8 @@ export function getDomainConfig(hostname: string) {
 
   if (domain.includes("test.joinnewearthcollective.com")) {
     return DOMAIN_CONFIG[DOMAINS.TEST_DOMAIN];
+  } else if (domain.includes("launch.joinnewearthcollective.com")) {
+    return DOMAIN_CONFIG[DOMAINS.LAUNCH];
   } else if (domain.includes("joinnewearthcollective.com")) {
     return DOMAIN_CONFIG[DOMAINS.NEW_EARTH_COLLECTIVE];
   }
@@ -83,10 +100,15 @@ export function getDomainConfig(hostname: string) {
  * Get current domain from request headers (server-side)
  */
 export function getDomainFromHeaders(headers: Headers): DomainValue {
-  const host = headers.get("host") || "";
+  const forwardedHost = headers.get("x-forwarded-host") || "";
+  const hostHeader = headers.get("host") || "";
+  const rawHost = (forwardedHost || hostHeader).toLowerCase();
+  const host = rawHost.split(",")[0]?.trim().split(":")[0] || "";
 
   if (host.includes("test.joinnewearthcollective.com"))
     return DOMAINS.TEST_DOMAIN;
+  if (host.includes("launch.joinnewearthcollective.com"))
+    return DOMAINS.LAUNCH;
   if (host.includes("joinnewearthcollective.com"))
     return DOMAINS.NEW_EARTH_COLLECTIVE;
 
@@ -106,5 +128,6 @@ export function isLoginPath(pathname: string): boolean {
 export const DEV_URLS = {
   main: "http://localhost:3000",
   test: "http://localhost:3000?domain=test.joinnewearthcollective.com",
+  launch: "http://localhost:3000?domain=launch.joinnewearthcollective.com",
   login: "http://localhost:3000/login",
 } as const;

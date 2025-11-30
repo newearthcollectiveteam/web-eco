@@ -1,5 +1,7 @@
 "use client";
 
+import { Suspense } from "react";
+
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { Button } from "~/components/ui/button";
 import { Badge } from "~/components/ui/badge";
@@ -31,7 +33,9 @@ import {
 export default function PortfolioPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-gray-50 dark:from-gray-950 dark:via-gray-900 dark:to-slate-950">
-      <BackButton href="/templates" label="Back to Templates" />
+      <Suspense fallback={null}>
+        <BackButton href="/templates" label="Back to Templates" />
+      </Suspense>
       <div className="mx-auto max-w-4xl px-6 py-12">
         {/* Hero Section */}
         <section className="mb-16">

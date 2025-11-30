@@ -12,6 +12,20 @@ function UnsubscribeContent() {
   const [status, setStatus] = useState<"loading" | "success" | "error">("loading");
   const [message, setMessage] = useState("");
   const [unsubscribeType, setUnsubscribeType] = useState<string>("all");
+  const [homeLink, setHomeLink] = useState("/global");
+
+  // Set correct home link based on environment
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const hostname = window.location.hostname;
+    const isLocal = hostname === "localhost" || hostname === "127.0.0.1";
+
+    if (isLocal) {
+      setHomeLink("/global?domain=launch.joinnewearthcollective.com");
+    } else {
+      setHomeLink("/global");
+    }
+  }, []);
 
   useEffect(() => {
     const token = searchParams.get("token");
@@ -57,7 +71,7 @@ function UnsubscribeContent() {
       {/* Flower of Life Background */}
       <div className="absolute inset-x-0 top-0 h-screen opacity-20">
         <iframe
-          src="/shaders/flower-of-life/embed"
+          src="/shaders/flower-of-life/embed?domain=test.joinnewearthcollective.com"
           className="h-full w-full border-0"
           style={{ pointerEvents: "none" }}
           title="Sacred Geometry Background"
@@ -123,10 +137,10 @@ function UnsubscribeContent() {
 
                   <div className="pt-4">
                     <Button
-                      onClick={() => window.location.href = "/community"}
+                      onClick={() => window.location.href = homeLink}
                       className="bg-gradient-to-r from-[#f3a51c] via-[#f6c43f] to-[#f6e45b] text-black font-bold hover:opacity-90"
                     >
-                      Return to Community Page
+                      Return to Home
                     </Button>
                   </div>
                 </div>
@@ -164,11 +178,11 @@ function UnsubscribeContent() {
 
                   <div className="pt-4">
                     <Button
-                      onClick={() => window.location.href = "/community"}
+                      onClick={() => window.location.href = homeLink}
                       variant="outline"
                       className="border-[#facf39]/30 text-[#facf39] hover:bg-[#facf39]/10"
                     >
-                      Return to Community Page
+                      Return to Home
                     </Button>
                   </div>
                 </div>

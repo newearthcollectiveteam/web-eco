@@ -53,40 +53,53 @@ export function LaunchPartyContent() {
   return (
     <>
       <style jsx global>{`
-        .cta-shimmer {
+        [data-hero-cta] {
           position: relative;
-          display: inline-block;
-          color: inherit;
           overflow: hidden;
+          isolation: isolate;
         }
-        .cta-shimmer::after {
+        [data-hero-cta] > * {
+          position: relative;
+          z-index: 2;
+        }
+        [data-hero-cta]::before {
           content: "";
           position: absolute;
-          inset: 0;
-          background: linear-gradient(
-            90deg,
-            transparent 0%,
-            rgba(255, 255, 255, 0.7) 45%,
-            transparent 65%
-          );
-          transform: translateX(-120%);
-          animation: ctaSheen 2.8s ease-in-out infinite;
-          mix-blend-mode: screen;
+          inset: -8px;
+          border-radius: 9999px;
+          background: radial-gradient(circle, rgba(246,196,63,0.4), transparent 55%);
+          opacity: 0.7;
+          filter: blur(6px);
+          z-index: 1;
+          animation: heroPulse 3s ease-in-out infinite;
+        }
+        @keyframes heroPulse {
+          0% { transform: scale(0.95); opacity: 0.55; }
+          50% { transform: scale(1.05); opacity: 0.9; }
+          100% { transform: scale(0.95); opacity: 0.55; }
+        }
+        [data-hero-cta]::after {
+          content: "";
+          position: absolute;
+          top: 0;
+          left: -100%;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(90deg, transparent, rgba(255,255,255,0.65), transparent);
+          animation: buttonShimmer 10s ease-in-out infinite;
+          z-index: 3;
           pointer-events: none;
         }
-        @keyframes ctaSheen {
-          0% {
-            transform: translateX(-120%);
-          }
-          100% {
-            transform: translateX(120%);
-          }
+        @keyframes buttonShimmer {
+          0% { left: -100%; }
+          50% { left: 100%; }
+          100% { left: -100%; }
         }
       `}</style>
       {/* Header Navigation */}
       <header className="fixed top-0 left-0 right-0 z-50 border-b border-[#facf39]/10 bg-black/80 backdrop-blur-md">
         <div className="container mx-auto flex items-center justify-between px-4 py-4">
-          <Link href="/community" className="flex items-center gap-3">
+          <div className="flex items-center gap-3">
             <div className="relative h-10 w-10">
               <Image
                 src="/brand/symbol.svg"
@@ -104,7 +117,7 @@ export function LaunchPartyContent() {
             >
               NEW EARTH COLLECTIVE
             </span>
-          </Link>
+          </div>
           <nav className="flex items-center gap-6">
             <a
               href="https://www.skool.com/new-earth-collective-8653"
@@ -169,13 +182,14 @@ export function LaunchPartyContent() {
             >
               <Button
                 size="lg"
+                data-hero-cta
                 className="group w-full sm:w-auto bg-gradient-to-r from-[#f3a51c] via-[#f6c43f] to-[#f6e45b] px-8 py-6 text-lg font-bold text-black shadow-2xl transition-all hover:scale-105 hover:shadow-[#facf39]/50"
                 style={{
                   fontFamily: "Airwaves, sans-serif",
                   letterSpacing: "0.05em",
               }}
             >
-                <span className="cta-shimmer">Join the Skool Community</span>
+                <span>Join the Skool Community</span>
                 <ExternalLink className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
               </Button>
             </a>

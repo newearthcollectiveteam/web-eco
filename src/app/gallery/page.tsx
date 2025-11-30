@@ -2,12 +2,30 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { useEffect, useState, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { api } from "~/trpc/react";
-import { Images, ArrowLeft } from "lucide-react";
-import { Button } from "~/components/ui/button";
+import { Images } from "lucide-react";
+import { BackButton } from "~/components/back-button";
 
-export default function GalleriesPage() {
+function GalleriesPageContent() {
   const { data: galleries, isLoading } = api.gallery.getAll.useQuery();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const [redirecting, setRedirecting] = useState(false);
+
+  // If there's only one gallery, skip the intermediary grid and go straight to it
+  useEffect(() => {
+    if (isLoading) return;
+    if (!galleries || galleries.length !== 1) return;
+
+    const queryString = searchParams.toString();
+    const target = `/gallery/${galleries[0]!.slug}${
+      queryString ? `?${queryString}` : ""
+    }`;
+    setRedirecting(true);
+    router.replace(target);
+  }, [galleries, isLoading, router, searchParams]);
 
   if (isLoading) {
     return (
@@ -22,6 +40,19 @@ export default function GalleriesPage() {
     );
   }
 
+  if (redirecting) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900">
+        <div className="text-center">
+          <div className="mb-4 inline-block h-12 w-12 animate-spin rounded-full border-4 border-solid border-emerald-500 border-r-transparent" />
+          <p className="text-lg text-slate-600 dark:text-slate-400">
+            Opening gallery...
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-emerald-50/20 to-slate-100 dark:from-slate-950 dark:via-emerald-950/20 dark:to-slate-900">
       {/* Header */}
@@ -29,12 +60,7 @@ export default function GalleriesPage() {
         <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
           {/* Back Button */}
           <div className="mb-6">
-            <Link href="/">
-              <Button variant="outline" className="gap-2">
-                <ArrowLeft className="h-4 w-4" />
-                Back to Hub
-              </Button>
-            </Link>
+            <BackButton label="Back to Hub" />
           </div>
 
           <div className="text-center">
@@ -56,17 +82,22 @@ export default function GalleriesPage() {
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         {galleries && galleries.length > 0 ? (
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-            {galleries.map((gallery) => (
-              <Link
-                key={gallery.id}
-                href={`/gallery/${gallery.slug}`}
-                className="group relative overflow-hidden rounded-2xl bg-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-2xl dark:bg-slate-900"
-              >
-                {/* Gallery Cover Image */}
-                <div className="relative aspect-[4/3] overflow-hidden bg-slate-200 dark:bg-slate-800">
-                  {gallery.coverImageUrl ? (
-                    <Image
-                      src={gallery.coverImageUrl}
+            {galleries.map((gallery) => {
+              const slugPath = gallery.slug.startsWith("gallery-")
+                ? gallery.slug
+                : `gallery-${gallery.slug}`;
+
+              return (
+                <Link
+                  key={gallery.id}
+                  href={`/${slugPath}`}
+                  className="group relative overflow-hidden rounded-2xl bg-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-2xl dark:bg-slate-900"
+                >
+                  {/* Gallery Cover Image */}
+                  <div className="relative aspect-[4/3] overflow-hidden bg-slate-200 dark:bg-slate-800">
+                    {gallery.coverImageUrl ? (
+                      <Image
+                        src={gallery.coverImageUrl}
                       alt={gallery.title}
                       fill
                       className="object-cover transition-transform duration-500 group-hover:scale-110"
@@ -97,8 +128,9 @@ export default function GalleriesPage() {
                     </span>
                   </div>
                 </div>
-              </Link>
-            ))}
+                </Link>
+              );
+            })}
           </div>
         ) : (
           <div className="text-center">
@@ -113,5 +145,13 @@ export default function GalleriesPage() {
       {/* Footer Space */}
       <div className="h-24" />
     </div>
+  );
+}
+
+export default function GalleriesPage() {
+  return (
+    <Suspense fallback={null}>
+      <GalleriesPageContent />
+    </Suspense>
   );
 }

@@ -5,6 +5,10 @@ import { useSearchParams } from "next/navigation";
 import { Card, CardContent } from "~/components/ui/card";
 import { Input } from "~/components/ui/input";
 import { Textarea } from "~/components/ui/textarea";
+import { TextareaWithCounter } from "~/components/ui/textarea-with-counter";
+import { DateTimePicker } from "~/components/ui/date-time-picker";
+import { BirthTimePicker } from "~/components/ui/birth-time-picker";
+import { LocationAutocomplete } from "~/components/ui/location-autocomplete";
 import { Checkbox } from "~/components/ui/checkbox";
 import Image from "next/image";
 import { Button } from "~/components/ui/button";
@@ -105,10 +109,35 @@ function QuestionnaireForm() {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
+    const form = event.currentTarget; // Store form reference before async
+    const formData = new FormData(form);
+
+    // Validate checkbox groups - at least one must be selected
+    const checkboxGroups = [
+      { name: 'discovery', label: 'How did you find us' },
+      { name: 'intention', label: 'Primary intention' },
+      { name: 'innerWork', label: 'Inner work practices' },
+      { name: 'accountability', label: 'Accountability readiness' },
+      { name: 'commitment', label: 'Commitment level' },
+      { name: 'participation', label: 'Participation agreement' },
+      { name: 'safety', label: 'Safety agreements' },
+    ];
+
+    for (const group of checkboxGroups) {
+      const values = formData.getAll(group.name);
+      if (values.length === 0) {
+        setError(`Please select at least one option for: ${group.label}`);
+        setStatus("idle");
+        // Scroll to the first error
+        const firstCheckbox = form.querySelector(`[name="${group.name}"]`);
+        firstCheckbox?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+      }
+    }
+
     setStatus("submitting");
     setError(null);
-
-    const formData = new FormData(event.currentTarget);
 
     const getText = (key: string): string => {
       const value = formData.get(key);
@@ -160,7 +189,7 @@ function QuestionnaireForm() {
       }
 
       setStatus("success");
-      event.currentTarget.reset();
+      form.reset();
     } catch (err: unknown) {
       const message =
         err instanceof Error ? err.message : "Failed to submit questionnaire";
@@ -173,7 +202,7 @@ function QuestionnaireForm() {
     <div className="relative min-h-screen overflow-hidden bg-gradient-to-b from-neutral-900 via-neutral-950 to-black dark:from-black dark:via-neutral-950 dark:to-black">
       <div className="absolute inset-x-0 top-0 h-screen opacity-30 dark:opacity-25">
         <iframe
-          src="/shaders/flower-of-life/embed"
+          src="/shaders/flower-of-life/embed?domain=test.joinnewearthcollective.com"
           className="h-full w-full border-0"
           style={{ pointerEvents: "none" }}
           title="Sacred Geometry Background"
@@ -291,7 +320,6 @@ function QuestionnaireForm() {
                       placeholder="If referral or other, share details"
                       className={`mt-2 ${inputClass}`}
                       name="discoveryDetails"
-                      required
                     />
                   </div>
                 </div>
@@ -300,13 +328,15 @@ function QuestionnaireForm() {
                     <p className="mb-3 text-lg font-semibold text-white">
                       2. In your own words, what does &quot;New Earth&quot; mean to you?
                     </p>
-                    <Textarea
+                    <TextareaWithCounter
                       rows={4}
                       className={textareaClass}
-                      placeholder="Minimum ~50 words"
+                      placeholder="Share your understanding..."
                       minLength={250}
+                      minWords={50}
                       required
                       name="newEarthMeaning"
+                      helperText="Minimum 50 words"
                     />
                   </div>
 
@@ -334,27 +364,31 @@ function QuestionnaireForm() {
 
                   <div>
                     <p className="mb-3 text-lg font-semibold text-white">
-                      4. “Regulated nervous systems create collective intelligence.” What does this mean to you, and why does it matter?
+                      4. "Regulated nervous systems create collective intelligence." What does this mean to you, and why does it matter?
                     </p>
-                    <Textarea
+                    <TextareaWithCounter
                       rows={4}
                       className={textareaClass}
-                      placeholder="Minimum ~50 words"
+                      placeholder="Share your perspective..."
                       minLength={250}
+                      minWords={50}
                       required
                       name="nervousSystems"
+                      helperText="Minimum 50 words"
                     />
                   </div>
 
                   <div>
                     <p className="mb-3 text-lg font-semibold text-white">5. What does &quot;sovereignty&quot; mean to you?</p>
-                    <Textarea
+                    <TextareaWithCounter
                       rows={3}
                       className={textareaClass}
-                      placeholder="Minimum ~30 words"
+                      placeholder="Share your understanding..."
                       minLength={150}
+                      minWords={30}
                       required
                       name="sovereignty"
+                      helperText="Minimum 30 words"
                     />
                   </div>
                 </div>
@@ -399,13 +433,15 @@ function QuestionnaireForm() {
                     <p className="mb-3 text-lg font-semibold text-white">
                       7. Describe a recent moment when you chose authenticity over performance, even though it was uncomfortable.
                     </p>
-                    <Textarea
+                    <TextareaWithCounter
                       rows={4}
                       className={textareaClass}
-                      placeholder="Minimum ~75 words"
+                      placeholder="Share a specific example..."
                       minLength={375}
+                      minWords={75}
                       required
                       name="authenticityStory"
+                      helperText="Minimum 75 words"
                     />
                   </div>
 
@@ -413,13 +449,15 @@ function QuestionnaireForm() {
                     <p className="mb-3 text-lg font-semibold text-white">
                       8. How do you typically respond when you&apos;re triggered or dysregulated in community spaces?
                     </p>
-                    <Textarea
+                    <TextareaWithCounter
                       rows={4}
                       className={textareaClass}
-                      placeholder="Minimum ~50 words"
+                      placeholder="Describe your typical response..."
                       minLength={250}
+                      minWords={50}
                       required
                       name="triggerResponse"
+                      helperText="Minimum 50 words"
                     />
                   </div>
 
@@ -427,13 +465,15 @@ function QuestionnaireForm() {
                     <p className="mb-3 text-lg font-semibold text-white">
                       9. What&apos;s one wound or pattern you&apos;re actively working to heal right now?
                     </p>
-                    <Textarea
+                    <TextareaWithCounter
                       rows={4}
                       className={textareaClass}
-                      placeholder="Minimum ~50 words"
+                      placeholder="Share what you're working on..."
                       minLength={250}
+                      minWords={50}
                       required
                       name="activeWound"
+                      helperText="Minimum 50 words"
                     />
                   </div>
 
@@ -473,13 +513,15 @@ function QuestionnaireForm() {
                     <p className="mb-3 text-lg font-semibold text-white">
                       11. What unique gift, skill, or perspective do you bring to this community?
                     </p>
-                    <Textarea
+                    <TextareaWithCounter
                       rows={4}
                       className={textareaClass}
-                      placeholder="Minimum ~50 words"
+                      placeholder="Share your unique gifts..."
                       minLength={250}
+                      minWords={50}
                       required
                       name="gift"
+                      helperText="Minimum 50 words"
                     />
                   </div>
 
@@ -566,19 +608,36 @@ function QuestionnaireForm() {
                         <label className="text-sm text-neutral-300" htmlFor="birth-date">
                           Birth date
                         </label>
-                        <Input id="birth-date" name="birthDate" type="date" className={inputClass} />
+                        <DateTimePicker
+                          id="birth-date"
+                          name="birthDate"
+                          placeholder="Select your birth date"
+                          className={inputClass}
+                          showYearDropdown={true}
+                          showMonthDropdown={true}
+                          dropdownMode="select"
+                          yearDropdownItemNumber={100}
+                        />
                       </div>
                       <div className="space-y-1">
                         <label className="text-sm text-neutral-300" htmlFor="birth-time">
                           Birth time
                         </label>
-                        <Input id="birth-time" name="birthTime" type="time" className={inputClass} />
+                        <BirthTimePicker
+                          id="birth-time"
+                          name="birthTime"
+                        />
                       </div>
                       <div className="space-y-1 md:col-span-1">
                         <label className="text-sm text-neutral-300" htmlFor="birth-city">
                           Birth city/state
                         </label>
-                        <Input id="birth-city" name="birthLocation" className={inputClass} placeholder="City, State/Region" />
+                        <LocationAutocomplete
+                          id="birth-city"
+                          name="birthLocation"
+                          className={inputClass}
+                          placeholder="Start typing city name..."
+                        />
                       </div>
                     </div>
                   </div>

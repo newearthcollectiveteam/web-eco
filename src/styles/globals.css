@@ -124,3 +124,15 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer utilities {
+  .font-airwaves {
+    font-family: "Airwaves", sans-serif;
+  }
+  .font-bourton {
+    font-family: "Bourton", sans-serif;
+  }
+  .tracking-brand {
+    letter-spacing: 0.05em;
+  }
+}

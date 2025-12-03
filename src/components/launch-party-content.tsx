@@ -194,7 +194,7 @@ export function LaunchPartyContent() {
               </Button>
             </a>
             <a
-              href="https://partiful.com"
+              href="https://partiful.com/e/SzZhBxdzGE3Fye6JpxNa?source=share"
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -232,14 +232,14 @@ export function LaunchPartyContent() {
           {/* Countdown Timer */}
           <div className="mb-6 flex w-full justify-center">
             <Card className="w-full border-2 border-[#facf39]/20 bg-black/60 dark:bg-black/80 shadow-2xl backdrop-blur-md sm:w-auto">
-              <CardContent className="p-8">
+              <CardContent className="px-4 py-3 sm:px-6 sm:py-4">
                 <div className="mb-4 flex items-center justify-center gap-2 text-[#facf39]">
                   <Clock className="h-5 w-5" />
                   <span className="text-sm font-semibold tracking-wider uppercase">
                     Event Countdown
                   </span>
                 </div>
-                <div className="grid grid-cols-4 gap-4">
+                <div className="grid grid-cols-4 gap-2 sm:gap-4">
                   {[
                     { label: "Days", value: timeLeft.days },
                     { label: "Hours", value: timeLeft.hours },
@@ -247,9 +247,9 @@ export function LaunchPartyContent() {
                     { label: "Seconds", value: timeLeft.seconds },
                   ].map((item) => (
                     <div key={item.label} className="flex flex-col items-center">
-                      <div className="mb-2 flex h-20 w-20 items-center justify-center rounded-xl bg-gradient-to-br from-[#facf39] to-[#f59e0b] shadow-lg">
+                      <div className="mb-2 flex h-16 w-16 sm:h-20 sm:w-20 items-center justify-center rounded-xl bg-gradient-to-br from-[#facf39] to-[#f59e0b] shadow-lg">
                         <span
-                          className="text-3xl font-bold text-black"
+                          className="text-2xl sm:text-3xl font-bold text-black"
                           style={{ fontFamily: "Bourton, sans-serif" }}
                         >
                           {String(item.value).padStart(2, "0")}
@@ -264,6 +264,44 @@ export function LaunchPartyContent() {
               </CardContent>
             </Card>
           </div>
+        </section>
+
+        {/* The Vision Section */}
+        <section className="mb-20">
+          <Card className="overflow-hidden border-2 border-[#facf39]/20 bg-black/60 dark:bg-black/80 shadow-2xl backdrop-blur-md">
+            <CardContent className="p-0">
+              <div className="relative aspect-video w-full bg-black">
+                <video
+                  controls
+                  className="h-full w-full object-contain bg-black"
+                  poster="/brand/symbol.png"
+                  preload="metadata"
+                  style={{
+                    objectFit: "contain",
+                    objectPosition: "center",
+                  }}
+                >
+                  <source
+                    src="https://www.dropbox.com/scl/fi/r59jhwqf191x25epoy7so/Join-the-New-Earth-Collective.mp4?rlkey=6100f1oere6mipjwk6t5au3p6&raw=1"
+                    type="video/mp4"
+                  />
+                  Your browser does not support the video tag.
+                </video>
+              </div>
+              <div className="p-6">
+                <h3
+                  className="mb-2 text-xl font-bold text-white"
+                  style={{ fontFamily: "Bourton, sans-serif" }}
+                >
+                  The Vision
+                </h3>
+                <p className="text-sm text-neutral-300 dark:text-neutral-300">
+                  Discover the vision behind our community and what we&apos;re
+                  building together.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
         </section>
 
         {/* The Invitation Section */}
@@ -433,7 +471,7 @@ export function LaunchPartyContent() {
                   </Button>
                 </a>
                 <a
-                  href="https://partiful.com"
+                  href="https://partiful.com/e/SzZhBxdzGE3Fye6JpxNa?source=share"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex-1"

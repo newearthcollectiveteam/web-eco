@@ -64,7 +64,7 @@ export function CommunityLandingContent() {
   }, []);
 
   // Fetch gallery data
-  const { data: gallery } = trpc.gallery.getWithImages.useQuery({
+  const { data: gallery, isLoading: galleryLoading } = trpc.gallery.getWithImages.useQuery({
     slug: "gallery-1",
   });
 
@@ -203,6 +203,13 @@ export function CommunityLandingContent() {
           0%, 100% { box-shadow: 0 10px 40px rgba(246,196,63,0.25); }
           50% { box-shadow: 0 10px 55px rgba(246,196,63,0.38); }
         }
+        @keyframes shimmer {
+          0% { background-position: -200% 0; }
+          100% { background-position: 200% 0; }
+        }
+        .animate-shimmer {
+          animation: shimmer 2s infinite;
+        }
         .carousel-3d .embla__slide {
           opacity: 0.4;
           transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
@@ -215,6 +222,10 @@ export function CommunityLandingContent() {
         }
         .carousel-3d .embla__slide:not(.is-center) {
           filter: brightness(0.7);
+        }
+        /* Hover feedback: subtle glow on center image */
+        .carousel-3d:hover .embla__slide.is-center {
+          filter: drop-shadow(0 0 20px rgba(246, 196, 63, 0.3));
         }
         @media (min-width: 768px) {
           .carousel-3d .embla__slide {
@@ -235,7 +246,10 @@ export function CommunityLandingContent() {
         .image-container {
           position: relative;
           width: 100%;
-          max-height: 400px;
+          height: 400px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
           overflow: hidden;
           border-radius: 0.75rem;
         }
@@ -243,6 +257,7 @@ export function CommunityLandingContent() {
           width: 100%;
           height: 100%;
           object-fit: contain !important;
+          object-position: center !important;
         }
       `}</style>
       <style jsx global>{`
@@ -407,6 +422,7 @@ export function CommunityLandingContent() {
                   className="h-full w-full object-contain bg-black"
                   poster="/brand/symbol.png"
                   preload="metadata"
+                  playsInline
                   style={{
                     objectFit: "contain",
                     objectPosition: "center",
@@ -555,7 +571,22 @@ export function CommunityLandingContent() {
                 Glimpses of connection, celebration, and transformation from our gatherings
               </p>
 
-              {gallery?.images?.length ? (
+              {galleryLoading ? (
+                <div className="space-y-4">
+                  <div className="relative overflow-hidden rounded-xl bg-gradient-to-r from-neutral-800/50 via-neutral-700/50 to-neutral-800/50 animate-pulse">
+                    <div className="aspect-video w-full" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-shimmer"
+                         style={{
+                           backgroundSize: '200% 100%',
+                           animation: 'shimmer 2s infinite'
+                         }}
+                    />
+                  </div>
+                  <div className="text-center">
+                    <div className="mx-auto h-4 w-48 bg-neutral-800/50 rounded animate-pulse" />
+                  </div>
+                </div>
+              ) : gallery?.images?.length ? (
                 <>
                   <div className="relative overflow-visible rounded-xl">
                     <div style={{ perspective: "2000px", perspectiveOrigin: "center" }}>
@@ -569,8 +600,8 @@ export function CommunityLandingContent() {
                           duration: 30,
                         }}
                         autoScroll={true}
-                        autoScrollSpeed={0.8}
-                        className="carousel-3d w-full"
+                        autoScrollSpeed={0.5}
+                        className="carousel-3d w-full group"
                       >
                         <CarouselContent className="-ml-4">
                           {gallery.images.map((image, index) => (
@@ -583,10 +614,13 @@ export function CommunityLandingContent() {
                                   <Image
                                     src={image.imageUrl}
                                     alt={image.altText || `Community photo ${index + 1}`}
-                                    width={800}
-                                    height={600}
+                                    width={600}
+                                    height={400}
                                     className="transition-transform duration-700"
+                                    loading={index < 3 ? "eager" : "lazy"}
                                     priority={index < 3}
+                                    quality={85}
+                                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 80vw, 66vw"
                                     style={{
                                       width: "100%",
                                       height: "auto",
@@ -604,13 +638,14 @@ export function CommunityLandingContent() {
                   </div>
 
                   <div className="mt-6 text-center text-sm text-neutral-400">
-                    Explore more moments inside the community after you join.
+                    <p className="mb-1">Hover to pause • Click and drag to explore</p>
+                    <p className="text-xs opacity-75">Explore more moments inside the community after you join</p>
                   </div>
                 </>
               ) : (
                 <div className="py-12 text-center text-neutral-400">
                   <ImagesIcon className="mx-auto mb-4 h-16 w-16 opacity-50" />
-                  <p>Gallery loading...</p>
+                  <p>No gallery images available</p>
                 </div>
               )}
             </CardContent>

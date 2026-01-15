@@ -4,39 +4,45 @@
 
 ### 1️⃣ Run Database Setup (2 min)
 
-1. Open: https://wroehiostvueldeucaze.supabase.co
+1. Open your Supabase project dashboard (URL from `NEXT_PUBLIC_SUPABASE_URL` in `.env`)
 2. Go to **SQL Editor** → **New Query**
-3. Copy entire `supabase-setup.sql` file
+3. Copy the contents of `supabase-scripts/01-initial-setup.sql`
 4. Paste and click **Run**
 
 ### 2️⃣ Configure Email (2 min)
 
 1. In Supabase: **Authentication** → **Email Templates**
 2. Scroll to **SMTP Settings** → **Enable Custom SMTP**
-3. Enter Mailjet credentials:
+3. Enter your SMTP credentials (use your email provider's settings):
    ```
-   Host: in-v3.mailjet.com
+   Host: [your-smtp-host] (e.g., in-v3.mailjet.com for Mailjet)
    Port: 587
-   Username: c96e788abe5cdd1eec619781309eb237
-   Password: 0b02cf3a4e9b15941f56ade98dd217bd
-   Sender: newearthcollectiveteam@gmail.com
-   Name: New Earth Collective
+   Username: [your-smtp-username/api-key]
+   Password: [your-smtp-password/secret-key]
+   Sender: [your-sender-email]
+   Name: [your-sender-name]
    ```
+
+   **Note:** Get your SMTP credentials from:
+   - Mailjet: https://app.mailjet.com/account/apikeys
+   - Or use your preferred email provider (SendGrid, Resend, etc.)
 4. Save
 
 ### 3️⃣ Create Your Admin Account (1 min)
 
 1. Run dev server: `npm run dev`
-2. Sign up at `/auth/signup` with: newearthcollectiveteam@gmail.com
-3. In Supabase SQL Editor, run:
+2. Sign up at `/auth/signup` with your admin email address
+3. In Supabase SQL Editor, run (replace `YOUR_EMAIL` with your actual email):
    ```sql
    UPDATE "web-eco_user_profile"
    SET role = 'admin',
        approval_status = 'approved',
        approved_at = CURRENT_TIMESTAMP,
        approved_by = id
-   WHERE email = 'newearthcollectiveteam@gmail.com';
+   WHERE email = 'YOUR_EMAIL@example.com';
    ```
+
+   **Alternative:** Run the script: `node scripts/create-admin.js YOUR_EMAIL@example.com`
 4. Check email → Click verification link
 5. Complete onboarding
 
@@ -67,7 +73,7 @@ You now have:
 
 - **Admin Dashboard**: http://localhost:3000/admin
 - **User Management**: http://localhost:3000/admin/users
-- **Supabase Dashboard**: https://wroehiostvueldeucaze.supabase.co
+- **Supabase Dashboard**: [Your Supabase project URL from `.env`]
 - **Login Page**: http://localhost:3000/admin/login
 
 ---
@@ -93,4 +99,4 @@ You now have:
 
 ---
 
-**Need Help?** → newearthcollectiveteam@gmail.com
+**Need Help?** → See full documentation in `docs/` folder or check the troubleshooting section above

@@ -143,7 +143,7 @@ export function TestHomePage() {
     <div className="min-h-screen bg-gradient-to-br from-white via-neutral-50 to-white dark:from-black dark:via-neutral-950 dark:to-black">
       <div className="container mx-auto px-4 py-16">
         {/* Header */}
-        <section className="mb-20 text-center">
+        <section className="mb-24 text-center">
           <div className="mb-8 inline-flex items-center justify-center">
             <div className="relative h-20 w-20">
               <Image
@@ -173,62 +173,115 @@ export function TestHomePage() {
           </div>
         </section>
 
-        {/* Ecosystem Domain Map Section */}
-        <section className="mb-20">
+        {/* Assets Section - MOVED UP */}
+        <section className="mb-24 rounded-3xl bg-gradient-to-br from-neutral-50/50 to-white/50 p-8 dark:from-neutral-900/50 dark:to-black/50">
           <h2
-            className="mb-8 text-center text-4xl font-bold"
+            className="mb-10 text-center text-4xl font-bold"
             style={{ fontFamily: "Bourton, sans-serif", color: "#facf39" }}
           >
-            Ecosystem Map
+            Development Assets
           </h2>
-          <div className="grid gap-6 md:grid-cols-1">
-            <Card className="group mx-auto flex h-full w-full max-w-2xl flex-col border-2 border-[#facf39]/20 transition-all duration-300 hover:shadow-2xl dark:border-[#facf39]/30">
-              <CardContent className="flex flex-1 flex-col p-6">
-                <div className="mb-4 flex flex-none items-center gap-3">
-                  <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-[#f3a51c] via-[#f6c43f] to-[#f6e45b] shadow-lg">
-                    <Map className="h-7 w-7 text-black" />
-                  </div>
-                  <h3
-                    className="text-xl font-bold text-black dark:text-white"
-                    style={{
-                      fontFamily: "Airwaves, sans-serif",
-                      letterSpacing: "0.05em",
-                    }}
-                  >
-                    Complete Site Map
-                  </h3>
-                </div>
-                <p className="mb-4 flex-1 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
-                  View the complete ecosystem map showing all pages across joinnewearthcollective.com, launch.joinnewearthcollective.com, and test.joinnewearthcollective.com domains.
-                </p>
+          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
+            {features.map((feature) => {
+              const Icon = feature.icon;
+              const colorMap: Record<
+                string,
+                {
+                  gradient: string;
+                  border: string;
+                  badge: string;
+                  text: string;
+                }
+              > = {
+                "cosmic-purple": {
+                  gradient: "from-[#6d28d9] to-[#a855f7]",
+                  border: "border-[#6d28d9]/20 dark:border-[#6d28d9]/30",
+                  badge:
+                    "bg-[#6d28d9]/10 text-[#6d28d9] dark:bg-[#6d28d9]/20 dark:text-[#a855f7]",
+                  text: "#6d28d9",
+                },
+                "cosmic-blue": {
+                  gradient: "from-[#0891b2] to-[#06b6d4]",
+                  border: "border-[#0891b2]/20 dark:border-[#0891b2]/30",
+                  badge:
+                    "bg-[#0891b2]/10 text-[#0891b2] dark:bg-[#0891b2]/20 dark:text-[#06b6d4]",
+                  text: "#0891b2",
+                },
+                emerald: {
+                  gradient: "from-[#059669] to-[#10b981]",
+                  border: "border-[#059669]/20 dark:border-[#059669]/30",
+                  badge:
+                    "bg-[#059669]/10 text-[#059669] dark:bg-[#059669]/20 dark:text-[#10b981]",
+                  text: "#059669",
+                },
+                golden: {
+                  gradient: "from-[#facf39] to-[#f59e0b]",
+                  border: "border-[#facf39]/20 dark:border-[#facf39]/30",
+                  badge:
+                    "bg-[#facf39]/10 text-[#facf39] dark:bg-[#facf39]/20 dark:text-[#facf39]",
+                  text: "#facf39",
+                },
+              };
+              const colors = colorMap[feature.color] ?? colorMap.golden!;
 
-                <div className="flex items-center justify-between">
-                  <Badge className="bg-[#facf39]/10 text-[#facf39] dark:bg-[#facf39]/20">
-                    Full Map
-                  </Badge>
-                  <button
-                    onClick={() => navigateToPath("/ecosystem-map")}
-                    className="flex items-center gap-2 text-sm font-medium transition-colors hover:opacity-80"
-                    style={{ color: "#facf39" }}
-                  >
-                    <span>View Map</span>
-                    <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-                  </button>
-                </div>
-              </CardContent>
-            </Card>
+              return (
+                <Card
+                  key={feature.title}
+                  onClick={() => navigateToPath(feature.href)}
+                  className={`group flex h-full cursor-pointer flex-col border-2 transition-all duration-300 hover:scale-105 hover:shadow-2xl ${colors.border}`}
+                >
+                  <CardHeader className="flex-none">
+                    <div
+                      className={`mb-4 flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br ${colors.gradient} shadow-lg`}
+                    >
+                      <Icon className="h-7 w-7 text-white" />
+                    </div>
+                    <CardTitle
+                      className="text-xl font-bold text-black dark:text-white"
+                      style={{
+                        fontFamily: "Airwaves, sans-serif",
+                        letterSpacing: "0.05em",
+                      }}
+                    >
+                      {feature.title}
+                    </CardTitle>
+                    <CardDescription className="text-sm text-neutral-600 dark:text-neutral-400">
+                      {feature.description}
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="flex flex-1 flex-col space-y-4">
+                    <p className="flex-1 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
+                      {feature.details}
+                    </p>
+                    <div className="flex items-center justify-between">
+                      <Badge className={colors.badge}>{feature.count}</Badge>
+                      <div
+                        className="flex items-center gap-2 text-sm font-medium transition-colors"
+                        style={{ color: colors.text }}
+                      >
+                        <span>Explore</span>
+                        <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            })}
           </div>
         </section>
 
+        {/* Divider */}
+        <div className="my-16 border-t border-neutral-200 dark:border-neutral-800"></div>
+
         {/* Live Sites Section */}
-        <section className="mb-20">
+        <section className="mb-24">
           <h2
-            className="mb-8 text-center text-4xl font-bold"
+            className="mb-10 text-center text-4xl font-bold"
             style={{ fontFamily: "Bourton, sans-serif", color: "#facf39" }}
           >
-            Live Sites
+            Live Production Sites
           </h2>
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
             {/* New Earth Collective Main Site */}
             <Card className="group flex h-full flex-col border-2 border-[#facf39]/20 transition-all duration-300 hover:shadow-2xl dark:border-[#facf39]/30">
               <CardContent className="flex flex-1 flex-col p-6">
@@ -579,15 +632,18 @@ export function TestHomePage() {
           </div>
         </section>
 
+        {/* Divider */}
+        <div className="my-16 border-t border-neutral-200 dark:border-neutral-800"></div>
+
         {/* Sites Under Development Section */}
-        <section className="mb-20">
+        <section className="mb-24 rounded-3xl bg-gradient-to-br from-neutral-50/50 to-white/50 p-8 dark:from-neutral-900/50 dark:to-black/50">
           <h2
-            className="mb-8 text-center text-4xl font-bold"
+            className="mb-10 text-center text-4xl font-bold"
             style={{ fontFamily: "Bourton, sans-serif", color: "#facf39" }}
           >
             Sites Under Development
           </h2>
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
             {/* Dope Ass Landing Page with Dropdown */}
             <Card className="group flex h-full flex-col border-2 border-[#facf39]/20 transition-all duration-300 hover:shadow-2xl dark:border-[#facf39]/30">
               <CardContent className="flex flex-1 flex-col p-6">
@@ -611,19 +667,19 @@ export function TestHomePage() {
                 </p>
 
                 {/* Dropdown to select variation */}
-                <div className="mb-4">
+                <div className="mb-3">
                   <label
                     htmlFor="variation-select"
-                    className="mb-2 block text-xs font-semibold tracking-wider text-neutral-500 uppercase dark:text-neutral-400"
+                    className="mb-1.5 block text-xs font-medium text-neutral-500 dark:text-neutral-400"
                   >
-                    Select Color Variation
+                    Color Variation
                   </label>
                   <div className="relative">
                     <select
                       id="variation-select"
                       value={selectedVariation}
                       onChange={(e) => setSelectedVariation(e.target.value)}
-                      className="w-full appearance-none rounded-lg border-2 border-[#facf39]/20 bg-white px-4 py-2.5 pr-10 text-sm font-medium text-black transition-colors hover:border-[#facf39]/40 focus:border-[#facf39] focus:outline-none dark:border-[#facf39]/30 dark:bg-neutral-900 dark:text-white dark:hover:border-[#facf39]/50"
+                      className="w-full appearance-none rounded-lg border border-[#facf39]/20 bg-white px-3 py-2 pr-8 text-sm text-black transition-colors hover:border-[#facf39]/40 focus:border-[#facf39] focus:outline-none dark:border-[#facf39]/30 dark:bg-neutral-900 dark:text-white dark:hover:border-[#facf39]/50"
                     >
                       {landingPageVariations.map((variation) => (
                         <option key={variation.path} value={variation.path}>
@@ -631,7 +687,7 @@ export function TestHomePage() {
                         </option>
                       ))}
                     </select>
-                    <ChevronDown className="pointer-events-none absolute top-1/2 right-3 h-5 w-5 -translate-y-1/2 text-[#facf39]" />
+                    <ChevronDown className="pointer-events-none absolute top-1/2 right-2.5 h-4 w-4 -translate-y-1/2 text-[#facf39]" />
                   </div>
                 </div>
 
@@ -674,19 +730,19 @@ export function TestHomePage() {
                 </p>
 
                 {/* Dropdown to select variation */}
-                <div className="mb-4">
+                <div className="mb-3">
                   <label
                     htmlFor="join-community-select"
-                    className="mb-2 block text-xs font-semibold tracking-wider text-neutral-500 uppercase dark:text-neutral-400"
+                    className="mb-1.5 block text-xs font-medium text-neutral-500 dark:text-neutral-400"
                   >
-                    Select Color Variation
+                    Color Variation
                   </label>
                   <div className="relative">
                     <select
                       id="join-community-select"
                       value={selectedJoinCommunity}
                       onChange={(e) => setSelectedJoinCommunity(e.target.value)}
-                      className="w-full appearance-none rounded-lg border-2 border-[#facf39]/20 bg-white px-4 py-2.5 pr-10 text-sm font-medium text-black transition-colors hover:border-[#facf39]/40 focus:border-[#facf39] focus:outline-none dark:border-[#facf39]/30 dark:bg-neutral-900 dark:text-white dark:hover:border-[#facf39]/50"
+                      className="w-full appearance-none rounded-lg border border-[#facf39]/20 bg-white px-3 py-2 pr-8 text-sm text-black transition-colors hover:border-[#facf39]/40 focus:border-[#facf39] focus:outline-none dark:border-[#facf39]/30 dark:bg-neutral-900 dark:text-white dark:hover:border-[#facf39]/50"
                     >
                       {joinCommunityVariations.map((variation) => (
                         <option key={variation.path} value={variation.path}>
@@ -694,7 +750,7 @@ export function TestHomePage() {
                         </option>
                       ))}
                     </select>
-                    <ChevronDown className="pointer-events-none absolute top-1/2 right-3 h-5 w-5 -translate-y-1/2 text-[#facf39]" />
+                    <ChevronDown className="pointer-events-none absolute top-1/2 right-2.5 h-4 w-4 -translate-y-1/2 text-[#facf39]" />
                   </div>
                 </div>
 
@@ -737,19 +793,19 @@ export function TestHomePage() {
                 </p>
 
                 {/* Dropdown to select variation */}
-                <div className="mb-4">
+                <div className="mb-3">
                   <label
                     htmlFor="launch-landing-select"
-                    className="mb-2 block text-xs font-semibold tracking-wider text-neutral-500 uppercase dark:text-neutral-400"
+                    className="mb-1.5 block text-xs font-medium text-neutral-500 dark:text-neutral-400"
                   >
-                    Select Color Variation
+                    Color Variation
                   </label>
                   <div className="relative">
                     <select
                       id="launch-landing-select"
                       value={selectedLaunchLanding}
                       onChange={(e) => setSelectedLaunchLanding(e.target.value)}
-                      className="w-full appearance-none rounded-lg border-2 border-[#facf39]/20 bg-white px-4 py-2.5 pr-10 text-sm font-medium text-black transition-colors hover:border-[#facf39]/40 focus:border-[#facf39] focus:outline-none dark:border-[#facf39]/30 dark:bg-neutral-900 dark:text-white dark:hover:border-[#facf39]/50"
+                      className="w-full appearance-none rounded-lg border border-[#facf39]/20 bg-white px-3 py-2 pr-8 text-sm text-black transition-colors hover:border-[#facf39]/40 focus:border-[#facf39] focus:outline-none dark:border-[#facf39]/30 dark:bg-neutral-900 dark:text-white dark:hover:border-[#facf39]/50"
                     >
                       {launchLandingVariations.map((variation) => (
                         <option key={variation.path} value={variation.path}>
@@ -757,7 +813,7 @@ export function TestHomePage() {
                         </option>
                       ))}
                     </select>
-                    <ChevronDown className="pointer-events-none absolute top-1/2 right-3 h-5 w-5 -translate-y-1/2 text-[#facf39]" />
+                    <ChevronDown className="pointer-events-none absolute top-1/2 right-2.5 h-4 w-4 -translate-y-1/2 text-[#facf39]" />
                   </div>
                 </div>
 
@@ -779,16 +835,55 @@ export function TestHomePage() {
           </div>
         </section>
 
-        {/* Photo Gallery Section */}
-        <section className="mb-20">
+        {/* Divider */}
+        <div className="my-16 border-t border-neutral-200 dark:border-neutral-800"></div>
+
+        {/* Tools & Utilities Section - CONSOLIDATED */}
+        <section className="mb-24">
           <h2
-            className="mb-8 text-center text-4xl font-bold"
+            className="mb-10 text-center text-4xl font-bold"
             style={{ fontFamily: "Bourton, sans-serif", color: "#facf39" }}
           >
-            Photo Gallery
+            Tools & Utilities
           </h2>
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {/* Gallery 1 */}
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+            {/* Ecosystem Map */}
+            <Card className="group flex h-full flex-col border-2 border-[#facf39]/20 transition-all duration-300 hover:shadow-2xl dark:border-[#facf39]/30">
+              <CardContent className="flex flex-1 flex-col p-6">
+                <div className="mb-4 flex flex-none items-center gap-3">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-[#f3a51c] via-[#f6c43f] to-[#f6e45b] shadow-lg">
+                    <Map className="h-7 w-7 text-black" />
+                  </div>
+                  <h3
+                    className="text-xl font-bold text-black dark:text-white"
+                    style={{
+                      fontFamily: "Airwaves, sans-serif",
+                      letterSpacing: "0.05em",
+                    }}
+                  >
+                    Ecosystem Map
+                  </h3>
+                </div>
+                <p className="mb-4 flex-1 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
+                  Complete site map showing all pages across all domains (joinnewearthcollective.com, launch, test).
+                </p>
+
+                <div className="flex items-center justify-between">
+                  <Badge className="bg-[#facf39]/10 text-[#facf39] dark:bg-[#facf39]/20">
+                    Full Map
+                  </Badge>
+                  <button
+                    onClick={() => navigateToPath("/ecosystem-map")}
+                    className="flex items-center gap-2 text-sm font-medium transition-colors hover:opacity-80"
+                    style={{ color: "#facf39" }}
+                  >
+                    <span>View Map</span>
+                    <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                  </button>
+                </div>
+              </CardContent>
+            </Card>
+
             <Card className="group flex h-full flex-col border-2 border-[#8b5cf6]/20 transition-all duration-300 hover:shadow-2xl dark:border-[#8b5cf6]/30">
               <CardContent className="flex flex-1 flex-col p-6">
                 <div className="mb-4 flex flex-none items-center gap-3">
@@ -802,12 +897,11 @@ export function TestHomePage() {
                       letterSpacing: "0.05em",
                     }}
                   >
-                    Gallery 1
+                    Photo Gallery
                   </h3>
                 </div>
                 <p className="mb-4 flex-1 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
-                  Beautiful rotating carousel of community photos with smooth,
-                  natural motion. Features 58 photos from gatherings and events.
+                  Rotating carousel of 58 community photos from gatherings and events with smooth animations.
                 </p>
 
                 <div className="flex items-center justify-between">
@@ -825,18 +919,8 @@ export function TestHomePage() {
                 </div>
               </CardContent>
             </Card>
-          </div>
-        </section>
 
-        {/* Form Builder Section */}
-        <section className="mb-20">
-          <h2
-            className="mb-8 text-center text-4xl font-bold"
-            style={{ fontFamily: "Bourton, sans-serif", color: "#facf39" }}
-          >
-            Form Builder
-          </h2>
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {/* Form Builder / Email Testing */}
             <Card className="group flex h-full flex-col border-2 border-[#06b6d4]/20 transition-all duration-300 hover:shadow-2xl dark:border-[#06b6d4]/30">
               <CardContent className="flex flex-1 flex-col p-6">
                 <div className="mb-4 flex flex-none items-center gap-3">
@@ -850,12 +934,11 @@ export function TestHomePage() {
                       letterSpacing: "0.05em",
                     }}
                   >
-                    Email Sequence Test
+                    Email Testing
                   </h3>
                 </div>
                 <p className="mb-4 flex-1 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
-                  Test automated email timing: 4 emails in 10 minutes, then 2
-                  more at 24h & 36h.
+                  Test automated email sequences: 4 emails in 10 minutes, then 2 more at 24h & 36h intervals.
                 </p>
 
                 <div className="flex items-center justify-between">
@@ -873,103 +956,6 @@ export function TestHomePage() {
                 </div>
               </CardContent>
             </Card>
-          </div>
-        </section>
-
-        {/* Assets Grid */}
-        <section className="mb-16">
-          <h2
-            className="mb-8 text-center text-4xl font-bold"
-            style={{ fontFamily: "Bourton, sans-serif", color: "#facf39" }}
-          >
-            Assets
-          </h2>
-          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
-            {features.map((feature) => {
-              const Icon = feature.icon;
-              const colorMap: Record<
-                string,
-                {
-                  gradient: string;
-                  border: string;
-                  badge: string;
-                  text: string;
-                }
-              > = {
-                "cosmic-purple": {
-                  gradient: "from-[#6d28d9] to-[#a855f7]",
-                  border: "border-[#6d28d9]/20 dark:border-[#6d28d9]/30",
-                  badge:
-                    "bg-[#6d28d9]/10 text-[#6d28d9] dark:bg-[#6d28d9]/20 dark:text-[#a855f7]",
-                  text: "#6d28d9",
-                },
-                "cosmic-blue": {
-                  gradient: "from-[#0891b2] to-[#06b6d4]",
-                  border: "border-[#0891b2]/20 dark:border-[#0891b2]/30",
-                  badge:
-                    "bg-[#0891b2]/10 text-[#0891b2] dark:bg-[#0891b2]/20 dark:text-[#06b6d4]",
-                  text: "#0891b2",
-                },
-                emerald: {
-                  gradient: "from-[#059669] to-[#10b981]",
-                  border: "border-[#059669]/20 dark:border-[#059669]/30",
-                  badge:
-                    "bg-[#059669]/10 text-[#059669] dark:bg-[#059669]/20 dark:text-[#10b981]",
-                  text: "#059669",
-                },
-                golden: {
-                  gradient: "from-[#facf39] to-[#f59e0b]",
-                  border: "border-[#facf39]/20 dark:border-[#facf39]/30",
-                  badge:
-                    "bg-[#facf39]/10 text-[#facf39] dark:bg-[#facf39]/20 dark:text-[#facf39]",
-                  text: "#facf39",
-                },
-              };
-              const colors = colorMap[feature.color] ?? colorMap.golden!;
-
-              return (
-                <Card
-                  key={feature.title}
-                  onClick={() => navigateToPath(feature.href)}
-                  className={`group flex h-full cursor-pointer flex-col border-2 transition-all duration-300 hover:scale-105 hover:shadow-2xl ${colors.border}`}
-                >
-                    <CardHeader className="flex-none">
-                      <div
-                        className={`mb-4 flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br ${colors.gradient} shadow-lg`}
-                      >
-                        <Icon className="h-7 w-7 text-white" />
-                      </div>
-                      <CardTitle
-                        className="text-xl font-bold text-black dark:text-white"
-                        style={{
-                          fontFamily: "Airwaves, sans-serif",
-                          letterSpacing: "0.05em",
-                        }}
-                      >
-                        {feature.title}
-                      </CardTitle>
-                      <CardDescription className="text-sm text-neutral-600 dark:text-neutral-400">
-                        {feature.description}
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent className="flex flex-1 flex-col space-y-4">
-                      <p className="flex-1 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
-                        {feature.details}
-                      </p>
-                      <div className="flex items-center justify-between">
-                        <Badge className={colors.badge}>{feature.count}</Badge>
-                        <div
-                          className="flex items-center gap-2 text-sm font-medium transition-colors"
-                          style={{ color: colors.text }}
-                        >
-                          <span>Explore</span>
-                          <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-              );
-            })}
           </div>
         </section>
 

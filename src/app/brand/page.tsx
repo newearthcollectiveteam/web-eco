@@ -11,9 +11,13 @@ import {
   FileType,
   Image as ImageIcon,
   Sparkles,
+  X,
+  ZoomIn,
+  Check,
+  AlertCircle,
 } from "lucide-react";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 
 const BRAND_ASSETS = {
   logos: {
@@ -889,6 +893,17 @@ const FEATURED_LOGOS = [
   },
 ];
 
+// Color categories for filtering
+const COLOR_CATEGORIES = [
+  { id: "all", name: "All Variations", count: 0 },
+  { id: "classic", name: "Classic", keywords: ["black", "white", "light"] },
+  { id: "earth", name: "Earth Tones", keywords: ["sage", "terracotta", "earth-brown", "olive", "peach", "sand"] },
+  { id: "neutral", name: "Sophisticated Neutrals", keywords: ["charcoal", "slate", "cream", "gray"] },
+  { id: "jewel", name: "Jewel Tones", keywords: ["green", "teal", "navy", "purple", "burgundy", "rose"] },
+  { id: "cosmic", name: "Cosmic Vibrant", keywords: ["cosmic", "indigo", "emerald", "pink", "sunset", "amber"] },
+  { id: "gradient", name: "Gradients", keywords: ["gradient"] },
+] as const;
+
 const getBackgroundClass = (bg: string) => {
   switch (bg) {
     case "dark":
@@ -1016,6 +1031,13 @@ const getBackgroundClass = (bg: string) => {
 
 export default function BrandPage() {
   const [activeFormat, setActiveFormat] = useState<"svg" | "png">("svg");
+  const [activeCategory, setActiveCategory] = useState("all");
+  const [previewLogo, setPreviewLogo] = useState<{
+    name: string;
+    file: string;
+    bg: string;
+    bgColors: string[];
+  } | null>(null);
 
   const downloadLogoWithBackground = async (
     logoFile: string,
@@ -1126,6 +1148,23 @@ export default function BrandPage() {
     }
   };
 
+  // Filter logos based on category
+  const filteredLogos = useMemo(() => {
+    let logos = BRAND_ASSETS.logos.svg;
+
+    // Filter by category
+    if (activeCategory !== "all") {
+      const category = COLOR_CATEGORIES.find((c) => c.id === activeCategory);
+      if (category && "keywords" in category) {
+        logos = logos.filter((logo) =>
+          category.keywords.some((keyword) => logo.bg.includes(keyword))
+        );
+      }
+    }
+
+    return logos;
+  }, [activeCategory]);
+
   return (
     <DomainLayout>
       <BackButton />
@@ -1155,15 +1194,24 @@ export default function BrandPage() {
             <p className="mx-auto mb-8 max-w-2xl text-xl text-neutral-600 dark:text-neutral-400">
               Visual identity system for New Earth Collective
             </p>
-            <div className="flex items-center justify-center gap-3">
-              <Badge className="border-[#facf39]/40 bg-[#facf39]/10 text-[#facf39] dark:border-[#facf39]/30">
-                <FileType className="mr-1.5 h-3.5 w-3.5" />
-                SVG · PNG
-              </Badge>
-              <Badge className="border-black/20 bg-black/5 text-black dark:border-white/20 dark:bg-white/5 dark:text-white">
-                <ImageIcon className="mr-1.5 h-3.5 w-3.5" />
-                High Resolution
-              </Badge>
+            <div className="flex flex-col items-center gap-4">
+              <div className="flex flex-wrap items-center justify-center gap-3">
+                <Badge className="border-[#facf39]/40 bg-[#facf39]/10 text-[#facf39] dark:border-[#facf39]/30">
+                  <FileType className="mr-1.5 h-3.5 w-3.5" />
+                  SVG · PNG
+                </Badge>
+                <Badge className="border-black/20 bg-black/5 text-black dark:border-white/20 dark:bg-white/5 dark:text-white">
+                  <ImageIcon className="mr-1.5 h-3.5 w-3.5" />
+                  High Resolution
+                </Badge>
+              </div>
+              <button
+                onClick={() => document.getElementById('brand-guidelines')?.scrollIntoView({ behavior: 'smooth' })}
+                className="flex items-center gap-2 rounded-lg border-2 border-[#facf39]/40 bg-[#facf39]/10 px-6 py-2.5 text-sm font-semibold text-[#facf39] transition-all hover:border-[#facf39] hover:bg-[#facf39]/20 hover:shadow-lg hover:shadow-[#facf39]/20 dark:border-[#facf39]/30"
+              >
+                <AlertCircle className="h-4 w-4" />
+                Jump to Brand Guidelines
+              </button>
             </div>
           </section>
 
@@ -1404,71 +1452,141 @@ export default function BrandPage() {
               </p>
             </div>
 
+            {/* Filter Controls */}
+            <div className="mb-8">
+              <div className="mb-4 flex items-center justify-center gap-2">
+                <Palette className="h-5 w-5 text-[#facf39]" />
+                <span className="text-sm font-semibold text-neutral-700 dark:text-neutral-300">
+                  Filter by Color Category
+                </span>
+              </div>
+              <div className="flex flex-wrap justify-center gap-2">
+                {COLOR_CATEGORIES.map((category) => (
+                  <button
+                    key={category.id}
+                    onClick={() => setActiveCategory(category.id)}
+                    className={`rounded-full px-4 py-2 text-sm font-medium transition-all ${
+                      activeCategory === category.id
+                        ? "bg-[#facf39] text-black shadow-lg"
+                        : "bg-neutral-100 text-neutral-700 hover:bg-neutral-200 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700"
+                    }`}
+                  >
+                    {category.name}
+                    {activeCategory === category.id && (
+                      <Check className="ml-1.5 inline-block h-3.5 w-3.5" />
+                    )}
+                  </button>
+                ))}
+              </div>
+              <div className="mt-4 text-center text-sm text-neutral-600 dark:text-neutral-400">
+                Showing <span className="font-semibold text-[#facf39]">{filteredLogos.length}</span> of{" "}
+                {BRAND_ASSETS.logos.svg.length} variations
+              </div>
+            </div>
+
             {/* Logo Grid */}
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-              {BRAND_ASSETS.logos.svg.map((logo, index) => (
-                <Card
-                  key={index}
-                  className="group overflow-hidden border border-neutral-800 bg-black text-white shadow-lg transition-all duration-300 hover:scale-105 hover:border-amber-500/50 hover:shadow-2xl hover:shadow-amber-500/20 dark:border-neutral-700 dark:bg-black"
-                >
-                  <CardContent className="p-0">
-                    {/* Preview Area */}
-                    <div
-                      className={`relative flex h-56 items-center justify-center p-8 ${getBackgroundClass(logo.bg)}`}
-                    >
-                      <div className="relative h-full w-full">
-                        <Image
-                          src={`/brand/${logo.file}`}
-                          alt={logo.name}
-                          fill
-                          className="object-contain drop-shadow-lg transition-transform duration-300 group-hover:scale-110"
-                        />
+              {filteredLogos.length === 0 ? (
+                <div className="col-span-full py-16 text-center">
+                  <AlertCircle className="mx-auto mb-4 h-12 w-12 text-neutral-400" />
+                  <h3 className="mb-2 text-xl font-semibold text-neutral-700 dark:text-neutral-300">
+                    No logos found
+                  </h3>
+                  <p className="text-neutral-600 dark:text-neutral-400">
+                    Try adjusting your search or filter criteria
+                  </p>
+                </div>
+              ) : (
+                filteredLogos.map((logo, index) => (
+                  <Card
+                    key={index}
+                    className="group overflow-hidden border border-neutral-800 bg-black text-white shadow-lg transition-all duration-300 hover:scale-[1.02] hover:border-[#facf39]/50 hover:shadow-2xl hover:shadow-[#facf39]/20 dark:border-neutral-700 dark:bg-black"
+                  >
+                    <CardContent className="p-0">
+                      {/* Preview Area */}
+                      <div
+                        className={`relative flex h-56 items-center justify-center p-8 ${getBackgroundClass(logo.bg)}`}
+                      >
+                        <div className="relative h-full w-full">
+                          <Image
+                            src={`/brand/${logo.file}`}
+                            alt={logo.name}
+                            fill
+                            className="object-contain drop-shadow-lg transition-transform duration-300 group-hover:scale-110"
+                          />
+                        </div>
+                        {/* Zoom overlay */}
+                        <button
+                          onClick={() => setPreviewLogo(logo)}
+                          className="absolute right-2 top-2 rounded-lg bg-black/60 p-2 opacity-0 backdrop-blur-sm transition-opacity hover:bg-black/80 group-hover:opacity-100"
+                          title="Preview larger"
+                        >
+                          <ZoomIn className="h-4 w-4 text-white" />
+                        </button>
                       </div>
-                    </div>
 
-                    {/* Info Area */}
-                    <div className="space-y-4 border-t border-neutral-800 bg-neutral-950/60 p-5">
-                      <div>
-                        <h3 className="mb-1 font-semibold text-white">
-                          {logo.name}
-                        </h3>
-                        <p className="text-xs text-neutral-400">
-                          {logo.description}
-                        </p>
-                      </div>
+                      {/* Info Area */}
+                      <div className="space-y-4 border-t border-neutral-800 bg-neutral-950/60 p-5">
+                        <div>
+                          <h3 className="mb-1 font-semibold text-white">
+                            {logo.name}
+                          </h3>
+                          <p className="text-xs text-neutral-400">
+                            {logo.description}
+                          </p>
+                        </div>
 
-                      {/* Background Colors */}
-                      <div className="flex items-center gap-2">
-                        {/* eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any */}
-                        {(logo as any).bgColors?.map(
-                          (color: string, idx: number) => (
-                            <div
-                              key={idx}
-                              className="flex items-center gap-1.5"
-                            >
-                              <div
-                                className="h-4 w-4 rounded border border-neutral-600"
-                                style={{ backgroundColor: color }}
-                              />
-                              <span className="font-mono text-xs text-neutral-400">
-                                {color}
-                              </span>
-                            </div>
-                          )
-                        )}
+                        {/* Background Colors & Download */}
+                        <div className="flex items-center justify-between gap-2">
+                          <div className="flex flex-wrap items-center gap-2">
+                            {/* eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any */}
+                            {(logo as any).bgColors?.map(
+                              (color: string, idx: number) => (
+                                <div
+                                  key={idx}
+                                  className="flex items-center gap-1.5"
+                                >
+                                  <div
+                                    className="h-4 w-4 rounded border border-neutral-600"
+                                    style={{ backgroundColor: color }}
+                                  />
+                                  <span className="font-mono text-xs text-neutral-400">
+                                    {color}
+                                  </span>
+                                </div>
+                              )
+                            )}
+                          </div>
+
+                          {/* Download Button */}
+                          <button
+                            onClick={() =>
+                              downloadLogoWithBackground(
+                                logo.file,
+                                logo.name,
+                                logo.bgColors,
+                                logo.file.includes("symbol")
+                              )
+                            }
+                            title="Download with background"
+                            className="shrink-0 rounded border border-neutral-700 bg-neutral-900/50 p-2 text-neutral-400 transition-all hover:border-[#facf39]/50 hover:bg-[#facf39]/10 hover:text-[#facf39]"
+                          >
+                            <Download className="h-3.5 w-3.5" />
+                          </button>
+                        </div>
                       </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
+                    </CardContent>
+                  </Card>
+                ))
+              )}
             </div>
           </section>
 
           {/* Usage Guidelines */}
-          <section>
+          <section id="brand-guidelines">
             <Card className="overflow-hidden border-2 border-[#facf39]/20 bg-gradient-to-br from-white to-neutral-50 shadow-lg dark:from-neutral-900 dark:to-black">
               <CardContent className="p-10">
-                <div className="flex items-start gap-6">
+                <div className="mb-8 flex items-start gap-6">
                   <div className="relative h-16 w-16 shrink-0">
                     <Image
                       src="/brand/symbol.svg"
@@ -1487,15 +1605,158 @@ export default function BrandPage() {
                     >
                       Brand Guidelines
                     </h3>
-                    <div className="space-y-3 text-neutral-700 dark:text-neutral-300">
-                      <p>
-                        These brand assets are the visual foundation of New
-                        Earth Collective. Please maintain proper spacing and
-                        avoid altering logo colors or proportions.
+                    <p className="text-neutral-700 dark:text-neutral-300">
+                      These brand assets are the visual foundation of New Earth
+                      Collective. Follow these guidelines to maintain brand
+                      consistency across all touchpoints.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="grid gap-6 md:grid-cols-2">
+                  {/* Logo Usage */}
+                  <div>
+                    <h4 className="mb-3 flex items-center gap-2 text-lg font-bold text-black dark:text-white">
+                      <Check className="h-5 w-5 text-emerald-500" />
+                      Logo Usage - Do's
+                    </h4>
+                    <ul className="space-y-2 text-sm text-neutral-700 dark:text-neutral-300">
+                      <li className="flex items-start gap-2">
+                        <span className="text-emerald-500">✓</span>
+                        <span>Use the golden logo on dark backgrounds for maximum impact</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="text-emerald-500">✓</span>
+                        <span>Maintain minimum clear space equal to the height of the symbol around the logo</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="text-emerald-500">✓</span>
+                        <span>Use SVG format for web and digital applications</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="text-emerald-500">✓</span>
+                        <span>Use PNG format for presentations and print materials</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="text-emerald-500">✓</span>
+                        <span>Scale logos proportionally to maintain aspect ratio</span>
+                      </li>
+                    </ul>
+                  </div>
+
+                  {/* Logo Don'ts */}
+                  <div>
+                    <h4 className="mb-3 flex items-center gap-2 text-lg font-bold text-black dark:text-white">
+                      <X className="h-5 w-5 text-red-500" />
+                      Logo Usage - Don'ts
+                    </h4>
+                    <ul className="space-y-2 text-sm text-neutral-700 dark:text-neutral-300">
+                      <li className="flex items-start gap-2">
+                        <span className="text-red-500">✗</span>
+                        <span>Do not alter logo colors or apply filters</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="text-red-500">✗</span>
+                        <span>Do not stretch or distort the logo</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="text-red-500">✗</span>
+                        <span>Do not rotate the logo at awkward angles</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="text-red-500">✗</span>
+                        <span>Do not place logos on busy or low-contrast backgrounds</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="text-red-500">✗</span>
+                        <span>Do not recreate or modify the logo elements</span>
+                      </li>
+                    </ul>
+                  </div>
+
+                  {/* Color Guidelines */}
+                  <div>
+                    <h4 className="mb-3 text-lg font-bold text-black dark:text-white">
+                      Color Palette Usage
+                    </h4>
+                    <ul className="space-y-2 text-sm text-neutral-700 dark:text-neutral-300">
+                      <li>
+                        <span className="font-semibold" style={{ color: "#facf39" }}>
+                          Primary Golden (#FACF39):
+                        </span>{" "}
+                        Use for headlines, CTAs, and key brand moments
+                      </li>
+                      <li>
+                        <span className="font-semibold">Secondary Black (#000000):</span>{" "}
+                        Use for body text and backgrounds
+                      </li>
+                      <li>
+                        <span className="font-semibold">Tertiary White (#FFFFFF):</span>{" "}
+                        Use for text on dark backgrounds and clean layouts
+                      </li>
+                    </ul>
+                  </div>
+
+                  {/* Typography */}
+                  <div>
+                    <h4 className="mb-3 text-lg font-bold text-black dark:text-white">
+                      Typography System
+                    </h4>
+                    <ul className="space-y-2 text-sm text-neutral-700 dark:text-neutral-300">
+                      <li>
+                        <span
+                          className="font-semibold"
+                          style={{ fontFamily: "Airwaves, sans-serif" }}
+                        >
+                          Airwaves Regular:
+                        </span>{" "}
+                        Brand wordmark and display headlines
+                      </li>
+                      <li>
+                        <span
+                          className="font-semibold"
+                          style={{ fontFamily: "Bourton, sans-serif" }}
+                        >
+                          Bourton Bold:
+                        </span>{" "}
+                        Taglines, slogans, and supporting headlines
+                      </li>
+                      <li>
+                        <span className="font-semibold">Body Text:</span> Use clean
+                        sans-serif fonts like Inter or system fonts
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div className="mt-8 rounded-lg border-2 border-[#facf39]/30 bg-[#facf39]/5 p-6">
+                  <h4 className="mb-3 flex items-center gap-2 text-lg font-bold text-black dark:text-white">
+                    <Sparkles className="h-5 w-5 text-[#facf39]" />
+                    File Format Recommendations
+                  </h4>
+                  <div className="grid gap-4 md:grid-cols-3">
+                    <div>
+                      <p className="mb-1 font-semibold text-black dark:text-white">
+                        Web & Digital
                       </p>
-                      <p className="font-semibold" style={{ color: "#facf39" }}>
-                        Best Practices: Use SVG for web applications and PNG for
-                        presentations and social media.
+                      <p className="text-sm text-neutral-700 dark:text-neutral-300">
+                        SVG format for crisp, scalable logos on websites and apps
+                      </p>
+                    </div>
+                    <div>
+                      <p className="mb-1 font-semibold text-black dark:text-white">
+                        Presentations
+                      </p>
+                      <p className="text-sm text-neutral-700 dark:text-neutral-300">
+                        PNG format (high-res) for PowerPoint, Keynote, and PDFs
+                      </p>
+                    </div>
+                    <div>
+                      <p className="mb-1 font-semibold text-black dark:text-white">
+                        Print Materials
+                      </p>
+                      <p className="text-sm text-neutral-700 dark:text-neutral-300">
+                        PNG format (300+ DPI) for business cards, flyers, and posters
                       </p>
                     </div>
                   </div>
@@ -1505,6 +1766,101 @@ export default function BrandPage() {
           </section>
         </div>
       </div>
+
+      {/* Preview Modal */}
+      {previewLogo && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4 backdrop-blur-sm"
+          onClick={() => setPreviewLogo(null)}
+        >
+          <div
+            className="relative max-h-[90vh] max-w-4xl overflow-hidden rounded-2xl border-2 border-[#facf39]/50 bg-black shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Close button */}
+            <button
+              onClick={() => setPreviewLogo(null)}
+              className="absolute right-4 top-4 z-10 rounded-lg bg-black/80 p-2 text-white backdrop-blur-sm transition-colors hover:bg-black"
+            >
+              <X className="h-6 w-6" />
+            </button>
+
+            {/* Preview content */}
+            <div
+              className={`flex min-h-[500px] items-center justify-center p-16 ${getBackgroundClass(previewLogo.bg)}`}
+            >
+              <div className="relative h-96 w-96">
+                <Image
+                  src={`/brand/${previewLogo.file}`}
+                  alt={previewLogo.name}
+                  fill
+                  className="object-contain drop-shadow-2xl"
+                />
+              </div>
+            </div>
+
+            {/* Info panel */}
+            <div className="border-t border-neutral-800 bg-neutral-950/90 p-6">
+              <h3 className="mb-2 text-2xl font-bold text-white">
+                {previewLogo.name}
+              </h3>
+              <p className="mb-4 text-sm text-neutral-400">
+                {previewLogo.description}
+              </p>
+              <div className="flex items-center justify-between">
+                <div className="flex flex-wrap gap-2">
+                  {previewLogo.bgColors.map((color, idx) => (
+                    <div key={idx} className="flex items-center gap-2">
+                      <div
+                        className="h-6 w-6 rounded border border-neutral-600"
+                        style={{ backgroundColor: color }}
+                      />
+                      <span className="font-mono text-sm text-neutral-400">
+                        {color}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+                <button
+                  onClick={() =>
+                    downloadLogoWithBackground(
+                      previewLogo.file,
+                      previewLogo.name,
+                      previewLogo.bgColors,
+                      previewLogo.file.includes("symbol")
+                    )
+                  }
+                  title="Download with background"
+                  className="rounded-lg border border-neutral-700 bg-neutral-900/50 p-3 text-neutral-400 transition-all hover:border-[#facf39]/50 hover:bg-[#facf39]/10 hover:text-[#facf39]"
+                >
+                  <Download className="h-5 w-5" />
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Back to Top Button */}
+      <button
+        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+        className="fixed bottom-8 right-8 z-50 flex h-12 w-12 items-center justify-center rounded-full border-2 border-[#facf39]/40 bg-[#facf39]/90 text-black shadow-lg backdrop-blur-sm transition-all hover:border-[#facf39] hover:bg-[#facf39] hover:shadow-xl hover:shadow-[#facf39]/30"
+        title="Back to top"
+      >
+        <svg
+          className="h-5 w-5"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M5 10l7-7m0 0l7 7m-7-7v18"
+          />
+        </svg>
+      </button>
     </DomainLayout>
   );
 }

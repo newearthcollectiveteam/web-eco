@@ -1,11 +1,3 @@
-interface KlaviyoProfile {
-  email: string;
-  firstName?: string;
-  lastName?: string;
-  phoneNumber?: string;
-  properties?: Record<string, unknown>;
-}
-
 interface WaitlistSubmission {
   email: string;
   name: string;
@@ -16,42 +8,32 @@ interface WaitlistSubmission {
 }
 
 /**
- * Emit a Klaviyo event for a waitlist submission.
- * Uses the Klaviyo Events API (v2023-12-15) with a Private API Key.
- *
- * Env vars (optional but recommended to set):
- * - KLAVIYO_API_KEY (required to send)
- * - KLAVIYO_WAITLIST_METRIC (defaults to "Joined Waitlist")
+ * Send a Klaviyo event for a waitlist submission via the Events API.
+ * Requires KLAVIYO_API_KEY and KLAVIYO_METRIC_ID (metric must already exist).
  */
 export async function triggerKlaviyoWaitlistFlow(
   submission: WaitlistSubmission
 ): Promise<boolean> {
   const apiKey = process.env.KLAVIYO_API_KEY;
+  const metricId = process.env.KLAVIYO_METRIC_ID;
+
   if (!apiKey) {
     console.warn("⚠️  Klaviyo API key not configured; skipping Klaviyo event.");
     return false;
   }
+  if (!metricId) {
+    console.warn(
+      "⚠️  KLAVIYO_METRIC_ID not set; cannot send Events API payload without a metric ID."
+    );
+    return false;
+  }
 
-  const metric = "GLOBAL_LANDING_SUBMITTED";
+  const nameParts = submission.name.trim().split(/\s+/);
+  const firstName = nameParts[0] || "";
+  const lastName = nameParts.slice(1).join(" ") || "";
+  const profileId = `profile:${submission.email.toLowerCase()}`;
 
   try {
-    const nameParts = submission.name.trim().split(/\s+/);
-    const firstName = nameParts[0] || "";
-    const lastName = nameParts.slice(1).join(" ") || "";
-
-    const profile: KlaviyoProfile = {
-      email: submission.email,
-      firstName,
-      lastName,
-      phoneNumber: submission.phone,
-      properties: {
-        $source: submission.source,
-        waitlist_message: submission.message,
-        willing_to_fill_questionnaire: submission.willingToFillQuestionnaire,
-        joined_waitlist_at: new Date().toISOString(),
-      },
-    };
-
     const response = await fetch("https://a.klaviyo.com/api/events/", {
       method: "POST",
       headers: {
@@ -63,26 +45,59 @@ export async function triggerKlaviyoWaitlistFlow(
         data: {
           type: "event",
           attributes: {
-            profile,
-            metric_name: metric,
+            metric: {
+              data: {
+                type: "metric",
+                id: metricId,
+              },
+            },
+            profile: {
+              data: {
+                type: "profile",
+                id: profileId,
+              },
+            },
             properties: {
               source: submission.source,
               message: submission.message,
-              willingToFillQuestionnaire: submission.willingToFillQuestionnaire,
+              willing_to_fill_questionnaire:
+                submission.willingToFillQuestionnaire,
+              joined_waitlist_at: new Date().toISOString(),
             },
             time: new Date().toISOString(),
           },
         },
+        included: [
+          {
+            type: "profile",
+            id: profileId,
+            attributes: {
+              email: submission.email,
+              first_name: firstName,
+              last_name: lastName,
+              phone_number: submission.phone,
+              properties: {
+                $source: submission.source,
+                waitlist_message: submission.message,
+                willing_to_fill_questionnaire:
+                  submission.willingToFillQuestionnaire,
+                joined_waitlist_at: new Date().toISOString(),
+              },
+            },
+          },
+        ],
       }),
     });
 
     if (!response.ok) {
       const errorText = await response.text().catch(() => "");
-      console.error("❌ Klaviyo API error:", response.status, errorText);
+      console.error("❌ Klaviyo Events API error:", response.status, errorText);
       return false;
     }
 
-    console.log(`✅ Klaviyo event "${metric}" sent for ${submission.email}`);
+    console.log(
+      `✅ Klaviyo event sent for ${submission.email} (metric id: ${metricId})`
+    );
     return true;
   } catch (error) {
     console.error("❌ Error triggering Klaviyo event:", error);

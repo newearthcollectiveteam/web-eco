@@ -17,6 +17,7 @@ export const env = createEnv({
     MAILJET_FROM_NAME: z.string().min(1, "Sender name is required"),
     IP_HASH_SALT: z.string().optional(),
     KLAVIYO_API_KEY: z.string().optional(),
+    KLAVIYO_METRIC_ID: z.string().optional(),
   },
 
   /**
@@ -48,6 +49,7 @@ export const env = createEnv({
     NEXT_PUBLIC_COOKIE_DOMAIN: process.env.NEXT_PUBLIC_COOKIE_DOMAIN,
     IP_HASH_SALT: process.env.IP_HASH_SALT,
     KLAVIYO_API_KEY: process.env.KLAVIYO_API_KEY,
+    KLAVIYO_METRIC_ID: process.env.KLAVIYO_METRIC_ID,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially

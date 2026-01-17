@@ -10,7 +10,7 @@ import { AuthProvider } from "~/lib/auth/hooks";
 
 export const metadata: Metadata = {
   title: {
-    default: "New Earth Collective | Heart-Led Network for Regenerative Collaboration",
+    default: "New Earth Collective | Empowering Collective Sovereignty",
     template: "%s | New Earth Collective",
   },
   description: "Join immersive festivals connecting creators into a sovereign, living network. Honor love, land, and collective intelligence.",
@@ -40,7 +40,7 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: "https://joinnewearthcollective.com",
     siteName: "New Earth Collective",
-    title: "New Earth Collective | Heart-Led Network for Regenerative Collaboration",
+    title: "New Earth Collective | Empowering Collective Sovereignty",
     description: "Join immersive festivals connecting creators into a sovereign, living network. Honor love, land, and collective intelligence.",
     images: [
       {
@@ -53,7 +53,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "New Earth Collective | Heart-Led Network for Regenerative Collaboration",
+    title: "New Earth Collective | Empowering Collective Sovereignty",
     description: "Join immersive festivals connecting creators into a sovereign, living network.",
     images: ["/brand/og-image.png"],
     creator: "@newearthcollectiveco",

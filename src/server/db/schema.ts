@@ -180,30 +180,96 @@ export const contactActivities = createTable("contact_activity", {
 
 /**
  * Questionnaire Responses - Alignment survey submissions
+ * Redesigned with proper columns for all fields
  */
 export const questionnaireResponses = createTable("questionnaire_response", {
   id: serial("id").primaryKey(),
   contactId: integer("contact_id")
     .notNull()
     .references(() => contacts.id, { onDelete: "cascade" }),
+
+  // Section 1: The Basics - Contact Information
   name: varchar("name", { length: 255 }).notNull(),
+  preferredName: varchar("preferred_name", { length: 255 }),
   email: varchar("email", { length: 255 }).notNull(),
   phone: varchar("phone", { length: 50 }),
-  discovery: jsonb("discovery").$type<string[]>().default(sql`'[]'::jsonb`),
-  intention: jsonb("intention").$type<string[]>().default(sql`'[]'::jsonb`),
-  innerWork: jsonb("inner_work").$type<string[]>().default(sql`'[]'::jsonb`),
-  accountability: varchar("accountability", { length: 255 }),
-  commitment: varchar("commitment", { length: 255 }),
-  participation: varchar("participation", { length: 255 }),
-  safety: varchar("safety", { length: 255 }),
-  narratives: jsonb("narratives").$type<Record<string, string>>().default(sql`'{}'::jsonb`),
-  birthDate: varchar("birth_date", { length: 20 }),
-  birthTime: varchar("birth_time", { length: 20 }),
-  birthLocation: varchar("birth_location", { length: 255 }),
-  metadata: jsonb("metadata").default(sql`'{}'::jsonb`),
+  preferredContactMethods: jsonb("preferred_contact_methods")
+    .$type<string[]>()
+    .default(sql`'[]'::jsonb`),
+
+  // Section 1: The Basics - Location
+  currentLocation: text("current_location"),
+  isNomadic: boolean("is_nomadic").default(false),
+  nomadicBaseLocation: text("nomadic_base_location"), // Conditional: when isNomadic=true
+
+  // Section 1: The Basics - Birth Information
+  birthDate: varchar("birth_date", { length: 50 }),
+  birthTime: varchar("birth_time", { length: 100 }),
+  birthLocation: text("birth_location"),
+
+  // Section 2: Gifts & Identity - Role
+  primaryRole: varchar("primary_role", { length: 500 }),
+  identityRoles: jsonb("identity_roles").$type<string[]>().default(sql`'[]'::jsonb`),
+  identityRolesOther: varchar("identity_roles_other", { length: 500 }), // Conditional: when "Other" selected
+
+  // Section 2: Gifts & Identity - Skills
+  skills: jsonb("skills").$type<string[]>().default(sql`'[]'::jsonb`),
+
+  // Section 2: Gifts & Identity - Online Presence
+  website: varchar("website", { length: 500 }),
+  instagram: varchar("instagram", { length: 255 }),
+  twitter: varchar("twitter", { length: 255 }),
+  linkedin: varchar("linkedin", { length: 500 }),
+  tiktok: varchar("tiktok", { length: 255 }),
+  youtube: varchar("youtube", { length: 500 }),
+  facebook: varchar("facebook", { length: 500 }),
+  otherSocial: varchar("other_social", { length: 500 }),
+
+  // Section 3: Alignment Check
+  newEarthMeaning: text("new_earth_meaning"),
+  primaryIntention: text("primary_intention"),
+  sovereigntyMeaning: text("sovereignty_meaning"),
+
+  // Section 4: Give & Receive
+  uniqueGift: text("unique_gift"),
+  receiveFromCommunity: text("receive_from_community"),
+  openToShareResources: varchar("open_to_share_resources", { length: 50 }), // yes_free, yes_depends, no
+  physicalResources: jsonb("physical_resources")
+    .$type<string[]>()
+    .default(sql`'[]'::jsonb`), // Conditional: when openToShareResources != no
+  resourceLocation: varchar("resource_location", { length: 255 }), // Conditional: when land resource selected
+  resourceOther: varchar("resource_other", { length: 500 }), // Conditional: other resources
+
+  // Section 5: Community & Connection - Discovery
+  howFoundUs: varchar("how_found_us", { length: 100 }),
+  howFoundUsDetail: varchar("how_found_us_detail", { length: 500 }), // Conditional: for invitation/social/event
+  howFoundUsOther: varchar("how_found_us_other", { length: 500 }), // Conditional: when howFoundUs=other
+
+  // Section 5: Community & Connection - Network
+  existingConnections: text("existing_connections"),
+  otherCommunities: text("other_communities"),
+  seekingConnections: text("seeking_connections"),
+
+  // Section 6: Ecosystem Development
+  engagementStyles: jsonb("engagement_styles").$type<string[]>().default(sql`'[]'::jsonb`),
+  techAIRelationship: text("tech_ai_relationship"),
+  improveSocialNetworks: text("improve_social_networks"),
+  ecosystemContribution: varchar("ecosystem_contribution", { length: 50 }), // dev, beta, updates, not_interested
+  devSkills: varchar("dev_skills", { length: 500 }), // Conditional: when ecosystemContribution=dev
+  excitementLevel: integer("excitement_level").default(5),
+
+  // Section 7: Preferences
+  profileVisibility: varchar("profile_visibility", { length: 50 }), // public, searchable, private
+  communicationPrefs: jsonb("communication_prefs").$type<string[]>().default(sql`'[]'::jsonb`),
+
+  // Metadata
+  source: varchar("source", { length: 100 }).default("questionnaire"),
   createdAt: timestamp("created_at", { withTimezone: true })
     .default(sql`CURRENT_TIMESTAMP`)
     .notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .$onUpdate(() => new Date()),
 });
 
 /**
@@ -448,6 +514,44 @@ export const userIdentityMap = createTable("user_identity_map", {
     .notNull(),
   identificationSource: varchar("identification_source", { length: 100 }).notNull(), // waitlist, event-registration, etc.
 
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+});
+
+/**
+ * Event Waivers - Signed liability waivers for events
+ * Stores waiver submissions with digital signatures
+ */
+export const eventWaivers = createTable("event_waiver", {
+  id: serial("id").primaryKey(),
+
+  // Signer information
+  signerName: varchar("signer_name", { length: 255 }).notNull(),
+  signerEmail: varchar("signer_email", { length: 255 }).notNull(),
+
+  // Event details
+  eventName: varchar("event_name", { length: 255 }).notNull(),
+  eventDate: varchar("event_date", { length: 50 }).notNull(),
+  eventLocation: varchar("event_location", { length: 255 }).notNull(),
+
+  // Signature data (base64 PNG)
+  signatureData: text("signature_data").notNull(),
+
+  // Waiver version for legal tracking
+  waiverVersion: varchar("waiver_version", { length: 50 }).default("1.0").notNull(),
+
+  // Agreement tracking
+  agreedToTerms: boolean("agreed_to_terms").default(false).notNull(),
+  agreedToPhotoVideo: boolean("agreed_to_photo_video").default(false).notNull(),
+
+  // Submission metadata
+  ipAddress: varchar("ip_address", { length: 45 }),
+  userAgent: text("user_agent"),
+
+  signedAt: timestamp("signed_at", { withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
   createdAt: timestamp("created_at", { withTimezone: true })
     .default(sql`CURRENT_TIMESTAMP`)
     .notNull(),

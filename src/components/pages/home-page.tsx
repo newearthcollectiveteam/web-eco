@@ -214,9 +214,6 @@ export function HomePage() {
               </ul>
             </div>
           </div>
-          <p className="mt-10 text-center text-white/70">
-            A lot of people have been out there just cultivating their own puzzle pieces. We just want to help people put their puzzle pieces together. Whether you're a shaman or a sovereign tech activist, your gifts are essential to the tapestry we weave.
-          </p>
         </div>
       </section>
 

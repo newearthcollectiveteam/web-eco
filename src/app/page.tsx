@@ -4,7 +4,8 @@ import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { DomainLayout } from "~/components/domain-layout";
 import { TestHomePage } from "~/components/pages/test-home";
-import { MainHomePage } from "~/components/pages/main-home";
+import { SiteLayout } from "~/components/layouts/site-layout";
+import { HomePage as NewHomePage } from "~/components/pages/home-page";
 import { DOMAINS } from "~/lib/domains";
 
 type DomainState = (typeof DOMAINS)[keyof typeof DOMAINS];
@@ -41,10 +42,20 @@ function HomePageContent() {
     return null;
   }
 
+  // Test domain uses old layout
+  if (domain === DOMAINS.TEST_DOMAIN) {
+    return (
+      <DomainLayout hideAuthActions={false}>
+        <TestHomePage />
+      </DomainLayout>
+    );
+  }
+
+  // Main domain uses new site layout and homepage
   return (
-    <DomainLayout hideAuthActions={domain === DOMAINS.NEW_EARTH_COLLECTIVE}>
-      {domain === DOMAINS.TEST_DOMAIN ? <TestHomePage /> : <MainHomePage />}
-    </DomainLayout>
+    <SiteLayout>
+      <NewHomePage />
+    </SiteLayout>
   );
 }
 

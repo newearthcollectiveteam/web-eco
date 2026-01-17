@@ -47,6 +47,11 @@ const DateTimePicker = React.forwardRef<HTMLInputElement, DateTimePickerProps>(
       value || null
     );
 
+    // Sync with external value changes
+    React.useEffect(() => {
+      setSelectedDate(value || null);
+    }, [value]);
+
     // Determine default date format based on picker type
     const defaultDateFormat = showTimeSelectOnly
       ? "h:mm aa"

@@ -10,6 +10,8 @@ export interface LocationAutocompleteProps {
   className?: string;
   placeholder?: string;
   required?: boolean;
+  value?: string;
+  onSelect?: (location: string) => void;
 }
 
 interface LocationSuggestion {
@@ -22,8 +24,8 @@ interface LocationSuggestion {
 const LocationAutocomplete = React.forwardRef<
   HTMLInputElement,
   LocationAutocompleteProps
->(({ name, id, className, placeholder, required }, ref) => {
-  const [value, setValue] = React.useState("");
+>(({ name, id, className, placeholder, required, value: controlledValue, onSelect }, ref) => {
+  const [value, setValue] = React.useState(controlledValue || "");
   const [suggestions, setSuggestions] = React.useState<LocationSuggestion[]>(
     []
   );
@@ -33,6 +35,11 @@ const LocationAutocomplete = React.forwardRef<
 
   // Debounce timer
   const debounceTimer = React.useRef<NodeJS.Timeout>();
+
+  // Sync with external value changes
+  React.useEffect(() => {
+    setValue(controlledValue || "");
+  }, [controlledValue]);
 
   // Close suggestions when clicking outside
   React.useEffect(() => {
@@ -88,6 +95,7 @@ const LocationAutocomplete = React.forwardRef<
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
     setValue(newValue);
+    onSelect?.(newValue);
 
     // Clear previous timer
     if (debounceTimer.current) {
@@ -109,6 +117,7 @@ const LocationAutocomplete = React.forwardRef<
         : suggestion.display_name;
 
     setValue(shortName);
+    onSelect?.(shortName);
     setShowSuggestions(false);
     setSuggestions([]);
   };

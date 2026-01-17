@@ -42,3 +42,6 @@ next-env.d.ts
 /drizzle
 db.sqlite
 db.sqlite-journal
+
+# Large video files
+public/videos/*.mp4

@@ -155,7 +155,7 @@ export function HomePage() {
                   }}
                 >
                   <source
-                    src="/videos/A New Earth_v3.mp4"
+                    src="https://www.dropbox.com/scl/fi/ptyu4k6uvhoj0r4sstxy0/A-New-Earth_v3.mp4?rlkey=jxqlf07j81fvec8hxo8dflro5&st=nuzvussq&raw=1"
                     type="video/mp4"
                   />
                   Your browser does not support the video tag.

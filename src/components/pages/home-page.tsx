@@ -21,29 +21,30 @@ const testimonialVideos = [
 
 // Facilitators list
 const facilitators = [
-  "Breathwork practitioners",
-  "Meditation guides",
-  "Somatic practitioners",
-  "Nervous system regulation specialists",
-  "Polarity/relationship guides",
-  "Yoga instructors",
-  "Medicine guides/shamans",
+  "Breathwork Practitioners",
+  "Meditation Guides",
+  "Somatic Practitioners",
+  "Nervous System Regulation Specialists",
+  "Polarity/Relationship Guides",
+  "Yoga Instructors",
+  "Medicine Guides/Shamans",
   "Psychics",
-  "Sound healers",
-  "Reiki masters",
+  "Sound Healers",
+  "Reiki Masters",
   "Bodyworkers",
 ];
 
 // Creators & Builders list
 const creatorsBuilders = [
-  "Conscious entrepreneurs/solopreneurs",
+  "Conscious Community Builders",
+  "Conscious Entrepreneurs/Solopreneurs",
   "Sovereigns",
-  "Decentralized tech/currency activists",
-  "Regenerative farmers",
-  "Land developers",
-  "Permaculture practitioners",
-  "Conscious festival organizers",
-  "Musicians (DJs, producers)",
+  "Decentralized Tech/Currency Activists",
+  "Regenerative Farmers",
+  "Land Developers",
+  "Permaculture Practitioners",
+  "Transformational Festival Organizers",
+  "Musicians (DJs, Producers)",
   "Artists",
   "Polymaths",
 ];
@@ -217,24 +218,6 @@ export function HomePage() {
             </span>
           </h2>
           <div className="grid gap-8 md:grid-cols-2">
-            {/* Facilitators */}
-            <div className="value-card rounded-lg p-8">
-              <h3
-                className="mb-6 text-2xl font-bold text-[#FACF39]"
-                style={{ fontFamily: "Bourton, sans-serif" }}
-              >
-                Facilitators
-              </h3>
-              <ul className="space-y-2">
-                {facilitators.map((item) => (
-                  <li key={item} className="flex items-center gap-2 text-white/80">
-                    <span className="h-1.5 w-1.5 rounded-full bg-[#FACF39]/60" />
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </div>
-
             {/* Creators & Builders */}
             <div className="value-card rounded-lg p-8">
               <h3
@@ -245,6 +228,24 @@ export function HomePage() {
               </h3>
               <ul className="space-y-2">
                 {creatorsBuilders.map((item) => (
+                  <li key={item} className="flex items-center gap-2 text-white/80">
+                    <span className="h-1.5 w-1.5 rounded-full bg-[#FACF39]/60" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Facilitators */}
+            <div className="value-card rounded-lg p-8">
+              <h3
+                className="mb-6 text-2xl font-bold text-[#FACF39]"
+                style={{ fontFamily: "Bourton, sans-serif" }}
+              >
+                Facilitators
+              </h3>
+              <ul className="space-y-2">
+                {facilitators.map((item) => (
                   <li key={item} className="flex items-center gap-2 text-white/80">
                     <span className="h-1.5 w-1.5 rounded-full bg-[#FACF39]/60" />
                     {item}

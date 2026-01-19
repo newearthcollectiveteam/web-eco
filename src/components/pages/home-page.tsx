@@ -126,17 +126,17 @@ export function HomePage() {
       {/* Vision Section */}
       <section className="bg-[#111111] border-y border-[#f6c43f]/20 px-4 py-24">
         <div className="mx-auto max-w-6xl">
-          <div className="grid items-center gap-12 lg:grid-cols-2">
+          <h2
+            className="mb-12 text-center text-4xl font-bold"
+            style={{ fontFamily: "Airwaves, sans-serif", letterSpacing: "0.05em" }}
+          >
+            <span className="bg-gradient-to-r from-[#f3a51c] via-[#f6c43f] to-[#f6e45b] bg-clip-text text-transparent">
+              Our Vision
+            </span>
+          </h2>
+          <div className="grid items-stretch gap-12 lg:grid-cols-2">
             {/* Text Content */}
-            <div>
-              <h2
-                className="mb-6 text-4xl font-bold"
-                style={{ fontFamily: "Airwaves, sans-serif", letterSpacing: "0.05em" }}
-              >
-                <span className="bg-gradient-to-r from-[#f3a51c] via-[#f6c43f] to-[#f6e45b] bg-clip-text text-transparent">
-                  Our Vision
-                </span>
-              </h2>
+            <div className="flex flex-col justify-center">
               <p className="mb-6 text-lg leading-relaxed text-white/90">
                 A world where people live from the heart and collaborate in service of something greater than themselves.
               </p>
@@ -163,37 +163,20 @@ export function HomePage() {
                   Conscious Technologies
                 </li>
               </ul>
-              <p className="mb-8 text-base leading-relaxed text-white/70">
+              <p className="text-base leading-relaxed text-white/70">
                 We believe true freedom emerges when individual gifts blossom within community—where collective sovereignty grows from the roots of personal empowerment.
               </p>
-              <div className="text-center lg:text-left">
-                <Button
-                  asChild
-                  size="lg"
-                  className="btn-golden px-10 py-6 text-lg"
-                  style={{ fontFamily: "Bourton, sans-serif" }}
-                >
-                  <Link href="/questionnaire">
-                    Join the Movement
-                    <ArrowRight className="ml-2 h-5 w-5" />
-                  </Link>
-                </Button>
-              </div>
             </div>
 
             {/* Video */}
-            <div className="overflow-hidden rounded-xl border border-[#f6c43f]/20 bg-black/60 shadow-2xl">
-              <div className="relative aspect-video w-full bg-black">
+            <div className="overflow-hidden rounded-xl border border-[#f6c43f]/20 bg-black/60 shadow-2xl h-full flex items-center">
+              <div className="relative w-full h-full bg-black">
                 <video
                   controls
-                  className="h-full w-full object-contain bg-black"
+                  className="h-full w-full object-cover"
                   poster="/videos/video-thumbnail.jpg"
                   preload="metadata"
                   playsInline
-                  style={{
-                    objectFit: "contain",
-                    objectPosition: "center",
-                  }}
                 >
                   <source
                     src="https://www.dropbox.com/scl/fi/8ihg2dyltoz2rpbtnu5vw/A-New-world_FINAL_V2.mp4?rlkey=ydtn7xu2rqer0tu2n7wudo5xx&st=wjx87r9q&raw=1"
@@ -203,6 +186,21 @@ export function HomePage() {
                 </video>
               </div>
             </div>
+          </div>
+
+          {/* Centered CTA */}
+          <div className="mt-12 text-center">
+            <Button
+              asChild
+              size="lg"
+              className="btn-golden px-10 py-6 text-lg"
+              style={{ fontFamily: "Bourton, sans-serif" }}
+            >
+              <Link href="/questionnaire">
+                Join the Movement
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Link>
+            </Button>
           </div>
         </div>
       </section>

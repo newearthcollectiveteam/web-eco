@@ -15,9 +15,9 @@ const PUBLIC_ROUTES = [
   "/auth/auth-code-error",
   "/auth/pending-approval",
   "/onboarding",
-  "/launch",
-  "/global",
   "/questionnaire",
+  "/emergence-followup",
+  "/emergence-thank-you",
   "/unsubscribe",
   "/boulder-launch-party",
   "/about",
@@ -33,11 +33,6 @@ const PUBLIC_EMBED_ROUTES = ["/shaders/flower-of-life/embed"];
  * Routes that only work on test domain
  */
 const TEST_ONLY_ROUTES = [
-  "/dope-ass-landing",
-  "/join-community-1",
-  "/launch-landing-1",
-  "/gallery",
-  "/gallery-",
   "/form-builder",
   "/brand",
   "/templates",
@@ -84,17 +79,35 @@ export async function middleware(request: NextRequest) {
     !isTestHost &&
     !isLaunchHost;
 
+  // Redirect launch subdomain to main domain (launch subdomain deprecated)
+  if (isLaunchHost) {
+    const targetUrl = new URL(request.nextUrl.toString());
+    targetUrl.hostname = "joinnewearthcollective.com";
+    return NextResponse.redirect(targetUrl, { status: 301 });
+  }
+
+  // Redirect deprecated landing pages to /
+  const deprecatedLandingRoutes = [
+    "/launch",
+    "/launch-landing-1",
+    "/dope-ass-landing",
+    "/join-community-1",
+    "/about-community",
+    "/local-community",
+    "/global",
+    "/gallery",
+  ];
+  if (deprecatedLandingRoutes.some((route) => pathname.startsWith(route))) {
+    const targetUrl = new URL(request.nextUrl.origin);
+    return NextResponse.redirect(targetUrl, { status: 301 });
+  }
+
   // Domain override support for local dev via ?domain=
   const isTestDomain =
     isTestHost ||
     domainParam.includes("test.joinnewearthcollective.com") ||
     domainParam === "test";
-  const isLaunchDomain =
-    isLaunchHost ||
-    domainParam.includes("launch.joinnewearthcollective.com") ||
-    domainParam === "launch";
-  const isMainDomain =
-    isMainHost && !isTestDomain && !isLaunchDomain;
+  const isMainDomain = isMainHost && !isTestDomain;
 
   // Run analytics tracking (non-blocking, tracks all visits)
   let analyticsResponse: NextResponse;
@@ -111,7 +124,7 @@ export async function middleware(request: NextRequest) {
 
   if (process.env.NODE_ENV === "development") {
     console.log(
-      `🌐 [Middleware] ${hostname}${pathname} | Domain: ${isTestDomain ? "test" : isLaunchDomain ? "launch" : isMainDomain ? "main" : "other"} | User: ${user?.email || "None"} | Status: ${approvalStatus || "N/A"}`
+      `🌐 [Middleware] ${hostname}${pathname} | Domain: ${isTestDomain ? "test" : isMainDomain ? "main" : "other"} | User: ${user?.email || "None"} | Status: ${approvalStatus || "N/A"}`
     );
   }
 
@@ -121,20 +134,7 @@ export async function middleware(request: NextRequest) {
     return new NextResponse("Not Found", { status: 404 });
   }
 
-  // Redirect launch paths off the test domain to the launch subdomain
-  if (isTestHost && pathname.startsWith("/launch")) {
-    const targetUrl = new URL(request.nextUrl.toString());
-    targetUrl.hostname = "launch.joinnewearthcollective.com";
-    const redirectResponse = NextResponse.redirect(targetUrl);
-    analyticsResponse.headers.forEach((value, key) => {
-      if (key.toLowerCase() === 'set-cookie') {
-        redirectResponse.headers.append(key, value);
-      }
-    });
-    return redirectResponse;
-  }
-
-  // Public access for non-test domains (main, launch, others)
+  // Public access for non-test domains (main domain)
   if (!isTestDomain) {
     analyticsResponse.headers.forEach((value, key) => {
       if (key.toLowerCase() === 'set-cookie') {

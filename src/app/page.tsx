@@ -24,15 +24,6 @@ function HomePageContent() {
       host === "test" ||
       host?.includes("test.joinnewearthcollective.com") ||
       host === "test.joinnewearthcollective.com";
-    const isLaunch =
-      host === "launch" ||
-      host?.includes("launch.joinnewearthcollective.com") ||
-      host === "launch.joinnewearthcollective.com";
-
-    if (isLaunch) {
-      router.replace("/global");
-      return;
-    }
 
     setDomain(isTest ? DOMAINS.TEST_DOMAIN : DOMAINS.NEW_EARTH_COLLECTIVE);
   }, [router, searchParams]);

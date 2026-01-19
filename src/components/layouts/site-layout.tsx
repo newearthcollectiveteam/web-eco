@@ -163,7 +163,7 @@ export function SiteLayout({ children, hideNav = false, hideFooter = false }: Si
                 className="text-center text-sm text-[#FACF39]"
                 style={{ fontFamily: "Bourton, sans-serif" }}
               >
-                Building Living Technology Serving Collective Sovereignty
+                Empowering the Co-Creation of Heaven on Earth
               </p>
 
               {/* Copyright */}

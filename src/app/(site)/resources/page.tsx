@@ -5,7 +5,7 @@ import { Button } from "~/components/ui/button";
 
 export const metadata: Metadata = {
   title: "Resources for a New Earth | New Earth Collective",
-  description: "Explore inspirations aligning with our upside—tools for coherence and sovereignty.",
+  description: "Explore businesses and technologies aligned with our mission.",
   openGraph: {
     title: "Resources | New Earth Collective",
     description: "Curated resources for regenerative growth and conscious technology.",
@@ -90,16 +90,16 @@ export default function ResourcesPage() {
             style={{ fontFamily: "Airwaves, sans-serif", letterSpacing: "0.05em" }}
           >
             <span className="bg-gradient-to-r from-[#f3a51c] via-[#f6c43f] to-[#f6e45b] bg-clip-text text-transparent">
-              Resources for a New Earth
+              Resources for a<br className="md:hidden" /> New Earth
             </span>
           </h1>
           <p className="mx-auto max-w-2xl text-lg text-white/80">
-            Explore inspirations aligning with our upside—tools for coherence and sovereignty.
+            Explore businesses and technologies<br className="md:hidden" /> aligned with our mission.
           </p>
         </div>
       </section>
 
-      {/* Partners Section */}
+      {/* Affiliates Section */}
       <section className="bg-black px-4 py-24">
         <div className="mx-auto max-w-5xl">
           <h2
@@ -107,7 +107,7 @@ export default function ResourcesPage() {
             style={{ fontFamily: "Airwaves, sans-serif", letterSpacing: "0.05em" }}
           >
             <span className="bg-gradient-to-r from-[#f3a51c] via-[#f6c43f] to-[#f6e45b] bg-clip-text text-transparent">
-              Partners
+              Affiliates
             </span>
           </h2>
           <div className="flex justify-center">

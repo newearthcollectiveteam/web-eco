@@ -239,6 +239,76 @@ const initialFormData: FormData = {
   communicationPrefs: [],
 };
 
+// Countdown timer end date: January 26, 2026 at 11:59 PM PST
+const COUNTDOWN_END_DATE = new Date("2026-01-27T07:59:00Z"); // 11:59 PM PST = 7:59 AM UTC next day
+
+function CountdownTimer() {
+  const [timeLeft, setTimeLeft] = useState({
+    days: 0,
+    hours: 0,
+    minutes: 0,
+    seconds: 0,
+    expired: false,
+  });
+
+  useEffect(() => {
+    const calculateTimeLeft = () => {
+      const now = new Date();
+      const difference = COUNTDOWN_END_DATE.getTime() - now.getTime();
+
+      if (difference <= 0) {
+        return { days: 0, hours: 0, minutes: 0, seconds: 0, expired: true };
+      }
+
+      return {
+        days: Math.floor(difference / (1000 * 60 * 60 * 24)),
+        hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
+        minutes: Math.floor((difference / 1000 / 60) % 60),
+        seconds: Math.floor((difference / 1000) % 60),
+        expired: false,
+      };
+    };
+
+    setTimeLeft(calculateTimeLeft());
+    const timer = setInterval(() => {
+      setTimeLeft(calculateTimeLeft());
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
+
+  if (timeLeft.expired) {
+    return (
+      <div className="text-white/60 text-sm">
+        This offer has expired
+      </div>
+    );
+  }
+
+  const TimeBlock = ({ value, label }: { value: number; label: string }) => (
+    <div className="flex flex-col items-center">
+      <div className="bg-black/60 border border-[#FACF39]/40 rounded-lg px-3 py-2 min-w-[3.5rem]">
+        <span className="text-2xl md:text-3xl font-bold text-[#FACF39]" style={{ fontFamily: "Bourton, sans-serif" }}>
+          {value.toString().padStart(2, "0")}
+        </span>
+      </div>
+      <span className="text-xs text-white/60 mt-1">{label}</span>
+    </div>
+  );
+
+  return (
+    <div className="flex items-center justify-center gap-2 md:gap-3">
+      <TimeBlock value={timeLeft.days} label="DAYS" />
+      <span className="text-[#FACF39] text-xl font-bold mb-5">:</span>
+      <TimeBlock value={timeLeft.hours} label="HOURS" />
+      <span className="text-[#FACF39] text-xl font-bold mb-5">:</span>
+      <TimeBlock value={timeLeft.minutes} label="MINS" />
+      <span className="text-[#FACF39] text-xl font-bold mb-5">:</span>
+      <TimeBlock value={timeLeft.seconds} label="SECS" />
+    </div>
+  );
+}
+
 function WordCounter({ text, minWords }: { text: string; minWords: number }) {
   const wordCount = text.trim().split(/\s+/).filter(Boolean).length;
   const isValid = wordCount >= minWords;
@@ -508,14 +578,23 @@ function EmergenceFollowupForm() {
             </span>
           </h1>
           <p className="text-white/80">Thank you for attending The Emergence! Help us understand how we can best serve you and the collective.</p>
-          <div className="mt-4 inline-block rounded-full bg-[#FACF39]/10 border border-[#FACF39]/40 px-5 py-2">
-            <p className="text-[#FACF39] text-sm font-medium flex items-center gap-2">
-              <span className="text-lg">✨</span>
-              Submit the questionnaire to learn how to get free lifetime access to our online platform.
-              <span className="text-lg">✨</span>
-            </p>
+          <div className="mt-6 rounded-xl bg-[#FACF39]/10 border border-[#FACF39]/40 px-4 md:px-6 py-5">
+            <div className="flex items-center mb-4">
+              <div className="flex-1 flex justify-center">
+                <span className="text-2xl md:text-2xl">✨</span>
+              </div>
+              <p className="text-[#FACF39] text-sm font-medium text-center px-2">
+                <span className="md:hidden">Submit the questionnaire to unlock<br />an opportunity for free lifetime access<br />to our online platform!</span>
+                <span className="hidden md:inline">Submit the questionnaire to unlock an opportunity to get free lifetime access to our online platform!</span>
+              </p>
+              <div className="flex-1 flex justify-center">
+                <span className="text-2xl md:text-2xl">✨</span>
+              </div>
+            </div>
+            <p className="text-white/70 text-xs mb-3 uppercase tracking-wider">Offer expires in:</p>
+            <CountdownTimer />
           </div>
-          <p className="text-white/50 text-sm mt-2">Estimated time: 12-15 minutes</p>
+          <p className="text-white/50 text-sm mt-3">Estimated time: 12-15 minutes</p>
         </div>
       </section>
 

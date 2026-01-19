@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   description: "Explore the guiding values of New Earth Collective: Unconditional Love, Circular Abundance, Radical Authenticity, and more.",
   openGraph: {
     title: "Our Core Values | New Earth Collective",
-    description: "These principles guide every aspect of the New Earth Collective, from festivals to tech.",
+    description: "These principles guide every aspect of the New Earth Collective, from festivals to technology.",
     type: "website",
   },
 };
@@ -84,8 +84,9 @@ export default function ValuesPage() {
               Our Core Values
             </span>
           </h1>
-          <p className="mx-auto max-w-2xl text-lg text-white/80">
-            These principles guide every aspect of the New Earth Collective, from festivals to tech.
+          <p className="mx-auto max-w-xs md:max-w-2xl text-base md:text-lg text-white/80">
+            These principles guide every aspect of the New Earth Collective,<br className="hidden md:inline" />
+            from festivals to technology.
           </p>
         </div>
       </section>

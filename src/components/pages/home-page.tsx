@@ -3,6 +3,21 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { Button } from "~/components/ui/button";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselPrevious,
+  CarouselNext,
+} from "~/components/ui/carousel";
+
+// Testimonial videos
+const testimonialVideos = [
+  {
+    id: 1,
+    src: "https://www.dropbox.com/scl/fi/z0uri3l0vlku0wfmzolzq/IMG_4545.mov?rlkey=loqjyl84qciewi5smkd91o2jl&st=ytxecyeh&raw=1",
+  },
+];
 
 // Facilitators list
 const facilitators = [
@@ -89,13 +104,10 @@ export function HomePage() {
             className="mb-4 text-2xl font-bold text-white md:text-3xl"
             style={{ fontFamily: "Bourton, sans-serif" }}
           >
-            Building Living Technology Serving <span className="whitespace-nowrap">Collective Sovereignty</span>
+            Empowering the Co-Creation of <span className="whitespace-nowrap">Heaven on Earth</span>
           </h2>
-          <p className="mx-auto mb-6 max-w-3xl text-lg text-white/90">
+          <p className="mx-auto mb-10 max-w-sm md:max-w-2xl text-base md:text-lg text-white/90">
             We host immersive festival experiences to activate heart-led creators and connect them into a living network for ongoing collaboration.
-          </p>
-          <p className="mx-auto mb-10 max-w-2xl text-base text-white/70">
-            Bring your whole self—shadows, gifts, and truths. Join us in weaving a tapestry where collective sovereignty is realized through the connection and blossoming of individual gifts.
           </p>
           <Button
             asChild
@@ -126,18 +138,47 @@ export function HomePage() {
                 </span>
               </h2>
               <p className="mb-6 text-lg leading-relaxed text-white/90">
-                Heart-centered leaders, connected worldwide, building systems that honor the land and empower human sovereignty.
+                A world where people live from the heart and collaborate in service of something greater than themselves.
               </p>
+              <p className="mb-3 text-base text-white/80">In service of...</p>
+              <ul className="mb-6 space-y-1 ml-4">
+                <li className="flex items-center gap-2 text-white/70">
+                  <span className="h-1.5 w-1.5 rounded-full bg-[#FACF39]/60" />
+                  Collective Sovereignty
+                </li>
+                <li className="flex items-center gap-2 text-white/70">
+                  <span className="h-1.5 w-1.5 rounded-full bg-[#FACF39]/60" />
+                  Community Organization
+                </li>
+                <li className="flex items-center gap-2 text-white/70">
+                  <span className="h-1.5 w-1.5 rounded-full bg-[#FACF39]/60" />
+                  Planetary Stewardship
+                </li>
+                <li className="flex items-center gap-2 text-white/70">
+                  <span className="h-1.5 w-1.5 rounded-full bg-[#FACF39]/60" />
+                  Regenerative Ecosystems
+                </li>
+                <li className="flex items-center gap-2 text-white/70">
+                  <span className="h-1.5 w-1.5 rounded-full bg-[#FACF39]/60" />
+                  Conscious Technologies
+                </li>
+              </ul>
               <p className="mb-8 text-base leading-relaxed text-white/70">
                 We believe true freedom emerges when individual gifts blossom within community—where collective sovereignty grows from the roots of personal empowerment.
               </p>
-              <Button
-                asChild
-                className="btn-golden px-8 py-4"
-                style={{ fontFamily: "Bourton, sans-serif" }}
-              >
-                <Link href="/questionnaire">Join the Movement</Link>
-              </Button>
+              <div className="text-center lg:text-left">
+                <Button
+                  asChild
+                  size="lg"
+                  className="btn-golden px-10 py-6 text-lg"
+                  style={{ fontFamily: "Bourton, sans-serif" }}
+                >
+                  <Link href="/questionnaire">
+                    Join the Movement
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </Link>
+                </Button>
+              </div>
             </div>
 
             {/* Video */}
@@ -155,7 +196,7 @@ export function HomePage() {
                   }}
                 >
                   <source
-                    src="https://www.dropbox.com/scl/fi/ptyu4k6uvhoj0r4sstxy0/A-New-Earth_v3.mp4?rlkey=jxqlf07j81fvec8hxo8dflro5&st=nuzvussq&raw=1"
+                    src="https://www.dropbox.com/scl/fi/8ihg2dyltoz2rpbtnu5vw/A-New-world_FINAL_V2.mp4?rlkey=ydtn7xu2rqer0tu2n7wudo5xx&st=wjx87r9q&raw=1"
                     type="video/mp4"
                   />
                   Your browser does not support the video tag.
@@ -217,6 +258,72 @@ export function HomePage() {
         </div>
       </section>
 
+      {/* Testimonials Section */}
+      <section className="bg-[#111111] border-y border-[#f6c43f]/20 px-4 py-24">
+        <div className="mx-auto max-w-4xl">
+          <h2
+            className="mb-4 text-center text-4xl font-bold"
+            style={{ fontFamily: "Airwaves, sans-serif", letterSpacing: "0.05em" }}
+          >
+            <span className="bg-gradient-to-r from-[#f3a51c] via-[#f6c43f] to-[#f6e45b] bg-clip-text text-transparent">
+              Testimonials
+            </span>
+          </h2>
+          <p className="mb-12 text-center text-lg text-white/80">
+            See some reviews from our first event: The Emergence
+          </p>
+
+          {/* Video Carousel */}
+          <div className="relative">
+            <Carousel opts={{ loop: true }}>
+              <CarouselContent>
+                {testimonialVideos.map((video) => (
+                  <CarouselItem key={video.id}>
+                    <div className="overflow-hidden rounded-xl border border-[#f6c43f]/20 bg-black/60">
+                      <div className="relative aspect-[9/16] md:aspect-video w-full max-w-2xl mx-auto bg-black">
+                        <video
+                          controls
+                          className="h-full w-full object-contain bg-black"
+                          preload="metadata"
+                          playsInline
+                        >
+                          <source src={video.src} type="video/mp4" />
+                          Your browser does not support the video tag.
+                        </video>
+                      </div>
+                    </div>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              {testimonialVideos.length > 1 && (
+                <>
+                  <CarouselPrevious className="bg-[#FACF39]/90 hover:bg-[#FACF39] text-black" />
+                  <CarouselNext className="bg-[#FACF39]/90 hover:bg-[#FACF39] text-black" />
+                </>
+              )}
+            </Carousel>
+          </div>
+
+          {/* CTA */}
+          <div className="mt-12 text-center">
+            <p className="mb-6 text-xl text-white/90" style={{ fontFamily: "Bourton, sans-serif" }}>
+              Want to attend our next event?
+            </p>
+            <Button
+              asChild
+              size="lg"
+              className="btn-golden px-10 py-6 text-lg"
+              style={{ fontFamily: "Bourton, sans-serif" }}
+            >
+              <Link href="/questionnaire">
+                Join the Collective
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Link>
+            </Button>
+          </div>
+        </div>
+      </section>
+
       {/* Final Invitation Section */}
       <section className="relative overflow-hidden bg-[#0A0A0A] px-4 py-24">
         {/* Subtle shader background */}
@@ -238,13 +345,16 @@ export function HomePage() {
               Your Gifts Are Needed.
             </span>
           </h2>
+          <p className="mb-6 text-base text-white/70">
+            Bring your whole self—shadows, gifts, and truths. Join us in weaving a tapestry where collective sovereignty is realized through the connection and blossoming of individual gifts.
+          </p>
           <p className="mb-10 text-lg text-white/80">
             Feel the call? Fill out our questionnaire to see if we're aligned.
           </p>
           <Button
             asChild
             size="lg"
-            className="btn-golden px-12 py-6 text-lg"
+            className="btn-golden px-10 py-6 text-lg"
             style={{ fontFamily: "Bourton, sans-serif" }}
           >
             <Link href="/questionnaire">

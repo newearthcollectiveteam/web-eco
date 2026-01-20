@@ -388,7 +388,7 @@ function EmergenceFollowupForm() {
           formData.fullName.trim().length > 0 &&
           formData.email.includes("@") &&
           formData.phone.trim().length > 0 &&
-          formData.currentLocation.trim().length > 0 &&
+          (formData.currentLocation.trim().length > 0 || formData.isNomadic) &&
           formData.birthDate.trim().length > 0 &&
           hasBirthTime &&
           formData.birthLocation.trim().length > 0

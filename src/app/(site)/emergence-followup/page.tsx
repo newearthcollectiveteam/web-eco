@@ -32,6 +32,7 @@ const facilitatorRoles = [
   "Energy worker (Reiki, etc.)",
   "Medicine guide/shaman",
   "Psychic/intuitive",
+  "Polarity/relationship guide",
 ];
 
 // Role options - Creators & Builders

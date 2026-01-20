@@ -24,6 +24,7 @@ import {
   Images,
   Globe2,
   Map,
+  Database,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -951,6 +952,43 @@ export function TestHomePage() {
                     style={{ color: "#06b6d4" }}
                   >
                     <span>Test Sequence</span>
+                    <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                  </button>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Admin Dashboard */}
+            <Card className="group flex h-full flex-col border-2 border-[#f59e0b]/20 transition-all duration-300 hover:shadow-2xl dark:border-[#f59e0b]/30">
+              <CardContent className="flex flex-1 flex-col p-6">
+                <div className="mb-4 flex flex-none items-center gap-3">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-[#f59e0b] to-[#fbbf24] shadow-lg">
+                    <Database className="h-7 w-7 text-black" />
+                  </div>
+                  <h3
+                    className="text-xl font-bold text-black dark:text-white"
+                    style={{
+                      fontFamily: "Airwaves, sans-serif",
+                      letterSpacing: "0.05em",
+                    }}
+                  >
+                    Admin Dashboard
+                  </h3>
+                </div>
+                <p className="mb-4 flex-1 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
+                  View CRM contacts, questionnaire responses, and event waivers. Database overview and intake form submissions.
+                </p>
+
+                <div className="flex items-center justify-between">
+                  <Badge className="bg-[#f59e0b]/10 text-[#f59e0b] dark:bg-[#f59e0b]/20">
+                    Live Data
+                  </Badge>
+                  <button
+                    onClick={() => navigateToPath("/admin")}
+                    className="flex items-center gap-2 text-sm font-medium transition-colors hover:opacity-80"
+                    style={{ color: "#f59e0b" }}
+                  >
+                    <span>View Dashboard</span>
                     <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                   </button>
                 </div>

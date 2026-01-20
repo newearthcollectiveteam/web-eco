@@ -600,36 +600,55 @@ function EmergenceFollowupForm() {
 
       {/* Progress Bar */}
       <div className="mx-auto max-w-4xl px-4 py-6">
-        <div className="flex items-center justify-between mb-2 overflow-x-auto pb-2">
-          {stepLabels.map((_, idx) => {
-            const step = idx + 1;
-            return (
-              <div key={step} className="flex items-center flex-shrink-0">
-                <div
-                  className={`flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-full font-bold transition-all text-sm sm:text-base ${
-                    currentStep >= step
-                      ? "bg-[#FACF39] text-black"
-                      : "border border-[#FACF39]/30 text-[#FACF39]/50"
-                  }`}
-                  style={{ fontFamily: "Bourton, sans-serif" }}
-                >
-                  {currentStep > step ? <Check className="h-4 w-4 sm:h-5 sm:w-5" /> : step}
-                </div>
-                {step < totalSteps && (
-                  <div
-                    className={`h-1 w-6 sm:w-10 md:w-12 mx-1 sm:mx-2 rounded ${
-                      currentStep > step ? "bg-[#FACF39]" : "bg-[#FACF39]/20"
-                    }`}
-                  />
-                )}
-              </div>
-            );
-          })}
+        {/* Mobile: Simple progress bar */}
+        <div className="sm:hidden">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-sm text-white/80" style={{ fontFamily: "Bourton, sans-serif" }}>
+              Step {currentStep} of {totalSteps}
+            </span>
+            <span className="text-sm text-[#FACF39]">{stepLabels[currentStep - 1]}</span>
+          </div>
+          <div className="h-2 bg-[#FACF39]/20 rounded-full overflow-hidden">
+            <div
+              className="h-full bg-[#FACF39] rounded-full transition-all duration-300"
+              style={{ width: `${(currentStep / totalSteps) * 100}%` }}
+            />
+          </div>
         </div>
-        <div className="flex justify-between text-[10px] sm:text-xs text-white/60">
-          {stepLabels.map((label, idx) => (
-            <span key={idx} className="text-center flex-1">{label}</span>
-          ))}
+
+        {/* Desktop: Stepped circles */}
+        <div className="hidden sm:block">
+          <div className="flex items-center justify-between mb-2">
+            {stepLabels.map((_, idx) => {
+              const step = idx + 1;
+              return (
+                <div key={step} className="flex items-center flex-shrink-0">
+                  <div
+                    className={`flex h-10 w-10 items-center justify-center rounded-full font-bold transition-all ${
+                      currentStep >= step
+                        ? "bg-[#FACF39] text-black"
+                        : "border border-[#FACF39]/30 text-[#FACF39]/50"
+                    }`}
+                    style={{ fontFamily: "Bourton, sans-serif" }}
+                  >
+                    {currentStep > step ? <Check className="h-5 w-5" /> : step}
+                  </div>
+                  {step < totalSteps && (
+                    <div
+                      className={`h-1 w-10 md:w-12 mx-2 rounded ${
+                        currentStep > step ? "bg-[#FACF39]" : "bg-[#FACF39]/20"
+                      }`}
+                    />
+                  )}
+                </div>
+              );
+            })}
+          </div>
+          <div className="flex justify-between text-xs text-white/60">
+            {stepLabels.map((label, idx) => (
+              <span key={idx} className="text-center flex-1">{label}</span>
+            ))}
+          </div>
         </div>
       </div>
 

@@ -102,12 +102,23 @@ export default function ValuesPage() {
               >
                 {/* Value Content */}
                 <div className="flex-1">
-                  <h2
-                    className="mb-4 text-3xl font-bold text-[#FACF39]"
-                    style={{ fontFamily: "Bourton, sans-serif" }}
-                  >
-                    {value.title}
-                  </h2>
+                  <div className="flex items-center justify-between gap-4 mb-4">
+                    <h2
+                      className="text-3xl font-bold text-[#FACF39]"
+                      style={{ fontFamily: "Bourton, sans-serif" }}
+                    >
+                      {value.title}
+                    </h2>
+                    {/* Mobile: Small inline number bubble */}
+                    <div className="flex md:hidden h-10 w-10 flex-shrink-0 items-center justify-center rounded-full border border-[#FACF39]/30 bg-[#FACF39]/5">
+                      <span
+                        className="text-lg font-bold text-[#FACF39]/40"
+                        style={{ fontFamily: "Bourton, sans-serif" }}
+                      >
+                        {index + 1}
+                      </span>
+                    </div>
+                  </div>
                   <p className="mb-6 text-lg leading-relaxed text-white/80">
                     {value.description}
                   </p>
@@ -116,8 +127,8 @@ export default function ValuesPage() {
                   </blockquote>
                 </div>
 
-                {/* Decorative Element */}
-                <div className="flex flex-1 items-center justify-center">
+                {/* Desktop: Large decorative element */}
+                <div className="hidden md:flex flex-1 items-center justify-center">
                   <div className="flex h-32 w-32 items-center justify-center rounded-full border border-[#FACF39]/30 bg-[#FACF39]/5">
                     <span
                       className="text-5xl font-bold text-[#FACF39]/40"

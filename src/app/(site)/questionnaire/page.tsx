@@ -37,12 +37,15 @@ const facilitatorRoles = [
 // Role options - Creators & Builders
 const creatorRoles = [
   "Conscious entrepreneur",
+  "Community builder",
   "Decentralized tech/Web 5 activist",
   "Regenerative farmer/permaculturist",
   "Land developer",
   "Event/festival organizer",
   "Musician/DJ/producer",
   "Visual artist/designer",
+  "Photographer/videographer",
+  "Podcaster",
   "Content creator",
   "Developer/technologist",
 ];

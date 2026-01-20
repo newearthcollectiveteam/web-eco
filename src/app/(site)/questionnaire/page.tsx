@@ -249,7 +249,7 @@ function WordCounter({ text, minWords }: { text: string; minWords: number }) {
 
   return (
     <div className={`mt-1 text-xs ${isValid ? "text-green-400" : "text-white/50"}`}>
-      {wordCount}/{minWords} words {isValid && <Check className="inline h-3 w-3" />}
+      {wordCount} words ({minWords} minimum) {isValid && <Check className="inline h-3 w-3" />}
     </div>
   );
 }

@@ -33,6 +33,7 @@ const PUBLIC_EMBED_ROUTES = ["/shaders/flower-of-life/embed"];
  * Routes that only work on test domain
  */
 const TEST_ONLY_ROUTES = [
+  "/admin",
   "/form-builder",
   "/brand",
   "/templates",

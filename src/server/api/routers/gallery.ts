@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { TRPCError } from "@trpc/server";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { galleries, galleryImages } from "~/server/db/schema";
 import { eq, asc } from "drizzle-orm";
@@ -38,7 +39,10 @@ export const galleryRouter = createTRPCRouter({
         .limit(1);
 
       if (!gallery) {
-        throw new Error("Gallery not found");
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Gallery not found",
+        });
       }
 
       // Get images for this gallery

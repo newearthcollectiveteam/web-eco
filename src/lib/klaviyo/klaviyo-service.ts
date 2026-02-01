@@ -1,3 +1,5 @@
+import { env } from "~/env";
+
 interface WaitlistSubmission {
   email: string;
   name: string;
@@ -14,8 +16,8 @@ interface WaitlistSubmission {
 export async function triggerKlaviyoWaitlistFlow(
   submission: WaitlistSubmission
 ): Promise<boolean> {
-  const apiKey = process.env.KLAVIYO_API_KEY;
-  const metricId = process.env.KLAVIYO_METRIC_ID;
+  const apiKey = env.KLAVIYO_API_KEY;
+  const metricId = env.KLAVIYO_METRIC_ID;
 
   if (!apiKey) {
     console.warn("⚠️  Klaviyo API key not configured; skipping Klaviyo event.");

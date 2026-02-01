@@ -1,7 +1,7 @@
 # Project Status
 
 **Version:** 0.1.0
-**Last Updated:** 2026-01-27
+**Last Updated:** 2026-02-01
 
 ## Feature Status
 
@@ -14,6 +14,7 @@
 | Event waivers | Working | Digital signature capture for liability |
 | User auth | Working | Supabase Auth with approval workflow |
 | Admin dashboard | Working | User management at /admin/users |
+| Impact Missions | Working | /impact index + /impact/joyskitchen landing page |
 | Tracking/analytics | Partial | Schema complete, middleware needs full implementation |
 | Klaviyo integration | Working | Event-based email flows |
 | Photo galleries | Working | tRPC router with Supabase Storage |
@@ -33,9 +34,10 @@
 
 | Date | Description |
 |------|-------------|
+| 2026-02-01 | Added Impact Missions feature with Joy's Kitchen volunteer opportunity |
 | 2026-01-27 | Initialized project standards (CLAUDE.md, STATUS.md, TODO.md) |
+| 2026-01-27 | Fix pattern coherence issues |
 | 2026-01-20 | Questionnaire form updates |
 | 2026-01-17 | Waiver system and QR code generation |
-| 2026-01-15 | Website design overhaul planning (DesignInput.md) |
 
 See `git log --oneline` for full history.

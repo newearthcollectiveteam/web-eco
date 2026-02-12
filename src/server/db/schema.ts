@@ -1,4 +1,4 @@
-import { sql } from "drizzle-orm";
+import { sql, relations } from "drizzle-orm";
 import {
   pgTableCreator,
   text,
@@ -556,3 +556,109 @@ export const eventWaivers = createTable("event_waiver", {
     .default(sql`CURRENT_TIMESTAMP`)
     .notNull(),
 });
+
+/**
+ * Drizzle Relations
+ * Enable type-safe eager loading with `with:` syntax
+ */
+
+export const contactsRelations = relations(contacts, ({ many }) => ({
+  sources: many(contactSources),
+  activities: many(contactActivities),
+  questionnaireResponses: many(questionnaireResponses),
+  waitlistIntakes: many(waitlistIntake),
+  sessions: many(sessions),
+  events: many(events),
+  emailLinks: many(emailLinks),
+  emailLinkClicks: many(emailLinkClicks),
+  identityMaps: many(userIdentityMap),
+}));
+
+export const contactSourcesRelations = relations(contactSources, ({ one }) => ({
+  contact: one(contacts, {
+    fields: [contactSources.contactId],
+    references: [contacts.id],
+  }),
+}));
+
+export const contactActivitiesRelations = relations(contactActivities, ({ one }) => ({
+  contact: one(contacts, {
+    fields: [contactActivities.contactId],
+    references: [contacts.id],
+  }),
+}));
+
+export const questionnaireResponsesRelations = relations(questionnaireResponses, ({ one }) => ({
+  contact: one(contacts, {
+    fields: [questionnaireResponses.contactId],
+    references: [contacts.id],
+  }),
+}));
+
+export const waitlistIntakeRelations = relations(waitlistIntake, ({ one }) => ({
+  contact: one(contacts, {
+    fields: [waitlistIntake.contactId],
+    references: [contacts.id],
+  }),
+}));
+
+export const galleriesRelations = relations(galleries, ({ many }) => ({
+  images: many(galleryImages),
+}));
+
+export const galleryImagesRelations = relations(galleryImages, ({ one }) => ({
+  gallery: one(galleries, {
+    fields: [galleryImages.galleryId],
+    references: [galleries.id],
+  }),
+}));
+
+export const sessionsRelations = relations(sessions, ({ one, many }) => ({
+  contact: one(contacts, {
+    fields: [sessions.contactId],
+    references: [contacts.id],
+  }),
+  events: many(events),
+  emailLinkClicks: many(emailLinkClicks),
+}));
+
+export const eventsRelations = relations(events, ({ one }) => ({
+  session: one(sessions, {
+    fields: [events.sessionId],
+    references: [sessions.id],
+  }),
+  contact: one(contacts, {
+    fields: [events.contactId],
+    references: [contacts.id],
+  }),
+}));
+
+export const emailLinksRelations = relations(emailLinks, ({ one, many }) => ({
+  contact: one(contacts, {
+    fields: [emailLinks.contactId],
+    references: [contacts.id],
+  }),
+  clicks: many(emailLinkClicks),
+}));
+
+export const emailLinkClicksRelations = relations(emailLinkClicks, ({ one }) => ({
+  emailLink: one(emailLinks, {
+    fields: [emailLinkClicks.emailLinkId],
+    references: [emailLinks.id],
+  }),
+  contact: one(contacts, {
+    fields: [emailLinkClicks.contactId],
+    references: [contacts.id],
+  }),
+  session: one(sessions, {
+    fields: [emailLinkClicks.sessionId],
+    references: [sessions.id],
+  }),
+}));
+
+export const userIdentityMapRelations = relations(userIdentityMap, ({ one }) => ({
+  contact: one(contacts, {
+    fields: [userIdentityMap.contactId],
+    references: [contacts.id],
+  }),
+}));

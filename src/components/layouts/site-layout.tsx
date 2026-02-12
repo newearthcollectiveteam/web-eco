@@ -32,6 +32,14 @@ export function SiteLayout({ children, hideNav = false, hideFooter = false }: Si
 
   return (
     <div className="min-h-screen bg-black text-white">
+      {/* Skip to content - a11y */}
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-md focus:bg-[#FACF39] focus:px-4 focus:py-2 focus:text-black focus:font-bold focus:outline-none"
+      >
+        Skip to content
+      </a>
+
       {/* Fixed Navigation */}
       {!hideNav && (
         <header
@@ -83,6 +91,7 @@ export function SiteLayout({ children, hideNav = false, hideFooter = false }: Si
               className="text-[#FACF39] md:hidden"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               aria-label="Toggle menu"
+              aria-expanded={mobileMenuOpen}
             >
               {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>
@@ -118,7 +127,7 @@ export function SiteLayout({ children, hideNav = false, hideFooter = false }: Si
       )}
 
       {/* Main Content */}
-      <main>{children}</main>
+      <main id="main-content">{children}</main>
 
       {/* Footer */}
       {!hideFooter && (

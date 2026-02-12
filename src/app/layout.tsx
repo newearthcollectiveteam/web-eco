@@ -1,12 +1,20 @@
 import "~/styles/globals.css";
 import "./fonts.css";
 
-import { type Metadata } from "next";
+import { type Metadata, type Viewport } from "next";
 import { Geist } from "next/font/google";
 import { ThemeProvider } from "next-themes";
 
 import { TRPCReactProvider } from "~/trpc/react";
 import { AuthProvider } from "~/lib/auth/hooks";
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  userScalable: true,
+  themeColor: "#000000",
+};
 
 export const metadata: Metadata = {
   title: {

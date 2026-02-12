@@ -2,7 +2,6 @@
 
 import * as React from "react";
 import { Input } from "~/components/ui/input";
-import { cn } from "~/lib/utils";
 
 export interface LocationAutocompleteProps {
   name: string;
@@ -34,7 +33,7 @@ const LocationAutocomplete = React.forwardRef<
   const wrapperRef = React.useRef<HTMLDivElement>(null);
 
   // Debounce timer
-  const debounceTimer = React.useRef<NodeJS.Timeout>();
+  const debounceTimer = React.useRef<NodeJS.Timeout | undefined>(undefined);
 
   // Sync with external value changes
   React.useEffect(() => {
@@ -65,14 +64,14 @@ const LocationAutocomplete = React.forwardRef<
     setIsLoading(true);
     try {
       // Use Nominatim API (OpenStreetMap) - free, no API key required
+      const searchParams = new URLSearchParams({
+        q: query,
+        format: "json",
+        addressdetails: "1",
+        limit: "5",
+      });
       const response = await fetch(
-        `https://nominatim.openstreetmap.org/search?` +
-          new URLSearchParams({
-            q: query,
-            format: "json",
-            addressdetails: "1",
-            limit: "5",
-          }),
+        `https://nominatim.openstreetmap.org/search?${searchParams.toString()}`,
         {
           headers: {
             "User-Agent": "NewEarthCollective/1.0",
@@ -134,14 +133,20 @@ const LocationAutocomplete = React.forwardRef<
         placeholder={placeholder}
         required={required}
         autoComplete="off"
+        role="combobox"
+        aria-expanded={showSuggestions && suggestions.length > 0}
+        aria-autocomplete="list"
+        aria-controls={showSuggestions ? "location-listbox" : undefined}
       />
 
       {showSuggestions && suggestions.length > 0 && (
         <div className="absolute z-50 mt-1 w-full rounded-md border-2 border-[#facf39]/30 bg-black shadow-2xl">
-          <ul className="max-h-60 overflow-auto py-1">
+          <ul id="location-listbox" role="listbox" className="max-h-60 overflow-auto py-1">
             {suggestions.map((suggestion) => (
               <li
                 key={suggestion.place_id}
+                role="option"
+                aria-selected={false}
                 className="cursor-pointer px-4 py-2 text-sm text-neutral-300 transition-colors hover:bg-[#facf39]/20 hover:text-white"
                 onClick={() => handleSelectSuggestion(suggestion)}
               >

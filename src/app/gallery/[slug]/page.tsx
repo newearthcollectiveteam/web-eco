@@ -122,7 +122,7 @@ export default function GalleryPage() {
               {gallery.images.length} photos
             </p>
           </div>
-          <div className="w-[116px]" /> {/* spacer to balance BackButton width */}
+          <div className="hidden w-[116px] sm:block" /> {/* spacer to balance BackButton width */}
         </div>
       </div>
 
@@ -168,7 +168,12 @@ export default function GalleryPage() {
           .image-container {
             position: relative;
             width: 100%;
-            max-height: 600px;
+            max-height: 400px;
+          }
+          @media (min-width: 640px) {
+            .image-container {
+              max-height: 600px;
+            }
           }
 
           .image-container img {

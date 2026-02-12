@@ -56,7 +56,6 @@ const TextareaWithCounter = React.forwardRef<
   // Determine if requirements are met
   const meetsWordRequirement = !minWords || wordCount >= minWords;
   const meetsCharRequirement = !minChars || charCount >= minChars;
-  const meetsRequirements = meetsWordRequirement && meetsCharRequirement;
 
   return (
     <div className="space-y-1">

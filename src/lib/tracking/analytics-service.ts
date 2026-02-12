@@ -15,7 +15,6 @@ import {
   generateSessionId,
   parseUserAgent,
   hashIpAddress,
-  isSessionExpired,
 } from './utils';
 
 export interface SessionData {

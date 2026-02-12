@@ -1,33 +1,33 @@
 "use server";
 
-import { NextRequest } from "next/server";
+import type { NextRequest } from "next/server";
 
 // Simple map of demo email bodies keyed by sequence number
 const EMAIL_TEMPLATES: Record<number, (name: string) => string> = {
   1: (name) => `
     <h1>Welcome, ${name}!</h1>
     <p>Thanks for joining the New Earth Collective. This is email #1 in the sequence.</p>
-    <p>We’re excited to share regenerative tools, community highlights, and upcoming events.</p>
+    <p>We're excited to share regenerative tools, community highlights, and upcoming events.</p>
   `,
   2: (name) => `
     <h1>Quick Check-In, ${name}</h1>
-    <p>This is email #2 (2.5 minute follow-up). Let us know what you’re building.</p>
+    <p>This is email #2 (2.5 minute follow-up). Let us know what you're building.</p>
   `,
-  3: (name) => `
+  3: (_name) => `
     <h1>Resources For You</h1>
-    <p>Email #3 (5 minute follow-up). We’ve curated starter resources to help you get oriented.</p>
+    <p>Email #3 (5 minute follow-up). We've curated starter resources to help you get oriented.</p>
   `,
-  4: (name) => `
+  4: (_name) => `
     <h1>Community Spotlight</h1>
-    <p>Email #4 (7.5 minute follow-up). Here’s how other members are collaborating.</p>
+    <p>Email #4 (7.5 minute follow-up). Here's how other members are collaborating.</p>
   `,
-  5: (name) => `
+  5: (_name) => `
     <h1>Day 2 Check-In</h1>
-    <p>Email #5 (24 hour follow-up). We’d love your feedback on the onboarding flow.</p>
+    <p>Email #5 (24 hour follow-up). We'd love your feedback on the onboarding flow.</p>
   `,
-  6: (name) => `
+  6: (_name) => `
     <h1>Day 2.5 Check-In</h1>
-    <p>Email #6 (36 hour follow-up). Ready to join a working group? Let’s get you matched.</p>
+    <p>Email #6 (36 hour follow-up). Ready to join a working group? Let's get you matched.</p>
   `,
 };
 

@@ -14,7 +14,7 @@ export interface BirthTimePickerProps {
 }
 
 const BirthTimePicker = React.forwardRef<HTMLInputElement, BirthTimePickerProps>(
-  ({ name, id, className, placeholder = "Select birth time", value, onChange, disabled }, ref) => {
+  ({ name, id, className, placeholder: _placeholder = "Select birth time", value, onChange, disabled }, ref) => {
     // Parse initial value if provided (format: "HH:mm")
     const parseInitialValue = (val: string | undefined) => {
       if (!val) return { hour: "", minute: "", period: "AM" };

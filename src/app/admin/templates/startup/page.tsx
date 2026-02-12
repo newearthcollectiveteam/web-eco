@@ -3,7 +3,7 @@
 import { Suspense } from "react";
 
 import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
+import { Card, CardContent } from "~/components/ui/card";
 import { Button } from "~/components/ui/button";
 import { Badge } from "~/components/ui/badge";
 import { BackButton } from "~/components/back-button";
@@ -11,21 +11,16 @@ import {
   Rocket,
   ArrowRight,
   Play,
-  Zap,
   Globe,
   Users,
   TrendingUp,
   Star,
-  ChevronDown,
   Check,
   X,
   Sparkles,
-  Heart,
   MessageSquare,
-  Award,
   Target,
   Clock,
-  BarChart3,
   Lightbulb,
 } from "lucide-react";
 

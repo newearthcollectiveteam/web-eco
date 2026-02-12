@@ -8,7 +8,6 @@ import { Input } from "~/components/ui/input";
 import { Textarea } from "~/components/ui/textarea";
 import { Checkbox } from "~/components/ui/checkbox";
 import Image from "next/image";
-import Link from "next/link";
 import {
   ArrowRight,
   Users,
@@ -21,7 +20,6 @@ import {
   Mail,
   Loader2,
 } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { api as trpc } from "~/trpc/react";
 import {
   Carousel,
@@ -31,7 +29,6 @@ import {
 } from "~/components/ui/carousel";
 
 export function CommunityLandingContent() {
-  const router = useRouter();
   const [questionnaireBaseUrl, setQuestionnaireBaseUrl] = useState("/questionnaire");
   const [formData, setFormData] = useState({
     name: "",

@@ -2,7 +2,7 @@
 
 import { Suspense } from "react";
 
-import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
+import { Card, CardContent } from "~/components/ui/card";
 import { Button } from "~/components/ui/button";
 import { Badge } from "~/components/ui/badge";
 import { BackButton } from "~/components/back-button";
@@ -12,21 +12,6 @@ import {
   Linkedin,
   Mail,
   ExternalLink,
-  Code,
-  Star,
-  GitBranch,
-  Calendar,
-  MapPin,
-  Download,
-  ArrowRight,
-  Sparkles,
-  Zap,
-  Heart,
-  Eye,
-  Users,
-  Award,
-  BookOpen,
-  Briefcase,
   GraduationCap,
 } from "lucide-react";
 

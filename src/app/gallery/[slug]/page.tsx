@@ -1,7 +1,6 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { api as trpc } from "~/trpc/react";
@@ -20,7 +19,7 @@ export default function GalleryPage() {
   const params = useParams();
   const slug = params.slug as string;
   const [carouselApi, setCarouselApi] = useState<CarouselApi>();
-  const [current, setCurrent] = useState(0);
+  const [, setCurrent] = useState(0);
 
   const { data: gallery, isLoading } = trpc.gallery.getWithImages.useQuery({
     slug,

@@ -2,7 +2,6 @@
 
 import { useAuth } from "~/lib/auth/hooks";
 import { createClient } from "~/lib/supabase/client";
-import Link from "next/link";
 import Image from "next/image";
 import { Clock, XCircle, Mail } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -14,6 +13,7 @@ export default function PendingApprovalPage() {
 
   useEffect(() => {
     void checkApprovalStatus();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   const checkApprovalStatus = async () => {

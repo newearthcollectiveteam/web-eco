@@ -92,7 +92,7 @@ function AdminPageContent() {
       if (!res.ok) throw new Error("Failed to fetch");
       const json = await res.json();
       setData(json as DatabaseData);
-    } catch (err) {
+    } catch {
       setError("Failed to load database info");
     } finally {
       setLoading(false);
@@ -106,7 +106,7 @@ function AdminPageContent() {
       if (!res.ok) throw new Error("Failed to fetch");
       const json = await res.json();
       setSectionData((prev) => ({ ...prev, [table]: json.data }));
-    } catch (err) {
+    } catch {
       console.error(`Failed to load ${table} data`);
     } finally {
       setSectionLoading(null);

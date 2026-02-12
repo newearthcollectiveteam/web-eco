@@ -32,7 +32,7 @@ export function ImpactOpportunityCard({
   title,
   partnerName,
   partnerLogo,
-  location,
+  location: _location,
   description,
   status,
   href,

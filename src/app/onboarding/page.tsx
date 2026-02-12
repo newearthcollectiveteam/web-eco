@@ -8,7 +8,7 @@ import { createClient } from "~/lib/supabase/client";
 export default function OnboardingPage() {
   const router = useRouter();
   const { user } = useAuth();
-  const [loading, setLoading] = useState(true);
+  const [, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   // Auto-complete onboarding on page load

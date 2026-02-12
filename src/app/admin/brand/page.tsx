@@ -1030,7 +1030,6 @@ const getBackgroundClass = (bg: string) => {
 };
 
 export default function BrandPage() {
-  const [activeFormat, setActiveFormat] = useState<"svg" | "png">("svg");
   const [activeCategory, setActiveCategory] = useState("all");
   const [previewLogo, setPreviewLogo] = useState<{
     name: string;

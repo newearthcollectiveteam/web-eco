@@ -2,7 +2,7 @@
 
 import { Suspense } from "react";
 
-import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
+import { Card, CardContent } from "~/components/ui/card";
 import { Button } from "~/components/ui/button";
 import { Badge } from "~/components/ui/badge";
 import { BackButton } from "~/components/back-button";
@@ -15,16 +15,11 @@ import {
   Globe,
   Users,
   TrendingUp,
-  Clock,
   Award,
-  ChevronRight,
   Play,
   BarChart3,
   Target,
   Rocket,
-  Heart,
-  MessageCircle,
-  Quote,
 } from "lucide-react";
 
 export default function SaasBusinessPage() {

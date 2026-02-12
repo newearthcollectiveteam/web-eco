@@ -11,7 +11,6 @@ import {
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import { BackButton } from "~/components/back-button";
-import Link from "next/link";
 import Image from "next/image";
 import {
   Mail,

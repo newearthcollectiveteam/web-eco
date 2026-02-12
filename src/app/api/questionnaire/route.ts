@@ -138,7 +138,7 @@ export async function POST(request: NextRequest) {
       physicalResources = [],
       resourceLocation,
       resourceOther,
-      sharingWillingness,
+      // sharingWillingness - captured in metadata JSON but not used directly
 
       // Section 5
       howFoundUs,

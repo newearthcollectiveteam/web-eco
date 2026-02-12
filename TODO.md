@@ -10,13 +10,13 @@ _None documented_
 
 ## Tech Debt (code quality)
 
-- [ ] Migrate data-query API routes to tRPC (`/api/crm/contacts`, `/api/questionnaire/check`, `/api/admin/database`)
-- [ ] Implement full tracking middleware for all event types
-- [ ] Add email link generation service for click tracking
+- [x] Migrate data-query API routes to tRPC (`admin`, `crm`, `questionnaire`, `analytics` routers)
+- [x] Implement full tracking middleware for all event types
+- [x] Add email link generation service for click tracking
 - [ ] Add composite unique constraint (contactId, source) to contactSources table
 - [ ] Migrate scheduled_emails table to include contactId linking
 - [ ] Remove remaining `any` types in db/index.ts proxy (requires union type refactor)
-- [ ] Archive 14 stale docs (75+ days old) into `docs/archive/`
+- [x] Archive stale docs (75+ days old) into `docs/archive/`
 
 ## Enhancements (nice to have)
 
@@ -55,8 +55,8 @@ _None documented_
 
 See `docs/` folder for detailed guides:
 - `ARCHITECTURE.md` - CRM and intake forms architecture
-- `CRM_SYSTEM_GUIDE.md` - Master CRM documentation
 - `TRACKING_ANALYTICS_DESIGN.md` - User tracking system design
 - `KLAVIYO_SETUP_GUIDE.md` - Email integration setup
-- `AUTH_SETUP.md` - Authentication configuration
 - `QUICK_START.md` - Admin approval workflow setup
+
+Archived guides in `docs/archive/` (11 files, stale 75+ days).

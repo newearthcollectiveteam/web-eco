@@ -32,10 +32,10 @@
 
 | Date | Description |
 |------|-------------|
-| 2026-02-12 | Recovered crashed session: committed tRPC migration, tracking, docs archive, tech debt |
-| 2026-02-12 | Migrated 4 REST API routes to tRPC routers, CRM dashboard uses tRPC hooks |
-| 2026-02-12 | Added client-side tracking (sendBeacon hook, /api/track), email click conversions |
-| 2026-02-12 | Cleared all tech debt: contactSources constraint, removed `any` from db proxy |
-| 2026-02-12 | Fixed all 80 ESLint warnings, archived 11 stale docs, configured GitHub push |
+| 2026-02-12 | Locked down git push auth: `gh auth git-credential` for HTTPS to newearthcollectiveteam |
+| 2026-02-12 | Recovered crashed session: tRPC migration, tracking improvements, all tech debt resolved |
+| 2026-02-12 | Migrated 4 REST routes to tRPC, added client-side tracking, email click conversions |
+| 2026-02-12 | Cleared tech debt: contactSources constraint, removed `any` from db proxy |
+| 2026-02-12 | Fixed all 80 ESLint warnings, archived 11 stale docs |
 
 See `git log --oneline` for full history.

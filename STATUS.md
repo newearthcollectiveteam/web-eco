@@ -34,10 +34,10 @@
 
 | Date | Description |
 |------|-------------|
+| 2026-02-12 | Fixed all 80 ESLint warnings (zero remaining), pre-commit hook now clean |
 | 2026-02-12 | Added Drizzle relations, CRM dashboard, a11y improvements, type safety fixes |
-| 2026-02-12 | Committed and pushed all uncommitted work (9 commits, 118 files) |
-| 2026-02-12 | Configured GitHub push flow (newearthcollectiveteam account, HTTPS) |
-| 2026-02-11 | Moved admin tools from test subdomain to /admin path-based routing |
+| 2026-02-12 | Migrated admin tools to /admin/*, configured GitHub push flow |
 | 2026-02-01 | Added Impact Missions feature with Joy's Kitchen volunteer opportunity |
+| 2026-01-27 | Initialized project standards (CLAUDE.md, STATUS.md, TODO.md) |
 
 See `git log --oneline` for full history.

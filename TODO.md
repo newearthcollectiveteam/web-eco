@@ -16,7 +16,7 @@ _None documented_
 - [ ] Add composite unique constraint (contactId, source) to contactSources table
 - [ ] Migrate scheduled_emails table to include contactId linking
 - [ ] Remove remaining `any` types in db/index.ts proxy (requires union type refactor)
-- [x] ~~Fix pre-existing ESLint warnings~~ (0 remaining, pre-commit hook passes clean)
+- [ ] Archive 14 stale docs (75+ days old) into `docs/archive/`
 
 ## Enhancements (nice to have)
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, Suspense } from "react";
+import { useState, Suspense } from "react";
 import Image from "next/image";
 import { Card, CardContent } from "~/components/ui/card";
 import { Badge } from "~/components/ui/badge";
@@ -16,14 +16,7 @@ import {
   ChevronDown,
   ChevronUp,
 } from "lucide-react";
-
-interface Stats {
-  contacts: number;
-  questionnaires: number;
-  waivers: number;
-  activities: number;
-  sources: number;
-}
+import { api } from "~/trpc/react";
 
 interface Contact {
   id: number;
@@ -31,7 +24,7 @@ interface Contact {
   name: string | null;
   firstSource: string;
   status: string;
-  createdAt: string;
+  createdAt: Date;
 }
 
 interface QuestionnaireResponse {
@@ -39,7 +32,7 @@ interface QuestionnaireResponse {
   name: string;
   email: string;
   source: string | null;
-  createdAt: string;
+  createdAt: Date;
 }
 
 interface Waiver {
@@ -47,14 +40,14 @@ interface Waiver {
   signerName: string;
   signerEmail: string;
   eventName: string;
-  signedAt: string;
+  signedAt: Date;
 }
 
 type SectionItem = Contact | QuestionnaireResponse | Waiver;
 
 function getItemName(item: SectionItem): string {
   if ("signerName" in item) return item.signerName;
-  return item.name || "";
+  return item.name ?? "";
 }
 
 function getItemEmail(item: SectionItem): string {
@@ -62,74 +55,44 @@ function getItemEmail(item: SectionItem): string {
   return item.email;
 }
 
-function getItemDate(item: SectionItem): string {
+function getItemDate(item: SectionItem): Date {
   if ("signedAt" in item) return item.signedAt;
   return item.createdAt;
 }
 
-interface DatabaseData {
-  stats: Stats;
-  recent: {
-    contacts: Contact[];
-    questionnaires: QuestionnaireResponse[];
-    waivers: Waiver[];
-  };
-}
-
 function AdminPageContent() {
-  const [data, setData] = useState<DatabaseData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [expandedSection, setExpandedSection] = useState<string | null>(null);
-  const [sectionData, setSectionData] = useState<Record<string, Array<Record<string, string | number | boolean | null>>>>({});
-  const [sectionLoading, setSectionLoading] = useState<string | null>(null);
 
-  const fetchData = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const res = await fetch("/api/admin/database");
-      if (!res.ok) throw new Error("Failed to fetch");
-      const json = await res.json();
-      setData(json as DatabaseData);
-    } catch {
-      setError("Failed to load database info");
-    } finally {
-      setLoading(false);
-    }
+  const statsQuery = api.admin.dashboardStats.useQuery();
+  const data = statsQuery.data;
+  const loading = statsQuery.isLoading;
+  const error = statsQuery.error;
+
+  const contactsTable = api.admin.tableData.useQuery(
+    { table: "contacts", limit: 50 },
+    { enabled: expandedSection === "crm" }
+  );
+  const questionnaireTable = api.admin.tableData.useQuery(
+    { table: "questionnaire", limit: 50 },
+    { enabled: expandedSection === "questionnaire" }
+  );
+  const waiversTable = api.admin.tableData.useQuery(
+    { table: "waivers", limit: 50 },
+    { enabled: expandedSection === "waivers" }
+  );
+
+  const tableQueries: Record<string, typeof contactsTable> = {
+    contacts: contactsTable,
+    questionnaire: questionnaireTable,
+    waivers: waiversTable,
   };
 
-  const fetchSectionData = async (table: string, limit = 50) => {
-    setSectionLoading(table);
-    try {
-      const res = await fetch(`/api/admin/database?table=${table}&limit=${limit}`);
-      if (!res.ok) throw new Error("Failed to fetch");
-      const json = await res.json();
-      setSectionData((prev) => ({ ...prev, [table]: json.data }));
-    } catch {
-      console.error(`Failed to load ${table} data`);
-    } finally {
-      setSectionLoading(null);
-    }
+  const toggleSection = (section: string) => {
+    setExpandedSection(expandedSection === section ? null : section);
   };
 
-  const toggleSection = (section: string, table: string) => {
-    if (expandedSection === section) {
-      setExpandedSection(null);
-    } else {
-      setExpandedSection(section);
-      if (!sectionData[table]) {
-        void fetchSectionData(table);
-      }
-    }
-  };
-
-  useEffect(() => {
-    void fetchData();
-  }, []);
-
-  const formatDate = (dateStr: string) => {
-    return new Date(dateStr).toLocaleDateString("en-US", {
+  const formatDate = (date: Date | string) => {
+    return new Date(date).toLocaleDateString("en-US", {
       month: "short",
       day: "numeric",
       hour: "2-digit",
@@ -144,9 +107,9 @@ function AdminPageContent() {
       title: "CRM Contacts",
       icon: Users,
       color: "amber",
-      stat: data?.stats.contacts || 0,
+      stat: data?.stats.contacts ?? 0,
       description: "Master contact database - all leads and members",
-      recent: data?.recent.contacts || [],
+      recent: (data?.recent.contacts ?? []) as SectionItem[],
     },
     {
       id: "questionnaire",
@@ -154,9 +117,9 @@ function AdminPageContent() {
       title: "Questionnaire Responses",
       icon: ClipboardList,
       color: "emerald",
-      stat: data?.stats.questionnaires || 0,
+      stat: data?.stats.questionnaires ?? 0,
       description: "Alignment questionnaire submissions",
-      recent: data?.recent.questionnaires || [],
+      recent: (data?.recent.questionnaires ?? []) as SectionItem[],
     },
     {
       id: "waivers",
@@ -164,9 +127,9 @@ function AdminPageContent() {
       title: "Event Waivers",
       icon: FileSignature,
       color: "purple",
-      stat: data?.stats.waivers || 0,
+      stat: data?.stats.waivers ?? 0,
       description: "Signed event liability waivers",
-      recent: data?.recent.waivers || [],
+      recent: (data?.recent.waivers ?? []) as SectionItem[],
     },
   ];
 
@@ -225,7 +188,7 @@ function AdminPageContent() {
                 Live Data
               </Badge>
               <button
-                onClick={fetchData}
+                onClick={() => void statsQuery.refetch()}
                 disabled={loading}
                 className="inline-flex items-center gap-1.5 rounded-full border border-black/20 bg-black/5 px-3 py-1 text-sm text-black transition-colors hover:bg-black/10 dark:border-white/20 dark:bg-white/5 dark:text-white dark:hover:bg-white/10"
               >
@@ -239,7 +202,7 @@ function AdminPageContent() {
           {error && (
             <Card className="mb-8 border-red-500/30 bg-red-500/10">
               <CardContent className="p-4 text-center text-red-600 dark:text-red-400">
-                {error}
+                Failed to load database info
               </CardContent>
             </Card>
           )}
@@ -276,7 +239,8 @@ function AdminPageContent() {
               const colors = colorMap[section.color]!;
               const Icon = section.icon;
               const isExpanded = expandedSection === section.id;
-              const fullData = sectionData[section.table] || [];
+              const tableQuery = tableQueries[section.table];
+              const fullData = tableQuery?.data?.data ?? [];
 
               return (
                 <Card
@@ -285,7 +249,7 @@ function AdminPageContent() {
                 >
                   {/* Section Header */}
                   <button
-                    onClick={() => toggleSection(section.id, section.table)}
+                    onClick={() => toggleSection(section.id)}
                     className="flex w-full items-center justify-between p-6 text-left transition-colors hover:bg-neutral-50 dark:hover:bg-neutral-900"
                     aria-expanded={isExpanded}
                   >
@@ -349,7 +313,7 @@ function AdminPageContent() {
                   {/* Expanded Full List */}
                   {isExpanded && (
                     <div className="border-t border-neutral-200 dark:border-neutral-800">
-                      {sectionLoading === section.table ? (
+                      {tableQuery?.isLoading ? (
                         <div className="p-8 text-center">
                           <RefreshCw className="mx-auto h-6 w-6 animate-spin text-neutral-400" />
                           <p className="mt-2 text-sm text-neutral-500">Loading...</p>
@@ -367,33 +331,41 @@ function AdminPageContent() {
                               </tr>
                             </thead>
                             <tbody className="divide-y divide-neutral-200 dark:divide-neutral-800">
-                              {fullData.map((item) => (
+                              {fullData.map((item: Record<string, unknown>) => {
+                                const str = (v: unknown) => (typeof v === "string" || typeof v === "number" ? String(v) : "");
+                                const id = str(item.id);
+                                const name = str(item.name) || str(item.signerName);
+                                const email = str(item.email) || str(item.signerEmail);
+                                const source = str(item.firstSource) || str(item.source) || str(item.eventName) || "\u2014";
+                                const date = str(item.createdAt) || str(item.signedAt);
+                                return (
                                 <tr
-                                  key={String(item.id)}
+                                  key={id}
                                   className="hover:bg-neutral-50 dark:hover:bg-neutral-900"
                                 >
                                   <td className="px-6 py-3 text-sm text-neutral-500">
-                                    {String(item.id ?? "")}
+                                    {id}
                                   </td>
                                   <td className="px-6 py-3 font-medium text-black dark:text-white">
-                                    {String(item.name ?? item.signerName ?? "")}
+                                    {name}
                                   </td>
                                   <td className="px-6 py-3 text-sm text-neutral-600 dark:text-neutral-400">
-                                    {String(item.email ?? item.signerEmail ?? "")}
+                                    {email}
                                   </td>
                                   <td className="px-6 py-3">
                                     <Badge
                                       variant="outline"
                                       className="text-xs"
                                     >
-                                      {String(item.firstSource ?? item.source ?? item.eventName ?? "—")}
+                                      {source}
                                     </Badge>
                                   </td>
                                   <td className="px-6 py-3 text-sm text-neutral-500">
-                                    {formatDate(String(item.createdAt ?? item.signedAt ?? ""))}
+                                    {formatDate(date)}
                                   </td>
                                 </tr>
-                              ))}
+                                );
+                              })}
                             </tbody>
                           </table>
                         </div>

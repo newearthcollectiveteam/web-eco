@@ -5,7 +5,7 @@
 
 import { db } from "~/server/db";
 import { contacts, contactActivities } from "~/server/db/schema";
-import { eq } from "drizzle-orm";
+import { eq, and, type SQL } from "drizzle-orm";
 
 export interface CreateContactParams {
   email: string;
@@ -218,19 +218,21 @@ export async function searchContacts(params: {
 }): Promise<(typeof contacts.$inferSelect)[]> {
   const { source, status, limit = 100 } = params;
 
-  let query = db.select().from(contacts);
+  const conditions: SQL[] = [];
 
   if (source) {
-    query = query.where(eq(contacts.firstSource, source)) as any;
+    conditions.push(eq(contacts.firstSource, source));
   }
 
   if (status) {
-    query = query.where(eq(contacts.status, status)) as any;
+    conditions.push(eq(contacts.status, status));
   }
 
-  // Note: For tag filtering with JSONB, you'd use a more complex query
-  // This is a simplified version
+  const results = await db
+    .select()
+    .from(contacts)
+    .where(conditions.length > 0 ? and(...conditions) : undefined)
+    .limit(limit);
 
-  const results = await query.limit(limit);
   return results;
 }

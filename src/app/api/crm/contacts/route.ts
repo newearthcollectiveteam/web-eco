@@ -7,7 +7,7 @@ import type { NextRequest} from "next/server";
 import { NextResponse } from "next/server";
 import { db } from "~/server/db";
 import { contacts, contactActivities } from "~/server/db/schema";
-import { desc, eq, like, or } from "drizzle-orm";
+import { and, desc, eq, like, or, type SQL } from "drizzle-orm";
 
 export async function GET(request: NextRequest) {
   try {
@@ -45,8 +45,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Build query for multiple contacts
-    let query = db.select().from(contacts);
-    const conditions = [];
+    const conditions: SQL[] = [];
 
     if (source) {
       conditions.push(eq(contacts.firstSource, source));
@@ -57,19 +56,17 @@ export async function GET(request: NextRequest) {
     }
 
     if (search) {
-      conditions.push(
-        or(
-          like(contacts.email, `%${search}%`),
-          like(contacts.name, `%${search}%`)
-        )
+      const searchCondition = or(
+        like(contacts.email, `%${search}%`),
+        like(contacts.name, `%${search}%`)
       );
+      if (searchCondition) conditions.push(searchCondition);
     }
 
-    if (conditions.length > 0) {
-      query = query.where(or(...conditions)) as any;
-    }
-
-    const allContacts = await query
+    const allContacts = await db
+      .select()
+      .from(contacts)
+      .where(conditions.length > 0 ? and(...conditions) : undefined)
       .orderBy(desc(contacts.lastContactDate))
       .limit(limit);
 

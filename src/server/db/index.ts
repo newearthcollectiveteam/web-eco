@@ -65,12 +65,11 @@ function createDatabase() {
 type DatabaseType = ReturnType<typeof drizzlePg<typeof schema>>;
 
 // Use a Proxy to lazily create the database connection only when accessed
-export const db = new Proxy({} as any, {
-  get(_target, prop) {
+export const db = new Proxy({} as DatabaseType, {
+  get(_target, prop: string | symbol) {
     if (!_db) {
       _db = createDatabase();
     }
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-    return (_db as any)[prop];
+    return (_db as unknown as Record<string | symbol, unknown>)[prop];
   },
-}) as DatabaseType;
+});

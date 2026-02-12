@@ -6,7 +6,7 @@ export default function FlowerOfLifeUtilityPage() {
   return (
     <div className="h-screen w-screen">
       <ShadertoyRenderer
-        shaderCode={`
+        fragmentShader={`
 // Flower of Life - Sacred Geometry
 // Inspired by ancient symbolism and mathematical beauty
 
@@ -95,8 +95,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     fragColor = vec4(col, 1.0);
 }
         `}
-        backgroundColor="#000000"
-        autoPlay={true}
+        className="h-full w-full"
       />
     </div>
   );

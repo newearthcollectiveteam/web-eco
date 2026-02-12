@@ -111,19 +111,19 @@ export async function getEmailLinkAnalytics(emailLinkId: number) {
   const link = await db.query.emailLinks.findFirst({
     where: eq(emailLinks.id, emailLinkId),
     with: {
-      emailLinkClicks: {
-        orderBy: (clicks: any, { desc }: any) => [desc(clicks.clickedAt)],
+      clicks: {
+        orderBy: (clicks, { desc }) => [desc(clicks.clickedAt)],
       },
     },
-  }) as any;
+  });
 
   if (!link) {
     return null;
   }
 
-  const clicks = link.emailLinkClicks || [];
-  const uniqueClickers = new Set(clicks.map((c: any) => c.contactId)).size;
-  const conversions = clicks.filter((c: any) => c.convertedToFormSubmission).length;
+  const clicks = link.clicks || [];
+  const uniqueClickers = new Set(clicks.map((c) => c.contactId)).size;
+  const conversions = clicks.filter((c) => c.convertedToFormSubmission).length;
 
   return {
     ...link,
@@ -158,12 +158,20 @@ export async function getEmailLinkPerformanceByType(emailType?: string) {
   const links = await db.query.emailLinks.findMany({
     where: whereClause,
     with: {
-      emailLinkClicks: true,
+      clicks: true,
     },
-  }) as any[];
+  });
 
   // Group by email type and calculate metrics
-  const grouped = links.reduce((acc, link) => {
+  interface GroupedMetrics {
+    emailType: string;
+    totalSent: number;
+    totalClicks: number;
+    uniqueClickers: Set<number>;
+    conversions: number;
+  }
+
+  const grouped = links.reduce<Record<string, GroupedMetrics>>((acc, link) => {
     const type = link.emailType;
     if (!acc[type]) {
       acc[type] = {
@@ -175,21 +183,22 @@ export async function getEmailLinkPerformanceByType(emailType?: string) {
       };
     }
 
-    acc[type].totalSent += 1;
-    acc[type].totalClicks += link.clickCount;
+    const group = acc[type];
+    group.totalSent += 1;
+    group.totalClicks += link.clickCount;
 
-    link.emailLinkClicks?.forEach((click: any) => {
-      acc[type].uniqueClickers.add(click.contactId);
+    link.clicks?.forEach((click) => {
+      group.uniqueClickers.add(click.contactId);
       if (click.convertedToFormSubmission) {
-        acc[type].conversions += 1;
+        group.conversions += 1;
       }
     });
 
     return acc;
-  }, {} as Record<string, any>);
+  }, {});
 
   // Convert to array and calculate rates
-  return Object.values(grouped).map((group: any) => ({
+  return Object.values(grouped).map((group) => ({
     emailType: group.emailType,
     totalSent: group.totalSent,
     totalClicks: group.totalClicks,

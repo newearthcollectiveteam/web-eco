@@ -44,7 +44,7 @@ export async function analyticsMiddleware(
       pathname.startsWith('/api') ||
       pathname.startsWith('/_next') ||
       pathname.startsWith('/favicon') ||
-      pathname.match(/\.(jpg|jpeg|png|gif|svg|ico|css|js|woff|woff2|ttf)$/)
+      /\.(jpg|jpeg|png|gif|svg|ico|css|js|woff|woff2|ttf)$/.test(pathname)
     ) {
       return response;
     }
@@ -193,7 +193,9 @@ export async function analyticsMiddleware(
     // Add tracking context to response headers (for debugging)
     if (process.env.NODE_ENV === 'development') {
       response.headers.set('X-Analytics-Anonymous-ID', anonymousId);
-      response.headers.set('X-Analytics-Session-ID', sessionId);
+      if (sessionId) {
+        response.headers.set('X-Analytics-Session-ID', sessionId);
+      }
       if (contactId) {
         response.headers.set('X-Analytics-Contact-ID', contactId.toString());
       }

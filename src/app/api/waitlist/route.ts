@@ -21,7 +21,16 @@ import { generateUnsubscribeToken, getClientIP } from "~/lib/consent/consent-uti
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
+    const body = (await request.json()) as {
+      name?: string;
+      email?: string;
+      phone?: string;
+      message?: string;
+      willingToFillQuestionnaire?: boolean;
+      emailConsent?: boolean;
+      smsConsent?: boolean;
+      source?: string;
+    };
     const {
       name,
       email,

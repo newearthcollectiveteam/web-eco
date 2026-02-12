@@ -152,7 +152,7 @@ export function CommunityLandingContent() {
           email: formData.email,
           phone: formData.phone,
           source: "waitlist",
-          contactId: data.contactId?.toString() || "",
+          contactId: String((data as { contactId?: number }).contactId ?? ""),
         });
 
         // Redirect to questionnaire page

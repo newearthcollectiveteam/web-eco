@@ -20,7 +20,7 @@ const BirthTimePicker = React.forwardRef<HTMLInputElement, BirthTimePickerProps>
       if (!val) return { hour: "", minute: "", period: "AM" };
       const [h, m] = val.split(":");
       if (!h || !m) return { hour: "", minute: "", period: "AM" };
-      let hour24 = parseInt(h);
+      const hour24 = parseInt(h);
       const period = hour24 >= 12 ? "PM" : "AM";
       let hour12 = hour24 % 12;
       if (hour12 === 0) hour12 = 12;

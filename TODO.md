@@ -10,13 +10,7 @@ _None documented_
 
 ## Tech Debt (code quality)
 
-- [x] Migrate data-query API routes to tRPC (`admin`, `crm`, `questionnaire`, `analytics` routers)
-- [x] Implement full tracking middleware for all event types
-- [x] Add email link generation service for click tracking
-- [ ] Add composite unique constraint (contactId, source) to contactSources table
-- [ ] Migrate scheduled_emails table to include contactId linking
-- [ ] Remove remaining `any` types in db/index.ts proxy (requires union type refactor)
-- [x] Archive stale docs (75+ days old) into `docs/archive/`
+_All tech debt items resolved_
 
 ## Enhancements (nice to have)
 

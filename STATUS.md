@@ -32,10 +32,12 @@
 
 | Date | Description |
 |------|-------------|
+| 2026-02-12 | Migrated 4 REST API routes to tRPC routers, CRM dashboard uses tRPC hooks |
+| 2026-02-12 | Added client-side tracking (sendBeacon hook, /api/track), email click conversions |
+| 2026-02-12 | Cleared all tech debt: contactSources unique constraint, removed `any` from db proxy |
+| 2026-02-12 | Archived 11 stale docs, deleted replaced REST routes |
 | 2026-02-12 | Fixed all 80 ESLint warnings (zero remaining), pre-commit hook now clean |
-| 2026-02-12 | Added Drizzle relations, CRM dashboard, a11y improvements, type safety fixes |
 | 2026-02-12 | Migrated admin tools to /admin/*, configured GitHub push flow |
 | 2026-02-01 | Added Impact Missions feature with Joy's Kitchen volunteer opportunity |
-| 2026-01-27 | Initialized project standards (CLAUDE.md, STATUS.md, TODO.md) |
 
 See `git log --oneline` for full history.

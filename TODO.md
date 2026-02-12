@@ -16,12 +16,12 @@ _None documented_
 - [ ] Add composite unique constraint (contactId, source) to contactSources table
 - [ ] Migrate scheduled_emails table to include contactId linking
 - [ ] Remove remaining `any` types in db/index.ts proxy (requires union type refactor)
-- [ ] Fix pre-existing ESLint errors (floating promises, unsafe arguments) to enable ESLint during builds
+- [ ] Fix pre-existing ESLint warnings (80 remaining) to enable ESLint during builds
 
 ## Enhancements (nice to have)
 
 ### CRM System
-- [ ] Build CRM dashboard UI
+- [ ] Enhance CRM dashboard (search, filters, detail views, export)
 - [ ] Bulk import/export contacts
 - [ ] Advanced contact segmentation
 - [ ] Contact scoring system

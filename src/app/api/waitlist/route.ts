@@ -76,8 +76,8 @@ export async function POST(request: NextRequest) {
     if (existingContact) {
       // Update existing contact
       const updateData: {
-        name: string;
-        phone: string;
+        name: string | undefined;
+        phone: string | null | undefined;
         lastContactDate: Date;
         emailConsent?: boolean;
         smsConsent?: boolean;

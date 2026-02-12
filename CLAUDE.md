@@ -67,5 +67,19 @@ Full-funnel user journey tracking:
 - UTM parameter capture for attribution
 - Event logging (page views, form submissions, etc.)
 
+## Git & GitHub
+
+**GitHub account:** Always use `newearthcollectiveteam` (not `miceli583`) for this project.
+
+**Push protocol:**
+1. Ensure the active `gh` account is correct: `gh auth status`
+2. If wrong account is active: `gh auth switch --user newearthcollectiveteam`
+3. Remote must use HTTPS (not SSH) so `gh` credential helper routes to the correct account:
+   - `git remote set-url origin https://github.com/newearthcollectiveteam/web-eco.git`
+   - `gh auth setup-git` (configures git credential helper)
+4. Push: `git push origin HEAD`
+
+**Why HTTPS over SSH:** The SSH key on this machine is linked to `miceli583`. Using HTTPS with `gh auth setup-git` lets the GitHub CLI token handle auth, routing to whichever `gh` account is active.
+
 ## Current Status
 See `STATUS.md` for feature status and `TODO.md` for tracked work.

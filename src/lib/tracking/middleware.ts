@@ -88,6 +88,7 @@ export async function analyticsMiddleware(
     // Check for email tracking token
     const emailToken = request.nextUrl.searchParams.get('et');
     let emailLinkId: number | undefined;
+    let emailContactId: number | undefined;
 
     // Database operations - only in Node.js runtime
     if (!isEdgeRuntime) {
@@ -109,6 +110,7 @@ export async function analyticsMiddleware(
 
           if (emailLink) {
             emailLinkId = emailLink.id;
+            emailContactId = emailLink.contactId;
 
             // Increment click count
             await incrementEmailLinkClick(emailLink.id);
@@ -137,11 +139,11 @@ export async function analyticsMiddleware(
         }
       }
 
-      // Create or update session
+      // Create or update session (use email token contactId if cookie didn't have one)
       sessionId = await upsertSession({
         sessionId,
         anonymousId,
-        contactId: contactId || (emailToken ? undefined : undefined),
+        contactId: contactId || emailContactId,
         domain,
         source: utmParams.utmSource,
         medium: utmParams.utmMedium,

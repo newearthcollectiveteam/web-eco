@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { eq, sql } from "drizzle-orm";
+import { eq, desc, sql } from "drizzle-orm";
 
 import { db } from "~/server/db";
 import {
@@ -8,14 +8,16 @@ import {
   contactActivities,
   contactSources,
   questionnaireResponses,
+  emailLinkClicks,
 } from "~/server/db/schema";
 import {
   COOKIE_NAMES,
   COOKIE_OPTIONS,
   parseCookies,
   setCookieHeader,
+  generateAnonymousId,
 } from "~/lib/tracking/utils";
-import { identifyUser, trackEvent } from "~/lib/tracking/analytics-service";
+import { identifyUser, trackEvent, markEmailClickConverted } from "~/lib/tracking/analytics-service";
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -336,7 +338,7 @@ export async function POST(request: NextRequest) {
 
     // Link anonymous visitor to contact (identify user)
     const cookies = parseCookies(request.headers.get("cookie"));
-    const anonymousId = cookies[COOKIE_NAMES.ANONYMOUS_ID];
+    const anonymousId = cookies[COOKIE_NAMES.ANONYMOUS_ID] || generateAnonymousId();
     const sessionId = cookies[COOKIE_NAMES.SESSION_ID];
     const contactIdCookie = cookies[COOKIE_NAMES.CONTACT_ID];
 
@@ -353,13 +355,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (anonymousId) {
-      await identifyUser({
-        anonymousId,
-        contactId,
-        source: "questionnaire",
-      });
-    }
+    await identifyUser({
+      anonymousId,
+      contactId,
+      source: "questionnaire",
+    });
 
     // Store questionnaire response with proper columns
     const [entry] = await db
@@ -457,25 +457,36 @@ export async function POST(request: NextRequest) {
     });
 
     // Track event
-    if (anonymousId) {
-      await trackEvent(
-        {
-          sessionId,
-          anonymousId,
-          contactId,
+    await trackEvent(
+      {
+        sessionId,
+        anonymousId,
+        contactId,
+      },
+      {
+        eventType: "form_submit",
+        eventName: "Questionnaire Submit",
+        domain: request.headers.get("host") || undefined,
+        path: "/api/questionnaire",
+        properties: {
+          formType: "questionnaire",
+          excitementLevel,
+          ecosystemContribution,
         },
-        {
-          eventType: "form_submit",
-          eventName: "Questionnaire Submit",
-          domain: request.headers.get("host") || undefined,
-          path: "/api/questionnaire",
-          properties: {
-            formType: "questionnaire",
-            excitementLevel,
-            ecosystemContribution,
-          },
-        }
-      );
+      }
+    );
+
+    // Mark any recent email click as converted
+    const recentClick = await db.query.emailLinkClicks.findFirst({
+      where: eq(emailLinkClicks.contactId, contactId),
+      orderBy: [desc(emailLinkClicks.clickedAt)],
+    });
+    if (recentClick) {
+      await markEmailClickConverted({
+        emailLinkId: recentClick.emailLinkId,
+        contactId,
+        formType: "questionnaire",
+      });
     }
 
     return response;

@@ -12,11 +12,12 @@ import {
   contacts,
   contactActivities,
   contactSources,
+  emailLinkClicks,
 } from "~/server/db/schema";
-import { eq, sql } from "drizzle-orm";
+import { eq, desc, sql } from "drizzle-orm";
 import { triggerKlaviyoWaitlistFlow } from "~/lib/klaviyo/klaviyo-service";
-import { identifyUser, trackEvent } from "~/lib/tracking/analytics-service";
-import { COOKIE_NAMES, parseCookies, setCookieHeader, COOKIE_OPTIONS } from "~/lib/tracking/utils";
+import { identifyUser, trackEvent, markEmailClickConverted } from "~/lib/tracking/analytics-service";
+import { COOKIE_NAMES, parseCookies, setCookieHeader, COOKIE_OPTIONS, generateAnonymousId } from "~/lib/tracking/utils";
 import { generateUnsubscribeToken, getClientIP } from "~/lib/consent/consent-utils";
 
 export async function POST(request: NextRequest) {
@@ -180,17 +181,15 @@ export async function POST(request: NextRequest) {
 
     // Step 2.5: Link anonymous visitor to contact (identify user)
     const cookies = parseCookies(request.headers.get('cookie'));
-    const anonymousId = cookies[COOKIE_NAMES.ANONYMOUS_ID];
+    const anonymousId = cookies[COOKIE_NAMES.ANONYMOUS_ID] || generateAnonymousId();
     const sessionId = cookies[COOKIE_NAMES.SESSION_ID];
 
-    if (anonymousId) {
-      await identifyUser({
-        anonymousId,
-        contactId,
-        source: 'waitlist',
-      });
-      console.log(`🔗 Linked anonymous ID ${anonymousId} to contact ${contactId}`);
-    }
+    await identifyUser({
+      anonymousId,
+      contactId,
+      source: 'waitlist',
+    });
+    console.log(`🔗 Linked anonymous ID ${anonymousId} to contact ${contactId}`);
 
     // Step 3: Store in waitlist intake table
     const [waitlistEntry] = await db
@@ -225,26 +224,37 @@ export async function POST(request: NextRequest) {
     console.log(`📝 Activity logged for contact ${contactId}`);
 
     // Step 4.5: Track form submission event
-    if (anonymousId) {
-      await trackEvent(
-        {
-          sessionId,
-          anonymousId,
-          contactId,
+    await trackEvent(
+      {
+        sessionId,
+        anonymousId,
+        contactId,
+      },
+      {
+        eventType: 'form_submit',
+        eventName: 'Waitlist Signup',
+        domain: request.headers.get('host') || undefined,
+        path: '/api/waitlist',
+        properties: {
+          formType: 'waitlist',
+          willingToFillQuestionnaire,
+          source,
         },
-        {
-          eventType: 'form_submit',
-          eventName: 'Waitlist Signup',
-          domain: request.headers.get('host') || undefined,
-          path: '/api/waitlist',
-          properties: {
-            formType: 'waitlist',
-            willingToFillQuestionnaire,
-            source,
-          },
-        }
-      );
-      console.log(`📊 Form submission event tracked`);
+      }
+    );
+    console.log(`📊 Form submission event tracked`);
+
+    // Step 4.6: Mark any recent email click as converted
+    const recentClick = await db.query.emailLinkClicks.findFirst({
+      where: eq(emailLinkClicks.contactId, contactId),
+      orderBy: [desc(emailLinkClicks.clickedAt)],
+    });
+    if (recentClick) {
+      await markEmailClickConverted({
+        emailLinkId: recentClick.emailLinkId,
+        contactId,
+        formType: 'waitlist',
+      });
     }
 
     // Step 5: Klaviyo Integration (non-blocking)

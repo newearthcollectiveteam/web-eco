@@ -8,6 +8,7 @@ import {
   varchar,
   integer,
   jsonb,
+  unique,
 } from "drizzle-orm/pg-core";
 
 /**
@@ -119,36 +120,37 @@ export const contacts = createTable("contact", {
  * Contact Sources - Track ALL sources a contact has interacted with
  * Solves the multi-form problem: a contact can submit multiple forms
  */
-export const contactSources = createTable("contact_source", {
-  id: serial("id").primaryKey(),
-  contactId: integer("contact_id")
-    .notNull()
-    .references(() => contacts.id, { onDelete: "cascade" }),
+export const contactSources = createTable(
+  "contact_source",
+  {
+    id: serial("id").primaryKey(),
+    contactId: integer("contact_id")
+      .notNull()
+      .references(() => contacts.id, { onDelete: "cascade" }),
 
-  // Which form/page they interacted with
-  source: varchar("source", { length: 100 }).notNull(),
+    // Which form/page they interacted with
+    source: varchar("source", { length: 100 }).notNull(),
 
-  // First and last interaction with THIS source
-  firstInteraction: timestamp("first_interaction", { withTimezone: true })
-    .default(sql`CURRENT_TIMESTAMP`)
-    .notNull(),
-  lastInteraction: timestamp("last_interaction", { withTimezone: true })
-    .default(sql`CURRENT_TIMESTAMP`)
-    .notNull(),
+    // First and last interaction with THIS source
+    firstInteraction: timestamp("first_interaction", { withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    lastInteraction: timestamp("last_interaction", { withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
 
-  // How many times they've interacted with this source
-  interactionCount: integer("interaction_count").default(1).notNull(),
+    // How many times they've interacted with this source
+    interactionCount: integer("interaction_count").default(1).notNull(),
 
-  createdAt: timestamp("created_at", { withTimezone: true })
-    .default(sql`CURRENT_TIMESTAMP`)
-    .notNull(),
-  updatedAt: timestamp("updated_at", { withTimezone: true })
-    .default(sql`CURRENT_TIMESTAMP`)
-    .$onUpdate(() => new Date()),
-});
-
-// Note: Composite unique constraint (contactId, source) should be added via database migration
-// Drizzle's inline unique() only supports single columns
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .$onUpdate(() => new Date()),
+  },
+  (t) => [unique("unique_contact_source").on(t.contactId, t.source)]
+);
 
 /**
  * Contact Activities - Track all interactions with contacts

@@ -43,6 +43,7 @@ const config = {
     "@typescript-eslint/no-require-imports": "off",
     "@typescript-eslint/triple-slash-reference": "off",
     "import/no-anonymous-default-export": "off",
+    "react/no-unescaped-entities": "off",
   },
 };
 module.exports = config;

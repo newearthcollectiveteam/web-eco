@@ -7,13 +7,9 @@
 
 /** @type {import("next").NextConfig} */
 const config = {
-  typescript: {
-    // Temporarily ignore build errors to allow deployment
-    // TODO: Fix TypeScript errors in CRM and email provider code
-    ignoreBuildErrors: true,
-  },
   eslint: {
-    // Temporarily ignore ESLint errors during build
+    // ESLint checked via pre-commit hook (husky) and npm run lint
+    // Not blocking builds to allow incremental fixes
     ignoreDuringBuilds: true,
   },
   async rewrites() {

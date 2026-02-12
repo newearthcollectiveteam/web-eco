@@ -10,10 +10,13 @@ _None documented_
 
 ## Tech Debt (code quality)
 
+- [ ] Migrate data-query API routes to tRPC (`/api/crm/contacts`, `/api/questionnaire/check`, `/api/admin/database`)
 - [ ] Implement full tracking middleware for all event types
 - [ ] Add email link generation service for click tracking
 - [ ] Add composite unique constraint (contactId, source) to contactSources table
 - [ ] Migrate scheduled_emails table to include contactId linking
+- [ ] Remove remaining `any` types in db/index.ts proxy (requires union type refactor)
+- [ ] Fix pre-existing ESLint errors (floating promises, unsafe arguments) to enable ESLint during builds
 
 ## Enhancements (nice to have)
 

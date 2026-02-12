@@ -27,26 +27,27 @@ npm run db:studio        # Open Drizzle Studio (database GUI)
 | Path | Purpose |
 |------|---------|
 | `src/app/` | Next.js App Router pages |
-| `src/app/admin/` | Protected admin routes (user management) |
+| `src/app/admin/` | Protected admin area (hub, CRM, brand, shaders, templates, playground, form-builder) |
 | `src/app/api/` | API routes (waitlist, CRM, analytics, questionnaire) |
-| `src/components/pages/` | Domain-specific homepage components |
+| `src/components/pages/` | Homepage components (home, test-home hub) |
 | `src/server/api/routers/` | tRPC routers |
 | `src/server/db/schema.ts` | Database schema (CRM, tracking, galleries) |
 | `src/lib/domains.ts` | Multi-domain configuration |
 | `src/lib/crm/` | CRM service layer |
-| `src/middleware.ts` | Domain routing and tracking middleware |
+| `src/middleware.ts` | Auth & routing middleware |
 | `shaders/` | GLSL shader files for visual effects |
 
-## Domain Routing
-Middleware detects hostname and serves appropriate content:
-- `joinnewearthcollective.com` - Main collective site (placeholder)
-- `launch.joinnewearthcollective.com` - Launch experience with questionnaire
-- `test.joinnewearthcollective.com` - Development/testing environment
+## Routing & Auth
+- All `/admin/*` routes require Supabase Auth (login + approval)
+- `/admin/shaders/flower-of-life/embed` is a public embed exception
+- `test.joinnewearthcollective.com` redirects 301 → `/admin`
+- `launch.joinnewearthcollective.com` redirects 301 → main domain
 
-**Local development**: Use URL params to test domains:
-- `http://localhost:3000` - Main site
-- `http://localhost:3000?domain=test` - Test environment
-- `http://localhost:3000?domain=launch` - Launch experience
+**Local development**:
+- `http://localhost:3000` - Public homepage
+- `http://localhost:3000/admin` - Dev hub (requires login)
+- `http://localhost:3000/admin/brand` - Brand assets
+- `http://localhost:3000/admin/shaders` - Shader gallery
 
 ## CRM System
 Master CRM tracks all contacts from all forms with:

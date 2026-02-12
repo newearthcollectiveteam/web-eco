@@ -7,7 +7,7 @@
 
 | Feature | Status | Notes |
 |---------|--------|-------|
-| Multi-domain routing | Working | joinnewearthcollective.com, launch., test. subdomains |
+| Admin routing | Working | /admin/* path-based auth, test subdomain redirects to /admin |
 | CRM system | Working | Master contacts, activities, multi-source tracking |
 | Waitlist intake | Working | Form submission with CRM integration |
 | Questionnaire | Working | Full alignment survey with 7 sections |
@@ -34,6 +34,7 @@
 
 | Date | Description |
 |------|-------------|
+| 2026-02-11 | Moved admin tools from test subdomain to /admin path-based routing |
 | 2026-02-01 | Added Impact Missions feature with Joy's Kitchen volunteer opportunity |
 | 2026-01-27 | Initialized project standards (CLAUDE.md, STATUS.md, TODO.md) |
 | 2026-01-27 | Fix pattern coherence issues |

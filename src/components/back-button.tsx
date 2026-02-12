@@ -2,9 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { Button } from "~/components/ui/button";
-import { ArrowLeft, Home } from "lucide-react";
-import { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { Home } from "lucide-react";
 
 interface BackButtonProps {
   href?: string;
@@ -12,65 +10,14 @@ interface BackButtonProps {
 }
 
 export function BackButton({
-  href = "/",
+  href = "/admin",
   label = "Back to Hub",
 }: BackButtonProps) {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const [domainParam, setDomainParam] = useState(
-    () => searchParams.get("domain") || ""
-  );
-
-  useEffect(() => {
-    const paramFromSearch = searchParams.get("domain");
-    if (paramFromSearch) {
-      setDomainParam(paramFromSearch);
-      return;
-    }
-
-    if (typeof window !== "undefined") {
-      const host = window.location.hostname.toLowerCase();
-      if (host.includes("test.joinnewearthcollective.com")) {
-        setDomainParam("test.joinnewearthcollective.com");
-      }
-    }
-  }, [searchParams]);
 
   const handleClick = () => {
     if (href) {
-      // Preserve test domain query when present
-      const hasDomainAlready = href.includes("domain=");
-      const isLocal =
-        typeof window !== "undefined" &&
-        (window.location.hostname === "localhost" ||
-          window.location.hostname === "127.0.0.1");
-
-      let targetHref = href;
-
-      if (!hasDomainAlready) {
-        const activeDomain =
-          domainParam || (isLocal ? "test.joinnewearthcollective.com" : "");
-
-        if (activeDomain && href.startsWith("/")) {
-          const separator = href.includes("?") ? "&" : "?";
-          targetHref = `${href}${separator}domain=${encodeURIComponent(
-            activeDomain
-          )}`;
-        }
-      }
-
-      // Fallback for local root without a detected domain
-      if (typeof window !== "undefined") {
-        const hostname = window.location.hostname;
-        const isLocalHost =
-          hostname === "localhost" || hostname === "127.0.0.1";
-        if (isLocalHost && href === "/" && !hasDomainAlready && !domainParam) {
-          window.location.href = "/?domain=test.joinnewearthcollective.com";
-          return;
-        }
-      }
-
-      router.push(targetHref);
+      router.push(href);
     } else {
       router.back();
     }

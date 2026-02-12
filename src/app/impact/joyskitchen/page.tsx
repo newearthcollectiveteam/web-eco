@@ -30,7 +30,7 @@ export default function JoysKitchenPage() {
       {/* Flower of Life Shader Background */}
       <div className="pointer-events-none fixed inset-0 z-0 opacity-10">
         <iframe
-          src="/shaders/flower-of-life/embed?domain=test.joinnewearthcollective.com"
+          src="/admin/shaders/flower-of-life/embed"
           className="h-full w-full border-0"
           style={{ pointerEvents: "none" }}
           title="Sacred Geometry Background"

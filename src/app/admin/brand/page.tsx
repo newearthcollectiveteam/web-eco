@@ -1037,6 +1037,7 @@ export default function BrandPage() {
     file: string;
     bg: string;
     bgColors: string[];
+    description?: string;
   } | null>(null);
 
   const downloadLogoWithBackground = async (

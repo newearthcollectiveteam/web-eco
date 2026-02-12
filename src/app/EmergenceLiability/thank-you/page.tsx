@@ -16,7 +16,7 @@ export default function WaiverThankYouPage() {
         {/* Flower of Life Shader Background */}
         <div className="absolute inset-0 opacity-20">
           <iframe
-            src="/shaders/flower-of-life/embed?domain=test.joinnewearthcollective.com"
+            src="/admin/shaders/flower-of-life/embed"
             className="h-full w-full border-0"
             style={{ pointerEvents: "none" }}
             title="Sacred Geometry Background"

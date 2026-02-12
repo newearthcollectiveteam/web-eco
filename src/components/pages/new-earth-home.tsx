@@ -29,10 +29,10 @@ export function NewEarthHomePage() {
             <p className="text-muted-foreground text-sm">
               For development and testing, visit{" "}
               <a
-                href="http://localhost:3000?domain=test.joinnewearthcollective.com"
+                href="/admin"
                 className="text-violet-600 hover:text-violet-700 dark:text-violet-400 dark:hover:text-violet-300"
               >
-                test.joinnewearthcollective.com
+                /admin
               </a>
             </p>
           </div>

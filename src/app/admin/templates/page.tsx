@@ -6,8 +6,7 @@ import { DomainLayout } from "~/components/domain-layout";
 import { BackButton } from "~/components/back-button";
 import Link from "next/link";
 import Image from "next/image";
-import { useSearchParams } from "next/navigation";
-import { useEffect, useState, Suspense } from "react";
+import { Suspense } from "react";
 import {
   Rocket,
   User,
@@ -25,7 +24,7 @@ const TEMPLATES = [
     description: "Portfolio template for developers and designers",
     icon: User,
     color: "cosmic-blue",
-    href: "/templates/developer-profile",
+    href: "/admin/templates/developer-profile",
     tags: ["Portfolio", "Personal"],
   },
   {
@@ -34,7 +33,7 @@ const TEMPLATES = [
     description: "Professional landing page for SaaS products",
     icon: Building,
     color: "emerald",
-    href: "/templates/saas-business",
+    href: "/admin/templates/saas-business",
     tags: ["Business", "SaaS"],
   },
   {
@@ -43,7 +42,7 @@ const TEMPLATES = [
     description: "Modern startup landing page with animations",
     icon: Rocket,
     color: "cosmic-purple",
-    href: "/templates/startup",
+    href: "/admin/templates/startup",
     tags: ["Startup", "Landing"],
   },
   {
@@ -52,40 +51,12 @@ const TEMPLATES = [
     description: "Personal portfolio with smooth animations",
     icon: Briefcase,
     color: "sunset-orange",
-    href: "/templates/portfolio",
+    href: "/admin/templates/portfolio",
     tags: ["Portfolio", "Creative"],
   },
 ];
 
 function TemplatesPageContent() {
-  const searchParams = useSearchParams();
-  const [domainParam, setDomainParam] = useState(
-    () => searchParams.get("domain") || ""
-  );
-
-  useEffect(() => {
-    const paramFromSearch = searchParams.get("domain");
-    if (paramFromSearch) {
-      setDomainParam(paramFromSearch);
-      return;
-    }
-
-    if (typeof window !== "undefined") {
-      const host = window.location.hostname.toLowerCase();
-      if (host.includes("test.joinnewearthcollective.com")) {
-        setDomainParam("test.joinnewearthcollective.com");
-      }
-    }
-  }, [searchParams]);
-
-  const withDomainQuery = (href: string) => {
-    if (!domainParam) return href;
-    if (href.includes("domain=")) return href;
-    return href.includes("?")
-      ? `${href}&domain=${encodeURIComponent(domainParam)}`
-      : `${href}?domain=${encodeURIComponent(domainParam)}`;
-  };
-
   return (
     <DomainLayout>
       <BackButton />
@@ -174,7 +145,7 @@ function TemplatesPageContent() {
                 colorMap[template.color] ?? colorMap["cosmic-blue"]!;
 
               return (
-                <Link key={template.id} href={withDomainQuery(template.href)}>
+                <Link key={template.id} href={template.href}>
                   <Card
                     className={`group flex h-full cursor-pointer flex-col border-2 transition-all duration-300 hover:scale-105 hover:shadow-2xl ${colors.border}`}
                   >

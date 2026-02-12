@@ -29,7 +29,7 @@ export default function DeveloperProfilePage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-gray-100 dark:from-slate-950 dark:to-gray-950">
       <Suspense fallback={null}>
-        <BackButton href="/templates" label="Back to Templates" />
+        <BackButton href="/admin/templates" label="Back to Templates" />
       </Suspense>
       {/* Hero Section */}
       <div className="relative overflow-hidden bg-gradient-to-r from-blue-600 to-purple-700 px-6 py-20">

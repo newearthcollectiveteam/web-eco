@@ -34,7 +34,7 @@ export default function PortfolioPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-gray-50 dark:from-gray-950 dark:via-gray-900 dark:to-slate-950">
       <Suspense fallback={null}>
-        <BackButton href="/templates" label="Back to Templates" />
+        <BackButton href="/admin/templates" label="Back to Templates" />
       </Suspense>
       <div className="mx-auto max-w-4xl px-6 py-12">
         {/* Hero Section */}

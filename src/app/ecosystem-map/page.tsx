@@ -130,134 +130,99 @@ function EcosystemMapContent() {
                 </div>
               </div>
 
-              {/* test.joinnewearthcollective.com */}
+              {/* /admin (protected) */}
               <div className="mb-8">
                 <h4 className="mb-4 flex items-center gap-2 text-xl font-semibold text-black dark:text-white">
                   <span className="text-[#facf39]">●</span>
-                  test.joinnewearthcollective.com
+                  /admin (protected)
                 </h4>
                 <div className="ml-6 space-y-2">
                   <Link
-                    href="/?domain=test.joinnewearthcollective.com"
+                    href="/admin"
                     className="flex items-center gap-2 text-sm text-neutral-600 transition-colors hover:text-[#facf39] dark:text-neutral-400"
                   >
                     <ArrowRight className="h-3 w-3" />
-                    <span>/ (Dev Hub)</span>
+                    <span>/admin (Dev Hub)</span>
                   </Link>
                   <Link
-                    href="/brand?domain=test.joinnewearthcollective.com"
+                    href="/admin/crm"
                     className="flex items-center gap-2 text-sm text-neutral-600 transition-colors hover:text-[#facf39] dark:text-neutral-400"
                   >
                     <ArrowRight className="h-3 w-3" />
-                    <span>/brand</span>
+                    <span>/admin/crm</span>
                   </Link>
                   <Link
-                    href="/templates?domain=test.joinnewearthcollective.com"
+                    href="/admin/brand"
                     className="flex items-center gap-2 text-sm text-neutral-600 transition-colors hover:text-[#facf39] dark:text-neutral-400"
                   >
                     <ArrowRight className="h-3 w-3" />
-                    <span>/templates</span>
+                    <span>/admin/brand</span>
                   </Link>
                   <Link
-                    href="/shaders?domain=test.joinnewearthcollective.com"
+                    href="/admin/templates"
                     className="flex items-center gap-2 text-sm text-neutral-600 transition-colors hover:text-[#facf39] dark:text-neutral-400"
                   >
                     <ArrowRight className="h-3 w-3" />
-                    <span>/shaders</span>
+                    <span>/admin/templates</span>
                   </Link>
                   <Link
-                    href="/playground?domain=test.joinnewearthcollective.com"
+                    href="/admin/shaders"
                     className="flex items-center gap-2 text-sm text-neutral-600 transition-colors hover:text-[#facf39] dark:text-neutral-400"
                   >
                     <ArrowRight className="h-3 w-3" />
-                    <span>/playground</span>
+                    <span>/admin/shaders</span>
                   </Link>
                   <Link
-                    href="/gallery?domain=test.joinnewearthcollective.com"
+                    href="/admin/playground"
                     className="flex items-center gap-2 text-sm text-neutral-600 transition-colors hover:text-[#facf39] dark:text-neutral-400"
                   >
                     <ArrowRight className="h-3 w-3" />
-                    <span>/gallery</span>
+                    <span>/admin/playground</span>
                   </Link>
                   <Link
-                    href="/form-builder?domain=test.joinnewearthcollective.com"
+                    href="/admin/form-builder"
                     className="flex items-center gap-2 text-sm text-neutral-600 transition-colors hover:text-[#facf39] dark:text-neutral-400"
                   >
                     <ArrowRight className="h-3 w-3" />
-                    <span>/form-builder</span>
+                    <span>/admin/form-builder</span>
                   </Link>
                 </div>
               </div>
 
-              {/* Misc */}
+              {/* Auth & Utility */}
               <div>
                 <h4 className="mb-4 flex items-center gap-2 text-xl font-semibold text-black dark:text-white">
                   <span className="text-[#facf39]">●</span>
-                  Misc
+                  Auth & Utility
                 </h4>
                 <div className="ml-6 space-y-2">
                   <Link
-                    href="/login?domain=test.joinnewearthcollective.com"
+                    href="/login"
                     className="flex items-center gap-2 text-sm text-neutral-600 transition-colors hover:text-[#facf39] dark:text-neutral-400"
                   >
                     <ArrowRight className="h-3 w-3" />
-                    <span>/login (join)</span>
+                    <span>/login</span>
                   </Link>
                   <Link
-                    href="/about-community?domain=test.joinnewearthcollective.com"
+                    href="/auth/signup"
                     className="flex items-center gap-2 text-sm text-neutral-600 transition-colors hover:text-[#facf39] dark:text-neutral-400"
                   >
                     <ArrowRight className="h-3 w-3" />
-                    <span>/about-community (join)</span>
+                    <span>/auth/signup</span>
                   </Link>
                   <Link
-                    href="/local-community?domain=test.joinnewearthcollective.com"
+                    href="/auth/forgot-password"
                     className="flex items-center gap-2 text-sm text-neutral-600 transition-colors hover:text-[#facf39] dark:text-neutral-400"
                   >
                     <ArrowRight className="h-3 w-3" />
-                    <span>/local-community (join)</span>
+                    <span>/auth/forgot-password</span>
                   </Link>
                   <Link
-                    href="/onboarding?domain=test.joinnewearthcollective.com"
+                    href="/onboarding"
                     className="flex items-center gap-2 text-sm text-neutral-600 transition-colors hover:text-[#facf39] dark:text-neutral-400"
                   >
                     <ArrowRight className="h-3 w-3" />
-                    <span>/onboarding (join)</span>
-                  </Link>
-                  <Link
-                    href="/profile?domain=test.joinnewearthcollective.com"
-                    className="flex items-center gap-2 text-sm text-neutral-600 transition-colors hover:text-[#facf39] dark:text-neutral-400"
-                  >
-                    <ArrowRight className="h-3 w-3" />
-                    <span>/profile (join)</span>
-                  </Link>
-                  <Link
-                    href="/auth/signup?domain=test.joinnewearthcollective.com"
-                    className="flex items-center gap-2 text-sm text-neutral-600 transition-colors hover:text-[#facf39] dark:text-neutral-400"
-                  >
-                    <ArrowRight className="h-3 w-3" />
-                    <span>/auth/signup (join)</span>
-                  </Link>
-                  <Link
-                    href="/auth/forgot-password?domain=test.joinnewearthcollective.com"
-                    className="flex items-center gap-2 text-sm text-neutral-600 transition-colors hover:text-[#facf39] dark:text-neutral-400"
-                  >
-                    <ArrowRight className="h-3 w-3" />
-                    <span>/auth/forgot-password (join)</span>
-                  </Link>
-                  <Link
-                    href="/auth/reset-password?domain=test.joinnewearthcollective.com"
-                    className="flex items-center gap-2 text-sm text-neutral-600 transition-colors hover:text-[#facf39] dark:text-neutral-400"
-                  >
-                    <ArrowRight className="h-3 w-3" />
-                    <span>/auth/reset-password (join)</span>
-                  </Link>
-                  <Link
-                    href="/auth/pending-approval?domain=test.joinnewearthcollective.com"
-                    className="flex items-center gap-2 text-sm text-neutral-600 transition-colors hover:text-[#facf39] dark:text-neutral-400"
-                  >
-                    <ArrowRight className="h-3 w-3" />
-                    <span>/auth/pending-approval (join)</span>
+                    <span>/onboarding</span>
                   </Link>
                 </div>
               </div>

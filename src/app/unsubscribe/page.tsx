@@ -47,7 +47,7 @@ function UnsubscribeContent() {
         } else {
           setStatus("error");
           const data = await response.json().catch(() => ({}));
-          setMessage(data.error || "Failed to process your request. Please try again.");
+          setMessage((data as { error?: string }).error || "Failed to process your request. Please try again.");
         }
       })
       .catch(() => {
@@ -71,7 +71,7 @@ function UnsubscribeContent() {
       {/* Flower of Life Background */}
       <div className="absolute inset-x-0 top-0 h-screen opacity-20">
         <iframe
-          src="/shaders/flower-of-life/embed?domain=test.joinnewearthcollective.com"
+          src="/admin/shaders/flower-of-life/embed"
           className="h-full w-full border-0"
           style={{ pointerEvents: "none" }}
           title="Sacred Geometry Background"

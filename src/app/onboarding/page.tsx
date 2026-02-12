@@ -45,7 +45,7 @@ export default function OnboardingPage() {
       }
     };
 
-    completeOnboarding();
+    void completeOnboarding();
   }, [user, router]);
 
   if (error) {

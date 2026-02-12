@@ -39,7 +39,7 @@ export default function EmeraldTealLaunchLanding1Page() {
       <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-[#10b981] to-[#14b8a6]">
         <div className="absolute inset-0 opacity-15">
           <iframe
-            src="/shaders/flower-of-life/embed?domain=test.joinnewearthcollective.com"
+            src="/admin/shaders/flower-of-life/embed"
             className="h-full w-full border-0"
             style={{ pointerEvents: "none" }}
           />

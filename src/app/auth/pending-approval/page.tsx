@@ -13,7 +13,7 @@ export default function PendingApprovalPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    checkApprovalStatus();
+    void checkApprovalStatus();
   }, [user]);
 
   const checkApprovalStatus = async () => {
@@ -26,7 +26,7 @@ export default function PendingApprovalPage() {
       .eq("id", user.id)
       .single();
 
-    setApprovalStatus(profile?.approval_status || null);
+    setApprovalStatus((profile?.approval_status as string | null) ?? null);
     setLoading(false);
   };
 
@@ -151,7 +151,7 @@ export default function PendingApprovalPage() {
             <div className="mt-8 space-y-3">
               <button
                 onClick={() => {
-                  signOut();
+                  void signOut();
                 }}
                 className="w-full rounded-md bg-neutral-100 px-4 py-2 text-sm font-semibold text-neutral-900 transition-colors hover:bg-neutral-200 dark:bg-neutral-800 dark:text-white dark:hover:bg-neutral-700"
               >

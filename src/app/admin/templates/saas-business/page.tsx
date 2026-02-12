@@ -31,7 +31,7 @@ export default function SaasBusinessPage() {
   return (
     <div className="min-h-screen bg-white dark:bg-gray-950">
       <Suspense fallback={null}>
-        <BackButton href="/templates" label="Back to Templates" />
+        <BackButton href="/admin/templates" label="Back to Templates" />
       </Suspense>
       {/* Hero Section */}
       <div className="relative overflow-hidden bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-blue-950">

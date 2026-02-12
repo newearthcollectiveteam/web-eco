@@ -8,7 +8,7 @@ export default function LaunchPartyPage() {
     <div className="relative min-h-screen overflow-hidden bg-gradient-to-b from-neutral-900 via-neutral-950 to-black dark:from-black dark:via-neutral-950 dark:to-black">
       {/* Flower of Life Shader Background - Only in Hero Section */}
       <LazyShader
-        src="/shaders/flower-of-life/embed?domain=test.joinnewearthcollective.com"
+        src="/admin/shaders/flower-of-life/embed"
         className="absolute inset-x-0 top-0 h-screen"
         title="Sacred Geometry Background"
         opacity={0.3}

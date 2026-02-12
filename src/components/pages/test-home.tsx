@@ -8,7 +8,6 @@ import {
   CardTitle,
 } from "~/components/ui/card";
 import { Badge } from "~/components/ui/badge";
-import Link from "next/link";
 import Image from "next/image";
 import {
   Zap,
@@ -22,7 +21,6 @@ import {
   Mail,
   Users,
   Images,
-  Globe2,
   Map,
   Database,
 } from "lucide-react";
@@ -38,26 +36,8 @@ export function TestHomePage() {
   const [selectedLaunchLanding, setSelectedLaunchLanding] =
     useState("/launch-landing-1");
 
-  // Helper to navigate with proper domain parameter
+  // Navigate to a path (admin routes use path-based auth, no domain param needed)
   const navigateToPath = (path: string) => {
-    if (typeof window === "undefined") return;
-    const hostname = window.location.hostname;
-    const isLocal = hostname === "localhost" || hostname === "127.0.0.1";
-    const hasDomainQuery = path.includes("domain=");
-    const isExternal = path.startsWith("http://") || path.startsWith("https://");
-
-    // If the path already has a domain param or is external, just go there as-is on localhost
-    if (isLocal) {
-      if (hasDomainQuery || isExternal) {
-        window.location.href = path;
-        return;
-      }
-      const separator = path.includes("?") ? "&" : "?";
-      window.location.href = `${path}${separator}domain=test.joinnewearthcollective.com`;
-      return;
-    }
-
-    // Non-local: keep normal navigation
     router.push(path);
   };
 
@@ -103,7 +83,7 @@ export function TestHomePage() {
       description: "Visual identity & brand guidelines",
       details:
         "Complete brand asset library including logos, colors, favicons in multiple formats (SVG, PNG, PDF).",
-      href: "/brand",
+      href: "/admin/brand",
       icon: Palette,
       color: "golden",
       count: "Brand Kit",
@@ -113,7 +93,7 @@ export function TestHomePage() {
       description: "Full-page template collection",
       details:
         "Pre-built templates for portfolios, SaaS products, startups, and developer profiles.",
-      href: "/templates",
+      href: "/admin/templates",
       icon: Rocket,
       color: "emerald",
       count: "4 templates",
@@ -123,7 +103,7 @@ export function TestHomePage() {
       description: "WebGL shader animations",
       details:
         "8 interactive shader demonstrations including sacred geometry, fractals, neural networks, and generative art.",
-      href: "/shaders",
+      href: "/admin/shaders",
       icon: Zap,
       color: "cosmic-purple",
       count: "8 shaders",
@@ -133,7 +113,7 @@ export function TestHomePage() {
       description: "Interactive UI component demos",
       details:
         "Test and explore animation effects, particle systems, and interactive components in development.",
-      href: "/playground",
+      href: "/admin/playground",
       icon: Code2,
       color: "cosmic-blue",
       count: "9 demos",
@@ -947,7 +927,7 @@ export function TestHomePage() {
                     Testing
                   </Badge>
                   <button
-                    onClick={() => navigateToPath("/form-builder")}
+                    onClick={() => navigateToPath("/admin/form-builder")}
                     className="flex items-center gap-2 text-sm font-medium transition-colors hover:opacity-80"
                     style={{ color: "#06b6d4" }}
                   >
@@ -984,7 +964,7 @@ export function TestHomePage() {
                     Live Data
                   </Badge>
                   <button
-                    onClick={() => navigateToPath("/admin")}
+                    onClick={() => navigateToPath("/admin/crm")}
                     className="flex items-center gap-2 text-sm font-medium transition-colors hover:opacity-80"
                     style={{ color: "#f59e0b" }}
                   >

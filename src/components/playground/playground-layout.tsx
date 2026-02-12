@@ -1,11 +1,10 @@
 "use client";
 
-import { useEffect, useState, Suspense } from "react";
+import { useState, Suspense } from "react";
 import Link from "next/link";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { Button } from "~/components/ui/button";
 import { Badge } from "~/components/ui/badge";
-import { BackButton } from "~/components/back-button";
 import {
   Sparkles,
   Waves,
@@ -35,7 +34,7 @@ const PLAYGROUND_ITEMS: PlaygroundItem[] = [
     name: "Overview",
     description: "Interactive component showcase",
     icon: Eye,
-    href: "/playground",
+    href: "/admin/playground",
     color: "violet",
   },
   {
@@ -43,7 +42,7 @@ const PLAYGROUND_ITEMS: PlaygroundItem[] = [
     name: "Golden Sunrays",
     description: "Radial ray burst effects",
     icon: Sun,
-    href: "/playground/golden-sunrays",
+    href: "/admin/playground/golden-sunrays",
     color: "amber",
   },
   {
@@ -51,7 +50,7 @@ const PLAYGROUND_ITEMS: PlaygroundItem[] = [
     name: "Meteor Effects",
     description: "Particle system meteor animations",
     icon: Star,
-    href: "/playground/meteor-effect",
+    href: "/admin/playground/meteor-effect",
     color: "emerald",
   },
   {
@@ -59,7 +58,7 @@ const PLAYGROUND_ITEMS: PlaygroundItem[] = [
     name: "Quantum Orbital",
     description: "Atomic orbital visualization",
     icon: Zap,
-    href: "/playground/quantum-orbital",
+    href: "/admin/playground/quantum-orbital",
     color: "orange",
   },
   {
@@ -67,7 +66,7 @@ const PLAYGROUND_ITEMS: PlaygroundItem[] = [
     name: "Gradient Orbs",
     description: "Layered waves with floating orbs",
     icon: Waves,
-    href: "/playground/gradient-waves",
+    href: "/admin/playground/gradient-waves",
     color: "blue",
   },
   {
@@ -75,7 +74,7 @@ const PLAYGROUND_ITEMS: PlaygroundItem[] = [
     name: "Particle Field",
     description: "Floating particles with glow",
     icon: Sparkles,
-    href: "/playground/particle-field",
+    href: "/admin/playground/particle-field",
     color: "purple",
   },
   {
@@ -83,7 +82,7 @@ const PLAYGROUND_ITEMS: PlaygroundItem[] = [
     name: "Morphing Buttons",
     description: "Interactive button state morphing",
     icon: MousePointer,
-    href: "/playground/morphing-buttons",
+    href: "/admin/playground/morphing-buttons",
     color: "indigo",
   },
   {
@@ -91,7 +90,7 @@ const PLAYGROUND_ITEMS: PlaygroundItem[] = [
     name: "Text Shimmer",
     description: "Gradient text with shimmer effects",
     icon: Type,
-    href: "/playground/text-shimmer",
+    href: "/admin/playground/text-shimmer",
     color: "violet",
   },
   {
@@ -99,7 +98,7 @@ const PLAYGROUND_ITEMS: PlaygroundItem[] = [
     name: "Liquid Morph",
     description: "Blob animation effects",
     icon: Heart,
-    href: "/playground/liquid-morph",
+    href: "/admin/playground/liquid-morph",
     color: "pink",
   },
   {
@@ -107,7 +106,7 @@ const PLAYGROUND_ITEMS: PlaygroundItem[] = [
     name: "Geometric Shapes",
     description: "Animated SVG patterns",
     icon: Star,
-    href: "/playground/geometric-shapes",
+    href: "/admin/playground/geometric-shapes",
     color: "orange",
   },
 ];
@@ -124,35 +123,8 @@ function PlaygroundLayoutInner({
   description,
 }: PlaygroundLayoutProps) {
   const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const isOverview = pathname === "/playground";
+  const isOverview = pathname === "/admin/playground";
   const [sidebarOpen, setSidebarOpen] = useState(!isOverview);
-  const [domainParam, setDomainParam] = useState(
-    () => searchParams.get("domain") || ""
-  );
-
-  useEffect(() => {
-    const paramFromSearch = searchParams.get("domain");
-    if (paramFromSearch) {
-      setDomainParam(paramFromSearch);
-      return;
-    }
-
-    if (typeof window !== "undefined") {
-      const host = window.location.hostname.toLowerCase();
-      if (host.includes("test.joinnewearthcollective.com")) {
-        setDomainParam("test.joinnewearthcollective.com");
-      }
-    }
-  }, [searchParams]);
-
-  const withDomainQuery = (href: string) => {
-    if (!domainParam) return href;
-    if (href.includes("domain=")) return href;
-    return href.includes("?")
-      ? `${href}&domain=${encodeURIComponent(domainParam)}`
-      : `${href}?domain=${encodeURIComponent(domainParam)}`;
-  };
 
   const getCurrentItem = () => {
     return (
@@ -200,7 +172,7 @@ function PlaygroundLayoutInner({
                 const Icon = item.icon;
 
                 return (
-                  <Link key={item.id} href={withDomainQuery(item.href)}>
+                  <Link key={item.id} href={item.href}>
                     <div
                       className={`group hover:bg-accent flex items-center rounded-lg p-3 transition-all duration-200 ${
                         isActive

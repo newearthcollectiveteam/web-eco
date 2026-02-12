@@ -65,6 +65,11 @@ export function HomePage() {
           transform: scale(1.05);
           box-shadow: 0 0 30px rgba(246, 196, 63, 0.4);
         }
+        @media (prefers-reduced-motion: reduce) {
+          .btn-golden:hover {
+            transform: none;
+          }
+        }
         .value-card {
           border: 1px solid rgba(250, 207, 57, 0.3);
           background: rgba(0, 0, 0, 0.6);
@@ -81,7 +86,7 @@ export function HomePage() {
         {/* Flower of Life Shader Background */}
         <div className="absolute inset-0 opacity-20">
           <iframe
-            src="/shaders/flower-of-life/embed?domain=test.joinnewearthcollective.com"
+            src="/admin/shaders/flower-of-life/embed"
             className="h-full w-full border-0"
             style={{ pointerEvents: "none" }}
             title="Sacred Geometry Background"
@@ -113,7 +118,7 @@ export function HomePage() {
           <Button
             asChild
             size="lg"
-            className="btn-golden px-10 py-6 text-lg"
+            className="btn-golden px-8 py-5 text-lg sm:px-10 sm:py-6"
             style={{ fontFamily: "Bourton, sans-serif" }}
           >
             <Link href="/questionnaire">
@@ -125,7 +130,7 @@ export function HomePage() {
       </section>
 
       {/* Vision Section */}
-      <section className="bg-[#111111] border-y border-[#f6c43f]/20 px-4 py-24">
+      <section className="bg-[#111111] border-y border-[#f6c43f]/20 px-4 py-12 sm:py-24">
         <div className="mx-auto max-w-6xl">
           <h2
             className="mb-12 text-center text-4xl font-bold"
@@ -194,7 +199,7 @@ export function HomePage() {
             <Button
               asChild
               size="lg"
-              className="btn-golden px-10 py-6 text-lg"
+              className="btn-golden px-8 py-5 text-lg sm:px-10 sm:py-6"
               style={{ fontFamily: "Bourton, sans-serif" }}
             >
               <Link href="/questionnaire">
@@ -207,7 +212,7 @@ export function HomePage() {
       </section>
 
       {/* Who We Serve Section */}
-      <section className="bg-[#0A0A0A] px-4 py-24">
+      <section className="bg-[#0A0A0A] px-4 py-12 sm:py-24">
         <div className="mx-auto max-w-6xl">
           <h2
             className="mb-12 text-center text-4xl font-bold"
@@ -258,7 +263,7 @@ export function HomePage() {
       </section>
 
       {/* Testimonials Section */}
-      <section className="bg-[#111111] border-y border-[#f6c43f]/20 px-4 py-24">
+      <section className="bg-[#111111] border-y border-[#f6c43f]/20 px-4 py-12 sm:py-24">
         <div className="mx-auto max-w-4xl">
           <h2
             className="mb-4 text-center text-4xl font-bold"
@@ -311,7 +316,7 @@ export function HomePage() {
             <Button
               asChild
               size="lg"
-              className="btn-golden px-10 py-6 text-lg"
+              className="btn-golden px-8 py-5 text-lg sm:px-10 sm:py-6"
               style={{ fontFamily: "Bourton, sans-serif" }}
             >
               <Link href="/questionnaire">
@@ -324,11 +329,11 @@ export function HomePage() {
       </section>
 
       {/* Final Invitation Section */}
-      <section className="relative overflow-hidden bg-[#0A0A0A] px-4 py-24">
+      <section className="relative overflow-hidden bg-[#0A0A0A] px-4 py-12 sm:py-24">
         {/* Subtle shader background */}
         <div className="absolute inset-0 opacity-10">
           <iframe
-            src="/shaders/flower-of-life/embed?domain=test.joinnewearthcollective.com"
+            src="/admin/shaders/flower-of-life/embed"
             className="h-full w-full border-0"
             style={{ pointerEvents: "none" }}
             title="Sacred Geometry Background"
@@ -353,7 +358,7 @@ export function HomePage() {
           <Button
             asChild
             size="lg"
-            className="btn-golden px-10 py-6 text-lg"
+            className="btn-golden px-8 py-5 text-lg sm:px-10 sm:py-6"
             style={{ fontFamily: "Bourton, sans-serif" }}
           >
             <Link href="/questionnaire">

@@ -7,8 +7,7 @@ import { Badge } from "~/components/ui/badge";
 import { DomainLayout } from "~/components/domain-layout";
 import { BackButton } from "~/components/back-button";
 import { ArrowRight, Sparkles, Zap } from "lucide-react";
-import { useSearchParams } from "next/navigation";
-import { useEffect, useState, Suspense } from "react";
+import { Suspense } from "react";
 
 // GLSL Shader showcase items
 const SHADERS = [
@@ -17,28 +16,28 @@ const SHADERS = [
     title: "North Star",
     description: "Golden guiding beacon with radiant rays and pulsing energy",
     color: "golden",
-    href: "/shaders/north-star",
+    href: "/admin/shaders/north-star",
   },
   {
     id: "neural-net",
     title: "Neural Network",
     description: "Mesmerizing interconnected nodes pulsing with consciousness",
     color: "cosmic-blue",
-    href: "/shaders/neural-net",
+    href: "/admin/shaders/neural-net",
   },
   {
     id: "flower-of-life",
     title: "Flower of Life",
     description: "Sacred geometry with glowing circles and mystical energy",
     color: "cosmic-pink",
-    href: "/shaders/flower-of-life",
+    href: "/admin/shaders/flower-of-life",
   },
   {
     id: "fractal-pyramid",
     title: "Fractal Pyramid",
     description: "Raymarched fractal geometry with rotating transformations",
     color: "cosmic-purple",
-    href: "/shaders/fractal-pyramid",
+    href: "/admin/shaders/fractal-pyramid",
   },
   {
     id: "the-way",
@@ -46,7 +45,7 @@ const SHADERS = [
     description:
       "A journey through flowing light, spiraling paths, and infinite consciousness",
     color: "deep-indigo",
-    href: "/shaders/the-way",
+    href: "/admin/shaders/the-way",
   },
   {
     id: "metatrons-cube",
@@ -54,7 +53,7 @@ const SHADERS = [
     description:
       "Sacred geometry containing all five Platonic solids and the blueprint of creation",
     color: "emerald",
-    href: "/shaders/metatrons-cube",
+    href: "/admin/shaders/metatrons-cube",
   },
   {
     id: "icosahedron",
@@ -62,39 +61,11 @@ const SHADERS = [
     description:
       "Floating 3D Platonic solid with 20 triangular faces, rotating in space",
     color: "sunset-orange",
-    href: "/shaders/icosahedron",
+    href: "/admin/shaders/icosahedron",
   },
 ];
 
 function ShadersPageContent() {
-  const searchParams = useSearchParams();
-  const [domainParam, setDomainParam] = useState(
-    () => searchParams.get("domain") || ""
-  );
-
-  useEffect(() => {
-    const paramFromSearch = searchParams.get("domain");
-    if (paramFromSearch) {
-      setDomainParam(paramFromSearch);
-      return;
-    }
-
-    if (typeof window !== "undefined") {
-      const host = window.location.hostname.toLowerCase();
-      if (host.includes("test.joinnewearthcollective.com")) {
-        setDomainParam("test.joinnewearthcollective.com");
-      }
-    }
-  }, [searchParams]);
-
-  const withDomainQuery = (href: string) => {
-    if (!domainParam) return href;
-    if (href.includes("domain=")) return href;
-    return href.includes("?")
-      ? `${href}&domain=${encodeURIComponent(domainParam)}`
-      : `${href}?domain=${encodeURIComponent(domainParam)}`;
-  };
-
   return (
     <DomainLayout>
       <BackButton />
@@ -186,7 +157,7 @@ function ShadersPageContent() {
                 colorMap[shader.color] ?? colorMap["cosmic-purple"]!;
 
               return (
-                <Link key={shader.id} href={withDomainQuery(shader.href)}>
+                <Link key={shader.id} href={shader.href}>
                   <Card
                     className={`group flex h-full cursor-pointer flex-col border-2 transition-all duration-300 hover:scale-105 hover:shadow-2xl ${colors.border}`}
                   >

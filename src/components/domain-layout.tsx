@@ -6,7 +6,6 @@ import { ThemeToggle } from "./theme-toggle";
 import { SignOutButton } from "./auth/signout-button";
 import Link from "next/link";
 import Image from "next/image";
-import { useSearchParams } from "next/navigation";
 import { Instagram, Mail } from "lucide-react";
 
 interface DomainLayoutProps {
@@ -22,12 +21,9 @@ function DomainLayoutInner({
   footerClassName,
   hideAuthActions = false,
 }: DomainLayoutProps) {
-  const searchParams = useSearchParams();
   const [domainConfig, setDomainConfig] = useState(() =>
     getDomainConfig("joinnewearthcollective.com")
   );
-  const [searchString, setSearchString] = useState("");
-  const [isLocalhost, setIsLocalhost] = useState(false);
   const isBrandDomain = domainConfig.theme === "brand";
   const isTestDomain = domainConfig.theme === "tech";
   const navItems = isBrandDomain
@@ -37,34 +33,7 @@ function DomainLayoutInner({
   useEffect(() => {
     const hostname = window.location.hostname || "joinnewearthcollective.com";
     setDomainConfig(getDomainConfig(hostname));
-    setSearchString(window.location.search || "");
-    setIsLocalhost(hostname === "localhost" || hostname === "127.0.0.1");
   }, []);
-
-  // Helper to keep the test domain query on select links while developing locally
-  const withTestDomainQuery = (href: string, name: string) => {
-    const needsTestQuery = [
-      "Brand",
-      "Home",
-      "Templates",
-      "Shaders",
-      "Playground",
-    ].includes(name);
-    if (!isTestDomain || !needsTestQuery) return href;
-
-    const paramFromUrl =
-      searchParams.get("domain") ||
-      new URLSearchParams(searchString).get("domain") ||
-      "";
-    const domainParam =
-      paramFromUrl || (isLocalhost ? "test.joinnewearthcollective.com" : "");
-
-    if (!domainParam) return href;
-
-    return href.includes("?")
-      ? href
-      : `${href}?domain=${encodeURIComponent(domainParam)}`;
-  };
 
   // Default header/footer styles
   const defaultHeaderClass =
@@ -137,7 +106,7 @@ function DomainLayoutInner({
             {navItems.map((item) => (
               <Link
                 key={item.href}
-                href={withTestDomainQuery(item.href, item.name)}
+                href={item.href}
                 className="text-sm font-medium text-neutral-600 transition-colors hover:text-[#facf39] dark:text-neutral-400 dark:hover:text-[#facf39]"
               >
                 {item.name}

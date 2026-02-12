@@ -73,7 +73,7 @@ export default function EmergenceLiabilityPage() {
 
       if (!response.ok) {
         const data = await response.json();
-        throw new Error(data.error || "Failed to submit waiver");
+        throw new Error((data as { error?: string }).error || "Failed to submit waiver");
       }
 
       router.push("/EmergenceLiability/thank-you");
@@ -115,7 +115,7 @@ export default function EmergenceLiabilityPage() {
           {/* Flower of Life Shader Background */}
           <div className="absolute inset-0 opacity-20">
             <iframe
-              src="/shaders/flower-of-life/embed?domain=test.joinnewearthcollective.com"
+              src="/admin/shaders/flower-of-life/embed"
               className="h-full w-full border-0"
               style={{ pointerEvents: "none" }}
               title="Sacred Geometry Background"
@@ -273,35 +273,39 @@ export default function EmergenceLiabilityPage() {
                 <div className="space-y-6">
                   {/* Name Field */}
                   <div>
-                    <label className="mb-2 block text-sm font-medium text-white/80">
+                    <label htmlFor="signer-name" className="mb-2 block text-sm font-medium text-white/80">
                       Participant Name (Print) <span className="text-red-400">*</span>
                     </label>
                     <input
+                      id="signer-name"
                       type="text"
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                       className="w-full rounded-lg border border-[#FACF39]/30 bg-black/60 px-4 py-3 text-white placeholder-white/40 focus:border-[#FACF39] focus:outline-none focus:ring-1 focus:ring-[#FACF39]"
                       placeholder="Enter your full legal name"
+                      aria-required="true"
                     />
                   </div>
 
                   {/* Email Field */}
                   <div>
-                    <label className="mb-2 block text-sm font-medium text-white/80">
+                    <label htmlFor="signer-email" className="mb-2 block text-sm font-medium text-white/80">
                       Email Address <span className="text-red-400">*</span>
                     </label>
                     <input
+                      id="signer-email"
                       type="email"
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                       className="w-full rounded-lg border border-[#FACF39]/30 bg-black/60 px-4 py-3 text-white placeholder-white/40 focus:border-[#FACF39] focus:outline-none focus:ring-1 focus:ring-[#FACF39]"
                       placeholder="your@email.com"
+                      aria-required="true"
                     />
                   </div>
 
                   {/* Signature Canvas */}
                   <div>
-                    <label className="mb-2 block text-sm font-medium text-white/80">
+                    <label id="signature-label" className="mb-2 block text-sm font-medium text-white/80">
                       Signature <span className="text-red-400">*</span>
                     </label>
                     <div className="rounded-lg border border-[#FACF39]/30 bg-white p-1">
@@ -310,6 +314,8 @@ export default function EmergenceLiabilityPage() {
                         canvasProps={{
                           className: "w-full h-40 rounded",
                           style: { width: "100%", height: "160px" },
+                          "aria-labelledby": "signature-label",
+                          role: "img",
                         }}
                         backgroundColor="white"
                         penColor="black"
@@ -370,7 +376,7 @@ export default function EmergenceLiabilityPage() {
 
                   {/* Error Message */}
                   {error && (
-                    <div className="rounded-lg bg-red-500/10 border border-red-500/30 p-4 text-red-400">
+                    <div role="alert" className="rounded-lg bg-red-500/10 border border-red-500/30 p-4 text-red-400">
                       {error}
                     </div>
                   )}

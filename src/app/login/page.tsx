@@ -35,21 +35,10 @@ function LoginPageContent() {
       }
 
       if (data.session) {
-        const domainParam = searchParams.get("domain")?.toLowerCase() || "";
         const nextParam = searchParams.get("next");
-        const hostname =
-          typeof window !== "undefined"
-            ? window.location.hostname.toLowerCase()
-            : "";
 
-        const isTest =
-          hostname.includes("test.joinnewearthcollective.com") ||
-          domainParam.includes("test.joinnewearthcollective.com") ||
-          domainParam === "test";
-
-        // Always return to the test hub unless an explicit next is provided
-        const redirectTarget =
-          nextParam || "/?domain=test.joinnewearthcollective.com";
+        // Redirect to the next param if provided, otherwise to /admin hub
+        const redirectTarget = nextParam || "/admin";
 
         router.push(redirectTarget);
         router.refresh();

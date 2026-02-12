@@ -69,7 +69,7 @@ export default function FormBuilderPage() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || "Failed to submit form");
+        throw new Error((data as { error?: string }).error || "Failed to submit form");
       }
 
       setSuccess(true);
@@ -109,7 +109,7 @@ export default function FormBuilderPage() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || "Failed to send test email");
+        throw new Error((data as { error?: string }).error || "Failed to send test email");
       }
 
       setTestSuccess(true);

@@ -8,39 +8,11 @@ import { DomainLayout } from "~/components/domain-layout";
 import { BackButton } from "~/components/back-button";
 import { ArrowRight, Code2, Sparkles } from "lucide-react";
 import { PLAYGROUND_ITEMS } from "~/components/playground/playground-layout";
-import { useSearchParams } from "next/navigation";
-import { useEffect, useState, Suspense } from "react";
+import { Suspense } from "react";
 
 function PlaygroundPageContent() {
-  const searchParams = useSearchParams();
-  const [domainParam, setDomainParam] = useState(
-    () => searchParams.get("domain") || ""
-  );
-
-  useEffect(() => {
-    const paramFromSearch = searchParams.get("domain");
-    if (paramFromSearch) {
-      setDomainParam(paramFromSearch);
-      return;
-    }
-
-    if (typeof window !== "undefined") {
-      const host = window.location.hostname.toLowerCase();
-      if (host.includes("test.joinnewearthcollective.com")) {
-        setDomainParam("test.joinnewearthcollective.com");
-      }
-    }
-  }, [searchParams]);
-
   // Filter out the overview item
   const items = PLAYGROUND_ITEMS.filter((item) => item.id !== "overview");
-  const withDomainQuery = (href: string) => {
-    if (!domainParam) return href;
-    if (href.includes("domain=")) return href;
-    return href.includes("?")
-      ? `${href}&domain=${encodeURIComponent(domainParam)}`
-      : `${href}?domain=${encodeURIComponent(domainParam)}`;
-  };
 
   return (
     <DomainLayout>
@@ -138,7 +110,7 @@ function PlaygroundPageContent() {
               const colors = colorMap[item.color] ?? colorMap.violet!;
 
               return (
-                <Link key={item.id} href={withDomainQuery(item.href)}>
+                <Link key={item.id} href={item.href}>
                   <Card
                     className={`group flex h-full cursor-pointer flex-col border-2 transition-all duration-300 hover:scale-105 hover:shadow-2xl ${colors.border}`}
                   >

@@ -48,11 +48,11 @@ export const DOMAIN_CONFIG = {
     logo: "NEC-TEST",
     tagline: "Development & Testing Environment",
     nav: [
-      { name: "Home", href: "/" },
-      { name: "Brand", href: "/brand" },
-      { name: "Templates", href: "/templates" },
-      { name: "Shaders", href: "/shaders" },
-      { name: "Playground", href: "/playground" },
+      { name: "Home", href: "/admin" },
+      { name: "Brand", href: "/admin/brand" },
+      { name: "Templates", href: "/admin/templates" },
+      { name: "Shaders", href: "/admin/shaders" },
+      { name: "Playground", href: "/admin/playground" },
     ],
   },
 } as const;

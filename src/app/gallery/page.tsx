@@ -17,7 +17,7 @@ function GalleriesPageContent() {
   // If there's only one gallery, skip the intermediary grid and go straight to it
   useEffect(() => {
     if (isLoading) return;
-    if (!galleries || galleries.length !== 1) return;
+    if (!galleries?.length || galleries.length !== 1) return;
 
     const queryString = searchParams.toString();
     const target = `/gallery/${galleries[0]!.slug}${

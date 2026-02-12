@@ -12,7 +12,7 @@ export default function ForestGreenJoinCommunity1Page() {
       <div className="relative min-h-screen overflow-hidden bg-[#1a4d2e]">
         <div className="absolute inset-0 opacity-15">
           <iframe
-            src="/shaders/flower-of-life/embed?domain=test.joinnewearthcollective.com"
+            src="/admin/shaders/flower-of-life/embed"
             className="h-full w-full border-0"
             style={{ pointerEvents: "none" }}
           />

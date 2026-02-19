@@ -4,8 +4,6 @@ import { useState, Suspense } from "react";
 import Image from "next/image";
 import { Card, CardContent } from "~/components/ui/card";
 import { Badge } from "~/components/ui/badge";
-import { DomainLayout } from "~/components/domain-layout";
-import { BackButton } from "~/components/back-button";
 import {
   Users,
   ClipboardList,
@@ -152,37 +150,31 @@ function AdminPageContent() {
   };
 
   return (
-    <DomainLayout>
-      <Suspense fallback={null}>
-        <BackButton />
-      </Suspense>
-      <div className="min-h-screen bg-gradient-to-br from-white via-neutral-50 to-white dark:from-black dark:via-neutral-950 dark:to-black">
-        <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+      <div className="space-y-8">
           {/* Header */}
-          <div className="mb-12 text-center">
-            <div className="mb-6 inline-flex items-center justify-center">
-              <div className="relative h-16 w-16">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="relative h-10 w-10">
                 <Image
                   src="/brand/symbol.svg"
                   alt="New Earth Collective"
                   fill
-                  className="object-contain drop-shadow-lg"
+                  className="object-contain"
                 />
               </div>
+              <div>
+                <h1
+                  className="text-2xl font-bold text-white"
+                  style={{ fontFamily: "Airwaves, sans-serif", letterSpacing: "0.05em" }}
+                >
+                  CRM Dashboard
+                </h1>
+                <p className="text-sm text-gray-400">
+                  Database overview and intake form submissions
+                </p>
+              </div>
             </div>
-            <h1
-              className="mb-4 text-5xl font-bold text-black dark:text-white"
-              style={{
-                fontFamily: "Airwaves, sans-serif",
-                letterSpacing: "0.1em",
-              }}
-            >
-              Admin Dashboard
-            </h1>
-            <p className="mx-auto mb-6 max-w-2xl text-lg text-neutral-600 dark:text-neutral-400">
-              Database overview and intake form submissions
-            </p>
-            <div className="flex items-center justify-center gap-3">
+            <div className="flex items-center gap-3">
               <Badge className="border-[#facf39]/40 bg-[#facf39]/10 text-[#facf39]">
                 <Database className="mr-1.5 h-3.5 w-3.5" />
                 Live Data
@@ -190,7 +182,7 @@ function AdminPageContent() {
               <button
                 onClick={() => void statsQuery.refetch()}
                 disabled={loading}
-                className="inline-flex items-center gap-1.5 rounded-full border border-black/20 bg-black/5 px-3 py-1 text-sm text-black transition-colors hover:bg-black/10 dark:border-white/20 dark:bg-white/5 dark:text-white dark:hover:bg-white/10"
+                className="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/5 px-3 py-1.5 text-sm text-white transition-colors hover:bg-white/10"
               >
                 <RefreshCw className={`h-3.5 w-3.5 ${loading ? "animate-spin" : ""}`} />
                 Refresh
@@ -200,8 +192,8 @@ function AdminPageContent() {
 
           {/* Error State */}
           {error && (
-            <Card className="mb-8 border-red-500/30 bg-red-500/10">
-              <CardContent className="p-4 text-center text-red-600 dark:text-red-400">
+            <Card className="border-red-500/30 bg-red-500/10">
+              <CardContent className="p-4 text-center text-red-400">
                 Failed to load database info
               </CardContent>
             </Card>
@@ -209,7 +201,7 @@ function AdminPageContent() {
 
           {/* Stats Overview */}
           {data && (
-            <div className="mb-12 grid grid-cols-2 gap-4 md:grid-cols-5">
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-5">
               {[
                 { label: "Contacts", value: data.stats.contacts, icon: Users },
                 { label: "Questionnaires", value: data.stats.questionnaires, icon: ClipboardList },
@@ -219,14 +211,14 @@ function AdminPageContent() {
               ].map((stat) => (
                 <Card
                   key={stat.label}
-                  className="border border-neutral-200 dark:border-neutral-800"
+                  className="border-white/10 bg-white/5"
                 >
                   <CardContent className="p-4 text-center">
                     <stat.icon className="mx-auto mb-2 h-5 w-5 text-[#facf39]" />
-                    <div className="text-2xl font-bold text-black dark:text-white">
+                    <div className="text-2xl font-bold text-white">
                       {stat.value}
                     </div>
-                    <div className="text-xs text-neutral-500">{stat.label}</div>
+                    <div className="text-xs text-gray-400">{stat.label}</div>
                   </CardContent>
                 </Card>
               ))}
@@ -250,7 +242,7 @@ function AdminPageContent() {
                   {/* Section Header */}
                   <button
                     onClick={() => toggleSection(section.id)}
-                    className="flex w-full items-center justify-between p-6 text-left transition-colors hover:bg-neutral-50 dark:hover:bg-neutral-900"
+                    className="flex w-full items-center justify-between p-6 text-left transition-colors hover:bg-white/5"
                     aria-expanded={isExpanded}
                   >
                     <div className="flex items-center gap-4">
@@ -261,16 +253,16 @@ function AdminPageContent() {
                       </div>
                       <div>
                         <h2
-                          className="text-xl font-bold text-black dark:text-white"
+                          className="text-xl font-bold text-white"
                           style={{ fontFamily: "Airwaves, sans-serif" }}
                         >
                           {section.title}
                         </h2>
-                        <p className="text-sm text-neutral-500">{section.description}</p>
+                        <p className="text-sm text-gray-400">{section.description}</p>
                       </div>
                     </div>
                     <div className="flex items-center gap-4">
-                      <Badge className={`${colors.bg} ${colors.border} text-black dark:text-white`}>
+                      <Badge className={`${colors.bg} ${colors.border} text-white`}>
                         {section.stat} records
                       </Badge>
                       {isExpanded ? (
@@ -283,25 +275,25 @@ function AdminPageContent() {
 
                   {/* Recent Preview (always visible) */}
                   {!isExpanded && section.recent.length > 0 && (
-                    <div className="border-t border-neutral-200 px-6 py-4 dark:border-neutral-800">
-                      <div className="text-xs font-medium uppercase tracking-wide text-neutral-400 mb-3">
+                    <div className="border-t border-white/10 px-6 py-4">
+                      <div className="text-xs font-medium uppercase tracking-wide text-gray-400 mb-3">
                         Recent
                       </div>
                       <div className="space-y-2">
                         {section.recent.slice(0, 3).map((item) => (
                           <div
                             key={item.id}
-                            className="flex items-center justify-between rounded-lg bg-neutral-50 px-3 py-2 dark:bg-neutral-900"
+                            className="flex items-center justify-between rounded-lg bg-white/5 px-3 py-2"
                           >
                             <div className="flex items-center gap-3">
-                              <span className="font-medium text-black dark:text-white">
+                              <span className="font-medium text-white">
                                 {getItemName(item)}
                               </span>
-                              <span className="text-sm text-neutral-500">
+                              <span className="text-sm text-gray-400">
                                 {getItemEmail(item)}
                               </span>
                             </div>
-                            <span className="text-xs text-neutral-400">
+                            <span className="text-xs text-gray-500">
                               {formatDate(getItemDate(item))}
                             </span>
                           </div>
@@ -312,17 +304,17 @@ function AdminPageContent() {
 
                   {/* Expanded Full List */}
                   {isExpanded && (
-                    <div className="border-t border-neutral-200 dark:border-neutral-800">
+                    <div className="border-t border-white/10">
                       {tableQuery?.isLoading ? (
                         <div className="p-8 text-center">
-                          <RefreshCw className="mx-auto h-6 w-6 animate-spin text-neutral-400" />
-                          <p className="mt-2 text-sm text-neutral-500">Loading...</p>
+                          <RefreshCw className="mx-auto h-6 w-6 animate-spin text-gray-400" />
+                          <p className="mt-2 text-sm text-gray-500">Loading...</p>
                         </div>
                       ) : (
                         <div className="max-h-96 overflow-auto">
                           <table className="w-full">
-                            <thead className="sticky top-0 bg-neutral-100 dark:bg-neutral-900">
-                              <tr className="text-left text-xs font-medium uppercase tracking-wide text-neutral-500">
+                            <thead className="sticky top-0 bg-neutral-900">
+                              <tr className="text-left text-xs font-medium uppercase tracking-wide text-gray-400">
                                 <th className="px-6 py-3">ID</th>
                                 <th className="px-6 py-3">Name</th>
                                 <th className="px-6 py-3">Email</th>
@@ -330,7 +322,7 @@ function AdminPageContent() {
                                 <th className="px-6 py-3">Date</th>
                               </tr>
                             </thead>
-                            <tbody className="divide-y divide-neutral-200 dark:divide-neutral-800">
+                            <tbody className="divide-y divide-white/10">
                               {fullData.map((item: Record<string, unknown>) => {
                                 const str = (v: unknown) => (typeof v === "string" || typeof v === "number" ? String(v) : "");
                                 const id = str(item.id);
@@ -341,15 +333,15 @@ function AdminPageContent() {
                                 return (
                                 <tr
                                   key={id}
-                                  className="hover:bg-neutral-50 dark:hover:bg-neutral-900"
+                                  className="hover:bg-white/5"
                                 >
-                                  <td className="px-6 py-3 text-sm text-neutral-500">
+                                  <td className="px-6 py-3 text-sm text-gray-500">
                                     {id}
                                   </td>
-                                  <td className="px-6 py-3 font-medium text-black dark:text-white">
+                                  <td className="px-6 py-3 font-medium text-white">
                                     {name}
                                   </td>
-                                  <td className="px-6 py-3 text-sm text-neutral-600 dark:text-neutral-400">
+                                  <td className="px-6 py-3 text-sm text-gray-400">
                                     {email}
                                   </td>
                                   <td className="px-6 py-3">
@@ -360,7 +352,7 @@ function AdminPageContent() {
                                       {source}
                                     </Badge>
                                   </td>
-                                  <td className="px-6 py-3 text-sm text-neutral-500">
+                                  <td className="px-6 py-3 text-sm text-gray-500">
                                     {formatDate(date)}
                                   </td>
                                 </tr>
@@ -377,35 +369,7 @@ function AdminPageContent() {
             })}
           </div>
 
-          {/* Footer */}
-          <Card className="mx-auto mt-12 max-w-3xl border-2 border-[#facf39]/20 bg-gradient-to-br from-white to-neutral-50 shadow-lg dark:from-neutral-900 dark:to-black">
-            <CardContent className="p-6">
-              <div className="flex items-start gap-4">
-                <div className="relative h-10 w-10 shrink-0">
-                  <Image
-                    src="/brand/symbol.svg"
-                    alt="New Earth Collective"
-                    fill
-                    className="object-contain drop-shadow-lg"
-                  />
-                </div>
-                <div className="text-left">
-                  <h3
-                    className="mb-1 text-lg font-bold text-black dark:text-white"
-                    style={{ fontFamily: "Airwaves, sans-serif" }}
-                  >
-                    Database Admin
-                  </h3>
-                  <p className="text-sm text-neutral-600 dark:text-neutral-400">
-                    CRM and intake form data visualization. All data syncs to the master contact database.
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
       </div>
-    </DomainLayout>
   );
 }
 

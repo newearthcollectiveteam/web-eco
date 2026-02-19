@@ -4,8 +4,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { Card, CardContent } from "~/components/ui/card";
 import { Badge } from "~/components/ui/badge";
-import { DomainLayout } from "~/components/domain-layout";
-import { BackButton } from "~/components/back-button";
 import { ArrowRight, Sparkles, Zap } from "lucide-react";
 import { Suspense } from "react";
 
@@ -67,41 +65,37 @@ const SHADERS = [
 
 function ShadersPageContent() {
   return (
-    <DomainLayout>
-      <BackButton />
-      <div className="min-h-screen bg-gradient-to-br from-white via-neutral-50 to-white dark:from-black dark:via-neutral-950 dark:to-black">
-        <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+      <div className="space-y-8">
+        <div className="mx-auto max-w-7xl">
           {/* Header */}
-          <div className="mb-20 text-center">
-            <div className="mb-8 inline-flex items-center justify-center">
-              <div className="relative h-20 w-20">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="relative h-10 w-10">
                 <Image
                   src="/brand/symbol.svg"
                   alt="New Earth Collective"
                   fill
-                  className="object-contain drop-shadow-lg"
+                  className="object-contain"
                 />
               </div>
+              <div>
+                <h1
+                  className="text-2xl font-bold text-white"
+                  style={{ fontFamily: "Airwaves, sans-serif", letterSpacing: "0.05em" }}
+                >
+                  GLSL Shaders
+                </h1>
+                <p className="text-sm text-gray-400">
+                  WebGL shader animations in Shadertoy format
+                </p>
+              </div>
             </div>
-            <h1
-              className="mb-4 text-6xl font-bold text-black dark:text-white"
-              style={{
-                fontFamily: "Airwaves, sans-serif",
-                letterSpacing: "0.1em",
-              }}
-            >
-              GLSL Shaders
-            </h1>
-            <p className="mx-auto mb-6 max-w-2xl text-xl text-neutral-600 dark:text-neutral-400">
-              Explore beautiful WebGL shader animations powered by GLSL in
-              Shadertoy format
-            </p>
-            <div className="flex items-center justify-center gap-3">
+            <div className="flex items-center gap-3">
               <Badge className="border-[#facf39]/40 bg-[#facf39]/10 text-[#facf39]">
                 <Zap className="mr-1.5 h-3.5 w-3.5" />
-                WebGL Powered
+                WebGL
               </Badge>
-              <Badge className="border-black/20 bg-black/5 text-black dark:border-white/20 dark:bg-white/5 dark:text-white">
+              <Badge className="border-white/20 bg-white/5 text-white">
                 <Sparkles className="mr-1.5 h-3.5 w-3.5" />
                 Real-time
               </Badge>
@@ -195,39 +189,8 @@ function ShadersPageContent() {
             })}
           </div>
 
-          {/* Footer Note */}
-          <Card className="mx-auto mt-16 max-w-3xl border-2 border-[#facf39]/20 bg-gradient-to-br from-white to-neutral-50 shadow-lg dark:from-neutral-900 dark:to-black">
-            <CardContent className="p-8">
-              <div className="flex items-start gap-6">
-                <div className="relative h-12 w-12 shrink-0">
-                  <Image
-                    src="/brand/symbol.svg"
-                    alt="New Earth Collective"
-                    fill
-                    className="object-contain drop-shadow-lg"
-                  />
-                </div>
-                <div className="text-left">
-                  <h3
-                    className="mb-2 text-xl font-bold text-black dark:text-white"
-                    style={{
-                      fontFamily: "Airwaves, sans-serif",
-                      letterSpacing: "0.05em",
-                    }}
-                  >
-                    About These Shaders
-                  </h3>
-                  <p className="text-sm text-neutral-600 dark:text-neutral-400">
-                    Interactive GLSL shader animations rendered in real-time
-                    using WebGL technology.
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
         </div>
       </div>
-    </DomainLayout>
   );
 }
 

@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { ArrowRight, Play, Quote } from "lucide-react";
+import { ArrowRight, Play, Quote, Rocket, Sparkles } from "lucide-react";
 import { Button } from "~/components/ui/button";
 import {
   type CarouselApi,
@@ -12,7 +12,27 @@ import {
   CarouselPrevious,
   CarouselNext,
 } from "~/components/ui/carousel";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "~/components/ui/accordion";
 import { assetUrl } from "~/lib/storage";
+
+// --- Gradient Divider ---
+
+function GradientDivider() {
+  return (
+    <div
+      className="h-px w-full"
+      style={{
+        background:
+          "linear-gradient(to right, transparent, rgba(250, 207, 57, 0.4), transparent)",
+      }}
+    />
+  );
+}
 
 // --- Testimonial data ---
 
@@ -104,6 +124,36 @@ const videoTestimonials = testimonials.filter(
   (t): t is VideoTestimonial => t.type === "video"
 );
 
+// --- FAQ data ---
+
+const faqItems = [
+  {
+    question: "What is New Earth Collective?",
+    answer:
+      "New Earth Collective is a community of heart-led creators, facilitators, and visionaries building a regenerative future together. We host immersive festival experiences, volunteer missions, and ongoing collaboration to activate individual gifts in service of collective sovereignty.",
+  },
+  {
+    question: "Who is this for?",
+    answer:
+      "If you feel called to live from the heart and collaborate in service of something greater than yourself, this is for you. We welcome conscious entrepreneurs, healers, artists, builders, activists, and anyone drawn to co-creating a new paradigm.",
+  },
+  {
+    question: "What happens at your events?",
+    answer:
+      "Our events blend immersive workshops, authentic relating, breathwork, sound healing, music, art, and community building. They are containers for deep connection, personal transformation, and collaborative visioning — not just festivals, but catalysts for lasting change.",
+  },
+  {
+    question: "Is there a cost to join?",
+    answer:
+      "Joining the community network is free. Our events and experiences have their own pricing, designed to be accessible while sustaining the collective. We believe in circular abundance — energy exchanged, not extracted.",
+  },
+  {
+    question: "How do I get involved?",
+    answer:
+      "Start by filling out our questionnaire — it helps us understand your gifts and how you'd like to contribute. From there, you'll be connected with community members, invited to events, and plugged into collaboration opportunities.",
+  },
+];
+
 // --- LazyVideo: poster + play button, loads <video> on click ---
 
 // Module-level ref so only one video plays at a time.
@@ -140,7 +190,7 @@ function LazyVideo({ src, poster }: { src: string; poster: string }) {
       {!active ? (
         <button
           onClick={handlePlay}
-          className="relative cursor-pointer group"
+          className="group relative cursor-pointer"
           aria-label="Play video testimonial"
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -152,7 +202,7 @@ function LazyVideo({ src, poster }: { src: string; poster: string }) {
           {/* Play button overlay */}
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#FACF39] shadow-lg transition-transform group-hover:scale-110">
-              <Play className="h-7 w-7 text-black ml-1" fill="currentColor" />
+              <Play className="ml-1 h-7 w-7 text-black" fill="currentColor" />
             </div>
           </div>
         </button>
@@ -256,8 +306,8 @@ export function HomePage() {
         }
       `}</style>
 
-      {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      {/* ========== 1. Hero Section ========== */}
+      <section className="relative flex min-h-screen items-center justify-center overflow-hidden">
         {/* Flower of Life Shader Background */}
         <div className="absolute inset-0 opacity-20">
           <iframe
@@ -274,42 +324,59 @@ export function HomePage() {
         {/* Hero Content */}
         <div className="relative z-10 mx-auto max-w-4xl px-4 pt-16 text-center">
           <h1
-            className="mb-6 text-5xl font-bold leading-tight md:text-6xl lg:text-7xl"
-            style={{ fontFamily: "Airwaves, sans-serif", letterSpacing: "0.05em" }}
+            className="animate-in fade-in fill-mode-both mb-6 text-5xl leading-tight font-bold duration-700 md:text-6xl lg:text-7xl"
+            style={{
+              fontFamily: "Airwaves, sans-serif",
+              letterSpacing: "0.05em",
+            }}
           >
             <span className="bg-gradient-to-r from-[#f3a51c] via-[#f6c43f] to-[#f6e45b] bg-clip-text text-transparent">
               New Earth Collective
             </span>
           </h1>
           <h2
-            className="mb-4 text-2xl font-bold text-white md:text-3xl"
+            className="animate-in fade-in fill-mode-both mb-4 text-2xl font-bold text-white delay-150 duration-700 md:text-3xl"
             style={{ fontFamily: "Bourton, sans-serif" }}
           >
-            Empowering the Co-Creation of <span className="whitespace-nowrap">Heaven on Earth</span>
+            Empowering the Co-Creation of{" "}
+            <span className="whitespace-nowrap">Heaven on Earth</span>
           </h2>
-          <p className="mx-auto mb-10 max-w-sm md:max-w-2xl text-base md:text-lg text-white/90">
-            We host immersive festival experiences to activate heart-led creators and connect them into a living network for ongoing collaboration.
+          <p className="animate-in fade-in fill-mode-both mx-auto mb-4 max-w-sm text-base text-white/90 delay-300 duration-700 md:max-w-2xl md:text-lg">
+            We host immersive festival experiences to activate heart-led
+            creators and connect them into a living network for ongoing
+            collaboration.
           </p>
-          <Button
-            asChild
-            size="lg"
-            className="btn-golden px-8 py-5 text-lg sm:px-10 sm:py-6"
-            style={{ fontFamily: "Bourton, sans-serif" }}
-          >
-            <Link href="/questionnaire">
-              Join the Collective
-              <ArrowRight className="ml-2 h-5 w-5" />
-            </Link>
-          </Button>
+          <p className="animate-in fade-in fill-mode-both mb-10 text-sm text-white/60 italic delay-500 duration-700">
+            100+ heart-led creators connected at The Emergence
+          </p>
+          <div className="animate-in fade-in slide-in-from-bottom-2 fill-mode-both delay-700 duration-700">
+            <Button
+              asChild
+              size="lg"
+              className="btn-golden px-8 py-5 text-lg sm:px-10 sm:py-6"
+              style={{ fontFamily: "Bourton, sans-serif" }}
+            >
+              <Link href="/questionnaire">
+                Join the Collective
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Link>
+            </Button>
+          </div>
         </div>
       </section>
 
-      {/* Vision Section */}
-      <section className="bg-[#111111] border-y border-[#f6c43f]/20 px-4 py-12 sm:py-24">
+      {/* ========== Divider ========== */}
+      <GradientDivider />
+
+      {/* ========== 2. Vision Section ========== */}
+      <section className="bg-[#111111] px-4 py-12 sm:py-24">
         <div className="mx-auto max-w-6xl">
           <h2
             className="mb-12 text-center text-4xl font-bold"
-            style={{ fontFamily: "Airwaves, sans-serif", letterSpacing: "0.05em" }}
+            style={{
+              fontFamily: "Airwaves, sans-serif",
+              letterSpacing: "0.05em",
+            }}
           >
             <span className="bg-gradient-to-r from-[#f3a51c] via-[#f6c43f] to-[#f6e45b] bg-clip-text text-transparent">
               Our Vision
@@ -319,10 +386,11 @@ export function HomePage() {
             {/* Text Content */}
             <div className="flex flex-col justify-center">
               <p className="mb-6 text-lg leading-relaxed text-white/90">
-                A world where people live from the heart and collaborate in service of something greater than themselves.
+                A world where people live from the heart and collaborate in
+                service of something greater than themselves.
               </p>
               <p className="mb-3 text-base text-white/80">In service of...</p>
-              <ul className="mb-6 space-y-1 ml-4">
+              <ul className="mb-6 ml-4 space-y-1">
                 <li className="flex items-center gap-2 text-white/70">
                   <span className="h-1.5 w-1.5 rounded-full bg-[#FACF39]/60" />
                   Collective Sovereignty
@@ -345,13 +413,15 @@ export function HomePage() {
                 </li>
               </ul>
               <p className="text-base leading-relaxed text-white/70">
-                We believe true freedom emerges when individual gifts blossom within community—where collective sovereignty grows from the roots of personal empowerment.
+                We believe true freedom emerges when individual gifts blossom
+                within community—where collective sovereignty grows from the
+                roots of personal empowerment.
               </p>
             </div>
 
             {/* Video */}
-            <div className="overflow-hidden rounded-xl border border-[#f6c43f]/20 bg-black/60 shadow-2xl h-full flex items-center">
-              <div className="relative w-full h-full bg-black">
+            <div className="flex h-full items-center overflow-hidden rounded-xl border border-[#f6c43f]/20 bg-black/60 shadow-2xl">
+              <div className="relative h-full w-full bg-black">
                 <video
                   controls
                   className="h-full w-full object-cover"
@@ -386,12 +456,99 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* Who We Serve Section */}
+      {/* ========== Divider ========== */}
+      <GradientDivider />
+
+      {/* ========== 3. Upcoming Section (NEW) ========== */}
       <section className="bg-[#0A0A0A] px-4 py-12 sm:py-24">
         <div className="mx-auto max-w-6xl">
           <h2
             className="mb-12 text-center text-4xl font-bold"
-            style={{ fontFamily: "Airwaves, sans-serif", letterSpacing: "0.05em" }}
+            style={{
+              fontFamily: "Airwaves, sans-serif",
+              letterSpacing: "0.05em",
+            }}
+          >
+            <span className="bg-gradient-to-r from-[#f3a51c] via-[#f6c43f] to-[#f6e45b] bg-clip-text text-transparent">
+              Upcoming
+            </span>
+          </h2>
+          <div className="grid gap-8 md:grid-cols-2">
+            {/* App Card */}
+            <div className="value-card rounded-lg p-8">
+              <div className="mb-4 flex items-center gap-3">
+                <Rocket className="h-6 w-6 text-[#FACF39]" />
+                <h3
+                  className="text-2xl font-bold text-[#FACF39]"
+                  style={{ fontFamily: "Bourton, sans-serif" }}
+                >
+                  The NEC Platform
+                </h3>
+              </div>
+              <p className="mb-6 leading-relaxed text-white/80">
+                A community platform designed to connect heart-led creators,
+                facilitate collaboration, and amplify collective impact. Your
+                hub for events, projects, and ongoing connection beyond the
+                festival.
+              </p>
+              <Button
+                asChild
+                className="btn-golden px-6 py-2"
+                style={{ fontFamily: "Bourton, sans-serif" }}
+              >
+                <Link href="/questionnaire">
+                  Learn More
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Link>
+              </Button>
+            </div>
+
+            {/* Event Card */}
+            <div className="value-card rounded-lg p-8">
+              <div className="mb-4 flex items-center gap-3">
+                <Sparkles className="h-6 w-6 text-[#FACF39]" />
+                <h3
+                  className="text-2xl font-bold text-[#FACF39]"
+                  style={{ fontFamily: "Bourton, sans-serif" }}
+                >
+                  The Convergence
+                </h3>
+              </div>
+              <p className="mb-4 leading-relaxed text-white/80">
+                Our next immersive festival experience — a gathering of
+                visionaries, healers, and builders coming together to co-create,
+                connect, and catalyze the new paradigm.
+              </p>
+              <p className="mb-6 text-sm text-white/50">
+                Date &amp; Location TBA
+              </p>
+              <Button
+                asChild
+                className="btn-golden px-6 py-2"
+                style={{ fontFamily: "Bourton, sans-serif" }}
+              >
+                <Link href="/questionnaire">
+                  Get Tickets
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Link>
+              </Button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ========== Divider ========== */}
+      <GradientDivider />
+
+      {/* ========== 4. Who We Serve Section ========== */}
+      <section className="bg-[#111111] px-4 py-12 sm:py-24">
+        <div className="mx-auto max-w-6xl">
+          <h2
+            className="mb-12 text-center text-4xl font-bold"
+            style={{
+              fontFamily: "Airwaves, sans-serif",
+              letterSpacing: "0.05em",
+            }}
           >
             <span className="bg-gradient-to-r from-[#f3a51c] via-[#f6c43f] to-[#f6e45b] bg-clip-text text-transparent">
               Who We Serve
@@ -408,7 +565,10 @@ export function HomePage() {
               </h3>
               <ul className="space-y-2">
                 {creatorsBuilders.map((item) => (
-                  <li key={item} className="flex items-center gap-2 text-white/80">
+                  <li
+                    key={item}
+                    className="flex items-center gap-2 text-white/80"
+                  >
                     <span className="h-1.5 w-1.5 rounded-full bg-[#FACF39]/60" />
                     {item}
                   </li>
@@ -426,7 +586,10 @@ export function HomePage() {
               </h3>
               <ul className="space-y-2">
                 {facilitators.map((item) => (
-                  <li key={item} className="flex items-center gap-2 text-white/80">
+                  <li
+                    key={item}
+                    className="flex items-center gap-2 text-white/80"
+                  >
                     <span className="h-1.5 w-1.5 rounded-full bg-[#FACF39]/60" />
                     {item}
                   </li>
@@ -437,12 +600,18 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* Testimonials Section */}
-      <section className="bg-[#111111] border-y border-[#f6c43f]/20 px-4 py-12 sm:py-24">
+      {/* ========== Divider ========== */}
+      <GradientDivider />
+
+      {/* ========== 5. Testimonials Section ========== */}
+      <section className="bg-[#0A0A0A] px-4 py-12 sm:py-24">
         <div className="mx-auto max-w-6xl">
           <h2
             className="mb-4 text-center text-4xl font-bold"
-            style={{ fontFamily: "Airwaves, sans-serif", letterSpacing: "0.05em" }}
+            style={{
+              fontFamily: "Airwaves, sans-serif",
+              letterSpacing: "0.05em",
+            }}
           >
             <span className="bg-gradient-to-r from-[#f3a51c] via-[#f6c43f] to-[#f6e45b] bg-clip-text text-transparent">
               Testimonials
@@ -454,19 +623,22 @@ export function HomePage() {
 
           {/* Video Testimonial Carousel */}
           {videoTestimonials.length > 0 && (
-            <div className="relative mx-auto max-w-3xl mb-16">
+            <div className="relative mx-auto mb-16 max-w-3xl">
               <Carousel opts={{ loop: true }} setApi={setCarouselApi}>
                 <CarouselContent>
                   {videoTestimonials.map((video) => (
-                    <CarouselItem key={video.name} className="flex items-center justify-center">
+                    <CarouselItem
+                      key={video.name}
+                      className="flex items-center justify-center"
+                    >
                       <LazyVideo src={video.src} poster={video.poster} />
                     </CarouselItem>
                   ))}
                 </CarouselContent>
                 {videoTestimonials.length > 1 && (
                   <>
-                    <CarouselPrevious className="bg-[#FACF39]/90 hover:bg-[#FACF39] text-black" />
-                    <CarouselNext className="bg-[#FACF39]/90 hover:bg-[#FACF39] text-black" />
+                    <CarouselPrevious className="bg-[#FACF39]/90 text-black hover:bg-[#FACF39]" />
+                    <CarouselNext className="bg-[#FACF39]/90 text-black hover:bg-[#FACF39]" />
                   </>
                 )}
               </Carousel>
@@ -485,15 +657,16 @@ export function HomePage() {
                   {writtenTestimonials.map((t) => (
                     <CarouselItem
                       key={t.name + t.quote.slice(0, 20)}
-                      className="pl-4 basis-[85%] sm:basis-[60%] lg:basis-[38%]"
+                      className="basis-[85%] pl-4 sm:basis-[60%] lg:basis-[38%]"
                     >
-                      <div className="value-card rounded-lg p-6 h-full">
+                      <div className="value-card h-full rounded-lg p-6">
                         <Quote className="mb-3 h-6 w-6 text-[#FACF39]/40" />
-                        <p className="mb-4 italic leading-relaxed text-white/85">
+                        <p className="mb-4 leading-relaxed text-white/85 italic">
                           &ldquo;{t.quote}&rdquo;
                         </p>
                         <p className="text-sm text-[#FACF39]">
-                          &mdash; {t.name}{t.role ? `, ${t.role}` : ""}
+                          &mdash; {t.name}
+                          {t.role ? `, ${t.role}` : ""}
                         </p>
                       </div>
                     </CarouselItem>
@@ -505,7 +678,10 @@ export function HomePage() {
 
           {/* CTA */}
           <div className="mt-12 text-center">
-            <p className="mb-6 text-xl text-white/90" style={{ fontFamily: "Bourton, sans-serif" }}>
+            <p
+              className="mb-6 text-xl text-white/90"
+              style={{ fontFamily: "Bourton, sans-serif" }}
+            >
               Want to attend our next event?
             </p>
             <Button
@@ -523,7 +699,49 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* Final Invitation Section */}
+      {/* ========== Divider ========== */}
+      <GradientDivider />
+
+      {/* ========== 6. FAQ Section (NEW) ========== */}
+      <section className="bg-[#111111] px-4 py-12 sm:py-24">
+        <div className="mx-auto max-w-3xl">
+          <h2
+            className="mb-12 text-center text-4xl font-bold"
+            style={{
+              fontFamily: "Airwaves, sans-serif",
+              letterSpacing: "0.05em",
+            }}
+          >
+            <span className="bg-gradient-to-r from-[#f3a51c] via-[#f6c43f] to-[#f6e45b] bg-clip-text text-transparent">
+              Frequently Asked Questions
+            </span>
+          </h2>
+          <Accordion type="single" collapsible className="space-y-4">
+            {faqItems.map((item, index) => (
+              <AccordionItem
+                key={index}
+                value={`faq-${index}`}
+                className="value-card rounded-lg border-0 px-6"
+              >
+                <AccordionTrigger
+                  className="py-5 text-base font-bold text-white hover:no-underline [&>svg]:text-[#FACF39]"
+                  style={{ fontFamily: "Bourton, sans-serif" }}
+                >
+                  {item.question}
+                </AccordionTrigger>
+                <AccordionContent className="pb-5 leading-relaxed text-white/80">
+                  {item.answer}
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
+        </div>
+      </section>
+
+      {/* ========== Divider ========== */}
+      <GradientDivider />
+
+      {/* ========== 7. Final Invitation Section ========== */}
       <section className="relative overflow-hidden bg-[#0A0A0A] px-4 py-12 sm:py-24">
         {/* Subtle shader background */}
         <div className="absolute inset-0 opacity-10">
@@ -538,14 +756,19 @@ export function HomePage() {
         <div className="relative z-10 mx-auto max-w-3xl text-center">
           <h2
             className="mb-6 text-4xl font-bold md:text-5xl"
-            style={{ fontFamily: "Airwaves, sans-serif", letterSpacing: "0.05em" }}
+            style={{
+              fontFamily: "Airwaves, sans-serif",
+              letterSpacing: "0.05em",
+            }}
           >
             <span className="bg-gradient-to-r from-[#f3a51c] via-[#f6c43f] to-[#f6e45b] bg-clip-text text-transparent">
               Your Gifts Are Needed.
             </span>
           </h2>
           <p className="mb-6 text-base text-white/70">
-            Bring your whole self—shadows, gifts, and truths. Join us in weaving a tapestry where collective sovereignty is realized through the connection and blossoming of individual gifts.
+            Bring your whole self—shadows, gifts, and truths. Join us in weaving
+            a tapestry where collective sovereignty is realized through the
+            connection and blossoming of individual gifts.
           </p>
           <p className="mb-10 text-lg text-white/80">
             Feel the call? Fill out our questionnaire to see if we're aligned.

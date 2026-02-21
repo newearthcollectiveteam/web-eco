@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -13,18 +12,12 @@ import {
   Star,
   Sparkles,
   ArrowRight,
-  Instagram,
-  Mail,
-  Menu,
-  X,
 } from "lucide-react";
 import { Card, CardContent } from "~/components/ui/card";
 import { Button } from "~/components/ui/button";
 import { Badge } from "~/components/ui/badge";
 
 export default function JoysKitchenPage() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
   return (
     <div className="relative min-h-screen bg-gradient-to-br from-[#a855f7] to-[#ec4899]">
       {/* Flower of Life Shader Background */}
@@ -37,8 +30,6 @@ export default function JoysKitchenPage() {
         />
       </div>
 
-
-      {/* Shared button styles */}
       <style jsx global>{`
         .btn-white {
           background: white;
@@ -83,97 +74,7 @@ export default function JoysKitchenPage() {
         }
       `}</style>
 
-      {/* Header Navigation */}
-      <header className="fixed left-0 right-0 top-0 z-50 border-b border-white/10 bg-gradient-to-r from-[#a855f7] to-[#ec4899] backdrop-blur-sm">
-        <div className="container mx-auto flex items-center justify-between px-4 py-3 sm:py-4">
-          <Link href="/" className="flex items-center gap-2 sm:gap-3">
-            <div className="relative h-8 w-8 sm:h-10 sm:w-10">
-              <Image
-                src="/brand/symbol.svg"
-                alt="New Earth Collective"
-                fill
-                className="object-contain"
-              />
-            </div>
-            <span
-              className="text-base font-bold bg-gradient-to-r from-[#f3a51c] via-[#f6c43f] to-[#f6e45b] bg-clip-text text-transparent sm:text-xl"
-              style={{
-                fontFamily: "Airwaves, sans-serif",
-                letterSpacing: "0.05em",
-              }}
-            >
-              NEW EARTH COLLECTIVE
-            </span>
-          </Link>
-
-          {/* Desktop Nav */}
-          <nav className="hidden items-center gap-4 sm:flex">
-            <Link href="/impact">
-              <Button
-                variant="ghost"
-                size="sm"
-                className="text-white/80 hover:bg-white/15 hover:text-white"
-              >
-                All Missions
-              </Button>
-            </Link>
-            <a
-              href="https://joyskitchen.org/volunteer"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <Button
-                size="sm"
-                className="btn-white"
-                style={{ fontFamily: "Bourton, sans-serif" }}
-              >
-                Volunteer Now
-              </Button>
-            </a>
-          </nav>
-
-          {/* Mobile Hamburger */}
-          <button
-            className="sm:hidden p-2 text-white"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            aria-label="Toggle menu"
-          >
-            {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-          </button>
-        </div>
-
-        {/* Mobile Menu Dropdown */}
-        {mobileMenuOpen && (
-          <div className="sm:hidden border-t border-white/10 bg-gradient-to-r from-[#a855f7] to-[#ec4899] px-4 py-4">
-            <div className="flex flex-col gap-3">
-              <Link
-                href="/impact"
-                onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center gap-2 rounded-lg px-4 py-3 text-white/90 transition-colors hover:bg-white/10"
-              >
-                <HandHeart className="h-5 w-5" />
-                All Missions
-              </Link>
-              <a
-                href="https://joyskitchen.org/volunteer"
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                <Button
-                  className="btn-white w-full"
-                  style={{ fontFamily: "Bourton, sans-serif" }}
-                >
-                  Volunteer Now
-                  <ExternalLink className="ml-2 h-4 w-4" />
-                </Button>
-              </a>
-            </div>
-          </div>
-        )}
-      </header>
-
-      <div className="relative z-10 px-4 pb-16 pt-24">
+      <div className="relative z-10 px-4 pt-24 pb-16">
         <div className="container mx-auto max-w-4xl">
           {/* Hero Section */}
           <section className="mb-16 pt-8 text-center">
@@ -187,7 +88,9 @@ export default function JoysKitchenPage() {
                   className="object-contain"
                 />
               </div>
-              <span className="text-2xl font-light text-white/60 sm:text-4xl">×</span>
+              <span className="text-2xl font-light text-white/60 sm:text-4xl">
+                &times;
+              </span>
               <div className="relative h-16 w-16 overflow-hidden rounded-full border-2 border-[#a855f7]/60 bg-white shadow-lg sm:h-24 sm:w-24 sm:border-4">
                 <Image
                   src="/brand/partners/joys-kitchen-logo.png"
@@ -204,7 +107,7 @@ export default function JoysKitchenPage() {
             </Badge>
 
             <h1
-              className="mb-4 text-3xl font-bold leading-tight text-white drop-shadow-lg sm:text-4xl md:text-5xl lg:text-6xl"
+              className="mb-4 text-3xl leading-tight font-bold text-white drop-shadow-lg sm:text-4xl md:text-5xl lg:text-6xl"
               style={{ fontFamily: "Bourton, sans-serif" }}
             >
               Joy&apos;s Kitchen
@@ -214,8 +117,14 @@ export default function JoysKitchenPage() {
             </h1>
 
             <p className="text-shadow mx-auto mb-6 max-w-2xl text-xl text-white md:text-2xl">
-              <span className="sm:hidden">Let&apos;s show up together and serve<br />Colorado families in need.</span>
-              <span className="hidden sm:inline">Let&apos;s show up together and serve Colorado families in need.</span>
+              <span className="sm:hidden">
+                Let&apos;s show up together and serve
+                <br />
+                Colorado families in need.
+              </span>
+              <span className="hidden sm:inline">
+                Let&apos;s show up together and serve Colorado families in need.
+              </span>
             </p>
 
             {/* Key Stat */}
@@ -232,7 +141,7 @@ export default function JoysKitchenPage() {
                 href="https://joyskitchen.org/volunteer"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="sm:flex-1 sm:max-w-[340px]"
+                className="sm:max-w-[340px] sm:flex-1"
               >
                 <Button
                   size="lg"
@@ -247,7 +156,7 @@ export default function JoysKitchenPage() {
                 href="https://joyskitchen.org/donate"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="sm:flex-1 sm:max-w-[340px]"
+                className="sm:max-w-[340px] sm:flex-1"
               >
                 <Button
                   size="lg"
@@ -329,10 +238,7 @@ export default function JoysKitchenPage() {
                       icon: Users,
                       text: "Building community through collective action",
                     },
-                    {
-                      icon: Heart,
-                      text: "Serving with love, not obligation",
-                    },
+                    { icon: Heart, text: "Serving with love, not obligation" },
                     {
                       icon: Sparkles,
                       text: "Becoming the movement, not just supporting it",
@@ -340,7 +246,9 @@ export default function JoysKitchenPage() {
                   ].map((item, index) => (
                     <li key={index} className="flex items-start gap-3">
                       <item.icon className="mt-1 h-5 w-5 shrink-0 text-[#22c55e]" />
-                      <span className="text-shadow text-lg text-white">{item.text}</span>
+                      <span className="text-shadow text-lg text-white">
+                        {item.text}
+                      </span>
                     </li>
                   ))}
                 </ul>
@@ -390,7 +298,9 @@ export default function JoysKitchenPage() {
                         <h3 className="text-xl font-bold text-white">
                           {item.title}
                         </h3>
-                        <p className="text-shadow text-white/80">{item.description}</p>
+                        <p className="text-shadow text-white/80">
+                          {item.description}
+                        </p>
                       </div>
                     </div>
                   ))}
@@ -520,12 +430,13 @@ export default function JoysKitchenPage() {
                   className="mb-4 text-xl font-bold text-white sm:text-2xl"
                   style={{ fontFamily: "Bourton, sans-serif" }}
                 >
-                  Impact Points & Badges
+                  Impact Points &amp; Badges
                 </h3>
 
                 <div className="space-y-4 text-white/80">
                   <p>
-                    As we launch Impact Missions, participants will begin earning:
+                    As we launch Impact Missions, participants will begin
+                    earning:
                   </p>
                   <ul className="space-y-1 pl-4">
                     <li className="flex items-center gap-2">
@@ -542,9 +453,7 @@ export default function JoysKitchenPage() {
                     </li>
                   </ul>
 
-                  <p>
-                    In the future, these points may unlock perks such as:
-                  </p>
+                  <p>In the future, these points may unlock perks such as:</p>
                   <ul className="space-y-1 pl-4">
                     <li className="flex items-center gap-2">
                       <Star className="h-3 w-3 text-[#facf39]" />
@@ -608,64 +517,6 @@ export default function JoysKitchenPage() {
               </CardContent>
             </Card>
           </section>
-
-          {/* Footer */}
-          <footer className="border-t border-white/20 pb-8 pt-12">
-            <div className="flex flex-col items-center justify-center gap-6 text-center">
-              <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6">
-                <a
-                  href="https://joyskitchen.org/volunteer"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 text-white/80 transition-colors hover:text-white"
-                >
-                  <HandHeart className="h-4 w-4" />
-                  <span>Volunteer</span>
-                </a>
-                <a
-                  href="https://joyskitchen.org/donate"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 text-white/80 transition-colors hover:text-white"
-                >
-                  <Heart className="h-4 w-4" />
-                  <span>Donate</span>
-                </a>
-                <a
-                  href="https://joyskitchen.org"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 text-white/80 transition-colors hover:text-white"
-                >
-                  <ExternalLink className="h-4 w-4" />
-                  <span>About Joy&apos;s Kitchen</span>
-                </a>
-              </div>
-              <div className="h-px w-16 bg-white/20" />
-              <div className="flex flex-col items-center gap-4 sm:flex-row sm:gap-6">
-                <a
-                  href="https://instagram.com/newearthcollectiveco"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 text-white/70 transition-colors hover:text-white"
-                >
-                  <Instagram className="h-5 w-5" />
-                  <span>@newearthcollectiveco</span>
-                </a>
-                <a
-                  href="mailto:community@joinnewearthcollective.com"
-                  className="flex items-center gap-2 text-white/70 transition-colors hover:text-white"
-                >
-                  <Mail className="h-5 w-5" />
-                  <span>community@joinnewearthcollective.com</span>
-                </a>
-              </div>
-              <p className="text-sm text-white/50">
-                © {new Date().getFullYear()} New Earth Collective. All rights
-                reserved.
-              </p>
-            </div>
-          </footer>
         </div>
       </div>
     </div>

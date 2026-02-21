@@ -45,3 +45,6 @@ db.sqlite-journal
 
 # Large video files
 public/videos/*.mp4
+
+# Temp files
+/tmp

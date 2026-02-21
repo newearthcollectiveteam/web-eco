@@ -56,6 +56,7 @@ export async function middleware(request: NextRequest) {
     "/local-community",
     "/global",
     "/gallery",
+    "/boulder-launch-party",
   ];
   if (deprecatedLandingRoutes.some((route) => pathname.startsWith(route))) {
     const targetUrl = new URL(request.nextUrl.origin);

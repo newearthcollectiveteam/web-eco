@@ -43,9 +43,12 @@ export function SiteLayout({ children, hideNav = false, hideFooter = false }: Si
       {/* Fixed Navigation */}
       {!hideNav && (
         <header
-          className={`fixed left-0 right-0 top-0 z-50 transition-all duration-300 ${
+          className={`fixed left-0 right-0 top-0 z-50 border-b transition-all duration-300 ${
             isScrolled ? "bg-black/90 backdrop-blur-md" : "bg-transparent"
           }`}
+          style={{
+            borderColor: "rgba(250, 207, 57, 0.2)",
+          }}
         >
           <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 lg:px-8">
             {/* Logo */}

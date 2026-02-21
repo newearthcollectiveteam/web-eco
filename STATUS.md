@@ -9,8 +9,11 @@
 | --------------------- | ------- | ------------------------------------------------------------- |
 | Public homepage       | Working | Hero w/ animations, Vision, Envision, Who We Serve, Testimonials, FAQ, CTA |
 | Site nav & footer     | Working | 5-link nav + CTA, 3-column footer (CTA/logo/links)           |
+| Pathway page          | Working | Interactive timeline (4 phases), scroll animations, gallery strips |
+| About page            | Working | Blog-style story, CI philosophy, direct reader address        |
+| Values page           | Working | 8 core values, alternating layout, no blockquotes             |
+| Stewardship page      | Working | Partner cards, categories, CTA                                |
 | Privacy & Terms       | Working | Full legal pages at /privacy and /terms                       |
-| Stub pages            | Working | /about, /pathway, /partnerships (Coming Soon placeholders)    |
 | Admin dashboard shell | Working | Sidebar nav, breadcrumbs, collapsible, mobile sheet           |
 | Admin overview        | Working | KPI cards, section summaries, recent activity, quick links    |
 | Admin routing         | Working | /admin/\* path-based auth, test subdomain redirects to /admin |
@@ -19,10 +22,10 @@
 | Questionnaire         | Working | Full alignment survey with 7 sections                         |
 | Event waivers         | Working | Digital signature capture for liability                       |
 | User auth             | Working | Supabase Auth with approval workflow                          |
-| Impact Missions       | Working | /impact index + /impact/joyskitchen (now in (site) route group) |
+| Impact Missions       | Working | /impact index + /impact/joyskitchen                          |
 | Tracking/analytics    | Working | Full middleware, client-side hook, conversion tracking        |
 | Klaviyo integration   | Working | Event-based email flows                                       |
-| Photo galleries       | Working | tRPC router with Supabase Storage                             |
+| Photo galleries       | Working | 2 galleries (community: 59 imgs, emergence: 227 imgs)        |
 | GLSL shaders          | Working | Sacred geometry backgrounds (7 shaders), DPR capped for perf  |
 | Email link tracking   | Working | Link generation service, click tracking                       |
 | Consent management    | Working | GDPR/CAN-SPAM compliant with unsubscribe tokens               |
@@ -30,16 +33,16 @@
 ## Known Limitations
 
 - Admin hub refactor in progress — Sessions 2-5 pending (Analytics, CRM refactor, Team+Finance, CMS+Ecosystem+Tooling)
-- /about, /pathway, /partnerships are Coming Soon stubs
+- DB connection uses Supabase pooler (direct host no longer resolves)
 
 ## Recent Changes
 
 | Date       | Description                                                                            |
 | ---------- | -------------------------------------------------------------------------------------- |
-| 2026-02-21 | Homepage overhaul: expanded nav, 3-col footer, gradient dividers, FAQ, Envision section |
-| 2026-02-21 | Created Privacy Policy and Terms of Service pages                                       |
-| 2026-02-21 | Migrated /impact pages into (site) route group, created /about /pathway /partnerships stubs |
-| 2026-02-21 | Shader perf fix (DPR cap), solid nav, green hero tint, footer alignment polish          |
-| 2026-02-13 | Session 1: Admin dashboard shell — sidebar, header, breadcrumbs, layout, overview page  |
+| 2026-02-21 | Pathway page: interactive timeline, 4 phases, gallery strips, scroll animations        |
+| 2026-02-21 | About page rewrite: cohesive blog-style story with CI philosophy                       |
+| 2026-02-21 | Emergence gallery: 227 JPGs → WebP, DB records, GalleryStrip component                |
+| 2026-02-21 | DB connection fix: migrated to Supabase pooler (direct host DNS failure)               |
+| 2026-02-21 | Values page: removed blockquotes; Homepage: removed "100+ creators" line               |
 
 See `git log --oneline` for full history.

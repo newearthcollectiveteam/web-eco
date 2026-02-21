@@ -11,6 +11,7 @@ _None documented_
 ## Tech Debt (code quality)
 
 - [ ] Unstaged Prettier formatting changes across ~100 files (from quality-check run)
+- [ ] 227 emergence photos in public/ — consider Supabase Storage migration to reduce repo size
 
 ## Admin Hub Refactor (multi-session)
 
@@ -56,9 +57,9 @@ _None documented_
 
 ### Public Site
 
-- [ ] Flesh out /about page with real content
-- [ ] Flesh out /pathway page with journey/funnel content
-- [ ] Flesh out /partnerships page with partner info
+- [x] Flesh out /about page with real content
+- [x] Flesh out /pathway page with journey/funnel content
+- [ ] Add contact submission form to /stewardship page
 - [ ] Scroll-triggered entrance animations for below-fold sections
 
 ### CRM System

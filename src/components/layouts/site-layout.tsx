@@ -68,7 +68,7 @@ export function SiteLayout({
       {!hideNav && (
         <header
           className={`fixed top-0 right-0 left-0 z-50 border-b transition-all duration-300 ${
-            isScrolled ? "bg-black/90 backdrop-blur-md" : "bg-transparent"
+            isScrolled ? "bg-black" : "bg-black"
           }`}
           style={{
             borderColor: "rgba(250, 207, 57, 0.2)",
@@ -177,7 +177,7 @@ export function SiteLayout({
         >
           <div className="mx-auto max-w-7xl">
             {/* Main footer grid — equal outer columns, center auto-sized */}
-            <div className="grid items-center gap-8 md:grid-cols-[1fr_auto_1fr]">
+            <div className="grid items-start gap-8 md:grid-cols-[1fr_auto_1fr]">
               {/* Left Column: CTA + Socials */}
               <div className="flex flex-col items-center gap-5 md:items-start">
                 <p

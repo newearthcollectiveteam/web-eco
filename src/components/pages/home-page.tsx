@@ -1,8 +1,9 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Play, Quote, Rocket, Sparkles } from "lucide-react";
+import { ArrowRight, Calendar, MapPin, Play, Quote, Sparkles } from "lucide-react";
 import { Button } from "~/components/ui/button";
 import {
   type CarouselApi,
@@ -309,7 +310,7 @@ export function HomePage() {
       {/* ========== 1. Hero Section ========== */}
       <section className="relative flex min-h-screen items-center justify-center overflow-hidden">
         {/* Flower of Life Shader Background */}
-        <div className="absolute inset-0 opacity-20">
+        <div className="absolute inset-0 opacity-30">
           <iframe
             src="/admin/shaders/flower-of-life/embed"
             className="h-full w-full border-0"
@@ -318,8 +319,11 @@ export function HomePage() {
           />
         </div>
 
+        {/* Green tint overlay */}
+        <div className="absolute inset-0 bg-emerald-900/25 mix-blend-overlay" />
+
         {/* Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/35 to-black" />
 
         {/* Hero Content */}
         <div className="relative z-10 mx-auto max-w-4xl px-4 pt-16 text-center">
@@ -459,9 +463,9 @@ export function HomePage() {
       {/* ========== Divider ========== */}
       <GradientDivider />
 
-      {/* ========== 3. Upcoming Section (NEW) ========== */}
+      {/* ========== 3. Upcoming Section ========== */}
       <section className="bg-[#0A0A0A] px-4 py-12 sm:py-24">
-        <div className="mx-auto max-w-6xl">
+        <div className="mx-auto max-w-3xl">
           <h2
             className="mb-12 text-center text-4xl font-bold"
             style={{
@@ -473,64 +477,53 @@ export function HomePage() {
               Upcoming
             </span>
           </h2>
-          <div className="grid gap-8 md:grid-cols-2">
-            {/* App Card */}
-            <div className="value-card rounded-lg p-8">
-              <div className="mb-4 flex items-center gap-3">
-                <Rocket className="h-6 w-6 text-[#FACF39]" />
-                <h3
-                  className="text-2xl font-bold text-[#FACF39]"
-                  style={{ fontFamily: "Bourton, sans-serif" }}
-                >
-                  The NEC Platform
-                </h3>
-              </div>
-              <p className="mb-6 leading-relaxed text-white/80">
-                A community platform designed to connect heart-led creators,
-                facilitate collaboration, and amplify collective impact. Your
-                hub for events, projects, and ongoing connection beyond the
-                festival.
-              </p>
-              <Button
-                asChild
-                className="btn-golden px-6 py-2"
-                style={{ fontFamily: "Bourton, sans-serif" }}
-              >
-                <Link href="/questionnaire">
-                  Learn More
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
-              </Button>
+          <div className="value-card overflow-hidden rounded-lg">
+            {/* Poster */}
+            <div className="relative w-full">
+              <Image
+                src="/brand/envision-el-nido-schedule.jpg"
+                alt="Envision Festival El Nido Stage schedule — New Earth Collective speaking Friday Feb 27 at 6:30 PM"
+                width={1080}
+                height={1350}
+                className="w-full h-auto"
+                priority
+              />
             </div>
-
-            {/* Event Card */}
-            <div className="value-card rounded-lg p-8">
-              <div className="mb-4 flex items-center gap-3">
-                <Sparkles className="h-6 w-6 text-[#FACF39]" />
-                <h3
-                  className="text-2xl font-bold text-[#FACF39]"
-                  style={{ fontFamily: "Bourton, sans-serif" }}
-                >
-                  The Convergence
-                </h3>
-              </div>
-              <p className="mb-4 leading-relaxed text-white/80">
-                Our next immersive festival experience — a gathering of
-                visionaries, healers, and builders coming together to co-create,
-                connect, and catalyze the new paradigm.
-              </p>
-              <p className="mb-6 text-sm text-white/50">
-                Date &amp; Location TBA
-              </p>
-              <Button
-                asChild
-                className="btn-golden px-6 py-2"
+            {/* Details */}
+            <div className="p-8 sm:p-10 text-center">
+              <Sparkles className="mx-auto mb-4 h-8 w-8 text-[#FACF39]" />
+              <h3
+                className="mb-2 text-3xl font-bold text-[#FACF39] sm:text-4xl"
                 style={{ fontFamily: "Bourton, sans-serif" }}
               >
-                <Link href="/questionnaire">
-                  Get Tickets
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
+                We&apos;re Speaking at Envision
+              </h3>
+              <p className="mb-6 text-lg leading-relaxed text-white/80">
+                New Earth Collective is taking the stage at Envision Festival in Costa Rica. Join us as we share our vision for conscious community, collective sovereignty, and the new paradigm.
+              </p>
+              <div className="mb-8 flex flex-col items-center gap-3 text-sm text-white/60 sm:flex-row sm:justify-center sm:gap-6">
+                <span className="flex items-center gap-2">
+                  <Calendar className="h-4 w-4 text-[#FACF39]/70" />
+                  Friday, Feb 27 &middot; 6:30 PM
+                </span>
+                <span className="flex items-center gap-2">
+                  <MapPin className="h-4 w-4 text-[#FACF39]/70" />
+                  El Nido Stage &middot; Uvita, Costa Rica
+                </span>
+              </div>
+              <Button
+                asChild
+                className="btn-golden px-8 py-3 text-lg"
+                style={{ fontFamily: "Bourton, sans-serif" }}
+              >
+                <a
+                  href="https://envisionfestival.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Learn More
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </a>
               </Button>
             </div>
           </div>

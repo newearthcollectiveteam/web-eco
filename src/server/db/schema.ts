@@ -29,6 +29,8 @@ export const userProfiles = createTable("user_profile", {
   fullName: varchar("full_name", { length: 255 }),
   avatarUrl: text("avatar_url"),
   bio: text("bio"),
+  phone: varchar("phone", { length: 50 }),
+  teamRoles: jsonb("team_roles").$type<string[]>().default(sql`'[]'::jsonb`),
   role: varchar("role", { length: 50 }).default("member").notNull(),
   approvalStatus: varchar("approval_status", { length: 50 })
     .default("pending")
@@ -97,6 +99,9 @@ export const contacts = createTable("contact", {
   // Use metadata sparingly - only for truly dynamic fields
   // Common fields should get their own columns
   metadata: jsonb("metadata").default(sql`'{}'::jsonb`),
+
+  // Who added this contact (team member tracking)
+  addedBy: text("added_by").references(() => userProfiles.id, { onDelete: "set null" }),
 
   // Internal notes
   notes: text("notes"),
@@ -574,20 +579,48 @@ export const eventWaivers = createTable("event_waiver", {
 });
 
 /**
+ * Voice Notes - Audio recordings attached to contacts
+ * Files stored in Supabase Storage (voice-notes bucket)
+ */
+export const voiceNotes = createTable("voice_note", {
+  id: serial("id").primaryKey(),
+  contactId: integer("contact_id")
+    .notNull()
+    .references(() => contacts.id, { onDelete: "cascade" }),
+  recordedBy: text("recorded_by")
+    .notNull()
+    .references(() => userProfiles.id, { onDelete: "set null" }),
+  storagePath: varchar("storage_path", { length: 500 }).notNull(),
+  publicUrl: text("public_url").notNull(),
+  durationSeconds: integer("duration_seconds"),
+  fileSizeBytes: integer("file_size_bytes"),
+  mimeType: varchar("mime_type", { length: 100 }).default("audio/webm"),
+  label: varchar("label", { length: 255 }),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+});
+
+/**
  * Drizzle Relations
  * Enable type-safe eager loading with `with:` syntax
  */
 
-export const contactsRelations = relations(contacts, ({ many }) => ({
+export const contactsRelations = relations(contacts, ({ one, many }) => ({
   sources: many(contactSources),
   activities: many(contactActivities),
   questionnaireResponses: many(questionnaireResponses),
   waitlistIntakes: many(waitlistIntake),
+  voiceNotes: many(voiceNotes),
   sessions: many(sessions),
   events: many(events),
   emailLinks: many(emailLinks),
   emailLinkClicks: many(emailLinkClicks),
   identityMaps: many(userIdentityMap),
+  addedByProfile: one(userProfiles, {
+    fields: [contacts.addedBy],
+    references: [userProfiles.id],
+  }),
 }));
 
 export const contactSourcesRelations = relations(contactSources, ({ one }) => ({
@@ -680,6 +713,17 @@ export const emailLinkClicksRelations = relations(
     }),
   })
 );
+
+export const voiceNotesRelations = relations(voiceNotes, ({ one }) => ({
+  contact: one(contacts, {
+    fields: [voiceNotes.contactId],
+    references: [contacts.id],
+  }),
+  recorder: one(userProfiles, {
+    fields: [voiceNotes.recordedBy],
+    references: [userProfiles.id],
+  }),
+}));
 
 export const userIdentityMapRelations = relations(
   userIdentityMap,

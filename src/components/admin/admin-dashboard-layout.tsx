@@ -14,7 +14,7 @@ import { AdminHeader } from "./admin-header";
 // Pages that should NOT get the dashboard shell.
 // Gallery listing pages (/admin/shaders, /admin/playground) DO get the shell.
 // Individual shader viewers and playground demos do NOT (they're full-screen).
-const STANDALONE_PREFIXES = ["/admin/login", "/admin/templates/"];
+const STANDALONE_PREFIXES = ["/admin/templates/"];
 
 // These are exact matches for standalone checking — the gallery index pages
 // at /admin/shaders and /admin/playground should get the shell,
@@ -67,7 +67,7 @@ function DashboardContent({ children }: { children: ReactNode }) {
           marginLeft: isCollapsed ? SIDEBAR_WIDTH_COLLAPSED : SIDEBAR_WIDTH,
         }}
       >
-        <div className="p-6">{children}</div>
+        <div className="p-4 sm:p-6">{children}</div>
       </main>
 
       {/* Mobile: remove margin on main */}

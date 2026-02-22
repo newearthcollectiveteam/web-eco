@@ -1,156 +1,79 @@
 "use client";
 
-import { useState, Suspense } from "react";
+import { Suspense } from "react";
+import Link from "next/link";
 import Image from "next/image";
 import { Card, CardContent } from "~/components/ui/card";
 import { Badge } from "~/components/ui/badge";
 import {
   Users,
-  ClipboardList,
-  FileSignature,
-  Activity,
-  Database,
+  UserCheck,
+  UserPlus,
+  UserX,
+  ArrowRight,
   RefreshCw,
-  ChevronDown,
-  ChevronUp,
 } from "lucide-react";
 import { api } from "~/trpc/react";
 
-interface Contact {
-  id: number;
-  email: string;
-  name: string | null;
-  firstSource: string;
-  status: string;
-  createdAt: Date;
-}
+const STATUS_LABELS: Record<string, string> = {
+  lead: "Lead",
+  qualified: "Qualified",
+  customer: "Member",
+  inactive: "Inactive",
+};
 
-interface QuestionnaireResponse {
-  id: number;
-  name: string;
-  email: string;
-  source: string | null;
-  createdAt: Date;
-}
+const STATUS_COLORS: Record<string, string> = {
+  lead: "bg-yellow-900/50 text-yellow-400",
+  qualified: "bg-blue-900/50 text-blue-400",
+  customer: "bg-green-900/50 text-green-400",
+  inactive: "bg-neutral-800 text-neutral-400",
+};
 
-interface Waiver {
-  id: number;
-  signerName: string;
-  signerEmail: string;
-  eventName: string;
-  signedAt: Date;
-}
+const PIPELINE_COLORS: Record<string, string> = {
+  lead: "bg-yellow-500",
+  qualified: "bg-blue-500",
+  customer: "bg-green-500",
+  inactive: "bg-neutral-600",
+};
 
-type SectionItem = Contact | QuestionnaireResponse | Waiver;
+const PIPELINE_ICONS: Record<string, typeof Users> = {
+  lead: UserPlus,
+  qualified: Users,
+  customer: UserCheck,
+  inactive: UserX,
+};
 
-function getItemName(item: SectionItem): string {
-  if ("signerName" in item) return item.signerName;
-  return item.name ?? "";
-}
+const SOURCE_LABELS: Record<string, string> = {
+  waitlist: "Waitlist",
+  questionnaire: "Questionnaire",
+  event_waiver: "Event Waiver",
+  manual: "Manual",
+  other: "Other",
+};
 
-function getItemEmail(item: SectionItem): string {
-  if ("signerEmail" in item) return item.signerEmail;
-  return item.email;
-}
+const SOURCE_COLORS: Record<string, string> = {
+  waitlist: "bg-amber-500",
+  questionnaire: "bg-emerald-500",
+  event_waiver: "bg-purple-500",
+  manual: "bg-blue-500",
+  other: "bg-neutral-500",
+};
 
-function getItemDate(item: SectionItem): Date {
-  if ("signedAt" in item) return item.signedAt;
-  return item.createdAt;
-}
+function CRMDashboardContent() {
+  const statsQuery = api.crm.getPipelineStats.useQuery();
+  const sourceQuery = api.crm.getSourceBreakdown.useQuery();
+  const recentQuery = api.crm.getContacts.useQuery({ limit: 10 });
 
-function AdminPageContent() {
-  const [expandedSection, setExpandedSection] = useState<string | null>(null);
-
-  const statsQuery = api.admin.dashboardStats.useQuery();
-  const data = statsQuery.data;
+  const stats = statsQuery.data;
+  const sources = sourceQuery.data;
+  const recent = recentQuery.data;
   const loading = statsQuery.isLoading;
-  const error = statsQuery.error;
 
-  const contactsTable = api.admin.tableData.useQuery(
-    { table: "contacts", limit: 50 },
-    { enabled: expandedSection === "crm" }
-  );
-  const questionnaireTable = api.admin.tableData.useQuery(
-    { table: "questionnaire", limit: 50 },
-    { enabled: expandedSection === "questionnaire" }
-  );
-  const waiversTable = api.admin.tableData.useQuery(
-    { table: "waivers", limit: 50 },
-    { enabled: expandedSection === "waivers" }
-  );
-
-  const tableQueries: Record<string, typeof contactsTable> = {
-    contacts: contactsTable,
-    questionnaire: questionnaireTable,
-    waivers: waiversTable,
-  };
-
-  const toggleSection = (section: string) => {
-    setExpandedSection(expandedSection === section ? null : section);
-  };
-
-  const formatDate = (date: Date | string) => {
-    return new Date(date).toLocaleDateString("en-US", {
+  const formatDate = (date: Date | string) =>
+    new Date(date).toLocaleDateString("en-US", {
       month: "short",
       day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
     });
-  };
-
-  const sections = [
-    {
-      id: "crm",
-      table: "contacts",
-      title: "CRM Contacts",
-      icon: Users,
-      color: "amber",
-      stat: data?.stats.contacts ?? 0,
-      description: "Master contact database - all leads and members",
-      recent: (data?.recent.contacts ?? []) as SectionItem[],
-    },
-    {
-      id: "questionnaire",
-      table: "questionnaire",
-      title: "Questionnaire Responses",
-      icon: ClipboardList,
-      color: "emerald",
-      stat: data?.stats.questionnaires ?? 0,
-      description: "Alignment questionnaire submissions",
-      recent: (data?.recent.questionnaires ?? []) as SectionItem[],
-    },
-    {
-      id: "waivers",
-      table: "waivers",
-      title: "Event Waivers",
-      icon: FileSignature,
-      color: "purple",
-      stat: data?.stats.waivers ?? 0,
-      description: "Signed event liability waivers",
-      recent: (data?.recent.waivers ?? []) as SectionItem[],
-    },
-  ];
-
-  const colorMap: Record<
-    string,
-    { gradient: string; border: string; bg: string }
-  > = {
-    amber: {
-      gradient: "from-[#facf39] to-[#f59e0b]",
-      border: "border-[#facf39]/30",
-      bg: "bg-[#facf39]/10",
-    },
-    emerald: {
-      gradient: "from-[#059669] to-[#10b981]",
-      border: "border-[#059669]/30",
-      bg: "bg-[#059669]/10",
-    },
-    purple: {
-      gradient: "from-[#6d28d9] to-[#a855f7]",
-      border: "border-[#6d28d9]/30",
-      bg: "bg-[#6d28d9]/10",
-    },
-  };
 
   return (
     <div className="space-y-8">
@@ -168,236 +91,250 @@ function AdminPageContent() {
           <div>
             <h1
               className="text-2xl font-bold text-white"
-              style={{
-                fontFamily: "Airwaves, sans-serif",
-                letterSpacing: "0.05em",
-              }}
+              style={{ fontFamily: "Airwaves, sans-serif", letterSpacing: "0.05em" }}
             >
               CRM Dashboard
             </h1>
             <p className="text-sm text-gray-400">
-              Database overview and intake form submissions
+              {stats ? `${stats.total} total contacts` : "Loading..."}
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-3">
-          <Badge className="border-[#facf39]/40 bg-[#facf39]/10 text-[#facf39]">
-            <Database className="mr-1.5 h-3.5 w-3.5" />
-            Live Data
-          </Badge>
-          <button
-            onClick={() => void statsQuery.refetch()}
-            disabled={loading}
-            className="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/5 px-3 py-1.5 text-sm text-white transition-colors hover:bg-white/10"
-          >
-            <RefreshCw
-              className={`h-3.5 w-3.5 ${loading ? "animate-spin" : ""}`}
-            />
-            Refresh
-          </button>
-        </div>
+        <button
+          onClick={() => {
+            void statsQuery.refetch();
+            void sourceQuery.refetch();
+            void recentQuery.refetch();
+          }}
+          disabled={loading}
+          className="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/5 px-3 py-1.5 text-sm text-white transition-colors hover:bg-white/10"
+        >
+          <RefreshCw className={`h-3.5 w-3.5 ${loading ? "animate-spin" : ""}`} />
+          Refresh
+        </button>
       </div>
 
-      {/* Error State */}
-      {error && (
-        <Card className="border-red-500/30 bg-red-500/10">
-          <CardContent className="p-4 text-center text-red-400">
-            Failed to load database info
+      {/* Pipeline Stats */}
+      {stats && (
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+          {(["lead", "qualified", "customer", "inactive"] as const).map((status) => {
+            const Icon = PIPELINE_ICONS[status] ?? Users;
+            const count = (stats as Record<string, number>)[status] ?? 0;
+            return (
+              <Card key={status} className="border-white/10 bg-white/5">
+                <CardContent className="p-5">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-gray-400">
+                        {STATUS_LABELS[status]}
+                      </p>
+                      <p className="mt-1 text-3xl font-bold text-white">{count}</p>
+                    </div>
+                    <div className={`rounded-xl p-3 ${STATUS_COLORS[status]}`}>
+                      <Icon className="h-5 w-5" />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            );
+          })}
+        </div>
+      )}
+
+      {/* Pipeline Distribution Bar */}
+      {stats && stats.total > 0 && (
+        <Card className="border-white/10 bg-white/5">
+          <CardContent className="p-5">
+            <p className="mb-3 text-sm font-medium text-gray-400">
+              Pipeline Distribution
+            </p>
+            <div className="flex h-4 overflow-hidden rounded-full bg-neutral-800">
+              {(["lead", "qualified", "customer", "inactive"] as const).map(
+                (status) => {
+                  const count = (stats as Record<string, number>)[status] ?? 0;
+                  const pct = (count / stats.total) * 100;
+                  if (pct === 0) return null;
+                  return (
+                    <div
+                      key={status}
+                      className={`${PIPELINE_COLORS[status]} transition-all`}
+                      style={{ width: `${pct}%` }}
+                      title={`${STATUS_LABELS[status]}: ${count} (${pct.toFixed(0)}%)`}
+                    />
+                  );
+                }
+              )}
+            </div>
+            <div className="mt-3 flex flex-wrap gap-4">
+              {(["lead", "qualified", "customer", "inactive"] as const).map(
+                (status) => {
+                  const count = (stats as Record<string, number>)[status] ?? 0;
+                  const pct = stats.total
+                    ? ((count / stats.total) * 100).toFixed(0)
+                    : "0";
+                  return (
+                    <div key={status} className="flex items-center gap-2 text-xs text-gray-400">
+                      <div className={`h-2.5 w-2.5 rounded-full ${PIPELINE_COLORS[status]}`} />
+                      {STATUS_LABELS[status]} {pct}%
+                    </div>
+                  );
+                }
+              )}
+            </div>
           </CardContent>
         </Card>
       )}
 
-      {/* Stats Overview */}
-      {data && (
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-5">
-          {[
-            { label: "Contacts", value: data.stats.contacts, icon: Users },
-            {
-              label: "Questionnaires",
-              value: data.stats.questionnaires,
-              icon: ClipboardList,
-            },
-            {
-              label: "Waivers",
-              value: data.stats.waivers,
-              icon: FileSignature,
-            },
-            {
-              label: "Activities",
-              value: data.stats.activities,
-              icon: Activity,
-            },
-            { label: "Sources", value: data.stats.sources, icon: Database },
-          ].map((stat) => (
-            <Card key={stat.label} className="border-white/10 bg-white/5">
-              <CardContent className="p-4 text-center">
-                <stat.icon className="mx-auto mb-2 h-5 w-5 text-[#facf39]" />
-                <div className="text-2xl font-bold text-white">
-                  {stat.value}
-                </div>
-                <div className="text-xs text-gray-400">{stat.label}</div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+      {/* Source Breakdown */}
+      {sources && sources.length > 0 && (
+        <Card className="border-white/10 bg-white/5">
+          <CardContent className="p-5">
+            <p className="mb-4 text-sm font-medium text-gray-400">
+              Contacts by Source
+            </p>
+            <div className="space-y-3">
+              {sources.map((s) => {
+                const maxCount = sources[0]?.count ?? 1;
+                const pct = (s.count / maxCount) * 100;
+                return (
+                  <div key={s.source} className="flex items-center gap-3">
+                    <span className="w-20 shrink-0 text-sm text-gray-300 sm:w-28">
+                      {SOURCE_LABELS[s.source] ?? s.source}
+                    </span>
+                    <div className="flex-1">
+                      <div className="h-6 rounded bg-neutral-800">
+                        <div
+                          className={`flex h-6 items-center rounded px-2 text-xs font-medium text-white ${SOURCE_COLORS[s.source] ?? "bg-neutral-500"}`}
+                          style={{ width: `${Math.max(pct, 8)}%` }}
+                        >
+                          {s.count}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </CardContent>
+        </Card>
       )}
 
-      {/* Data Sections */}
-      <div className="space-y-6">
-        {sections.map((section) => {
-          const colors = colorMap[section.color]!;
-          const Icon = section.icon;
-          const isExpanded = expandedSection === section.id;
-          const tableQuery = tableQueries[section.table];
-          const fullData = tableQuery?.data?.data ?? [];
-
-          return (
-            <Card
-              key={section.id}
-              className={`overflow-hidden border-2 ${colors.border}`}
-            >
-              {/* Section Header */}
-              <button
-                onClick={() => toggleSection(section.id)}
-                className="flex w-full items-center justify-between p-6 text-left transition-colors hover:bg-white/5"
-                aria-expanded={isExpanded}
+      {/* Recent Contacts */}
+      {recent && recent.contacts.length > 0 && (
+        <Card className="border-white/10 bg-white/5">
+          <CardContent className="p-0">
+            <div className="flex items-center justify-between border-b border-white/10 px-5 py-4">
+              <p className="text-sm font-medium text-gray-400">
+                Recent Contacts
+              </p>
+              <Link
+                href="/admin/crm/contacts"
+                className="flex items-center gap-1 text-xs text-[#facf39] hover:underline"
               >
-                <div className="flex items-center gap-4">
-                  <div
-                    className={`flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br ${colors.gradient} shadow-lg`}
-                  >
-                    <Icon className="h-6 w-6 text-white" />
-                  </div>
-                  <div>
-                    <h2
-                      className="text-xl font-bold text-white"
-                      style={{ fontFamily: "Airwaves, sans-serif" }}
-                    >
-                      {section.title}
-                    </h2>
-                    <p className="text-sm text-gray-400">
-                      {section.description}
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-4">
-                  <Badge className={`${colors.bg} ${colors.border} text-white`}>
-                    {section.stat} records
-                  </Badge>
-                  {isExpanded ? (
-                    <ChevronUp className="h-5 w-5 text-neutral-400" />
-                  ) : (
-                    <ChevronDown className="h-5 w-5 text-neutral-400" />
-                  )}
-                </div>
-              </button>
-
-              {/* Recent Preview (always visible) */}
-              {!isExpanded && section.recent.length > 0 && (
-                <div className="border-t border-white/10 px-6 py-4">
-                  <div className="mb-3 text-xs font-medium tracking-wide text-gray-400 uppercase">
-                    Recent
-                  </div>
-                  <div className="space-y-2">
-                    {section.recent.slice(0, 3).map((item) => (
-                      <div
-                        key={item.id}
-                        className="flex items-center justify-between rounded-lg bg-white/5 px-3 py-2"
-                      >
-                        <div className="flex items-center gap-3">
-                          <span className="font-medium text-white">
-                            {getItemName(item)}
-                          </span>
-                          <span className="text-sm text-gray-400">
-                            {getItemEmail(item)}
-                          </span>
-                        </div>
-                        <span className="text-xs text-gray-500">
-                          {formatDate(getItemDate(item))}
+                View All <ArrowRight className="h-3 w-3" />
+              </Link>
+            </div>
+            {/* Desktop Table */}
+            <div className="hidden overflow-x-auto md:block">
+              <table className="w-full">
+                <thead>
+                  <tr className="text-left text-xs font-medium tracking-wide text-gray-500 uppercase">
+                    <th className="px-5 py-3">Name</th>
+                    <th className="px-5 py-3">Email</th>
+                    <th className="px-5 py-3">Source</th>
+                    <th className="px-5 py-3">Status</th>
+                    <th className="px-5 py-3">Date</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-white/5">
+                  {recent.contacts.map((c) => (
+                    <tr key={c.id} className="hover:bg-white/5">
+                      <td className="px-5 py-3">
+                        <Link
+                          href={`/admin/crm/contacts/${c.id}`}
+                          className="font-medium text-white hover:text-[#facf39]"
+                        >
+                          {c.name ?? "—"}
+                        </Link>
+                      </td>
+                      <td className="px-5 py-3 text-sm text-gray-400">
+                        {c.email}
+                      </td>
+                      <td className="px-5 py-3">
+                        <Badge
+                          variant="outline"
+                          className="border-white/20 text-xs"
+                        >
+                          {SOURCE_LABELS[c.firstSource] ?? c.firstSource}
+                        </Badge>
+                      </td>
+                      <td className="px-5 py-3">
+                        <span
+                          className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_COLORS[c.status] ?? ""}`}
+                        >
+                          {STATUS_LABELS[c.status] ?? c.status}
                         </span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
+                      </td>
+                      <td className="px-5 py-3 text-sm text-gray-500">
+                        {formatDate(c.createdAt)}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
 
-              {/* Expanded Full List */}
-              {isExpanded && (
-                <div className="border-t border-white/10">
-                  {tableQuery?.isLoading ? (
-                    <div className="p-8 text-center">
-                      <RefreshCw className="mx-auto h-6 w-6 animate-spin text-gray-400" />
-                      <p className="mt-2 text-sm text-gray-500">Loading...</p>
-                    </div>
-                  ) : (
-                    <div className="max-h-96 overflow-auto">
-                      <table className="w-full">
-                        <thead className="sticky top-0 bg-neutral-900">
-                          <tr className="text-left text-xs font-medium tracking-wide text-gray-400 uppercase">
-                            <th className="px-6 py-3">ID</th>
-                            <th className="px-6 py-3">Name</th>
-                            <th className="px-6 py-3">Email</th>
-                            <th className="px-6 py-3">Source</th>
-                            <th className="px-6 py-3">Date</th>
-                          </tr>
-                        </thead>
-                        <tbody className="divide-y divide-white/10">
-                          {fullData.map((item: Record<string, unknown>) => {
-                            const str = (v: unknown) =>
-                              typeof v === "string" || typeof v === "number"
-                                ? String(v)
-                                : "";
-                            const id = str(item.id);
-                            const name = str(item.name) || str(item.signerName);
-                            const email =
-                              str(item.email) || str(item.signerEmail);
-                            const source =
-                              str(item.firstSource) ||
-                              str(item.source) ||
-                              str(item.eventName) ||
-                              "\u2014";
-                            const date =
-                              str(item.createdAt) || str(item.signedAt);
-                            return (
-                              <tr key={id} className="hover:bg-white/5">
-                                <td className="px-6 py-3 text-sm text-gray-500">
-                                  {id}
-                                </td>
-                                <td className="px-6 py-3 font-medium text-white">
-                                  {name}
-                                </td>
-                                <td className="px-6 py-3 text-sm text-gray-400">
-                                  {email}
-                                </td>
-                                <td className="px-6 py-3">
-                                  <Badge variant="outline" className="text-xs">
-                                    {source}
-                                  </Badge>
-                                </td>
-                                <td className="px-6 py-3 text-sm text-gray-500">
-                                  {formatDate(date)}
-                                </td>
-                              </tr>
-                            );
-                          })}
-                        </tbody>
-                      </table>
-                    </div>
-                  )}
-                </div>
-              )}
-            </Card>
-          );
-        })}
+            {/* Mobile Card List */}
+            <div className="divide-y divide-white/5 md:hidden">
+              {recent.contacts.map((c) => (
+                <Link
+                  key={c.id}
+                  href={`/admin/crm/contacts/${c.id}`}
+                  className="flex items-center justify-between px-5 py-3 hover:bg-white/5"
+                >
+                  <div className="min-w-0">
+                    <p className="truncate font-medium text-white">{c.name ?? "—"}</p>
+                    <p className="truncate text-xs text-gray-500">{c.email}</p>
+                  </div>
+                  <div className="flex shrink-0 items-center gap-2">
+                    <span
+                      className={`inline-flex rounded-full px-2 py-0.5 text-[10px] font-medium ${STATUS_COLORS[c.status] ?? ""}`}
+                    >
+                      {STATUS_LABELS[c.status] ?? c.status}
+                    </span>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Quick Links */}
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <Link
+          href="/admin/crm/contacts"
+          className="flex items-center justify-center gap-2 rounded-xl border border-[#facf39]/30 bg-gradient-to-r from-[#facf39]/10 to-[#f59e0b]/10 px-6 py-4 font-medium text-[#facf39] transition-colors hover:from-[#facf39]/20 hover:to-[#f59e0b]/20"
+        >
+          <Users className="h-5 w-5" />
+          All Contacts
+        </Link>
+        <Link
+          href="/admin/crm/leads"
+          className="flex items-center justify-center gap-2 rounded-xl border border-white/20 bg-white/5 px-6 py-4 font-medium text-white transition-colors hover:bg-white/10"
+        >
+          <UserPlus className="h-5 w-5" />
+          Leads & Submissions
+        </Link>
       </div>
     </div>
   );
 }
 
-export default function AdminPage() {
+export default function CRMDashboardPage() {
   return (
     <Suspense fallback={null}>
-      <AdminPageContent />
+      <CRMDashboardContent />
     </Suspense>
   );
 }

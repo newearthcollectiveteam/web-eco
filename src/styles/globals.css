@@ -143,13 +143,13 @@
   }
 }
 
-/* Questionnaire screen transition — opacity-only, no transforms */
+/* Questionnaire screen transition — subtle slide-up + fade */
 [data-q-dir] {
-  animation: q-fade-in 180ms ease-out forwards;
+  animation: q-slide-in 220ms ease-out forwards;
 }
-@keyframes q-fade-in {
-  from { opacity: 0; }
-  to   { opacity: 1; }
+@keyframes q-slide-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 /* Respect user motion preferences */

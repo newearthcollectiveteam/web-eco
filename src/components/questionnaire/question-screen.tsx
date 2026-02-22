@@ -18,6 +18,7 @@ interface QuestionScreenProps {
   update: <K extends keyof FormData>(field: K, value: FormData[K]) => void;
   toggleArray: (field: keyof FormData, value: string) => void;
   referrer?: string;
+  onAutoAdvance?: () => void;
 }
 
 // Communication preference options
@@ -65,6 +66,7 @@ export function QuestionScreen({
   update,
   toggleArray,
   referrer,
+  onAutoAdvance,
 }: QuestionScreenProps) {
   const [showOther, setShowOther] = useState(false);
   const [showGiftOther, setShowGiftOther] = useState(false);
@@ -357,76 +359,88 @@ export function QuestionScreen({
       )}
 
       {/* SINGLE-SELECT */}
-      {screen.type === "single-select" && (
-        <div className="space-y-3">
-          {screen.id === "found-us" && referrer && (
-            <div className="rounded-lg border border-[#FACF39]/30 bg-[#FACF39]/10 px-4 py-2.5 text-sm text-[#FACF39]">
-              Recommended by {referrer}
-            </div>
-          )}
-          <div className="grid grid-cols-1 gap-2">
-            {screen.options?.map((opt) => {
-              const selected = (data[screen.field as keyof FormData] as string) === opt.id;
-              return (
-                <SelectionPill
-                  key={opt.id}
-                  label={opt.label}
-                  selected={selected}
-                  onToggle={() =>
-                    update(screen.field as keyof FormData, opt.id as never)
-                  }
-                />
-              );
-            })}
-          </div>
-          {screen.detailOptions &&
-            screen.detailField &&
-            screen.detailOptions[data[screen.field as keyof FormData] as string] && (
-              <Input
-                className={inputClass}
-                placeholder={screen.detailOptions[data[screen.field as keyof FormData] as string]}
-                value={(data[screen.detailField as keyof FormData] as string) || ""}
-                onChange={(e) =>
-                  update(screen.detailField as keyof FormData, e.target.value as never)
-                }
-                autoFocus
-              />
+      {screen.type === "single-select" && (() => {
+        const isLockedReferral = screen.id === "found-us" && !!referrer;
+        return (
+          <div className="space-y-3">
+            {isLockedReferral && (
+              <div className="rounded-lg border border-[#FACF39]/30 bg-[#FACF39]/10 px-4 py-2.5 text-sm text-[#FACF39]">
+                Recommended by {referrer}
+              </div>
             )}
-          {screen.hasOther && (
-            <>
-              <SelectionPill
-                label="Other"
-                selected={
-                  (data[screen.field as keyof FormData] as string) === "other" || showOther
-                }
-                onToggle={() => {
-                  const isCurrentlyOther =
-                    (data[screen.field as keyof FormData] as string) === "other" || showOther;
-                  if (isCurrentlyOther) {
-                    update(screen.field as keyof FormData, "" as never);
-                    update(screen.otherField as keyof FormData, "" as never);
-                    setShowOther(false);
-                  } else {
-                    update(screen.field as keyof FormData, "other" as never);
-                    setShowOther(true);
-                  }
-                }}
-              />
-              {((data[screen.field as keyof FormData] as string) === "other" || showOther) && (
+            <div className="grid grid-cols-1 gap-2">
+              {screen.options?.map((opt) => {
+                const selected = (data[screen.field as keyof FormData] as string) === opt.id;
+                return (
+                  <SelectionPill
+                    key={opt.id}
+                    label={opt.label}
+                    selected={selected}
+                    onToggle={() => {
+                      if (isLockedReferral) return;
+                      update(screen.field as keyof FormData, opt.id as never);
+                      // Auto-advance if no detail input needed for this option
+                      const needsDetail =
+                        screen.detailOptions?.[opt.id] || opt.id === "other";
+                      if (!needsDetail && onAutoAdvance) {
+                        setTimeout(onAutoAdvance, 400);
+                      }
+                    }}
+                    disabled={isLockedReferral}
+                  />
+                );
+              })}
+            </div>
+            {screen.detailOptions &&
+              screen.detailField &&
+              screen.detailOptions[data[screen.field as keyof FormData] as string] &&
+              !isLockedReferral && (
                 <Input
                   className={inputClass}
-                  placeholder={screen.otherPlaceholder || "Please specify..."}
-                  value={(data[screen.otherField as keyof FormData] as string) || ""}
+                  placeholder={screen.detailOptions[data[screen.field as keyof FormData] as string]}
+                  value={(data[screen.detailField as keyof FormData] as string) || ""}
                   onChange={(e) =>
-                    update(screen.otherField as keyof FormData, e.target.value as never)
+                    update(screen.detailField as keyof FormData, e.target.value as never)
                   }
                   autoFocus
                 />
               )}
-            </>
-          )}
-        </div>
-      )}
+            {screen.hasOther && !isLockedReferral && (
+              <>
+                <SelectionPill
+                  label="Other"
+                  selected={
+                    (data[screen.field as keyof FormData] as string) === "other" || showOther
+                  }
+                  onToggle={() => {
+                    const isCurrentlyOther =
+                      (data[screen.field as keyof FormData] as string) === "other" || showOther;
+                    if (isCurrentlyOther) {
+                      update(screen.field as keyof FormData, "" as never);
+                      update(screen.otherField as keyof FormData, "" as never);
+                      setShowOther(false);
+                    } else {
+                      update(screen.field as keyof FormData, "other" as never);
+                      setShowOther(true);
+                    }
+                  }}
+                />
+                {((data[screen.field as keyof FormData] as string) === "other" || showOther) && (
+                  <Input
+                    className={inputClass}
+                    placeholder={screen.otherPlaceholder || "Please specify..."}
+                    value={(data[screen.otherField as keyof FormData] as string) || ""}
+                    onChange={(e) =>
+                      update(screen.otherField as keyof FormData, e.target.value as never)
+                    }
+                    autoFocus
+                  />
+                )}
+              </>
+            )}
+          </div>
+        );
+      })()}
 
       {/* GIVE & RECEIVE (merged screen) */}
       {screen.type === "give-receive" && (

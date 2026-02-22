@@ -107,6 +107,7 @@ export async function POST(request: NextRequest) {
       // Meta
       source?: string;
       contactId?: string;
+      referrerContactId?: number;
     };
 
     const {
@@ -176,6 +177,7 @@ export async function POST(request: NextRequest) {
       // Meta
       source = "questionnaire",
       contactId: contactIdParam,
+      referrerContactId: referrerContactIdParam,
     } = body as QuestionnairePayload;
 
     if (!name || !email) {
@@ -334,6 +336,21 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    // Validate referrer contact ID if provided
+    let referrerContactId: number | null = null;
+    if (
+      referrerContactIdParam &&
+      typeof referrerContactIdParam === "number" &&
+      referrerContactIdParam > 0
+    ) {
+      const referrer = await db.query.contacts.findFirst({
+        where: eq(contacts.id, referrerContactIdParam),
+      });
+      if (referrer) {
+        referrerContactId = referrer.id;
+      }
+    }
+
     // Track source
     await db
       .insert(contactSources)
@@ -360,7 +377,7 @@ export async function POST(request: NextRequest) {
     const sessionId = cookies[COOKIE_NAMES.SESSION_ID];
     const contactIdCookie = cookies[COOKIE_NAMES.CONTACT_ID];
 
-    const response = NextResponse.json({ success: true });
+    const response = NextResponse.json({ success: true, contactId });
 
     if (!contactIdCookie) {
       response.headers.append(
@@ -457,6 +474,9 @@ export async function POST(request: NextRequest) {
         aiPhoneCallOptIn: aiPhoneCallOptIn ?? true,
         marketingOptIn: marketingOptIn ?? true,
 
+        // Referral tracking
+        referrerContactId,
+
         // Metadata
         source,
       })
@@ -473,6 +493,7 @@ export async function POST(request: NextRequest) {
         excitementLevel,
         engagementStyles,
         ecosystemContribution,
+        ...(referrerContactId ? { referrerContactId } : {}),
       },
     });
 

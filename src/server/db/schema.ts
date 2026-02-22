@@ -281,6 +281,12 @@ export const questionnaireResponses = createTable("questionnaire_response", {
   aiPhoneCallOptIn: boolean("ai_phone_call_opt_in").default(true),
   marketingOptIn: boolean("marketing_opt_in").default(true),
 
+  // Referral tracking
+  referrerContactId: integer("referrer_contact_id").references(
+    () => contacts.id,
+    { onDelete: "set null" }
+  ),
+
   // Metadata
   source: varchar("source", { length: 100 }).default("questionnaire"),
   createdAt: timestamp("created_at", { withTimezone: true })
@@ -611,7 +617,12 @@ export const voiceNotes = createTable("voice_note", {
 export const contactsRelations = relations(contacts, ({ one, many }) => ({
   sources: many(contactSources),
   activities: many(contactActivities),
-  questionnaireResponses: many(questionnaireResponses),
+  questionnaireResponses: many(questionnaireResponses, {
+    relationName: "submitter",
+  }),
+  referrals: many(questionnaireResponses, {
+    relationName: "referrer",
+  }),
   waitlistIntakes: many(waitlistIntake),
   voiceNotes: many(voiceNotes),
   sessions: many(sessions),
@@ -648,6 +659,12 @@ export const questionnaireResponsesRelations = relations(
     contact: one(contacts, {
       fields: [questionnaireResponses.contactId],
       references: [contacts.id],
+      relationName: "submitter",
+    }),
+    referrerContact: one(contacts, {
+      fields: [questionnaireResponses.referrerContactId],
+      references: [contacts.id],
+      relationName: "referrer",
     }),
   })
 );

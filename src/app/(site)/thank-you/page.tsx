@@ -2,27 +2,45 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Instagram, Home, Download } from "lucide-react";
+import { Instagram, Home, Share2, Download } from "lucide-react";
 import { Button } from "~/components/ui/button";
 import QRCode from "qrcode";
+
+/** Convert a data URL to a File object */
+function dataUrlToFile(dataUrl: string, filename: string): File {
+  const [header, base64] = dataUrl.split(",") as [string, string];
+  const mime = /:(.*?);/.exec(header)?.[1] ?? "image/png";
+  const binary = atob(base64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return new File([bytes], filename, { type: mime });
+}
 
 export default function ThankYouPage() {
   const [qrDataUrl, setQrDataUrl] = useState<string | null>(null);
   const [displayName, setDisplayName] = useState<string>("");
+  const [canShare, setCanShare] = useState(false);
 
   useEffect(() => {
     try {
       const raw = sessionStorage.getItem("nec_referrer");
       if (!raw) return;
-      const { name, preferredName } = JSON.parse(raw) as {
+      const { name, preferredName, contactId } = JSON.parse(raw) as {
         name: string;
         preferredName?: string;
+        contactId?: number;
       };
       const referrerName = preferredName || name;
       if (!referrerName) return;
       setDisplayName(referrerName);
 
-      const url = `https://joinnewearthcollective.com/questionnaire?referrer=${encodeURIComponent(referrerName)}`;
+      // Build QR URL with contactId for DB linking + name for display
+      const params = new URLSearchParams();
+      params.set("referrer", referrerName);
+      if (contactId) {
+        params.set("referrerContactId", String(contactId));
+      }
+      const url = `https://joinnewearthcollective.com/questionnaire?${params.toString()}`;
       QRCode.toDataURL(url, {
         width: 280,
         margin: 2,
@@ -35,8 +53,37 @@ export default function ThankYouPage() {
     }
   }, []);
 
-  const downloadQr = () => {
+  // Detect Web Share API file support once QR is ready
+  useEffect(() => {
     if (!qrDataUrl) return;
+    try {
+      const file = dataUrlToFile(qrDataUrl, "nec-referral-qr.png");
+      if (navigator.canShare?.({ files: [file] })) {
+        setCanShare(true);
+      }
+    } catch {
+      // canShare not supported — stick with download
+    }
+  }, [qrDataUrl]);
+
+  const shareOrDownloadQr = async () => {
+    if (!qrDataUrl) return;
+
+    // Try native share (mobile) — lets user "Save to Photos", AirDrop, text, etc.
+    if (canShare) {
+      try {
+        const file = dataUrlToFile(qrDataUrl, "nec-referral-qr.png");
+        await navigator.share({
+          files: [file],
+          title: "New Earth Collective Referral",
+        });
+        return;
+      } catch {
+        // User cancelled or share failed — fall through to download
+      }
+    }
+
+    // Fallback: traditional download (desktop)
     const a = document.createElement("a");
     a.href = qrDataUrl;
     a.download = "nec-referral-qr.png";
@@ -99,16 +146,25 @@ export default function ThankYouPage() {
               </div>
               <div className="flex flex-col items-center gap-2">
                 <Button
-                  onClick={downloadQr}
+                  onClick={shareOrDownloadQr}
                   variant="outline"
                   className="border-[#FACF39]/50 bg-transparent text-[#FACF39] hover:border-[#FACF39] hover:bg-[#FACF39]/10"
                   style={{ fontFamily: "Bourton, sans-serif" }}
                 >
-                  <Download className="mr-2 h-4 w-4" />
-                  Download QR
+                  {canShare ? (
+                    <>
+                      <Share2 className="mr-2 h-4 w-4" />
+                      Save & Share QR
+                    </>
+                  ) : (
+                    <>
+                      <Download className="mr-2 h-4 w-4" />
+                      Download QR
+                    </>
+                  )}
                 </Button>
                 <p className="text-xs text-white/40">
-                  or screenshot to share
+                  {canShare ? "save to photos or share directly" : "or screenshot to share"}
                 </p>
               </div>
               {displayName && (

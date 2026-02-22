@@ -62,7 +62,7 @@ const seekLabels: Record<string, string> = {
 /** Convert form state into the API payload shape the backend expects */
 export function mapFormToPayload(
   data: FormData,
-  meta: { source: string; contactId: string }
+  meta: { source: string; contactId: string; referrerContactId?: number }
 ) {
   const roleLabels = idsToLabels(data.identityRoles, "your-role");
   const allRoles = data.identityRolesOther
@@ -164,5 +164,6 @@ export function mapFormToPayload(
     // Meta
     source: meta.source,
     contactId: meta.contactId,
+    referrerContactId: meta.referrerContactId || undefined,
   };
 }

@@ -10,6 +10,37 @@ import { initialFormData } from "~/components/questionnaire/types";
 import { mapFormToPayload } from "~/components/questionnaire/data-mapper";
 import type { FormData } from "~/components/questionnaire/types";
 
+/** Horizontal swipe detection hook */
+function useSwipe(onSwipeLeft: () => void, onSwipeRight: () => void) {
+  const touchRef = useRef<{ x: number; y: number; t: number } | null>(null);
+
+  const onTouchStart = useCallback((e: React.TouchEvent) => {
+    const touch = e.touches[0]!;
+    touchRef.current = { x: touch.clientX, y: touch.clientY, t: Date.now() };
+  }, []);
+
+  const onTouchEnd = useCallback(
+    (e: React.TouchEvent) => {
+      if (!touchRef.current) return;
+      const touch = e.changedTouches[0]!;
+      const dx = touch.clientX - touchRef.current.x;
+      const dy = touch.clientY - touchRef.current.y;
+      const dt = Date.now() - touchRef.current.t;
+      touchRef.current = null;
+
+      // Must be horizontal, fast enough, and long enough
+      if (Math.abs(dx) < 60 || Math.abs(dy) > Math.abs(dx) * 0.7 || dt > 500)
+        return;
+
+      if (dx < 0) onSwipeLeft(); // swipe left = forward
+      else onSwipeRight(); // swipe right = back
+    },
+    [onSwipeLeft, onSwipeRight]
+  );
+
+  return { onTouchStart, onTouchEnd };
+}
+
 function QuestionnaireFlow() {
   const searchParams = useSearchParams();
   const [idx, setIdx] = useState(0);
@@ -28,6 +59,21 @@ function QuestionnaireFlow() {
   useEffect(() => {
     window.scrollTo({ left: 0, top: 0, behavior: "instant" });
   }, [idx]);
+
+  // Keyboard-aware scroll: when an input gets focus on mobile,
+  // scroll it into view so the keyboard doesn't cover it
+  useEffect(() => {
+    const onFocusIn = (e: FocusEvent) => {
+      const el = e.target as HTMLElement;
+      if (el.tagName !== "INPUT" && el.tagName !== "TEXTAREA") return;
+      // Small delay lets the keyboard finish appearing
+      setTimeout(() => {
+        el.scrollIntoView({ behavior: "smooth", block: "center" });
+      }, 300);
+    };
+    document.addEventListener("focusin", onFocusIn);
+    return () => document.removeEventListener("focusin", onFocusIn);
+  }, []);
 
   // Abandon detection: fire when user leaves after providing email but before submitting.
   // Uses a 60s debounce on visibilitychange so brief app-switches (checking a text)
@@ -182,6 +228,30 @@ function QuestionnaireFlow() {
     setIdx((i) => Math.max(i - 1, 0));
   };
 
+  // Refs so swipe callbacks always use latest goForward/goBack
+  const goForwardRef = useRef(goForward);
+  const goBackRef = useRef(goBack);
+  goForwardRef.current = goForward;
+  goBackRef.current = goBack;
+
+  const swipeHandlers = useSwipe(
+    useCallback(() => goForwardRef.current(), []),
+    useCallback(() => goBackRef.current(), [])
+  );
+
+  // Enter key advances on text-input screens
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key !== "Enter") return;
+      const tag = (e.target as HTMLElement).tagName;
+      // Only trigger on input fields (not textareas or buttons)
+      if (tag !== "INPUT") return;
+      e.preventDefault();
+      goForwardRef.current();
+    },
+    []
+  );
+
   const handleSubmit = async () => {
     if (submittingRef.current) return;
     submittingRef.current = true;
@@ -189,9 +259,18 @@ function QuestionnaireFlow() {
     setStatus("submitting");
     setError(null);
 
+    const referrerContactIdRaw = searchParams.get("referrerContactId");
+    const referrerContactId = referrerContactIdRaw
+      ? parseInt(referrerContactIdRaw, 10)
+      : undefined;
+
     const payload = mapFormToPayload(data, {
       source: searchParams.get("source") || "questionnaire",
       contactId: searchParams.get("contactId") || "",
+      referrerContactId:
+        referrerContactId && referrerContactId > 0
+          ? referrerContactId
+          : undefined,
     });
 
     try {
@@ -201,24 +280,28 @@ function QuestionnaireFlow() {
         body: JSON.stringify(payload),
       });
 
+      const resBody = (await res.json().catch(() => ({}))) as {
+        success?: boolean;
+        contactId?: number;
+        error?: string;
+        details?: string;
+      };
+
       if (!res.ok) {
-        const body = (await res.json().catch(() => ({}))) as {
-          error?: string;
-          details?: string;
-        };
-        throw new Error(body.details || body.error || "Failed to submit");
+        throw new Error(resBody.details || resBody.error || "Failed to submit");
       }
 
       // Prevent abandon beacon from firing during redirect
       abandonSentRef.current = true;
 
-      // Store name for thank-you page QR code
+      // Store name + contactId for thank-you page QR code
       try {
         sessionStorage.setItem(
           "nec_referrer",
           JSON.stringify({
             name: data.fullName,
             preferredName: data.preferredName,
+            contactId: resBody.contactId,
           })
         );
       } catch {
@@ -236,7 +319,11 @@ function QuestionnaireFlow() {
   };
 
   return (
-    <div className="min-h-[100dvh] max-w-[100vw] overflow-x-hidden bg-black">
+    <div
+      className="min-h-[100dvh] max-w-[100vw] overflow-x-hidden bg-black"
+      onKeyDown={handleKeyDown}
+      {...swipeHandlers}
+    >
       <ProgressBar current={idx} total={totalScreens} />
 
       {/* Screen content — natural page scroll, no inner scroll container */}
@@ -248,6 +335,7 @@ function QuestionnaireFlow() {
             update={update}
             toggleArray={toggleArray}
             referrer={searchParams.get("referrer") ?? undefined}
+            onAutoAdvance={goForward}
           />
         </div>
       </div>

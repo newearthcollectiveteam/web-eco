@@ -9,8 +9,19 @@ const QR_URL =
 const QR_SIZE = 300;
 const LOGO_RATIO = 0.22; // logo takes ~22% of QR width
 
+/** Convert a data URL to a File object */
+function dataUrlToFile(dataUrl: string, filename: string): File {
+  const [header, base64] = dataUrl.split(",") as [string, string];
+  const mime = /:(.*?);/.exec(header)?.[1] ?? "image/png";
+  const binary = atob(base64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return new File([bytes], filename, { type: mime });
+}
+
 export default function QRQuestionnairePage() {
   const [qrDataUrl, setQrDataUrl] = useState<string | null>(null);
+  const [canShare, setCanShare] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -54,8 +65,35 @@ export default function QRQuestionnairePage() {
     }).catch(() => undefined);
   }, []);
 
-  const downloadQr = () => {
+  // Detect Web Share API file support once QR is ready
+  useEffect(() => {
     if (!qrDataUrl) return;
+    try {
+      const file = dataUrlToFile(qrDataUrl, "nec-team-qr.png");
+      if (navigator.canShare?.({ files: [file] })) {
+        setCanShare(true);
+      }
+    } catch {
+      // canShare not supported
+    }
+  }, [qrDataUrl]);
+
+  const shareOrDownloadQr = async () => {
+    if (!qrDataUrl) return;
+
+    if (canShare) {
+      try {
+        const file = dataUrlToFile(qrDataUrl, "nec-team-qr.png");
+        await navigator.share({
+          files: [file],
+          title: "New Earth Collective QR",
+        });
+        return;
+      } catch {
+        // User cancelled or share failed — fall through
+      }
+    }
+
     const a = document.createElement("a");
     a.href = qrDataUrl;
     a.download = "nec-team-qr.png";
@@ -115,7 +153,7 @@ export default function QRQuestionnairePage() {
           {/* QR Code with embedded symbol */}
           <div
             className="mb-6 inline-block cursor-pointer rounded-2xl border-2 border-[#FACF39]/40 bg-white p-6 shadow-[0_0_40px_rgba(250,207,57,0.2)] transition-transform active:scale-95"
-            onClick={downloadQr}
+            onClick={shareOrDownloadQr}
           >
             {qrDataUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
@@ -133,7 +171,9 @@ export default function QRQuestionnairePage() {
             )}
           </div>
 
-          <p className="text-sm text-white/50">Tap QR to download</p>
+          <p className="text-sm text-white/50">
+            {canShare ? "Tap QR to save or share" : "Tap QR to download"}
+          </p>
         </div>
       </section>
     </div>

@@ -586,6 +586,13 @@ function ReviewScreen({ data }: { data: FormData }) {
     return ids.map((id) => scr.options!.find((o) => o.id === id)?.label ?? id).join(", ");
   };
 
+  /** Append "Other" free-text to a label string if present */
+  const withOther = (base: string, other: string) => {
+    const trimmed = other?.trim();
+    if (!trimmed) return base;
+    return base ? `${base}, ${trimmed}` : trimmed;
+  };
+
   const giftLabels = data.uniqueGift
     .map((id) => giftOptions.find((o) => o.id === id)?.label ?? id)
     .join(", ");
@@ -598,9 +605,9 @@ function ReviewScreen({ data }: { data: FormData }) {
     { label: "Email", value: data.email },
     { label: "Phone", value: data.phone },
     { label: "Location", value: data.currentLocation + (data.isNomadic ? " (nomadic)" : "") },
-    { label: "Roles", value: labelFor("your-role", data.identityRoles) },
-    { label: "New Earth", value: labelFor("new-earth", data.newEarthMeaning) },
-    { label: "Intention", value: labelFor("intention", data.primaryIntention) },
+    { label: "Roles", value: withOther(labelFor("your-role", data.identityRoles), data.identityRolesOther) },
+    { label: "New Earth", value: withOther(labelFor("new-earth", data.newEarthMeaning), data.newEarthMeaningOther) },
+    { label: "Intention", value: withOther(labelFor("intention", data.primaryIntention), data.primaryIntentionOther) },
     { label: "You Bring", value: giftLabels },
     { label: "You Seek", value: seekLabels },
     { label: "Found Us", value: labelFor("found-us", data.howFoundUs) },

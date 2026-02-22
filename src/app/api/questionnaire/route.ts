@@ -101,6 +101,8 @@ export async function POST(request: NextRequest) {
       // Section 7: Preferences
       profileVisibility?: string;
       communicationPrefs?: string[];
+      aiPhoneCallOptIn?: boolean;
+      marketingOptIn?: boolean;
 
       // Meta
       source?: string;
@@ -168,6 +170,8 @@ export async function POST(request: NextRequest) {
       // Section 7
       profileVisibility,
       communicationPrefs = [],
+      aiPhoneCallOptIn,
+      marketingOptIn,
 
       // Meta
       source = "questionnaire",
@@ -216,6 +220,8 @@ export async function POST(request: NextRequest) {
               isNomadic,
               profileVisibility,
               communicationPrefs,
+              aiPhoneCallOptIn,
+              marketingOptIn,
             },
             updatedAt: new Date(),
           })
@@ -294,6 +300,8 @@ export async function POST(request: NextRequest) {
               isNomadic,
               profileVisibility,
               communicationPrefs,
+              aiPhoneCallOptIn,
+              marketingOptIn,
             },
             updatedAt: new Date(),
           })
@@ -317,6 +325,8 @@ export async function POST(request: NextRequest) {
               isNomadic,
               profileVisibility,
               communicationPrefs,
+              aiPhoneCallOptIn,
+              marketingOptIn,
             },
           })
           .returning();
@@ -444,6 +454,8 @@ export async function POST(request: NextRequest) {
         // Section 7: Preferences
         profileVisibility: profileVisibility || null,
         communicationPrefs: communicationPrefs,
+        aiPhoneCallOptIn: aiPhoneCallOptIn ?? true,
+        marketingOptIn: marketingOptIn ?? true,
 
         // Metadata
         source,

@@ -158,6 +158,8 @@ export function mapFormToPayload(
     // Section 7
     profileVisibility: data.profileVisibility,
     communicationPrefs: data.communicationPrefs,
+    aiPhoneCallOptIn: data.aiPhoneCallOptIn,
+    marketingOptIn: data.marketingOptIn,
 
     // Meta
     source: meta.source,

@@ -278,6 +278,8 @@ export const questionnaireResponses = createTable("questionnaire_response", {
   communicationPrefs: jsonb("communication_prefs")
     .$type<string[]>()
     .default(sql`'[]'::jsonb`),
+  aiPhoneCallOptIn: boolean("ai_phone_call_opt_in").default(true),
+  marketingOptIn: boolean("marketing_opt_in").default(true),
 
   // Metadata
   source: varchar("source", { length: 100 }).default("questionnaire"),

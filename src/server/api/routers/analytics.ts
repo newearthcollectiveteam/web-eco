@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
-import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
+import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { contacts, sessions, events, emailLinks } from "~/server/db/schema";
 import { eq, desc, sql } from "drizzle-orm";
 import {
@@ -9,7 +9,7 @@ import {
 } from "~/lib/tracking/analytics-service";
 
 export const analyticsRouter = createTRPCRouter({
-  contactMetrics: publicProcedure
+  contactMetrics: protectedProcedure
     .input(
       z.object({
         contactId: z.number().optional(),
@@ -59,7 +59,7 @@ export const analyticsRouter = createTRPCRouter({
       };
     }),
 
-  overview: publicProcedure.query(async ({ ctx }) => {
+  overview: protectedProcedure.query(async ({ ctx }) => {
     const [
       totalContacts,
       totalSessions,

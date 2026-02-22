@@ -43,9 +43,6 @@ export const questionnaireRouter = createTRPCRouter({
       return {
         completed,
         completedAt: metadata?.questionnaireCompletedAt ?? null,
-        contactId: contact.id,
-        name: contact.name,
-        email: contact.email,
       };
     }),
 });

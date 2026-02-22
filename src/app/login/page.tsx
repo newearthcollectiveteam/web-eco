@@ -2,112 +2,430 @@
 
 import { useState, Suspense } from "react";
 import { createClient } from "~/lib/supabase/client";
-import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
-import Link from "next/link";
 import Image from "next/image";
-import { Mail, Lock } from "lucide-react";
+import {
+  Mail,
+  Lock,
+  ArrowRight,
+  Loader2,
+  Eye,
+  EyeOff,
+} from "lucide-react";
+import { api } from "~/trpc/react";
+
+type Mode = "signin" | "claim-form" | "claim-check" | "email-sent";
+
+function ShaderBackground() {
+  return (
+    <div className="absolute inset-0 overflow-hidden">
+      <iframe
+        src="/admin/shaders/flower-of-life/embed"
+        className="h-full w-full border-0 opacity-20"
+        style={{ pointerEvents: "none" }}
+      />
+    </div>
+  );
+}
+
+function NecLogo() {
+  return (
+    <div className="mb-6 inline-flex items-center justify-center">
+      <div className="relative h-14 w-14">
+        <Image
+          src="/brand/symbol.svg"
+          alt="New Earth Collective"
+          fill
+          className="object-contain drop-shadow-lg"
+        />
+      </div>
+    </div>
+  );
+}
 
 function LoginPageContent() {
+  const [mode, setMode] = useState<Mode>("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
-  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+  const [claimName, setClaimName] = useState<string | null>(null);
   const searchParams = useSearchParams();
-  const supabase = createClient();
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const checkEmailQuery = api.auth.checkEmailForClaim.useQuery(
+    { email },
+    { enabled: false }
+  );
+
+  const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
-    setLoading(true);
+    setIsLoading(true);
 
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
+      const supabase = createClient();
+      const { error: authError } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
-      if (error) {
-        setError(error.message);
-        setLoading(false);
+      if (authError) {
+        setError(authError.message);
+        setIsLoading(false);
         return;
       }
 
-      if (data.session) {
-        const nextParam = searchParams.get("next");
-
-        // Redirect to the next param if provided, otherwise to /admin hub
-        const redirectTarget = nextParam || "/admin";
-
-        router.push(redirectTarget);
-        router.refresh();
-      }
+      // Full page navigation ensures auth cookies are sent with the request
+      window.location.href = "/admin";
     } catch {
       setError("An unexpected error occurred");
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
-  return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-white via-neutral-50 to-white px-4 py-12 dark:from-black dark:via-neutral-950 dark:to-black">
-      <div className="w-full max-w-md">
-        <div className="rounded-xl border border-neutral-200 bg-white p-8 shadow-lg dark:border-neutral-800 dark:bg-black">
-          <div className="mb-8 text-center">
-            <div className="mb-6 inline-flex items-center justify-center">
-              <div className="relative h-16 w-16">
-                <Image
-                  src="/brand/symbol.svg"
-                  alt="New Earth Collective"
-                  fill
-                  className="object-contain drop-shadow-lg"
-                />
+  const handleForgotPassword = async () => {
+    if (!email) {
+      setError("Please enter your email address first");
+      return;
+    }
+
+    setError(null);
+    setIsLoading(true);
+
+    try {
+      const supabase = createClient();
+      const origin = window.location.origin;
+      const { error: resetError } = await supabase.auth.resetPasswordForEmail(
+        email,
+        {
+          redirectTo: `${origin}/auth/callback?next=/auth/reset-password`,
+        }
+      );
+
+      if (resetError) {
+        setError(resetError.message);
+      } else {
+        setMode("email-sent");
+      }
+    } catch {
+      setError("An unexpected error occurred");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleCheckEmail = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email) {
+      setError("Please enter your email address");
+      return;
+    }
+    setIsLoading(true);
+    setError(null);
+    const { data } = await checkEmailQuery.refetch();
+    setIsLoading(false);
+    if (data?.canClaim) {
+      setClaimName(data.name ?? null);
+      setMode("claim-check");
+    } else if (data?.exists) {
+      setError("This account is already active. Please sign in.");
+    } else {
+      setError(
+        "No account found for this email. Contact the team to get added."
+      );
+    }
+  };
+
+  const handleClaimAccount = async () => {
+    setError(null);
+    setIsLoading(true);
+
+    try {
+      const supabase = createClient();
+      const origin = window.location.origin;
+
+      const { error: otpError } = await supabase.auth.signInWithOtp({
+        email,
+        options: {
+          emailRedirectTo: `${origin}/auth/callback?next=/auth/reset-password`,
+        },
+      });
+
+      if (otpError) {
+        setError(otpError.message);
+        setIsLoading(false);
+        return;
+      }
+
+      setMode("email-sent");
+    } catch {
+      setError("An unexpected error occurred");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Email sent confirmation (shared by forgot-password and claim flows)
+  if (mode === "email-sent") {
+    return (
+      <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-black px-4">
+        <ShaderBackground />
+        <div className="relative z-10 w-full max-w-md">
+          <div
+            className="rounded-xl border bg-white/5 p-8 backdrop-blur-md"
+            style={{
+              borderColor: "rgba(250, 207, 57, 0.3)",
+            }}
+          >
+            <div className="text-center">
+              <NecLogo />
+              <div
+                className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full"
+                style={{ backgroundColor: "rgba(250, 207, 57, 0.1)" }}
+              >
+                <Mail className="h-8 w-8 text-[#FACF39]" />
+              </div>
+              <h1
+                className="mb-2 text-2xl font-bold text-white"
+                style={{
+                  fontFamily: "Airwaves, sans-serif",
+                  letterSpacing: "0.05em",
+                }}
+              >
+                Check Your Email
+              </h1>
+              <p className="mb-6 text-sm text-neutral-400">
+                We sent a link to{" "}
+                <span className="text-white">{email}</span>. Open it on this
+                device to continue.
+              </p>
+              <button
+                onClick={() => {
+                  setMode("signin");
+                  setError(null);
+                }}
+                className="text-sm font-medium text-[#FACF39] transition-colors hover:text-[#ffe067] hover:underline"
+              >
+                Back to sign in
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Claim account confirmation — "Welcome, {name}!"
+  if (mode === "claim-check") {
+    return (
+      <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-black px-4">
+        <ShaderBackground />
+        <div className="relative z-10 w-full max-w-md">
+          <div
+            className="rounded-xl border bg-white/5 p-8 backdrop-blur-md"
+            style={{
+              borderColor: "rgba(250, 207, 57, 0.3)",
+            }}
+          >
+            <div className="text-center">
+              <NecLogo />
+              <h1
+                className="mb-2 text-2xl font-bold text-white"
+                style={{
+                  fontFamily: "Airwaves, sans-serif",
+                  letterSpacing: "0.05em",
+                }}
+              >
+                Welcome{claimName ? `, ${claimName}` : ""}!
+              </h1>
+              <p className="mb-6 text-sm text-neutral-400">
+                Your account is ready to be activated. We&apos;ll send you a
+                magic link to set up your password.
+              </p>
+
+              {error && (
+                <div className="mb-4 rounded-md border border-red-500/20 bg-red-900/20 px-4 py-3 text-sm text-red-200">
+                  {error}
+                </div>
+              )}
+
+              <button
+                onClick={handleClaimAccount}
+                disabled={isLoading}
+                className="flex w-full items-center justify-center rounded-md bg-[#FACF39] px-4 py-3 text-sm font-semibold text-black shadow-sm transition-all hover:bg-[#ffe067] disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {isLoading ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                  <Mail className="mr-2 h-4 w-4" />
+                )}
+                Send Magic Link
+              </button>
+
+              <div className="mt-4">
+                <button
+                  onClick={() => {
+                    setMode("signin");
+                    setError(null);
+                  }}
+                  className="text-sm text-neutral-400 transition-colors hover:underline"
+                >
+                  Back to sign in
+                </button>
               </div>
             </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Claim account form — email only
+  if (mode === "claim-form") {
+    return (
+      <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-black px-4">
+        <ShaderBackground />
+        <div className="relative z-10 w-full max-w-md">
+          <div
+            className="rounded-xl border bg-white/5 p-8 backdrop-blur-md"
+            style={{
+              borderColor: "rgba(250, 207, 57, 0.3)",
+            }}
+          >
+            <div className="text-center">
+              <NecLogo />
+              <h1
+                className="mb-2 text-2xl font-bold text-white"
+                style={{
+                  fontFamily: "Airwaves, sans-serif",
+                  letterSpacing: "0.05em",
+                }}
+              >
+                Claim Your Account
+              </h1>
+              <p className="mb-8 text-sm text-neutral-400">
+                Enter the email address your account was created with
+              </p>
+            </div>
+
+            {error && (
+              <div className="mb-4 rounded-md border border-red-500/20 bg-red-900/20 px-4 py-3 text-sm text-red-200">
+                {error}
+              </div>
+            )}
+
+            <form onSubmit={handleCheckEmail} className="space-y-4">
+              <div>
+                <label
+                  htmlFor="claim-email"
+                  className="mb-2 block text-sm font-medium text-neutral-300"
+                >
+                  Email
+                </label>
+                <div className="relative">
+                  <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                    <Mail className="h-5 w-5 text-neutral-500" />
+                  </div>
+                  <input
+                    type="email"
+                    id="claim-email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="block w-full rounded-md border bg-white/5 py-3 pr-4 pl-10 text-white placeholder-neutral-500 transition-colors focus:border-[#FACF39] focus:ring-2 focus:ring-[#FACF39]/20 focus:outline-none"
+                    style={{ borderColor: "rgba(250, 207, 57, 0.3)" }}
+                    placeholder="you@example.com"
+                    required
+                  />
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="flex w-full items-center justify-center rounded-md bg-[#FACF39] px-4 py-3 text-sm font-semibold text-black shadow-sm transition-all hover:bg-[#ffe067] disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {isLoading ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : null}
+                Continue
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </button>
+            </form>
+
+            <div className="mt-6 text-center text-sm text-neutral-400">
+              Already have a password?{" "}
+              <button
+                onClick={() => {
+                  setMode("signin");
+                  setError(null);
+                }}
+                className="font-medium text-[#FACF39] transition-colors hover:text-[#ffe067] hover:underline"
+              >
+                Sign in
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Sign in form (default)
+  return (
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-black px-4">
+      <ShaderBackground />
+      <div className="relative z-10 w-full max-w-md">
+        <div
+          className="rounded-xl border bg-white/5 p-8 backdrop-blur-md"
+          style={{
+            borderColor: "rgba(250, 207, 57, 0.3)",
+          }}
+        >
+          <div className="mb-8 text-center">
+            <NecLogo />
             <h1
-              className="text-3xl font-bold text-black dark:text-white"
+              className="text-2xl font-bold text-white"
               style={{
                 fontFamily: "Airwaves, sans-serif",
                 letterSpacing: "0.05em",
               }}
             >
-              Welcome Back
+              Team Login
             </h1>
-            <p className="mt-2 text-sm text-neutral-600 dark:text-neutral-400">
-              Sign in to continue
+            <p className="mt-2 text-sm text-neutral-400">
+              Sign in to access the admin hub
             </p>
           </div>
 
-          <form onSubmit={handleLogin} className="space-y-6">
-            {error && (
-              <div className="rounded-md border border-red-500/20 bg-red-50 p-3 dark:bg-red-900/20">
-                <p className="text-sm text-red-800 dark:text-red-200">
-                  {error}
-                </p>
-              </div>
-            )}
+          {error && (
+            <div className="mb-4 rounded-md border border-red-500/20 bg-red-900/20 px-4 py-3 text-sm text-red-200">
+              {error}
+            </div>
+          )}
 
+          <form onSubmit={handleSignIn} className="space-y-4">
             <div>
               <label
                 htmlFor="email"
-                className="block text-sm font-medium text-neutral-700 dark:text-neutral-300"
+                className="mb-2 block text-sm font-medium text-neutral-300"
               >
-                Email address
+                Email
               </label>
-              <div className="relative mt-1">
+              <div className="relative">
                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                  <Mail className="h-5 w-5 text-neutral-400" />
+                  <Mail className="h-5 w-5 text-neutral-500" />
                 </div>
                 <input
-                  id="email"
-                  name="email"
                   type="email"
-                  autoComplete="email"
-                  required
+                  id="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="block w-full rounded-md border border-neutral-300 bg-white py-2 pr-3 pl-10 shadow-sm transition-colors focus:border-[#facf39] focus:ring-2 focus:ring-[#facf39]/20 focus:outline-none sm:text-sm dark:border-neutral-700 dark:bg-neutral-900 dark:text-white dark:focus:border-[#facf39]"
+                  autoComplete="email"
+                  className="block w-full rounded-md border bg-white/5 py-3 pr-4 pl-10 text-white placeholder-neutral-500 transition-colors focus:border-[#FACF39] focus:ring-2 focus:ring-[#FACF39]/20 focus:outline-none"
+                  style={{ borderColor: "rgba(250, 207, 57, 0.3)" }}
                   placeholder="you@example.com"
+                  required
                 />
               </div>
             </div>
@@ -115,58 +433,74 @@ function LoginPageContent() {
             <div>
               <label
                 htmlFor="password"
-                className="block text-sm font-medium text-neutral-700 dark:text-neutral-300"
+                className="mb-2 block text-sm font-medium text-neutral-300"
               >
                 Password
               </label>
-              <div className="relative mt-1">
+              <div className="relative">
                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                  <Lock className="h-5 w-5 text-neutral-400" />
+                  <Lock className="h-5 w-5 text-neutral-500" />
                 </div>
                 <input
+                  type={showPassword ? "text" : "password"}
                   id="password"
-                  name="password"
-                  type="password"
-                  autoComplete="current-password"
-                  required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="block w-full rounded-md border border-neutral-300 bg-white py-2 pr-3 pl-10 shadow-sm transition-colors focus:border-[#facf39] focus:ring-2 focus:ring-[#facf39]/20 focus:outline-none sm:text-sm dark:border-neutral-700 dark:bg-neutral-900 dark:text-white dark:focus:border-[#facf39]"
-                  placeholder="••••••••"
+                  autoComplete="current-password"
+                  className="block w-full rounded-md border bg-white/5 py-3 pr-12 pl-10 text-white placeholder-neutral-500 transition-colors focus:border-[#FACF39] focus:ring-2 focus:ring-[#FACF39]/20 focus:outline-none"
+                  style={{ borderColor: "rgba(250, 207, 57, 0.3)" }}
+                  placeholder="Enter your password"
+                  required
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-white"
+                >
+                  {showPassword ? (
+                    <EyeOff className="h-5 w-5" />
+                  ) : (
+                    <Eye className="h-5 w-5" />
+                  )}
+                </button>
               </div>
             </div>
 
-            <div className="flex items-center justify-between">
-              <div className="text-sm">
-                <Link
-                  href="/auth/forgot-password"
-                  className="font-medium text-[#facf39] transition-colors hover:text-[#ffe067]"
-                >
-                  Forgot your password?
-                </Link>
-              </div>
+            <div className="text-right">
+              <button
+                type="button"
+                onClick={handleForgotPassword}
+                className="text-sm font-medium text-[#FACF39] transition-colors hover:text-[#ffe067] hover:underline"
+              >
+                Forgot password?
+              </button>
             </div>
 
             <button
               type="submit"
-              disabled={loading}
-              className="w-full rounded-md bg-[#facf39] px-4 py-2 text-sm font-semibold text-black shadow-sm transition-all hover:bg-[#ffe067] focus:ring-2 focus:ring-[#facf39]/50 focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 dark:focus:ring-offset-black"
+              disabled={isLoading}
+              className="flex w-full items-center justify-center rounded-md bg-[#FACF39] px-4 py-3 text-sm font-semibold text-black shadow-sm transition-all hover:bg-[#ffe067] disabled:cursor-not-allowed disabled:opacity-50"
             >
-              {loading ? "Signing in..." : "Sign in"}
+              {isLoading ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : null}
+              Sign In
+              <ArrowRight className="ml-2 h-4 w-4" />
             </button>
           </form>
 
-          <div className="mt-6 text-center">
-            <p className="text-sm text-neutral-600 dark:text-neutral-400">
-              Don&apos;t have an account?{" "}
-              <Link
-                href="/auth/signup"
-                className="font-medium text-[#facf39] transition-colors hover:text-[#ffe067]"
-              >
-                Sign up
-              </Link>
-            </p>
+          <div className="mt-6 text-center text-sm text-neutral-400">
+            First time here?{" "}
+            <button
+              type="button"
+              onClick={() => {
+                setError(null);
+                setMode("claim-form");
+              }}
+              className="font-medium text-[#FACF39] transition-colors hover:text-[#ffe067] hover:underline"
+            >
+              Claim your account
+            </button>
           </div>
         </div>
       </div>

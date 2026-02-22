@@ -5,7 +5,7 @@ export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get("code");
   const domain = searchParams.get("domain"); // Get domain from callback URL
-  const next = searchParams.get("next") ?? "/onboarding";
+  const next = searchParams.get("next") ?? "/admin";
 
   if (code) {
     const supabase = await createClient();
@@ -17,9 +17,10 @@ export async function GET(request: Request) {
       // Build redirect URL with proper domain parameter for localhost
       let redirectUrl: string;
 
-      if (isLocalEnv && domain) {
-        // Local development - preserve domain parameter
-        redirectUrl = `${origin}${next}?domain=${domain}`;
+      if (isLocalEnv) {
+        // Local development - use origin (http://localhost:3000)
+        const suffix = domain ? `?domain=${domain}` : "";
+        redirectUrl = `${origin}${next}${suffix}`;
       } else if (forwardedHost) {
         // Production with forwarded host
         redirectUrl = `https://${forwardedHost}${next}`;

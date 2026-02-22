@@ -1,7 +1,7 @@
 # Project Status
 
 **Version:** 0.1.0
-**Last Updated:** 2026-02-21
+**Last Updated:** 2026-02-22
 
 ## Feature Status
 
@@ -17,7 +17,7 @@
 | Admin dashboard shell | Working | Sidebar nav, breadcrumbs, collapsible, mobile sheet           |
 | Admin overview        | Working | KPI cards, section summaries, recent activity, quick links    |
 | Admin routing         | Working | /admin/\* path-based auth, test subdomain redirects to /admin |
-| CRM system            | Working | Master contacts, activities, multi-source tracking            |
+| CRM system            | Working | Contacts, leads, voice notes, bulk import, team tracking, mobile responsive |
 | Waitlist intake       | Working | Form submission with CRM integration                          |
 | Questionnaire         | Working | Full alignment survey with 7 sections                         |
 | Event waivers         | Working | Digital signature capture for liability                       |
@@ -32,17 +32,17 @@
 
 ## Known Limitations
 
-- Admin hub refactor in progress — Sessions 2-5 pending (Analytics, CRM refactor, Team+Finance, CMS+Ecosystem+Tooling)
+- Admin hub refactor in progress — Sessions 2, 4, 5 pending (Analytics, Team+Finance, CMS+Ecosystem+Tooling)
 - DB connection uses Supabase pooler (direct host no longer resolves)
 
 ## Recent Changes
 
 | Date       | Description                                                                            |
 | ---------- | -------------------------------------------------------------------------------------- |
+| 2026-02-22 | CRM enhancements: team tracking (addedBy), bulk phone import, voice notes, mobile responsive |
+| 2026-02-22 | Contact detail redesign: consolidated header, compact timeline, voice note playback    |
+| 2026-02-22 | CRM pages: contacts list, leads list, dashboard — all mobile responsive                |
 | 2026-02-21 | Pathway page: interactive timeline, 4 phases, gallery strips, scroll animations        |
 | 2026-02-21 | About page rewrite: cohesive blog-style story with CI philosophy                       |
-| 2026-02-21 | Emergence gallery: 227 JPGs → WebP, DB records, GalleryStrip component                |
-| 2026-02-21 | DB connection fix: migrated to Supabase pooler (direct host DNS failure)               |
-| 2026-02-21 | Values page: removed blockquotes; Homepage: removed "100+ creators" line               |
 
 See `git log --oneline` for full history.

@@ -72,13 +72,12 @@ export async function middleware(request: NextRequest) {
     analyticsResponse = NextResponse.next();
   }
 
-  // Update Supabase session and get approval status
-  const { supabaseResponse, user, approvalStatus } =
-    await updateSession(request);
+  // Update Supabase session
+  const { supabaseResponse, user } = await updateSession(request);
 
   if (process.env.NODE_ENV === "development") {
     console.log(
-      `🌐 [Middleware] ${hostname}${pathname} | User: ${user?.email || "None"} | Status: ${approvalStatus || "N/A"}`
+      `🌐 [Middleware] ${hostname}${pathname} | User: ${user?.email || "None"}`
     );
   }
 
@@ -113,42 +112,12 @@ export async function middleware(request: NextRequest) {
       });
       return redirectResponse;
     }
-
-    // Check approval status
-    if (approvalStatus === "pending" || approvalStatus === "rejected") {
-      if (pathname === "/auth/pending-approval") {
-        analyticsResponse.headers.forEach((value, key) => {
-          if (key.toLowerCase() === "set-cookie") {
-            supabaseResponse.headers.append(key, value);
-          }
-        });
-        return supabaseResponse;
-      }
-
-      const pendingUrl = new URL(
-        "/auth/pending-approval",
-        request.nextUrl.origin
-      );
-      if (process.env.NODE_ENV === "development") {
-        console.log(
-          `⏳ [Middleware] User not approved (${approvalStatus}), redirecting to pending-approval`
-        );
-      }
-
-      const redirectResponse = NextResponse.redirect(pendingUrl);
-      analyticsResponse.headers.forEach((value, key) => {
-        if (key.toLowerCase() === "set-cookie") {
-          redirectResponse.headers.append(key, value);
-        }
-      });
-      return redirectResponse;
-    }
   }
 
-  // Public routes: If logged in and trying to access login/signup, redirect to home
-  if ((pathname === "/login" || pathname === "/auth/signup") && user) {
+  // Public routes: If logged in and trying to access login, redirect to admin
+  if (pathname === "/login" && user) {
     const redirectResponse = NextResponse.redirect(
-      new URL("/", request.nextUrl.origin)
+      new URL("/admin", request.nextUrl.origin)
     );
     analyticsResponse.headers.forEach((value, key) => {
       if (key.toLowerCase() === "set-cookie") {

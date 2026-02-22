@@ -7,11 +7,12 @@
  * need to use are documented accordingly near the end.
  */
 
-import { initTRPC } from "@trpc/server";
+import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
 import { ZodError } from "zod";
 
 import { db } from "~/server/db";
+import { createClient } from "~/lib/supabase/server";
 
 /**
  * 1. CONTEXT
@@ -109,6 +110,63 @@ const timingMiddleware = t.middleware(async ({ next, path }) => {
 export const publicProcedure = t.procedure.use(timingMiddleware);
 
 /**
- * Protected procedures can be added here when implementing authentication
- * with Supabase Auth or other auth providers
+ * Protected (admin) procedure
+ * Requires Supabase Auth session + approved user profile
  */
+const authMiddleware = t.middleware(async ({ next }) => {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    throw new TRPCError({
+      code: "UNAUTHORIZED",
+      message: "Not authenticated",
+    });
+  }
+
+  return next({ ctx: { user } });
+});
+
+export const protectedProcedure = t.procedure
+  .use(timingMiddleware)
+  .use(authMiddleware);
+
+/**
+ * Admin-only procedure
+ * Requires authenticated user with "admin" or "founder" team role
+ */
+const adminRoleMiddleware = t.middleware(async ({ next }) => {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    throw new TRPCError({
+      code: "UNAUTHORIZED",
+      message: "Not authenticated",
+    });
+  }
+
+  const { data: profile } = await supabase
+    .from("web-eco_user_profile")
+    .select("team_roles")
+    .eq("id", user.id)
+    .single();
+
+  const roles = (profile?.team_roles as string[]) ?? [];
+  if (!roles.includes("admin") && !roles.includes("founder")) {
+    throw new TRPCError({
+      code: "FORBIDDEN",
+      message: "Admin role required",
+    });
+  }
+
+  return next({ ctx: { user } });
+});
+
+export const adminProcedure = t.procedure
+  .use(timingMiddleware)
+  .use(adminRoleMiddleware);

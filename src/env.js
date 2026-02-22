@@ -18,6 +18,7 @@ export const env = createEnv({
     IP_HASH_SALT: z.string().optional(),
     KLAVIYO_API_KEY: z.string().optional(),
     KLAVIYO_METRIC_ID: z.string().optional(),
+    SUPABASE_SERVICE_ROLE_KEY: z.string().min(1),
   },
 
   /**
@@ -50,6 +51,7 @@ export const env = createEnv({
     IP_HASH_SALT: process.env.IP_HASH_SALT,
     KLAVIYO_API_KEY: process.env.KLAVIYO_API_KEY,
     KLAVIYO_METRIC_ID: process.env.KLAVIYO_METRIC_ID,
+    SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially

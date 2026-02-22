@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
+import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import {
   contacts,
   questionnaireResponses,
@@ -10,7 +10,7 @@ import {
 import { desc, sql } from "drizzle-orm";
 
 export const adminRouter = createTRPCRouter({
-  dashboardStats: publicProcedure.query(async ({ ctx }) => {
+  dashboardStats: protectedProcedure.query(async ({ ctx }) => {
     const [
       contactsCount,
       questionnaireCount,
@@ -58,7 +58,7 @@ export const adminRouter = createTRPCRouter({
     };
   }),
 
-  tableData: publicProcedure
+  tableData: protectedProcedure
     .input(
       z.object({
         table: z.enum(["contacts", "questionnaire", "waivers"]),

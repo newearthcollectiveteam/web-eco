@@ -201,18 +201,11 @@ function EcosystemMapContent() {
                     <span>/login</span>
                   </Link>
                   <Link
-                    href="/auth/signup"
+                    href="/auth/reset-password"
                     className="flex items-center gap-2 text-sm text-neutral-600 transition-colors hover:text-[#facf39] dark:text-neutral-400"
                   >
                     <ArrowRight className="h-3 w-3" />
-                    <span>/auth/signup</span>
-                  </Link>
-                  <Link
-                    href="/auth/forgot-password"
-                    className="flex items-center gap-2 text-sm text-neutral-600 transition-colors hover:text-[#facf39] dark:text-neutral-400"
-                  >
-                    <ArrowRight className="h-3 w-3" />
-                    <span>/auth/forgot-password</span>
+                    <span>/auth/reset-password</span>
                   </Link>
                   <Link
                     href="/onboarding"

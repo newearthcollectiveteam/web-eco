@@ -28,13 +28,17 @@ _None documented_
 - [ ] Analytics page at /admin/analytics (KPI row, submission sources, trends)
 - [ ] tRPC overviewStats procedure if needed
 
-### Session 3: CRM Refactor
+### Session 3: CRM Refactor (DONE)
 
-- [ ] CRM dashboard with pipeline stats, source breakdown, contact growth
-- [ ] All Contacts page (/admin/crm/contacts) with filters, search, pagination
-- [ ] Leads page (/admin/crm/leads) with filtered view
-- [ ] Create/Edit/Delete contact modals
-- [ ] tRPC CRM router updates (getPipelineStats, paginated getContacts)
+- [x] CRM dashboard with pipeline stats, source breakdown, contact growth
+- [x] All Contacts page (/admin/crm/contacts) with filters, search, pagination
+- [x] Leads page (/admin/crm/leads) with filtered view
+- [x] Create/Edit/Delete contact modals
+- [x] tRPC CRM router updates (getPipelineStats, paginated getContacts)
+- [x] Team tracking (addedBy field, filter by team member)
+- [x] Bulk import (Contact Picker API + CSV fallback)
+- [x] Voice notes (record, upload, playback with progress)
+- [x] Mobile responsive (tables → cards, stacked filters)
 
 ### Session 4: Team + Finance
 

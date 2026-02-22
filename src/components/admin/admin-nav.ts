@@ -66,7 +66,6 @@ export const ADMIN_SIDEBAR_NAV: NavItem[] = [
     icon: FileText,
     items: [
       { title: "Gallery", href: "/admin/cms/gallery" },
-      { title: "Email Testing", href: "/admin/cms/email-testing" },
     ],
   },
   {

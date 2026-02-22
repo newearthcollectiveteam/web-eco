@@ -18,6 +18,7 @@ function QuestionnaireFlow() {
   const [status, setStatus] = useState<"idle" | "submitting" | "error">("idle");
   const [error, setError] = useState<string | null>(null);
   const submittingRef = useRef(false);
+  const abandonSentRef = useRef(false);
 
   const totalScreens = screens.length;
   const screen = screens[idx]!;
@@ -27,6 +28,58 @@ function QuestionnaireFlow() {
   useEffect(() => {
     window.scrollTo({ left: 0, top: 0, behavior: "instant" });
   }, [idx]);
+
+  // Abandon detection: fire when user leaves after providing email but before submitting.
+  // Uses a 60s debounce on visibilitychange so brief app-switches (checking a text)
+  // don't trigger a premature reminder. beforeunload fires immediately.
+  const abandonTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    const buildPayload = () => ({
+      email: data.email,
+      name: data.fullName || undefined,
+      preferredName: data.preferredName || undefined,
+      screenIndex: idx,
+      referrer: searchParams.get("referrer") || undefined,
+      refSource: searchParams.get("refSource") || undefined,
+    });
+
+    const fireAbandon = () => {
+      if (abandonSentRef.current || submittingRef.current) return;
+      if (idx < 2 || !data.email.includes("@")) return;
+      abandonSentRef.current = true;
+
+      navigator.sendBeacon(
+        "/api/questionnaire/abandon",
+        new Blob([JSON.stringify(buildPayload())], { type: "application/json" })
+      );
+    };
+
+    const onVisibilityChange = () => {
+      if (document.visibilityState === "hidden") {
+        // Start 60s timer — only fire if they don't come back
+        abandonTimerRef.current = setTimeout(fireAbandon, 60_000);
+      } else {
+        // Came back — cancel the timer
+        if (abandonTimerRef.current) {
+          clearTimeout(abandonTimerRef.current);
+          abandonTimerRef.current = null;
+        }
+      }
+    };
+
+    // beforeunload = actually leaving the page, fire immediately
+    const onBeforeUnload = () => fireAbandon();
+
+    document.addEventListener("visibilitychange", onVisibilityChange);
+    window.addEventListener("beforeunload", onBeforeUnload);
+
+    return () => {
+      document.removeEventListener("visibilitychange", onVisibilityChange);
+      window.removeEventListener("beforeunload", onBeforeUnload);
+      if (abandonTimerRef.current) clearTimeout(abandonTimerRef.current);
+    };
+  }, [idx, data.email, data.fullName, data.preferredName, searchParams]);
 
   // Pre-fill from URL params (name/email/phone + referrer)
   useEffect(() => {
@@ -155,6 +208,9 @@ function QuestionnaireFlow() {
         };
         throw new Error(body.details || body.error || "Failed to submit");
       }
+
+      // Prevent abandon beacon from firing during redirect
+      abandonSentRef.current = true;
 
       // Store name for thank-you page QR code
       try {

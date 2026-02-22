@@ -23,11 +23,13 @@ export default function ThankYouPage() {
       setDisplayName(referrerName);
 
       const url = `https://joinnewearthcollective.com/questionnaire?referrer=${encodeURIComponent(referrerName)}`;
-      void QRCode.toDataURL(url, {
+      QRCode.toDataURL(url, {
         width: 280,
         margin: 2,
         color: { dark: "#000000", light: "#FFFFFF" },
-      }).then(setQrDataUrl);
+      })
+        .then(setQrDataUrl)
+        .catch(() => undefined);
     } catch {
       // sessionStorage unavailable or parse error — non-critical
     }

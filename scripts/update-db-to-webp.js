@@ -1,20 +1,20 @@
-import postgres from 'postgres';
-import { config } from 'dotenv';
-import { join, dirname } from 'path';
-import { fileURLToPath } from 'url';
+import postgres from "postgres";
+import { config } from "dotenv";
+import { join, dirname } from "path";
+import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 // Load environment variables
-config({ path: join(__dirname, '../.env') });
+config({ path: join(__dirname, "../.env") });
 
 // Initialize database client
 const sql = postgres(process.env.DATABASE_URL);
 
 async function updateToWebP() {
   try {
-    console.log('🔄 Updating database to use WebP images...\n');
+    console.log("🔄 Updating database to use WebP images...\n");
 
     // Get all gallery images
     const images = await sql`
@@ -31,8 +31,8 @@ async function updateToWebP() {
     for (const image of images) {
       try {
         // Convert .jpg to .webp in both URL and path
-        const newUrl = image.image_url.replace(/\.jpg$/i, '.webp');
-        const newPath = image.storage_path.replace(/\.jpg$/i, '.webp');
+        const newUrl = image.image_url.replace(/\.jpg$/i, ".webp");
+        const newPath = image.storage_path.replace(/\.jpg$/i, ".webp");
 
         await sql`
           UPDATE "web-eco_gallery_image"
@@ -65,7 +65,9 @@ async function updateToWebP() {
         SET cover_image_url = ${coverImage.image_url}
         WHERE id = 1
       `;
-      console.log(`\n✅ Updated gallery cover image to: ${coverImage.image_url}`);
+      console.log(
+        `\n✅ Updated gallery cover image to: ${coverImage.image_url}`
+      );
     }
 
     console.log(`\n📊 Update Summary:`);
@@ -73,13 +75,13 @@ async function updateToWebP() {
     console.log(`   ❌ Errors: ${errorCount}`);
     console.log(`   📸 Total: ${images.length}\n`);
 
-    console.log('🎉 Database updated successfully!');
-    console.log('📝 All gallery images now point to optimized WebP files\n');
+    console.log("🎉 Database updated successfully!");
+    console.log("📝 All gallery images now point to optimized WebP files\n");
 
     await sql.end();
     process.exit(0);
   } catch (error) {
-    console.error('\n❌ Update failed:', error);
+    console.error("\n❌ Update failed:", error);
     await sql.end();
     process.exit(1);
   }

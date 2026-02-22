@@ -1,10 +1,12 @@
 # Supabase Schema Audit Report
+
 **Date:** 2025-01-15
 **Status:** ✅ HEALTHY - Minor cleanup recommended
 
 ## 🎯 Executive Summary
 
 Your Supabase schema is **well-designed and coherent**. The database follows best practices with:
+
 - ✅ Proper foreign key relationships
 - ✅ Cascade deletes configured correctly
 - ✅ Comprehensive tracking system
@@ -20,9 +22,11 @@ Your Supabase schema is **well-designed and coherent**. The database follows bes
 ### Core Tables (13 total)
 
 #### **1. Authentication & User Management**
+
 - `user_profile` - Supabase Auth integration (UUID primary key)
 
 #### **2. CRM System** (Master contact database)
+
 - `contact` - **Master CRM table** ✅
 - `contact_source` - Multi-source tracking
 - `contact_activity` - Activity log
@@ -30,10 +34,12 @@ Your Supabase schema is **well-designed and coherent**. The database follows bes
 - `questionnaire_response` - Community alignment survey
 
 #### **3. Content Management**
+
 - `gallery` - Photo gallery organization
 - `gallery_image` - Individual gallery photos
 
 #### **4. Analytics & Tracking**
+
 - `session` - Browser sessions (anonymous + known)
 - `event` - All user interactions
 - `email_link` - Trackable email links
@@ -41,6 +47,7 @@ Your Supabase schema is **well-designed and coherent**. The database follows bes
 - `user_identity_map` - Anonymous → Known user mapping
 
 #### **5. Legacy/Example**
+
 - `post` - ⚠️ **Example table** (can be removed)
 
 ---
@@ -48,6 +55,7 @@ Your Supabase schema is **well-designed and coherent**. The database follows bes
 ## ✅ What's Working Well
 
 ### 1. **Foreign Key Relationships**
+
 All relationships properly configured:
 
 ```sql
@@ -65,11 +73,13 @@ All relationships properly configured:
 ```
 
 **Cascade Strategy:**
+
 - ✅ Deleting a contact removes all related data (activities, sources, questionnaire)
 - ✅ Anonymous sessions/events preserved if contact deleted (SET NULL)
 - ✅ Gallery images deleted when gallery is deleted
 
 ### 2. **Consent & Compliance** ✅
+
 Recently added fields are **perfect**:
 
 ```sql
@@ -80,7 +90,9 @@ Recently added fields are **perfect**:
 ```
 
 ### 3. **Tracking System** ✅
+
 Comprehensive analytics setup:
+
 - ✅ Anonymous visitor tracking (anonymousId)
 - ✅ Session management (with device/browser info)
 - ✅ Event logging (page views, clicks, form submissions)
@@ -88,6 +100,7 @@ Comprehensive analytics setup:
 - ✅ User journey reconstruction (anonymous → known)
 
 ### 4. **Data Integrity**
+
 - ✅ Unique constraints on critical fields (email, unsubscribe_token)
 - ✅ NOT NULL constraints on required fields
 - ✅ Default values set appropriately
@@ -103,6 +116,7 @@ Comprehensive analytics setup:
 **Issue:** Should prevent duplicate (contactId, source) combinations
 
 **Current code comment:**
+
 ```typescript
 // Note: Composite unique constraint (contactId, source) should be added via database migration
 ```
@@ -126,6 +140,7 @@ UNIQUE ("contact_id", "source");
 **Status:** ⚠️ Example/placeholder table
 
 **Current schema:**
+
 ```typescript
 // Example table - can be removed when adding real application tables
 export const posts = createTable("post", {
@@ -137,6 +152,7 @@ export const posts = createTable("post", {
 ```
 
 **Recommendation:**
+
 - **If not used:** Remove from schema.ts and create migration to drop table
 - **If used:** Update comment to reflect actual purpose
 
@@ -204,6 +220,7 @@ ON "web-eco_user_identity_map" ("contact_id");
 **Current metadata usage:**
 
 **contacts.metadata:**
+
 ```javascript
 {
   waitlistMessage: string,
@@ -215,6 +232,7 @@ ON "web-eco_user_identity_map" ("contact_id");
 ```
 
 **Recommendation:**
+
 - ✅ Current usage is appropriate (truly dynamic fields)
 - ⚠️ **Future:** If `questionnaireCompleted` becomes heavily queried, consider promoting to dedicated column
 
@@ -256,15 +274,18 @@ WHERE email_consent = false AND sms_consent = false;
 ## 🎯 Priority Action Items
 
 ### **High Priority** (Do Now)
+
 1. ✅ ~~Add consent tracking fields~~ **DONE**
 2. 🔧 Add performance indexes (see section 3)
 3. 🔧 Add composite unique constraint on contact_source
 
 ### **Medium Priority** (This Week)
+
 4. 🗑️ Remove or document `post` table
 5. 📊 Run data cleanup queries to check for orphans
 
 ### **Low Priority** (Future Optimization)
+
 6. 📈 Monitor metadata usage, consider promoting heavy fields to columns
 7. 🔍 Review query patterns, add additional indexes as needed
 
@@ -338,6 +359,7 @@ COMMENT ON TABLE "web-eco_contact_activity" IS 'Activity log for all contact int
 **Overall Grade: A-**
 
 Your Supabase schema is:
+
 - ✅ **Well-structured** - Clear separation of concerns
 - ✅ **Scalable** - Proper relationships and cascade rules
 - ✅ **Compliant** - GDPR/CAN-SPAM ready
@@ -345,6 +367,7 @@ Your Supabase schema is:
 - ⚠️ **Needs minor optimization** - Add indexes for performance
 
 **Recommended Next Steps:**
+
 1. Run the schema cleanup migration (indexes + constraints)
 2. Remove or document the `post` table
 3. Test query performance with indexes

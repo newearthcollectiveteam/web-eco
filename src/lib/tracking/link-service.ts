@@ -3,10 +3,10 @@
  * Generate trackable links for emails with UTM parameters and tracking tokens
  */
 
-import { db } from '~/server/db';
-import { emailLinks } from '~/server/db/schema';
-import { eq, sql } from 'drizzle-orm';
-import { generateEmailToken, slugify } from './utils';
+import { db } from "~/server/db";
+import { emailLinks } from "~/server/db/schema";
+import { eq, sql } from "drizzle-orm";
+import { generateEmailToken, slugify } from "./utils";
 
 export interface TrackedLinkParams {
   contactId: number;
@@ -35,22 +35,22 @@ export async function generateTrackedLink(
   const baseUrl =
     params.destinationDomain ||
     process.env.NEXT_PUBLIC_BASE_URL ||
-    'https://joinnewearthcollective.com';
+    "https://joinnewearthcollective.com";
 
   // Build full destination URL
   const url = new URL(params.destinationPath, baseUrl);
 
   // Add tracking token
-  url.searchParams.set('et', token);
+  url.searchParams.set("et", token);
 
   // Add UTM parameters
-  url.searchParams.set('utm_source', params.utmSource || 'klaviyo');
-  url.searchParams.set('utm_medium', params.utmMedium || 'email');
-  url.searchParams.set('utm_campaign', params.utmCampaign || params.emailType);
+  url.searchParams.set("utm_source", params.utmSource || "klaviyo");
+  url.searchParams.set("utm_medium", params.utmMedium || "email");
+  url.searchParams.set("utm_campaign", params.utmCampaign || params.emailType);
 
   if (params.linkText) {
     url.searchParams.set(
-      'utm_content',
+      "utm_content",
       params.utmContent || slugify(params.linkText)
     );
   }
@@ -81,7 +81,9 @@ export async function getEmailLinkByToken(token: string) {
 /**
  * Increment click count for an email link
  */
-export async function incrementEmailLinkClick(emailLinkId: number): Promise<void> {
+export async function incrementEmailLinkClick(
+  emailLinkId: number
+): Promise<void> {
   const now = new Date();
 
   await db
@@ -100,7 +102,9 @@ export async function incrementEmailLinkClick(emailLinkId: number): Promise<void
 export async function generateMultipleTrackedLinks(
   links: TrackedLinkParams[]
 ): Promise<string[]> {
-  const results = await Promise.all(links.map((link) => generateTrackedLink(link)));
+  const results = await Promise.all(
+    links.map((link) => generateTrackedLink(link))
+  );
   return results;
 }
 
@@ -153,7 +157,9 @@ export async function getContactEmailLinks(contactId: number) {
  * Get email link performance by type
  */
 export async function getEmailLinkPerformanceByType(emailType?: string) {
-  const whereClause = emailType ? eq(emailLinks.emailType, emailType) : undefined;
+  const whereClause = emailType
+    ? eq(emailLinks.emailType, emailType)
+    : undefined;
 
   const links = await db.query.emailLinks.findMany({
     where: whereClause,
@@ -204,7 +210,8 @@ export async function getEmailLinkPerformanceByType(emailType?: string) {
     totalClicks: group.totalClicks,
     uniqueClickers: group.uniqueClickers.size,
     conversions: group.conversions,
-    clickRate: group.totalSent > 0 ? (group.totalClicks / group.totalSent) * 100 : 0,
+    clickRate:
+      group.totalSent > 0 ? (group.totalClicks / group.totalSent) * 100 : 0,
     conversionRate:
       group.totalClicks > 0 ? (group.conversions / group.totalClicks) * 100 : 0,
   }));
@@ -219,11 +226,11 @@ export async function generateWaitlistWelcomeLink(params: {
 }): Promise<string> {
   return await generateTrackedLink({
     contactId: params.contactId,
-    destinationPath: '/global',
-    emailType: 'waitlist-welcome',
+    destinationPath: "/global",
+    emailType: "waitlist-welcome",
     emailSubject: `Welcome to New Earth Collective, ${params.name}!`,
-    linkText: 'Explore Our Community',
-    utmCampaign: 'waitlist-welcome',
+    linkText: "Explore Our Community",
+    utmCampaign: "waitlist-welcome",
   });
 }
 
@@ -238,10 +245,10 @@ export async function generateEventInviteLink(params: {
   return await generateTrackedLink({
     contactId: params.contactId,
     destinationPath: `/event/${params.eventSlug}`,
-    destinationDomain: 'launch.joinnewearthcollective.com',
-    emailType: 'event-invitation',
+    destinationDomain: "launch.joinnewearthcollective.com",
+    emailType: "event-invitation",
     emailSubject: `You're Invited: ${params.eventName}`,
-    linkText: 'Register Now',
+    linkText: "Register Now",
     utmCampaign: `event-${params.eventSlug}`,
   });
 }

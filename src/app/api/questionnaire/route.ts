@@ -17,9 +17,15 @@ import {
   setCookieHeader,
   generateAnonymousId,
 } from "~/lib/tracking/utils";
-import { identifyUser, trackEvent, markEmailClickConverted } from "~/lib/tracking/analytics-service";
+import {
+  identifyUser,
+  trackEvent,
+  markEmailClickConverted,
+} from "~/lib/tracking/analytics-service";
+import { Resend } from "resend";
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(request: NextRequest) {
   let body: unknown;
@@ -338,7 +344,8 @@ export async function POST(request: NextRequest) {
 
     // Link anonymous visitor to contact (identify user)
     const cookies = parseCookies(request.headers.get("cookie"));
-    const anonymousId = cookies[COOKIE_NAMES.ANONYMOUS_ID] || generateAnonymousId();
+    const anonymousId =
+      cookies[COOKIE_NAMES.ANONYMOUS_ID] || generateAnonymousId();
     const sessionId = cookies[COOKIE_NAMES.SESSION_ID];
     const contactIdCookie = cookies[COOKIE_NAMES.CONTACT_ID];
 
@@ -476,23 +483,51 @@ export async function POST(request: NextRequest) {
       }
     );
 
-    // Mark any recent email click as converted
-    const recentClick = await db.query.emailLinkClicks.findFirst({
-      where: eq(emailLinkClicks.contactId, contactId),
-      orderBy: [desc(emailLinkClicks.clickedAt)],
-    });
-    if (recentClick) {
-      await markEmailClickConverted({
-        emailLinkId: recentClick.emailLinkId,
-        contactId,
-        formType: "questionnaire",
+    // Send confirmation email via Resend (non-blocking)
+    const displayName = preferredName || name.split(" ")[0] || "there";
+    resend
+      .emails.send({
+        from: "New Earth Collective <noreply@joinnewearthcollective.com>",
+        to: email,
+        subject: "Welcome to the Collective",
+        html: `
+          <div style="font-family: sans-serif; max-width: 520px; margin: 0 auto; color: #222;">
+            <h2 style="color: #f6c43f;">Hey ${displayName}!</h2>
+            <p>Thank you for completing the Community Alignment Questionnaire. We've received your responses and are excited to get to know you better.</p>
+            <p>Our team will review your answers and reach out soon with next steps. In the meantime, feel free to explore:</p>
+            <ul>
+              <li><a href="https://joinnewearthcollective.com/about" style="color: #f6c43f;">About the Collective</a></li>
+              <li><a href="https://joinnewearthcollective.com/values" style="color: #f6c43f;">Our Values</a></li>
+              <li><a href="https://joinnewearthcollective.com/pathway" style="color: #f6c43f;">The Pathway</a></li>
+            </ul>
+            <p>With love,<br/>The New Earth Collective Team</p>
+          </div>
+        `,
+      })
+      .catch((err) => console.error("Resend confirmation email failed:", err));
+
+    // Mark any recent email click as converted (non-blocking)
+    try {
+      const recentClick = await db.query.emailLinkClicks.findFirst({
+        where: eq(emailLinkClicks.contactId, contactId),
+        orderBy: [desc(emailLinkClicks.clickedAt)],
       });
+      if (recentClick) {
+        await markEmailClickConverted({
+          emailLinkId: recentClick.emailLinkId,
+          contactId,
+          formType: "questionnaire",
+        });
+      }
+    } catch (err) {
+      console.error("Email click conversion tracking failed:", err);
     }
 
     return response;
   } catch (error) {
     console.error("Questionnaire submission failed:", error);
-    const errorMessage = error instanceof Error ? error.message : "Unknown error";
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error";
     console.error("Error details:", errorMessage);
     return NextResponse.json(
       { error: "Failed to submit questionnaire", details: errorMessage },

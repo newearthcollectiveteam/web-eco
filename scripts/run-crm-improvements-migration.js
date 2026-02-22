@@ -10,29 +10,31 @@
  * 6. Creates indexes for performance
  */
 
-import postgres from 'postgres';
-import * as dotenv from 'dotenv';
+import postgres from "postgres";
+import * as dotenv from "dotenv";
 
 dotenv.config();
 
 const DATABASE_URL = process.env.DATABASE_URL;
 
 if (!DATABASE_URL) {
-  console.error('❌ DATABASE_URL not found in environment');
+  console.error("❌ DATABASE_URL not found in environment");
   process.exit(1);
 }
 
-console.log('🔄 Connecting to database...');
-console.log(`📍 Database: ${DATABASE_URL.split('@')[1]?.split('/')[0] || 'local'}`);
+console.log("🔄 Connecting to database...");
+console.log(
+  `📍 Database: ${DATABASE_URL.split("@")[1]?.split("/")[0] || "local"}`
+);
 
 const sql = postgres(DATABASE_URL);
 
 async function runMigration() {
   try {
-    console.log('\n🚀 Starting CRM improvements migration...\n');
+    console.log("\n🚀 Starting CRM improvements migration...\n");
 
     // Step 1: Check if migration already ran
-    console.log('📋 Step 1: Checking if migration already ran...');
+    console.log("📋 Step 1: Checking if migration already ran...");
     try {
       const result = await sql`
         SELECT column_name
@@ -42,32 +44,39 @@ async function runMigration() {
       `;
 
       if (result.length > 0) {
-        console.log('⚠️  Migration appears to have already run (first_source column exists)');
-        console.log('⚠️  Skipping to later steps...\n');
+        console.log(
+          "⚠️  Migration appears to have already run (first_source column exists)"
+        );
+        console.log("⚠️  Skipping to later steps...\n");
       }
     } catch (e) {
       // Column doesn't exist yet, continue with migration
-      console.log('✅ Migration not yet applied, proceeding...\n');
+      console.log("✅ Migration not yet applied, proceeding...\n");
     }
 
     // Step 2: Rename source to firstSource in contacts table
-    console.log('📋 Step 2: Renaming contacts.source to contacts.first_source...');
+    console.log(
+      "📋 Step 2: Renaming contacts.source to contacts.first_source..."
+    );
     try {
       await sql`
         ALTER TABLE "web-eco_contact"
         RENAME COLUMN source TO first_source
       `;
-      console.log('✅ Column renamed successfully\n');
+      console.log("✅ Column renamed successfully\n");
     } catch (e) {
-      if (e.message.includes('does not exist') || e.message.includes('already exists')) {
-        console.log('⚠️  Column already renamed, skipping...\n');
+      if (
+        e.message.includes("does not exist") ||
+        e.message.includes("already exists")
+      ) {
+        console.log("⚠️  Column already renamed, skipping...\n");
       } else {
         throw e;
       }
     }
 
     // Step 3: Add default values for JSONB fields if they're NULL
-    console.log('📋 Step 3: Setting default JSONB values...');
+    console.log("📋 Step 3: Setting default JSONB values...");
     await sql`
       UPDATE "web-eco_contact"
       SET tags = '[]'::jsonb
@@ -78,10 +87,10 @@ async function runMigration() {
       SET metadata = '{}'::jsonb
       WHERE metadata IS NULL
     `;
-    console.log('✅ Default JSONB values set\n');
+    console.log("✅ Default JSONB values set\n");
 
     // Step 4: Create contact_sources table
-    console.log('📋 Step 4: Creating contact_sources table...');
+    console.log("📋 Step 4: Creating contact_sources table...");
     await sql`
       CREATE TABLE IF NOT EXISTS "web-eco_contact_source" (
         id SERIAL PRIMARY KEY,
@@ -95,10 +104,10 @@ async function runMigration() {
         CONSTRAINT unique_contact_source UNIQUE (contact_id, source)
       )
     `;
-    console.log('✅ contact_sources table created\n');
+    console.log("✅ contact_sources table created\n");
 
     // Step 5: Add foreign key for contact_sources
-    console.log('📋 Step 5: Adding foreign key constraints...');
+    console.log("📋 Step 5: Adding foreign key constraints...");
     try {
       await sql`
         ALTER TABLE "web-eco_contact_source"
@@ -107,17 +116,17 @@ async function runMigration() {
         REFERENCES "web-eco_contact"(id)
         ON DELETE CASCADE
       `;
-      console.log('✅ Foreign key added to contact_sources\n');
+      console.log("✅ Foreign key added to contact_sources\n");
     } catch (e) {
-      if (e.message.includes('already exists')) {
-        console.log('⚠️  Foreign key already exists, skipping...\n');
+      if (e.message.includes("already exists")) {
+        console.log("⚠️  Foreign key already exists, skipping...\n");
       } else {
         throw e;
       }
     }
 
     // Step 6: Backfill contact_sources from existing data
-    console.log('📋 Step 6: Backfilling contact_sources from contacts...');
+    console.log("📋 Step 6: Backfilling contact_sources from contacts...");
     const backfillResult = await sql`
       INSERT INTO "web-eco_contact_source" (contact_id, source, first_interaction, last_interaction, interaction_count)
       SELECT
@@ -129,10 +138,14 @@ async function runMigration() {
       FROM "web-eco_contact"
       WHERE id NOT IN (SELECT contact_id FROM "web-eco_contact_source")
     `;
-    console.log(`✅ Backfilled ${backfillResult.count} contact sources from contacts table\n`);
+    console.log(
+      `✅ Backfilled ${backfillResult.count} contact sources from contacts table\n`
+    );
 
     // Step 7: Backfill from waitlist_intake
-    console.log('📋 Step 7: Backfilling contact_sources from waitlist_intake...');
+    console.log(
+      "📋 Step 7: Backfilling contact_sources from waitlist_intake..."
+    );
     const waitlistBackfill = await sql`
       INSERT INTO "web-eco_contact_source" (contact_id, source, first_interaction, last_interaction, interaction_count)
       SELECT
@@ -149,10 +162,12 @@ async function runMigration() {
         AND cs.source = "web-eco_waitlist_intake".source
       )
     `;
-    console.log(`✅ Backfilled ${waitlistBackfill.count} contact sources from waitlist_intake\n`);
+    console.log(
+      `✅ Backfilled ${waitlistBackfill.count} contact sources from waitlist_intake\n`
+    );
 
     // Step 8: Create indexes
-    console.log('📋 Step 8: Creating indexes...');
+    console.log("📋 Step 8: Creating indexes...");
 
     const indexes = [
       sql`CREATE INDEX IF NOT EXISTS idx_contact_sources_contact_id ON "web-eco_contact_source"(contact_id)`,
@@ -169,31 +184,34 @@ async function runMigration() {
       await indexQuery;
     }
 
-    console.log('✅ All indexes created\n');
+    console.log("✅ All indexes created\n");
 
     // Step 9: Verify the migration
-    console.log('📋 Step 9: Verifying migration...');
-    const contactCount = await sql`SELECT COUNT(*) as count FROM "web-eco_contact"`;
-    const sourceCount = await sql`SELECT COUNT(*) as count FROM "web-eco_contact_source"`;
-    const activityCount = await sql`SELECT COUNT(*) as count FROM "web-eco_contact_activity"`;
-    const waitlistCount = await sql`SELECT COUNT(*) as count FROM "web-eco_waitlist_intake"`;
+    console.log("📋 Step 9: Verifying migration...");
+    const contactCount =
+      await sql`SELECT COUNT(*) as count FROM "web-eco_contact"`;
+    const sourceCount =
+      await sql`SELECT COUNT(*) as count FROM "web-eco_contact_source"`;
+    const activityCount =
+      await sql`SELECT COUNT(*) as count FROM "web-eco_contact_activity"`;
+    const waitlistCount =
+      await sql`SELECT COUNT(*) as count FROM "web-eco_waitlist_intake"`;
 
-    console.log('📊 Database stats:');
+    console.log("📊 Database stats:");
     console.log(`   - Contacts: ${contactCount[0].count}`);
     console.log(`   - Contact Sources: ${sourceCount[0].count}`);
     console.log(`   - Contact Activities: ${activityCount[0].count}`);
     console.log(`   - Waitlist Entries: ${waitlistCount[0].count}`);
 
-    console.log('\n✅ Migration completed successfully!\n');
-    console.log('🎉 Your CRM is now ready for multiple intake forms with:');
-    console.log('   ✅ Proper foreign key constraints');
-    console.log('   ✅ Multi-source tracking via contact_sources table');
-    console.log('   ✅ Backfilled data from existing records');
-    console.log('   ✅ Indexes for common query patterns\n');
-
+    console.log("\n✅ Migration completed successfully!\n");
+    console.log("🎉 Your CRM is now ready for multiple intake forms with:");
+    console.log("   ✅ Proper foreign key constraints");
+    console.log("   ✅ Multi-source tracking via contact_sources table");
+    console.log("   ✅ Backfilled data from existing records");
+    console.log("   ✅ Indexes for common query patterns\n");
   } catch (error) {
-    console.error('\n❌ Migration failed:', error);
-    console.error('\nError details:', error.message);
+    console.error("\n❌ Migration failed:", error);
+    console.error("\nError details:", error.message);
     process.exit(1);
   } finally {
     await sql.end();

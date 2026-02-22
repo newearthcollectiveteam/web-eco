@@ -3,6 +3,7 @@
 ## Problem Statement
 
 **Current Situation:**
+
 - ✅ Email is unique identifier across forms
 - ✅ CRM tracks which forms a contact submitted
 - ❌ No tracking before form submission (anonymous visitors)
@@ -37,22 +38,26 @@ Build a complete tracking system that follows industry best practices (like Segm
 ## Core Concepts
 
 ### 1. **Anonymous ID** (before known)
+
 - Generated on first visit
 - Stored in cookie: `nec_aid` (New Earth Collective Anonymous ID)
 - Tracks all activity before form submission
 - UUID format: `anon_550e8400-e29b-41d4-a716-446655440000`
 
 ### 2. **Contact ID** (after known)
+
 - Database ID from `contacts` table
 - Assigned when form is submitted
 - Links to email (unique identifier)
 
 ### 3. **Session ID**
+
 - Unique per browser session
 - Expires after 30 minutes of inactivity
 - UUID format: `sess_550e8400-e29b-41d4-a716-446655440000`
 
 ### 4. **Tracking Token** (for email links)
+
 - Unique per email sent
 - Format: `et_[contactId]_[timestamp]_[randomHash]`
 - Example: `et_123_1732847600_a1b2c3`
@@ -65,6 +70,7 @@ Build a complete tracking system that follows industry best practices (like Segm
 ### New Tables
 
 #### 1. `sessions` - Browser sessions
+
 ```typescript
 {
   id: UUID (primary key),
@@ -93,6 +99,7 @@ Build a complete tracking system that follows industry best practices (like Segm
 ```
 
 #### 2. `events` - User interactions
+
 ```typescript
 {
   id: serial (primary key),
@@ -123,6 +130,7 @@ Build a complete tracking system that follows industry best practices (like Segm
 ```
 
 #### 3. `email_links` - Trackable links in emails
+
 ```typescript
 {
   id: serial (primary key),
@@ -148,6 +156,7 @@ Build a complete tracking system that follows industry best practices (like Segm
 ```
 
 #### 4. `email_link_clicks` - Individual click events
+
 ```typescript
 {
   id: serial (primary key),
@@ -169,6 +178,7 @@ Build a complete tracking system that follows industry best practices (like Segm
 ```
 
 #### 5. `user_identity_map` - Links anonymous → known
+
 ```typescript
 {
   id: serial (primary key),
@@ -255,11 +265,11 @@ https://newearth.eco/event-registration
 ```typescript
 // Email Tracking Token (et)
 const token = [
-  'et',                    // prefix
-  contactId,               // 123
-  Math.floor(Date.now()/1000), // unix timestamp
-  randomHash(8)            // a1b2c3d4
-].join('_');
+  "et", // prefix
+  contactId, // 123
+  Math.floor(Date.now() / 1000), // unix timestamp
+  randomHash(8), // a1b2c3d4
+].join("_");
 
 // Result: et_123_1732847600_a1b2c3d4
 ```
@@ -278,13 +288,13 @@ const token = [
 
 ### Standard UTM Parameters
 
-| Parameter | Purpose | Example |
-|-----------|---------|---------|
-| `utm_source` | Where traffic came from | klaviyo, mailchimp, instagram |
-| `utm_medium` | How they got there | email, social, organic, cpc |
-| `utm_campaign` | Which campaign | waitlist-nurture, summer-event |
-| `utm_content` | Specific link/CTA | cta-join-now, banner-top |
-| `utm_term` | Keyword (for paid) | community, meditation |
+| Parameter      | Purpose                 | Example                        |
+| -------------- | ----------------------- | ------------------------------ |
+| `utm_source`   | Where traffic came from | klaviyo, mailchimp, instagram  |
+| `utm_medium`   | How they got there      | email, social, organic, cpc    |
+| `utm_campaign` | Which campaign          | waitlist-nurture, summer-event |
+| `utm_content`  | Specific link/CTA       | cta-join-now, banner-top       |
+| `utm_term`     | Keyword (for paid)      | community, meditation          |
 
 ### Auto-Generated for Emails
 
@@ -298,11 +308,11 @@ function generateEmailLink(params: {
   const token = generateEmailToken(params.contactId);
 
   const url = new URL(params.destinationPath, process.env.NEXT_PUBLIC_BASE_URL);
-  url.searchParams.set('et', token);
-  url.searchParams.set('utm_source', 'klaviyo');
-  url.searchParams.set('utm_medium', 'email');
-  url.searchParams.set('utm_campaign', params.emailType);
-  url.searchParams.set('utm_content', slugify(params.linkText));
+  url.searchParams.set("et", token);
+  url.searchParams.set("utm_source", "klaviyo");
+  url.searchParams.set("utm_medium", "email");
+  url.searchParams.set("utm_campaign", params.emailType);
+  url.searchParams.set("utm_content", slugify(params.linkText));
 
   return url.toString();
 }
@@ -315,6 +325,7 @@ function generateEmailLink(params: {
 ### Attribution Reports
 
 **1. Which sources drive the most conversions?**
+
 ```sql
 SELECT
   s.initial_source,
@@ -328,6 +339,7 @@ ORDER BY contacts DESC;
 ```
 
 **2. Email click-through and conversion rates**
+
 ```sql
 SELECT
   el.email_type,
@@ -343,6 +355,7 @@ GROUP BY el.email_type;
 ```
 
 **3. Multi-touch attribution**
+
 ```sql
 SELECT
   c.email,
@@ -398,22 +411,26 @@ ORDER BY total_events DESC;
 ## Implementation Priority
 
 ### Phase 1: Foundation (Implement First)
+
 1. ✅ Session tracking
 2. ✅ Anonymous ID generation
 3. ✅ Event logging (page views, form submissions)
 4. ✅ UTM parameter capture
 
 ### Phase 2: Email Tracking
+
 1. ✅ Email link generation service
 2. ✅ Click tracking
 3. ✅ Link → form conversion tracking
 
 ### Phase 3: Identity Resolution
+
 1. ✅ Anonymous → Known linking
 2. ✅ Retroactive event attribution
 3. ✅ Cross-device recognition
 
 ### Phase 4: Analytics & Reporting
+
 1. ✅ Dashboard queries
 2. ✅ Attribution reports
 3. ✅ Funnel analysis

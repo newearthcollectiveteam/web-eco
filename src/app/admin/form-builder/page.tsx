@@ -11,13 +11,7 @@ import {
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import Image from "next/image";
-import {
-  Mail,
-  Send,
-  CheckCircle,
-  AlertCircle,
-  Eye,
-} from "lucide-react";
+import { Mail, Send, CheckCircle, AlertCircle, Eye } from "lucide-react";
 
 const emailSubjects = [
   "Test Email #1 - Immediate",
@@ -67,7 +61,9 @@ export default function FormBuilderPage() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error((data as { error?: string }).error || "Failed to submit form");
+        throw new Error(
+          (data as { error?: string }).error || "Failed to submit form"
+        );
       }
 
       setSuccess(true);
@@ -107,7 +103,9 @@ export default function FormBuilderPage() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error((data as { error?: string }).error || "Failed to send test email");
+        throw new Error(
+          (data as { error?: string }).error || "Failed to send test email"
+        );
       }
 
       setTestSuccess(true);
@@ -125,7 +123,7 @@ export default function FormBuilderPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-white via-neutral-50 to-white dark:from-black dark:via-neutral-950 dark:to-black">
       <div className="container mx-auto px-4 py-16">
-{/* Header */}
+        {/* Header */}
         <section className="mb-12 text-center">
           <div className="mb-6 inline-flex items-center justify-center">
             <div className="relative h-16 w-16">

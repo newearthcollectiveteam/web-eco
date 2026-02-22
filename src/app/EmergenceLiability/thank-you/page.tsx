@@ -12,7 +12,7 @@ export default function WaiverThankYouPage() {
   return (
     <div className="bg-black">
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      <section className="relative flex min-h-screen items-center justify-center overflow-hidden">
         {/* Flower of Life Shader Background */}
         <div className="absolute inset-0 opacity-20">
           <iframe
@@ -39,7 +39,10 @@ export default function WaiverThankYouPage() {
 
           <h1
             className="mb-6 text-4xl font-bold text-[#FACF39] md:text-5xl lg:text-6xl"
-            style={{ fontFamily: "Airwaves, sans-serif", letterSpacing: "0.05em" }}
+            style={{
+              fontFamily: "Airwaves, sans-serif",
+              letterSpacing: "0.05em",
+            }}
           >
             Waiver Signed Successfully
           </h1>
@@ -60,7 +63,8 @@ export default function WaiverThankYouPage() {
           </div>
 
           <p className="mb-12 text-lg text-white/70">
-            You're all set! We can't wait to see you at the event. Follow us on Instagram for updates and behind-the-scenes content.
+            You're all set! We can't wait to see you at the event. Follow us on
+            Instagram for updates and behind-the-scenes content.
           </p>
 
           <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center sm:gap-6">
@@ -77,7 +81,7 @@ export default function WaiverThankYouPage() {
             <Button
               asChild
               variant="outline"
-              className="border-[#FACF39]/50 bg-transparent px-8 py-4 font-bold text-[#FACF39] transition-all hover:bg-[#FACF39]/10 hover:border-[#FACF39]"
+              className="border-[#FACF39]/50 bg-transparent px-8 py-4 font-bold text-[#FACF39] transition-all hover:border-[#FACF39] hover:bg-[#FACF39]/10"
               style={{ fontFamily: "Bourton, sans-serif" }}
             >
               <a

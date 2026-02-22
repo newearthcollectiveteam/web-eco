@@ -44,7 +44,10 @@ function OverviewContent() {
           <div>
             <h1
               className="text-2xl font-bold text-white"
-              style={{ fontFamily: "Airwaves, sans-serif", letterSpacing: "0.05em" }}
+              style={{
+                fontFamily: "Airwaves, sans-serif",
+                letterSpacing: "0.05em",
+              }}
             >
               Overview
             </h1>
@@ -58,7 +61,9 @@ function OverviewContent() {
           disabled={loading}
           className="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/5 px-3 py-1.5 text-sm text-white transition-colors hover:bg-white/10"
         >
-          <RefreshCw className={`h-3.5 w-3.5 ${loading ? "animate-spin" : ""}`} />
+          <RefreshCw
+            className={`h-3.5 w-3.5 ${loading ? "animate-spin" : ""}`}
+          />
           Refresh
         </button>
       </div>
@@ -68,15 +73,24 @@ function OverviewContent() {
         <div className="grid grid-cols-2 gap-4 lg:grid-cols-5">
           {[
             { label: "CRM Contacts", value: data.stats.contacts, icon: Users },
-            { label: "Questionnaires", value: data.stats.questionnaires, icon: ClipboardList },
-            { label: "Event Waivers", value: data.stats.waivers, icon: FileSignature },
-            { label: "Activities", value: data.stats.activities, icon: Activity },
+            {
+              label: "Questionnaires",
+              value: data.stats.questionnaires,
+              icon: ClipboardList,
+            },
+            {
+              label: "Event Waivers",
+              value: data.stats.waivers,
+              icon: FileSignature,
+            },
+            {
+              label: "Activities",
+              value: data.stats.activities,
+              icon: Activity,
+            },
             { label: "Sources", value: data.stats.sources, icon: Database },
           ].map((stat) => (
-            <Card
-              key={stat.label}
-              className="border-white/10 bg-white/5"
-            >
+            <Card key={stat.label} className="border-white/10 bg-white/5">
               <CardContent className="p-4 text-center">
                 <stat.icon className="mx-auto mb-2 h-5 w-5 text-[#FACF39]" />
                 <div className="text-2xl font-bold text-white">
@@ -186,7 +200,11 @@ function OverviewContent() {
           {[
             { label: "Team", href: "/admin/team", icon: UserPlus },
             { label: "Gallery", href: "/admin/cms/gallery", icon: ImageIcon },
-            { label: "Email Testing", href: "/admin/cms/email-testing", icon: Mail },
+            {
+              label: "Email Testing",
+              href: "/admin/cms/email-testing",
+              icon: Mail,
+            },
             { label: "Brand", href: "/admin/brand", icon: Palette },
             { label: "Shaders", href: "/admin/shaders", icon: Sparkles },
             { label: "Playground", href: "/admin/playground", icon: Code2 },
@@ -211,27 +229,39 @@ function OverviewContent() {
             <div className="flex items-center justify-between rounded-lg bg-white/5 px-3 py-2">
               <div className="flex items-center gap-2">
                 <span className="h-2 w-2 rounded-full bg-emerald-500" />
-                <span className="text-sm text-white">joinnewearthcollective.com</span>
+                <span className="text-sm text-white">
+                  joinnewearthcollective.com
+                </span>
               </div>
-              <Badge className="border-emerald-500/30 bg-emerald-500/10 text-emerald-400 text-xs">
+              <Badge className="border-emerald-500/30 bg-emerald-500/10 text-xs text-emerald-400">
                 Live
               </Badge>
             </div>
             <div className="flex items-center justify-between rounded-lg bg-white/5 px-3 py-2">
               <div className="flex items-center gap-2">
                 <span className="h-2 w-2 rounded-full bg-gray-500" />
-                <span className="text-sm text-gray-400">test.joinnewearthcollective.com</span>
+                <span className="text-sm text-gray-400">
+                  test.joinnewearthcollective.com
+                </span>
               </div>
-              <Badge variant="outline" className="border-gray-600 text-xs text-gray-500">
+              <Badge
+                variant="outline"
+                className="border-gray-600 text-xs text-gray-500"
+              >
                 Deprecated
               </Badge>
             </div>
             <div className="flex items-center justify-between rounded-lg bg-white/5 px-3 py-2">
               <div className="flex items-center gap-2">
                 <span className="h-2 w-2 rounded-full bg-gray-500" />
-                <span className="text-sm text-gray-400">launch.joinnewearthcollective.com</span>
+                <span className="text-sm text-gray-400">
+                  launch.joinnewearthcollective.com
+                </span>
               </div>
-              <Badge variant="outline" className="border-gray-600 text-xs text-gray-500">
+              <Badge
+                variant="outline"
+                className="border-gray-600 text-xs text-gray-500"
+              >
                 Deprecated
               </Badge>
             </div>

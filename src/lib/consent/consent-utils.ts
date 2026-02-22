@@ -3,14 +3,14 @@
  * Handles consent tracking, unsubscribe tokens, and compliance
  */
 
-import crypto from 'crypto';
+import crypto from "crypto";
 
 /**
  * Generates a secure unsubscribe token
  * @returns 64-character random hex string
  */
 export function generateUnsubscribeToken(): string {
-  return crypto.randomBytes(32).toString('hex');
+  return crypto.randomBytes(32).toString("hex");
 }
 
 /**
@@ -19,18 +19,18 @@ export function generateUnsubscribeToken(): string {
  */
 export function getClientIP(headers: Headers): string | null {
   // Check common proxy headers
-  const forwardedFor = headers.get('x-forwarded-for');
+  const forwardedFor = headers.get("x-forwarded-for");
   if (forwardedFor) {
     // X-Forwarded-For can contain multiple IPs, get the first one
-    return forwardedFor.split(',')[0]?.trim() || null;
+    return forwardedFor.split(",")[0]?.trim() || null;
   }
 
-  const realIP = headers.get('x-real-ip');
+  const realIP = headers.get("x-real-ip");
   if (realIP) {
     return realIP;
   }
 
-  const cfConnectingIP = headers.get('cf-connecting-ip'); // Cloudflare
+  const cfConnectingIP = headers.get("cf-connecting-ip"); // Cloudflare
   if (cfConnectingIP) {
     return cfConnectingIP;
   }
@@ -74,8 +74,8 @@ export function createConsentMetadata(params: {
 export function generateUnsubscribeUrl(
   baseUrl: string,
   token: string,
-  type: 'email' | 'sms' | 'all' = 'all'
+  type: "email" | "sms" | "all" = "all"
 ): string {
-  const cleanBaseUrl = baseUrl.replace(/\/$/, '');
+  const cleanBaseUrl = baseUrl.replace(/\/$/, "");
   return `${cleanBaseUrl}/unsubscribe?token=${token}&type=${type}`;
 }

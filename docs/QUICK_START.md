@@ -14,6 +14,7 @@
 1. In Supabase: **Authentication** → **Email Templates**
 2. Scroll to **SMTP Settings** → **Enable Custom SMTP**
 3. Enter your SMTP credentials (use your email provider's settings):
+
    ```
    Host: [your-smtp-host] (e.g., in-v3.mailjet.com for Mailjet)
    Port: 587
@@ -26,6 +27,7 @@
    **Note:** Get your SMTP credentials from:
    - Mailjet: https://app.mailjet.com/account/apikeys
    - Or use your preferred email provider (SendGrid, Resend, etc.)
+
 4. Save
 
 ### 3️⃣ Create Your Admin Account (1 min)
@@ -33,6 +35,7 @@
 1. Run dev server: `npm run dev`
 2. Sign up at `/auth/signup` with your admin email address
 3. In Supabase SQL Editor, run (replace `YOUR_EMAIL` with your actual email):
+
    ```sql
    UPDATE "web-eco_user_profile"
    SET role = 'admin',
@@ -43,6 +46,7 @@
    ```
 
    **Alternative:** Run the script: `node scripts/create-admin.js YOUR_EMAIL@example.com`
+
 4. Check email → Click verification link
 5. Complete onboarding
 

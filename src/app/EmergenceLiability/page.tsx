@@ -38,7 +38,9 @@ export default function EmergenceLiabilityPage() {
       return;
     }
     if (!agreedToTerms) {
-      setError("Please agree to the Event Release of Liability & Assumption of Risk");
+      setError(
+        "Please agree to the Event Release of Liability & Assumption of Risk"
+      );
       return;
     }
     if (!agreedToPhotoVideo) {
@@ -73,7 +75,9 @@ export default function EmergenceLiabilityPage() {
 
       if (!response.ok) {
         const data = await response.json();
-        throw new Error((data as { error?: string }).error || "Failed to submit waiver");
+        throw new Error(
+          (data as { error?: string }).error || "Failed to submit waiver"
+        );
       }
 
       router.push("/EmergenceLiability/thank-you");
@@ -111,7 +115,7 @@ export default function EmergenceLiabilityPage() {
         `}</style>
 
         {/* Hero Section */}
-        <section className="relative min-h-[40vh] flex items-center justify-center overflow-hidden pt-20">
+        <section className="relative flex min-h-[40vh] items-center justify-center overflow-hidden pt-20">
           {/* Flower of Life Shader Background */}
           <div className="absolute inset-0 opacity-20">
             <iframe
@@ -128,8 +132,11 @@ export default function EmergenceLiabilityPage() {
           {/* Hero Content */}
           <div className="relative z-10 mx-auto max-w-4xl px-4 text-center">
             <h1
-              className="mb-4 text-4xl font-bold leading-tight md:text-5xl lg:text-6xl"
-              style={{ fontFamily: "Airwaves, sans-serif", letterSpacing: "0.05em" }}
+              className="mb-4 text-4xl leading-tight font-bold md:text-5xl lg:text-6xl"
+              style={{
+                fontFamily: "Airwaves, sans-serif",
+                letterSpacing: "0.05em",
+              }}
             >
               <span className="bg-gradient-to-r from-[#f3a51c] via-[#f6c43f] to-[#f6e45b] bg-clip-text text-transparent">
                 The Emergence
@@ -160,19 +167,21 @@ export default function EmergenceLiabilityPage() {
                 </h2>
                 <div className="space-y-4 text-white/80">
                   <p>
-                    By signing below, I confirm that I am voluntarily attending and participating in
-                    this Event and assume all risks associated with my participation, whether known
-                    or unknown.
+                    By signing below, I confirm that I am voluntarily attending
+                    and participating in this Event and assume all risks
+                    associated with my participation, whether known or unknown.
                   </p>
                   <p>
-                    I understand the Event includes live music, dancing, movement classes,
-                    breathwork, somatic practices, flow arts, and circus-style performances, and may
-                    involve stages, platforms, loud sound, low lighting, nighttime conditions, and
-                    physical exertion.
+                    I understand the Event includes live music, dancing,
+                    movement classes, breathwork, somatic practices, flow arts,
+                    and circus-style performances, and may involve stages,
+                    platforms, loud sound, low lighting, nighttime conditions,
+                    and physical exertion.
                   </p>
                   <p>
-                    I acknowledge that risks may include slips, falls, collisions, injury, emotional
-                    or physical responses, illness, property damage, or medical emergencies.
+                    I acknowledge that risks may include slips, falls,
+                    collisions, injury, emotional or physical responses,
+                    illness, property damage, or medical emergencies.
                   </p>
                 </div>
               </div>
@@ -187,14 +196,16 @@ export default function EmergenceLiabilityPage() {
                 </h2>
                 <div className="space-y-4 text-white/80">
                   <p>
-                    In consideration for being allowed to attend, I release and waive all claims
-                    against Austin Terry and all associated parties, including the venue, performers,
-                    instructors, volunteers, contractors, and media personnel, for any injury, loss,
-                    or damage, including those caused by ordinary negligence, to the fullest extent
-                    permitted by Colorado law.
+                    In consideration for being allowed to attend, I release and
+                    waive all claims against Austin Terry and all associated
+                    parties, including the venue, performers, instructors,
+                    volunteers, contractors, and media personnel, for any
+                    injury, loss, or damage, including those caused by ordinary
+                    negligence, to the fullest extent permitted by Colorado law.
                   </p>
                   <p className="font-semibold text-white/90">
-                    This release does not apply to gross negligence or intentional misconduct.
+                    This release does not apply to gross negligence or
+                    intentional misconduct.
                   </p>
                 </div>
               </div>
@@ -209,11 +220,14 @@ export default function EmergenceLiabilityPage() {
                 </h2>
                 <div className="space-y-4 text-white/80">
                   <p>
-                    I understand that no onsite medical staff or security are provided. I am
-                    responsible for my own health, safety, and medical costs. I confirm I am
-                    physically and mentally capable of participating and will act within my limits.
+                    I understand that no onsite medical staff or security are
+                    provided. I am responsible for my own health, safety, and
+                    medical costs. I confirm I am physically and mentally
+                    capable of participating and will act within my limits.
                   </p>
-                  <p className="font-semibold text-[#FACF39]">This is a substance-free event.</p>
+                  <p className="font-semibold text-[#FACF39]">
+                    This is a substance-free event.
+                  </p>
                 </div>
               </div>
 
@@ -226,9 +240,9 @@ export default function EmergenceLiabilityPage() {
                   Photo & Video Consent
                 </h2>
                 <p className="text-white/80">
-                  I consent to photography and video recording during the Event and allow use of my
-                  image for marketing, social media, documentation, and future events, without
-                  compensation.
+                  I consent to photography and video recording during the Event
+                  and allow use of my image for marketing, social media,
+                  documentation, and future events, without compensation.
                 </p>
               </div>
 
@@ -240,7 +254,9 @@ export default function EmergenceLiabilityPage() {
                 >
                   Acknowledgment
                 </h2>
-                <p className="mb-4 text-white/80">By signing, I confirm that:</p>
+                <p className="mb-4 text-white/80">
+                  By signing, I confirm that:
+                </p>
                 <ul className="space-y-2 text-white/80">
                   <li className="flex items-start gap-2">
                     <span className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-[#FACF39]/60" />
@@ -273,15 +289,21 @@ export default function EmergenceLiabilityPage() {
                 <div className="space-y-6">
                   {/* Name Field */}
                   <div>
-                    <label htmlFor="signer-name" className="mb-2 block text-sm font-medium text-white/80">
-                      Participant Name (Print) <span className="text-red-400">*</span>
+                    <label
+                      htmlFor="signer-name"
+                      className="mb-2 block text-sm font-medium text-white/80"
+                    >
+                      Participant Name (Print){" "}
+                      <span className="text-red-400">*</span>
                     </label>
                     <input
                       id="signer-name"
                       type="text"
                       value={formData.name}
-                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      className="w-full rounded-lg border border-[#FACF39]/30 bg-black/60 px-4 py-3 text-white placeholder-white/40 focus:border-[#FACF39] focus:outline-none focus:ring-1 focus:ring-[#FACF39]"
+                      onChange={(e) =>
+                        setFormData({ ...formData, name: e.target.value })
+                      }
+                      className="w-full rounded-lg border border-[#FACF39]/30 bg-black/60 px-4 py-3 text-white placeholder-white/40 focus:border-[#FACF39] focus:ring-1 focus:ring-[#FACF39] focus:outline-none"
                       placeholder="Enter your full legal name"
                       aria-required="true"
                     />
@@ -289,15 +311,20 @@ export default function EmergenceLiabilityPage() {
 
                   {/* Email Field */}
                   <div>
-                    <label htmlFor="signer-email" className="mb-2 block text-sm font-medium text-white/80">
+                    <label
+                      htmlFor="signer-email"
+                      className="mb-2 block text-sm font-medium text-white/80"
+                    >
                       Email Address <span className="text-red-400">*</span>
                     </label>
                     <input
                       id="signer-email"
                       type="email"
                       value={formData.email}
-                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      className="w-full rounded-lg border border-[#FACF39]/30 bg-black/60 px-4 py-3 text-white placeholder-white/40 focus:border-[#FACF39] focus:outline-none focus:ring-1 focus:ring-[#FACF39]"
+                      onChange={(e) =>
+                        setFormData({ ...formData, email: e.target.value })
+                      }
+                      className="w-full rounded-lg border border-[#FACF39]/30 bg-black/60 px-4 py-3 text-white placeholder-white/40 focus:border-[#FACF39] focus:ring-1 focus:ring-[#FACF39] focus:outline-none"
                       placeholder="your@email.com"
                       aria-required="true"
                     />
@@ -305,7 +332,10 @@ export default function EmergenceLiabilityPage() {
 
                   {/* Signature Canvas */}
                   <div>
-                    <label id="signature-label" className="mb-2 block text-sm font-medium text-white/80">
+                    <label
+                      id="signature-label"
+                      className="mb-2 block text-sm font-medium text-white/80"
+                    >
                       Signature <span className="text-red-400">*</span>
                     </label>
                     <div className="rounded-lg border border-[#FACF39]/30 bg-white p-1">
@@ -324,7 +354,7 @@ export default function EmergenceLiabilityPage() {
                     <button
                       type="button"
                       onClick={clearSignature}
-                      className="mt-2 text-sm text-[#FACF39]/80 hover:text-[#FACF39] transition-colors"
+                      className="mt-2 text-sm text-[#FACF39]/80 transition-colors hover:text-[#FACF39]"
                     >
                       Clear Signature
                     </button>
@@ -332,7 +362,9 @@ export default function EmergenceLiabilityPage() {
 
                   {/* Date (Auto-filled) */}
                   <div>
-                    <label className="mb-2 block text-sm font-medium text-white/80">Date</label>
+                    <label className="mb-2 block text-sm font-medium text-white/80">
+                      Date
+                    </label>
                     <input
                       type="text"
                       value={new Date().toLocaleDateString("en-US", {
@@ -351,12 +383,17 @@ export default function EmergenceLiabilityPage() {
                       <Checkbox
                         id="terms"
                         checked={agreedToTerms}
-                        onCheckedChange={(checked) => setAgreedToTerms(checked === true)}
+                        onCheckedChange={(checked) =>
+                          setAgreedToTerms(checked === true)
+                        }
                         className="mt-1 border-[#FACF39]/50 data-[state=checked]:bg-[#FACF39] data-[state=checked]:text-black"
                       />
-                      <label htmlFor="terms" className="text-sm text-white/80 cursor-pointer">
-                        I agree to the Event Release of Liability & Assumption of Risk{" "}
-                        <span className="text-red-400">*</span>
+                      <label
+                        htmlFor="terms"
+                        className="cursor-pointer text-sm text-white/80"
+                      >
+                        I agree to the Event Release of Liability & Assumption
+                        of Risk <span className="text-red-400">*</span>
                       </label>
                     </div>
 
@@ -364,10 +401,15 @@ export default function EmergenceLiabilityPage() {
                       <Checkbox
                         id="photoVideo"
                         checked={agreedToPhotoVideo}
-                        onCheckedChange={(checked) => setAgreedToPhotoVideo(checked === true)}
+                        onCheckedChange={(checked) =>
+                          setAgreedToPhotoVideo(checked === true)
+                        }
                         className="mt-1 border-[#FACF39]/50 data-[state=checked]:bg-[#FACF39] data-[state=checked]:text-black"
                       />
-                      <label htmlFor="photoVideo" className="text-sm text-white/80 cursor-pointer">
+                      <label
+                        htmlFor="photoVideo"
+                        className="cursor-pointer text-sm text-white/80"
+                      >
                         I consent to Photo & Video recording{" "}
                         <span className="text-red-400">*</span>
                       </label>
@@ -376,7 +418,10 @@ export default function EmergenceLiabilityPage() {
 
                   {/* Error Message */}
                   {error && (
-                    <div role="alert" className="rounded-lg bg-red-500/10 border border-red-500/30 p-4 text-red-400">
+                    <div
+                      role="alert"
+                      className="rounded-lg border border-red-500/30 bg-red-500/10 p-4 text-red-400"
+                    >
                       {error}
                     </div>
                   )}

@@ -77,12 +77,14 @@ export const crmRouter = createTRPCRouter({
         contacts: allContacts,
         total: allContacts.length,
         stats: {
-          bySource: Object.entries(contactsBySource).map(
-            ([source, count]) => ({ source, count })
-          ),
-          byStatus: Object.entries(contactsByStatus).map(
-            ([status, count]) => ({ status, count })
-          ),
+          bySource: Object.entries(contactsBySource).map(([source, count]) => ({
+            source,
+            count,
+          })),
+          byStatus: Object.entries(contactsByStatus).map(([status, count]) => ({
+            status,
+            count,
+          })),
         },
       };
     }),

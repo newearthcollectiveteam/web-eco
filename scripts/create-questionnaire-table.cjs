@@ -1,12 +1,12 @@
-const { drizzle } = require('drizzle-orm/postgres-js');
-const postgres = require('postgres');
+const { drizzle } = require("drizzle-orm/postgres-js");
+const postgres = require("postgres");
 
 // Read database URL from environment
-require('dotenv').config({ path: '.env' });
+require("dotenv").config({ path: ".env" });
 
 const connectionString = process.env.DATABASE_URL;
 if (!connectionString) {
-  console.error('❌ DATABASE_URL not found in .env');
+  console.error("❌ DATABASE_URL not found in .env");
   process.exit(1);
 }
 
@@ -14,7 +14,7 @@ const sql = postgres(connectionString);
 
 async function createTable() {
   try {
-    console.log('🔄 Creating questionnaire_response table...');
+    console.log("🔄 Creating questionnaire_response table...");
 
     const createTableSQL = `
 CREATE TABLE IF NOT EXISTS "web-eco_questionnaire_response" (
@@ -43,11 +43,11 @@ CREATE TABLE IF NOT EXISTS "web-eco_questionnaire_response" (
 
     await sql.unsafe(createTableSQL);
 
-    console.log('✅ Table created successfully!');
+    console.log("✅ Table created successfully!");
     await sql.end();
     process.exit(0);
   } catch (error) {
-    console.error('❌ Error creating table:', error.message);
+    console.error("❌ Error creating table:", error.message);
     await sql.end();
     process.exit(1);
   }

@@ -5,10 +5,12 @@ import { Button } from "~/components/ui/button";
 
 export const metadata: Metadata = {
   title: "Our Core Values | New Earth Collective",
-  description: "Explore the guiding values of New Earth Collective: Unconditional Love, Circular Abundance, Radical Authenticity, and more.",
+  description:
+    "Explore the guiding values of New Earth Collective: Unconditional Love, Circular Abundance, Radical Authenticity, and more.",
   openGraph: {
     title: "Our Core Values | New Earth Collective",
-    description: "These principles guide every aspect of the New Earth Collective, from festivals to technology.",
+    description:
+      "These principles guide every aspect of the New Earth Collective, from festivals to technology.",
     type: "website",
   },
 };
@@ -16,42 +18,52 @@ export const metadata: Metadata = {
 const values = [
   {
     title: "Unconditional Love",
-    description: "Every interaction begins with the heart. We lead with indiscriminate love, not ego—creating space where all beings are honored.",
+    description:
+      "Every interaction begins with the heart. We lead with indiscriminate love, not ego—creating space where all beings are honored.",
     quote: "Love is the foundation of all true connection.",
   },
   {
     title: "Circular Abundance",
-    description: "Energy, knowledge, and resources flow multidirectionally. What you give returns; what you receive, you share. We operate in cycles, not hierarchies.",
+    description:
+      "Energy, knowledge, and resources flow multidirectionally. What you give returns; what you receive, you share. We operate in cycles, not hierarchies.",
     quote: "In the circle of giving and receiving, abundance multiplies.",
   },
   {
     title: "Radical Authenticity",
-    description: "Bring your whole self—shadows, gifts, and truths. This is a judgment-free space where vulnerability is strength and masks aren't needed.",
-    quote: "Your truth, fully expressed, is your greatest gift to the collective.",
+    description:
+      "Bring your whole self—shadows, gifts, and truths. This is a judgment-free space where vulnerability is strength and masks aren't needed.",
+    quote:
+      "Your truth, fully expressed, is your greatest gift to the collective.",
   },
   {
     title: "Expanding Consciousness",
-    description: "We honor growth over perfection and embrace the messy, beautiful path of awakening. Evolution is the journey, not the destination.",
+    description:
+      "We honor growth over perfection and embrace the messy, beautiful path of awakening. Evolution is the journey, not the destination.",
     quote: "Every moment of awareness is a step toward the New Earth.",
   },
   {
     title: "Synarchy",
-    description: "Leadership rooted in service and unconditional love. We synthesize wisdom from all traditions, recognizing that true authority comes from alignment with the highest good.",
+    description:
+      "Leadership rooted in service and unconditional love. We synthesize wisdom from all traditions, recognizing that true authority comes from alignment with the highest good.",
     quote: "True leaders serve; true service is leadership.",
   },
   {
     title: "Technology Serving Consciousness",
-    description: "AI and digital systems are mirrors and amplifiers of our highest values—tools that elevate humanity rather than diminish it.",
+    description:
+      "AI and digital systems are mirrors and amplifiers of our highest values—tools that elevate humanity rather than diminish it.",
     quote: "Technology is most powerful when it serves human connection.",
   },
   {
     title: "Collective Sovereignty",
-    description: "Individual empowerment exists within the whole. True freedom emerges through devotion to community and conscious connection.",
-    quote: "Your sovereignty strengthens the whole; the whole protects your sovereignty.",
+    description:
+      "Individual empowerment exists within the whole. True freedom emerges through devotion to community and conscious connection.",
+    quote:
+      "Your sovereignty strengthens the whole; the whole protects your sovereignty.",
   },
   {
     title: "Harmonic Collective Intelligence",
-    description: "Like forests and mycelial networks, we blend individual gifts into a unified, living system—operating in seamless, mutually supportive harmony with nature's wisdom, cycles, and rhythms.",
+    description:
+      "Like forests and mycelial networks, we blend individual gifts into a unified, living system—operating in seamless, mutually supportive harmony with nature's wisdom, cycles, and rhythms.",
     quote: "Together, we are wiser than any of us alone.",
   },
 ];
@@ -60,7 +72,7 @@ export default function ValuesPage() {
   return (
     <div className="bg-black">
       {/* Hero Section */}
-      <section className="relative min-h-[50vh] flex items-center justify-center overflow-hidden">
+      <section className="relative flex min-h-[50vh] items-center justify-center overflow-hidden">
         {/* Flower of Life Shader Background */}
         <div className="absolute inset-0 opacity-15">
           <iframe
@@ -78,14 +90,18 @@ export default function ValuesPage() {
         <div className="relative z-10 mx-auto max-w-4xl px-4 pt-24 text-center">
           <h1
             className="mb-6 text-5xl font-bold md:text-6xl"
-            style={{ fontFamily: "Airwaves, sans-serif", letterSpacing: "0.05em" }}
+            style={{
+              fontFamily: "Airwaves, sans-serif",
+              letterSpacing: "0.05em",
+            }}
           >
             <span className="bg-gradient-to-r from-[#f3a51c] via-[#f6c43f] to-[#f6e45b] bg-clip-text text-transparent">
               Our Core Values
             </span>
           </h1>
-          <p className="mx-auto max-w-xs md:max-w-2xl text-base md:text-lg text-white/80">
-            These principles guide every aspect of the New Earth Collective,<br className="hidden md:inline" />
+          <p className="mx-auto max-w-xs text-base text-white/80 md:max-w-2xl md:text-lg">
+            These principles guide every aspect of the New Earth Collective,
+            <br className="hidden md:inline" />
             from festivals to technology.
           </p>
         </div>
@@ -102,7 +118,7 @@ export default function ValuesPage() {
               >
                 {/* Value Content */}
                 <div className="flex-1">
-                  <div className="flex items-center justify-between gap-4 mb-4">
+                  <div className="mb-4 flex items-center justify-between gap-4">
                     <h2
                       className="text-3xl font-bold text-[#FACF39]"
                       style={{ fontFamily: "Bourton, sans-serif" }}
@@ -110,7 +126,7 @@ export default function ValuesPage() {
                       {value.title}
                     </h2>
                     {/* Mobile: Small inline number bubble */}
-                    <div className="flex md:hidden h-10 w-10 flex-shrink-0 items-center justify-center rounded-full border border-[#FACF39]/30 bg-[#FACF39]/5">
+                    <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full border border-[#FACF39]/30 bg-[#FACF39]/5 md:hidden">
                       <span
                         className="text-lg font-bold text-[#FACF39]/40"
                         style={{ fontFamily: "Bourton, sans-serif" }}
@@ -119,16 +135,13 @@ export default function ValuesPage() {
                       </span>
                     </div>
                   </div>
-                  <p className="mb-6 text-lg leading-relaxed text-white/80">
+                  <p className="text-lg leading-relaxed text-white/80">
                     {value.description}
                   </p>
-                  <blockquote className="border-l-4 border-[#FACF39]/50 pl-4">
-                    <p className="italic text-white/60">"{value.quote}"</p>
-                  </blockquote>
                 </div>
 
                 {/* Desktop: Large decorative element */}
-                <div className="hidden md:flex flex-1 items-center justify-center">
+                <div className="hidden flex-1 items-center justify-center md:flex">
                   <div className="flex h-32 w-32 items-center justify-center rounded-full border border-[#FACF39]/30 bg-[#FACF39]/5">
                     <span
                       className="text-5xl font-bold text-[#FACF39]/40"
@@ -148,7 +161,9 @@ export default function ValuesPage() {
       <section className="bg-[#0A0A0A] px-4 py-24">
         <div className="mx-auto max-w-3xl text-center">
           <p className="mb-12 text-xl text-white/80">
-            Like the roots of a tree, these values link us together—where collective sovereignty is realized through the empowerment and connection of individual gifts.
+            Like the roots of a tree, these values link us together—where
+            collective sovereignty is realized through the empowerment and
+            connection of individual gifts.
           </p>
           <Button
             asChild

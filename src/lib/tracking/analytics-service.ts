@@ -3,19 +3,15 @@
  * Handles event tracking, session management, and user identification
  */
 
-import { db } from '~/server/db';
+import { db } from "~/server/db";
 import {
   sessions,
   events,
   userIdentityMap,
   emailLinkClicks,
-} from '~/server/db/schema';
-import { eq, and, sql } from 'drizzle-orm';
-import {
-  generateSessionId,
-  parseUserAgent,
-  hashIpAddress,
-} from './utils';
+} from "~/server/db/schema";
+import { eq, and, sql } from "drizzle-orm";
+import { generateSessionId, parseUserAgent, hashIpAddress } from "./utils";
 
 export interface SessionData {
   sessionId: string;
@@ -68,10 +64,12 @@ export async function upsertSession(params: {
   // Parse user agent
   const deviceInfo = params.userAgent
     ? parseUserAgent(params.userAgent)
-    : { device: 'unknown', browser: 'unknown', os: 'unknown' };
+    : { device: "unknown", browser: "unknown", os: "unknown" };
 
   // Hash IP address
-  const ipHash = params.ipAddress ? await hashIpAddress(params.ipAddress) : undefined;
+  const ipHash = params.ipAddress
+    ? await hashIpAddress(params.ipAddress)
+    : undefined;
 
   // Check if session exists
   const existingSession = params.sessionId
@@ -223,7 +221,9 @@ export async function trackEmailClick(params: {
   userAgent?: string;
   ipAddress?: string;
 }): Promise<void> {
-  const ipHash = params.ipAddress ? await hashIpAddress(params.ipAddress) : undefined;
+  const ipHash = params.ipAddress
+    ? await hashIpAddress(params.ipAddress)
+    : undefined;
 
   await db.insert(emailLinkClicks).values({
     emailLinkId: params.emailLinkId,
@@ -291,13 +291,19 @@ export async function getContactAnalytics(contactId: number) {
 
   // Calculate metrics
   const totalEvents = eventsData.length;
-  const pageViews = eventsData.filter((e) => e.eventType === 'page_view').length;
-  const formSubmissions = eventsData.filter((e) => e.eventType === 'form_submit')
-    .length;
-  const domainsVisited = [...new Set(eventsData.map((e) => e.domain).filter(Boolean))];
+  const pageViews = eventsData.filter(
+    (e) => e.eventType === "page_view"
+  ).length;
+  const formSubmissions = eventsData.filter(
+    (e) => e.eventType === "form_submit"
+  ).length;
+  const domainsVisited = [
+    ...new Set(eventsData.map((e) => e.domain).filter(Boolean)),
+  ];
   const emailClicks = clicksData.length;
-  const emailConversions = clicksData.filter((c) => c.convertedToFormSubmission)
-    .length;
+  const emailConversions = clicksData.filter(
+    (c) => c.convertedToFormSubmission
+  ).length;
 
   return {
     sessions: sessionsData,

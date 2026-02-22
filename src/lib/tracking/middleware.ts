@@ -7,15 +7,16 @@
  * - Database operations: Requires Node.js runtime
  */
 
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
 /**
  * Check if we're running in Edge Runtime
  * Edge Runtime doesn't support native Node.js modules like postgres driver
  */
-const isEdgeRuntime = typeof globalThis !== 'undefined' && 'EdgeRuntime' in globalThis ||
-                       process.env.NEXT_RUNTIME === 'edge';
+const isEdgeRuntime =
+  (typeof globalThis !== "undefined" && "EdgeRuntime" in globalThis) ||
+  process.env.NEXT_RUNTIME === "edge";
 import {
   COOKIE_NAMES,
   COOKIE_OPTIONS,
@@ -25,8 +26,8 @@ import {
   extractUtmParams,
   getClientIp,
   parseEmailToken,
-} from './utils';
-import { trackEvent } from './analytics-service';
+} from "./utils";
+import { trackEvent } from "./analytics-service";
 
 /**
  * Analytics middleware - tracks all page visits
@@ -41,23 +42,23 @@ export async function analyticsMiddleware(
     // Skip tracking for API routes, static files, and Next.js internals
     const pathname = request.nextUrl.pathname;
     if (
-      pathname.startsWith('/api') ||
-      pathname.startsWith('/_next') ||
-      pathname.startsWith('/favicon') ||
+      pathname.startsWith("/api") ||
+      pathname.startsWith("/_next") ||
+      pathname.startsWith("/favicon") ||
       /\.(jpg|jpeg|png|gif|svg|ico|css|js|woff|woff2|ttf)$/.test(pathname)
     ) {
       return response;
     }
 
     // Parse cookies
-    const cookies = parseCookies(request.headers.get('cookie'));
+    const cookies = parseCookies(request.headers.get("cookie"));
 
     // Get or create anonymous ID
     let anonymousId = cookies[COOKIE_NAMES.ANONYMOUS_ID];
     if (!anonymousId) {
       anonymousId = generateAnonymousId();
       response.headers.append(
-        'Set-Cookie',
+        "Set-Cookie",
         setCookieHeader(
           COOKIE_NAMES.ANONYMOUS_ID,
           anonymousId,
@@ -74,32 +75,31 @@ export async function analyticsMiddleware(
     const contactId = contactIdStr ? parseInt(contactIdStr, 10) : undefined;
 
     // Extract domain and URL info
-    const domain = request.headers.get('host') || undefined;
+    const domain = request.headers.get("host") || undefined;
     const path = pathname;
-    const referrer = request.headers.get('referer') || undefined;
+    const referrer = request.headers.get("referer") || undefined;
 
     // Extract UTM parameters
     const utmParams = extractUtmParams(request.nextUrl);
 
     // Get user agent and IP
-    const userAgent = request.headers.get('user-agent') || undefined;
+    const userAgent = request.headers.get("user-agent") || undefined;
     const ipAddress = getClientIp(request.headers);
 
     // Check for email tracking token
-    const emailToken = request.nextUrl.searchParams.get('et');
+    const emailToken = request.nextUrl.searchParams.get("et");
     let emailLinkId: number | undefined;
     let emailContactId: number | undefined;
 
     // Database operations - only in Node.js runtime
     if (!isEdgeRuntime) {
       // Lazy-load server-only modules to keep edge bundle clean
-      const [{
-        upsertSession,
-        trackEvent,
-        trackEmailClick,
-      }, { getEmailLinkByToken, incrementEmailLinkClick }] = await Promise.all([
-        import('./analytics-service'),
-        import('./link-service'),
+      const [
+        { upsertSession, trackEvent, trackEmailClick },
+        { getEmailLinkByToken, incrementEmailLinkClick },
+      ] = await Promise.all([
+        import("./analytics-service"),
+        import("./link-service"),
       ]);
 
       if (emailToken) {
@@ -127,7 +127,7 @@ export async function analyticsMiddleware(
             // If contact wasn't already known from cookie, use the one from email link
             if (!contactId) {
               response.headers.append(
-                'Set-Cookie',
+                "Set-Cookie",
                 setCookieHeader(
                   COOKIE_NAMES.CONTACT_ID,
                   emailLink.contactId.toString(),
@@ -155,7 +155,7 @@ export async function analyticsMiddleware(
       // Update session cookie
       if (sessionId !== cookies[COOKIE_NAMES.SESSION_ID]) {
         response.headers.append(
-          'Set-Cookie',
+          "Set-Cookie",
           setCookieHeader(
             COOKIE_NAMES.SESSION_ID,
             sessionId,
@@ -174,7 +174,7 @@ export async function analyticsMiddleware(
           ipAddress,
         },
         {
-          eventType: 'page_view',
+          eventType: "page_view",
           eventName: `View: ${path}`,
           domain,
           path,
@@ -187,24 +187,26 @@ export async function analyticsMiddleware(
       );
     } else {
       // Edge Runtime - just set cookies, skip DB operations
-      if (process.env.NODE_ENV === 'development') {
-        console.log('[Analytics] Running in Edge Runtime - skipping database operations');
+      if (process.env.NODE_ENV === "development") {
+        console.log(
+          "[Analytics] Running in Edge Runtime - skipping database operations"
+        );
       }
     }
 
     // Add tracking context to response headers (for debugging)
-    if (process.env.NODE_ENV === 'development') {
-      response.headers.set('X-Analytics-Anonymous-ID', anonymousId);
+    if (process.env.NODE_ENV === "development") {
+      response.headers.set("X-Analytics-Anonymous-ID", anonymousId);
       if (sessionId) {
-        response.headers.set('X-Analytics-Session-ID', sessionId);
+        response.headers.set("X-Analytics-Session-ID", sessionId);
       }
       if (contactId) {
-        response.headers.set('X-Analytics-Contact-ID', contactId.toString());
+        response.headers.set("X-Analytics-Contact-ID", contactId.toString());
       }
     }
   } catch (error) {
     // Log error but don't block the request
-    console.error('Analytics middleware error:', error);
+    console.error("Analytics middleware error:", error);
   }
 
   return response;
@@ -219,7 +221,7 @@ export async function trackCustomEvent(params: {
   eventName?: string;
   properties?: Record<string, any>;
 }) {
-  const cookies = parseCookies(params.request.headers.get('cookie'));
+  const cookies = parseCookies(params.request.headers.get("cookie"));
 
   const anonymousId =
     cookies[COOKIE_NAMES.ANONYMOUS_ID] || generateAnonymousId();
@@ -227,9 +229,9 @@ export async function trackCustomEvent(params: {
   const contactIdStr = cookies[COOKIE_NAMES.CONTACT_ID];
   const contactId = contactIdStr ? parseInt(contactIdStr, 10) : undefined;
 
-  const domain = params.request.headers.get('host') || undefined;
+  const domain = params.request.headers.get("host") || undefined;
   const path = params.request.nextUrl.pathname;
-  const userAgent = params.request.headers.get('user-agent') || undefined;
+  const userAgent = params.request.headers.get("user-agent") || undefined;
   const ipAddress = getClientIp(params.request.headers);
 
   await trackEvent(

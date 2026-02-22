@@ -11,11 +11,13 @@ All CRM improvements have been successfully implemented and tested. Your master 
 ### 1. Database Schema (`src/server/db/schema.ts`)
 
 **Contacts Table**
+
 - ✅ Renamed `source` → `firstSource` (tracks initial acquisition channel)
 - ✅ Added default JSONB values for `tags` and `metadata`
 - ✅ Improved documentation
 
 **New Table: Contact Sources**
+
 - ✅ Created `contactSources` table for multi-source tracking
 - ✅ Tracks ALL forms a contact has interacted with
 - ✅ Stores interaction count and timestamps per source
@@ -23,12 +25,14 @@ All CRM improvements have been successfully implemented and tested. Your master 
 - ✅ Foreign key cascade on delete
 
 **Foreign Key Constraints Added**
+
 - ✅ `contactSources.contactId` → `contacts.id`
 - ✅ `contactActivities.contactId` → `contacts.id`
 - ✅ `waitlistIntake.contactId` → `contacts.id`
 - ✅ `galleryImages.galleryId` → `galleries.id`
 
 **Indexes Added for Performance**
+
 - ✅ `idx_contact_sources_contact_id`
 - ✅ `idx_contact_sources_source`
 - ✅ `idx_contact_activity_contact_id`
@@ -43,6 +47,7 @@ All CRM improvements have been successfully implemented and tested. Your master 
 **Created:** `scripts/run-crm-improvements-migration.js`
 
 This script:
+
 - ✅ Renames columns safely
 - ✅ Creates new tables
 - ✅ Adds foreign key constraints
@@ -52,6 +57,7 @@ This script:
 - ✅ Provides detailed progress logging
 
 **Migration Results:**
+
 ```
 📊 Database stats:
    - Contacts: 4
@@ -65,6 +71,7 @@ This script:
 **Updated:** `src/app/api/waitlist/route.ts`
 
 New flow:
+
 1. Create or update contact in master CRM
 2. **NEW:** Track source in `contactSources` table
 3. Store in `waitlistIntake` table
@@ -72,6 +79,7 @@ New flow:
 5. Trigger Klaviyo flow (non-blocking)
 
 **Key Changes:**
+
 - Uses `firstSource` instead of `source` for new contacts
 - Calls `contactSources` upsert with conflict handling
 - Increments interaction count for repeat submissions
@@ -87,10 +95,12 @@ New flow:
 ### 5. Test Scripts
 
 **Created:**
+
 - `scripts/test-waitlist-api.js` - API endpoint testing
 - `scripts/verify-crm-data.js` - Database verification
 
 **Test Results:** ✅ All passed
+
 ```
 ✅ Test passed! Waitlist submission successful
    Contact ID: 4
@@ -128,6 +138,7 @@ Contact: testuser@example.com
 ### Data Integrity
 
 **Foreign Key Cascade Deletes:**
+
 - Deleting a contact → automatically deletes all related:
   - Contact sources
   - Contact activities
@@ -135,6 +146,7 @@ Contact: testuser@example.com
   - Other intake records
 
 **No Orphaned Records:**
+
 - Database enforces referential integrity
 - Prevents invalid contactId values
 - Maintains data consistency
@@ -142,6 +154,7 @@ Contact: testuser@example.com
 ### Query Power
 
 **Find contacts from multiple sources:**
+
 ```typescript
 const multiFormContacts = await db
   .select({
@@ -155,6 +168,7 @@ const multiFormContacts = await db
 ```
 
 **Track engagement over time:**
+
 ```typescript
 const engagementStats = await db
   .select({
@@ -186,10 +200,12 @@ Follow the template in `INTAKE_FORM_TEMPLATE.md`:
 ## Files Modified
 
 ### Core Changes
+
 - ✅ `src/server/db/schema.ts` - Schema improvements
 - ✅ `src/app/api/waitlist/route.ts` - Updated API flow
 
 ### New Files Created
+
 - ✅ `scripts/run-crm-improvements-migration.js` - Migration script
 - ✅ `scripts/test-waitlist-api.js` - Test script
 - ✅ `scripts/verify-crm-data.js` - Verification script
@@ -207,6 +223,7 @@ Follow the template in `INTAKE_FORM_TEMPLATE.md`:
 ✅ **Migration Completed Successfully**
 
 **Applied Changes:**
+
 1. ✅ Renamed `contacts.source` to `contacts.first_source`
 2. ✅ Set default JSONB values
 3. ✅ Created `contact_sources` table
@@ -223,26 +240,33 @@ Follow the template in `INTAKE_FORM_TEMPLATE.md`:
 ## Testing Results
 
 ### API Test
+
 ```bash
 node scripts/test-waitlist-api.js
 ```
+
 **Result:** ✅ Success
+
 - Created contact with ID: 4
 - Created waitlist entry with ID: 2
 - HTTP 200 response
 - All fields populated correctly
 
 ### Database Verification
+
 ```bash
 node scripts/verify-crm-data.js
 ```
+
 **Result:** ✅ All verified
+
 - Contact record: ✅ Created
 - Contact source: ✅ Tracked
 - Contact activity: ✅ Logged
 - Waitlist entry: ✅ Stored
 
 ### Dev Server Logs
+
 ```
 📋 Waitlist submission from testuser@example.com (Test User)
 ✨ Created new contact (ID: 4)
@@ -271,6 +295,7 @@ POST /api/waitlist 200 in 2207ms
 ## Next Steps
 
 ### Ready to Use
+
 The CRM is production-ready. You can now:
 
 1. **Add more intake forms** using the template
@@ -301,6 +326,7 @@ Based on the New Earth Collective mission:
 ### Analytics Queries
 
 You can now answer questions like:
+
 - How many contacts came from multiple sources?
 - Which sources have the highest engagement?
 - What's the conversion funnel across forms?
@@ -311,6 +337,7 @@ You can now answer questions like:
 ## Support
 
 For questions or issues:
+
 1. Review `ARCHITECTURE.md` for design decisions
 2. Follow `INTAKE_FORM_TEMPLATE.md` for new forms
 3. Reference `EXAMPLE_EVENT_REGISTRATION.md` for examples

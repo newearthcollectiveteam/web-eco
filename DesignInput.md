@@ -6,6 +6,7 @@
 **Goal:** Elevate the existing site into a polished, high-gravitas expression of our values. Retain and refine the minimal black + #FACF39 gold aesthetic with the subtle Flower of Life shader. Provide **every single word** of marketing copy for the website—polished, refined, and ready for direct implementation. Overhaul structure for intuitive flow, drawing inspiration from Anthropic.com's clean, centered hero and vertical storytelling. Ensure no placeholders; all content is substantive and complete.
 
 Claude already has:
+
 - Tech stack & components
 - Existing Flower of Life GLSL shader (keep as site-wide background – low opacity 0.1–0.2, gold-tinted with #FACF39 lines, subtle breathing or scroll-triggered animation for a sense of sacred interconnection without distraction)
 - Golden gradient buttons (reuse the exact gradient style consistently for all CTAs – e.g., linear-gradient(to right, #FFD700, #FACF39) or the precise one already coded; add subtle hover effects like scale 1.05 and brighter glow)
@@ -28,6 +29,7 @@ Claude already has:
 ## Navigation & Global Elements
 
 Fixed top navigation bar (black background, semi-transparent on scroll for immersion):
+
 - Left: Logo in Airwaves Regular (“New Earth Collective”) with optional small subtitle in Bourton Bold (“Heart-Led Creators United”)
 - Center/Right Links (white text, hover to #FACF39):
   - Home (links to /)
@@ -40,6 +42,7 @@ Fixed top navigation bar (black background, semi-transparent on scroll for immer
 Mobile: Gold #FACF39 hamburger icon; menu slides in with links stacked, Join button at bottom.
 
 Footer (black background, 60px padding):
+
 - Horizontal mirror of nav links (white, hover #FACF39)
 - Social & Contact: Instagram icon linking to https://www.instagram.com/newearthcollectiveco/ (new tab); Email: “community@joinnewearthcollective.com” as mailto: link
 - Copyright Line (white, small): “© 2026 New Earth Collective. All rights reserved.”
@@ -231,7 +234,7 @@ Enhance the existing form at https://www.joinnewearthcollective.com/questionnair
   - Other Pages: Similar, e.g., /about: “About Us | Mission, Vision, and Tech Path for Collective Sovereignty”
   - Include Open Graph tags for social sharing (image: logo or shader screenshot).
 - **Code Practices:** Semantic HTML (e.g., <section class="hero">). ARIA labels for accessibility. Descriptive classes (e.g., .value-card, .cta-button).
-- **Redirects:** Archive all at launch.joinnewearthcollective.com/*; set 301 redirects to corresponding root domain paths (e.g., /about).
+- **Redirects:** Archive all at launch.joinnewearthcollective.com/\*; set 301 redirects to corresponding root domain paths (e.g., /about).
 - **Join Button Placement:** Nav bar, hero, end of mission/values/antithesis sections, footer.
 - **Creative Implementation:** Within these exact specs, refine UX for heart-resonance—e.g., subtle transitions on section scrolls.
 

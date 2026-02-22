@@ -120,8 +120,14 @@
   * {
     @apply border-border outline-ring/50;
   }
+  html {
+    overflow-x: hidden;
+    overscroll-behavior-x: none;
+  }
   body {
     @apply bg-background text-foreground;
+    overflow-x: hidden;
+    overscroll-behavior-x: none;
   }
 }
 
@@ -135,6 +141,15 @@
   .tracking-brand {
     letter-spacing: 0.05em;
   }
+}
+
+/* Questionnaire screen transition — opacity-only, no transforms */
+[data-q-dir] {
+  animation: q-fade-in 180ms ease-out forwards;
+}
+@keyframes q-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
 
 /* Respect user motion preferences */

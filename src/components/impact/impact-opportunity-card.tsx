@@ -69,7 +69,7 @@ export function ImpactOpportunityCard({
 
       {/* Title */}
       <h3
-        className={`mb-3 text-xl font-bold uppercase tracking-wide ${
+        className={`mb-3 text-xl font-bold tracking-wide uppercase ${
           isCompleted ? "text-neutral-400" : "text-white"
         }`}
         style={{ fontFamily: "Bourton, sans-serif" }}

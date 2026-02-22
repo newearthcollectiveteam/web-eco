@@ -21,6 +21,7 @@ All domains → Same database → Same CRM → Unified tracking
 ### 1. Shared Cookies Across Subdomains
 
 **Cookie Configuration:**
+
 ```typescript
 // Set cookie for all subdomains
 document.cookie = `nec_aid=${anonymousId}; domain=.joinnewearthcollective.com; path=/; max-age=31536000`;
@@ -37,6 +38,7 @@ document.cookie = `nec_aid=${anonymousId}; domain=.joinnewearthcollective.com; p
 ### 2. Centralized Database
 
 All domains write to the same tables:
+
 ```
 test.joinnewearthcollective.com
    ↓
@@ -127,6 +129,7 @@ Day 5: app.joinnewearthcollective.com
 ### Public vs Protected Routes
 
 **Public routes work automatically:**
+
 ```typescript
 // test.joinnewearthcollective.com/community
 // launch.joinnewearthcollective.com/event-registration
@@ -134,6 +137,7 @@ Day 5: app.joinnewearthcollective.com
 ```
 
 **Protected routes (future):**
+
 ```typescript
 // app.joinnewearthcollective.com/dashboard
 // Requires login → User already identified by email
@@ -143,33 +147,34 @@ Day 5: app.joinnewearthcollective.com
 ### Domain Configuration
 
 In `src/lib/domains.ts`:
+
 ```typescript
 export const domains = {
   test: {
-    domain: 'test.joinnewearthcollective.com',
-    name: 'Test Environment',
+    domain: "test.joinnewearthcollective.com",
+    name: "Test Environment",
     tracking: {
       enabled: true,
-      source: 'test-site'
-    }
+      source: "test-site",
+    },
   },
   launch: {
-    domain: 'launch.joinnewearthcollective.com',
-    name: 'Launch Site',
+    domain: "launch.joinnewearthcollective.com",
+    name: "Launch Site",
     tracking: {
       enabled: true,
-      source: 'launch-site'
-    }
+      source: "launch-site",
+    },
   },
   app: {
-    domain: 'app.joinnewearthcollective.com',
-    name: 'Member Portal',
+    domain: "app.joinnewearthcollective.com",
+    name: "Member Portal",
     tracking: {
       enabled: true,
-      source: 'member-portal',
-      requiresAuth: true
-    }
-  }
+      source: "member-portal",
+      requiresAuth: true,
+    },
+  },
 };
 ```
 
@@ -196,6 +201,7 @@ ORDER BY total_events DESC;
 ```
 
 **Result:**
+
 ```
 email                 | domains_visited                                      | total_events
 ---------------------|-----------------------------------------------------|-------------
@@ -220,6 +226,7 @@ ORDER BY contacts_created DESC;
 ```
 
 **Result:**
+
 ```
 initial_domain                        | contacts | qualified | conversion_rate
 -------------------------------------|----------|-----------|----------------
@@ -240,12 +247,13 @@ launch.joinnewearthcollective.com    | 89       | 67        | 75.28%
 **How it works:**
 
 1. **Link generation:**
+
 ```typescript
 const link = generateTrackedLink({
   contactId: 123,
-  destination: 'https://launch.joinnewearthcollective.com/event',
-  emailType: 'waitlist-nurture-day-3',
-  linkText: 'Register for Event'
+  destination: "https://launch.joinnewearthcollective.com/event",
+  emailType: "waitlist-nurture-day-3",
+  linkText: "Register for Event",
 });
 
 // Result:
@@ -283,23 +291,25 @@ Add domain: events.joinnewearthcollective.com
 ### Step 2: Update Domain Config
 
 `src/lib/domains.ts`:
+
 ```typescript
 export const domains = {
   // ... existing domains
   events: {
-    domain: 'events.joinnewearthcollective.com',
-    name: 'Events Site',
+    domain: "events.joinnewearthcollective.com",
+    name: "Events Site",
     tracking: {
       enabled: true,
-      source: 'events-site'
-    }
-  }
+      source: "events-site",
+    },
+  },
 };
 ```
 
 ### Step 3: That's It!
 
 Tracking automatically works:
+
 - ✅ Cookies shared across all `.joinnewearthcollective.com` subdomains
 - ✅ Same database
 - ✅ Email recognition works
@@ -350,6 +360,7 @@ Tracking automatically works:
 ### Why This Works
 
 **Subdomain cookie sharing:**
+
 ```
 Cookie domain: .joinnewearthcollective.com
               ^ Leading dot = ALL subdomains
@@ -362,6 +373,7 @@ Works on:
 ```
 
 **Won't work on:**
+
 ```
 ❌ differentdomain.com
 ❌ example.com
@@ -376,6 +388,7 @@ For completely different domains, you'd need server-side linking via email.
 ### Vercel Configuration
 
 `vercel.json`:
+
 ```json
 {
   "routes": [
@@ -396,23 +409,24 @@ Or use Vercel's built-in subdomain routing (automatic).
 ### Next.js Middleware
 
 `src/middleware.ts`:
+
 ```typescript
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
 export function middleware(request: NextRequest) {
-  const hostname = request.headers.get('host') || '';
+  const hostname = request.headers.get("host") || "";
   const response = NextResponse.next();
 
   // Track which domain this request is on
-  response.headers.set('x-domain', hostname);
+  response.headers.set("x-domain", hostname);
 
   // Ensure cookies work across all subdomains
   const cookieOptions = {
-    domain: '.joinnewearthcollective.com',
-    path: '/',
+    domain: ".joinnewearthcollective.com",
+    path: "/",
     secure: true,
-    sameSite: 'lax' as const
+    sameSite: "lax" as const,
   };
 
   // Add tracking (we'll implement this)
@@ -422,9 +436,7 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: [
-    '/((?!_next/static|_next/image|favicon.ico).*)',
-  ],
+  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
 };
 ```
 
@@ -433,26 +445,31 @@ export const config = {
 ## Benefits of This Architecture
 
 ### ✅ Unified User View
+
 - One email = one contact
 - All interactions tracked regardless of domain
 - Complete user journey
 
 ### ✅ Cross-Domain Attribution
+
 - Know which domain drove initial visit
 - Track domain-hopping behavior
 - Multi-touch attribution
 
 ### ✅ Easy Expansion
+
 - Add new subdomain → works automatically
 - No migration needed
 - No code changes needed
 
 ### ✅ Email Flexibility
+
 - Links can point to any domain
 - User tracked across domain changes
 - Conversion attribution maintained
 
 ### ✅ Privacy Compliant
+
 - Cookies scoped to your domain only
 - No third-party tracking
 - User owns their data
@@ -505,11 +522,13 @@ app.joinnewearthcollective.com
 ## Implementation Checklist
 
 ### Current (Already Done)
+
 - ✅ Multi-domain configuration exists
 - ✅ Shared database across all domains
 - ✅ Email as unique identifier
 
 ### To Add (Simple)
+
 - ✅ Domain field in events table (just added)
 - ✅ Domain field in sessions table (just added)
 - ⏳ Set cookie domain to `.joinnewearthcollective.com`
@@ -517,6 +536,7 @@ app.joinnewearthcollective.com
 - ⏳ Update analytics queries to include domain
 
 ### Zero Changes Needed
+
 - Routes (work as-is)
 - Forms (work as-is)
 - API endpoints (work as-is)
@@ -542,6 +562,7 @@ app.joinnewearthcollective.com
 ## Next: Implementation
 
 Ready to implement:
+
 1. Tracking middleware (domain-aware)
 2. Cookie management (subdomain sharing)
 3. Link generation service

@@ -3,10 +3,7 @@
 import { Suspense } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import {
-  Card,
-  CardContent,
-} from "~/components/ui/card";
+import { Card, CardContent } from "~/components/ui/card";
 import { DomainLayout } from "~/components/domain-layout";
 import { BackButton } from "~/components/back-button";
 import { ArrowRight, Globe2 } from "lucide-react";
@@ -32,7 +29,7 @@ function EcosystemMapContent() {
               </div>
             </div>
             <h1
-              className="mb-4 text-5xl font-bold text-black dark:text-white md:text-6xl"
+              className="mb-4 text-5xl font-bold text-black md:text-6xl dark:text-white"
               style={{
                 fontFamily: "Airwaves, sans-serif",
                 letterSpacing: "0.1em",

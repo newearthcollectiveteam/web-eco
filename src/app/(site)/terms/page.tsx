@@ -53,10 +53,9 @@ export default function TermsOfServicePage() {
               1. Eligibility
             </h2>
             <p>
-              You must be at least 18 years old to use our Services. By creating
-              an account or submitting a questionnaire, you represent that you
-              are at least 18 years of age and have the legal capacity to enter
-              into these Terms.
+              By creating an account or submitting a questionnaire, you
+              represent that you have the legal capacity to enter into these
+              Terms.
             </p>
           </div>
 

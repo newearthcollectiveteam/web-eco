@@ -1,9 +1,11 @@
 # New Earth Collective Web Ecosystem
 
 ## Overview
+
 Multi-domain Next.js application for the New Earth Collective community platform. Features a CRM system, community questionnaires, event management with digital waivers, user tracking/analytics, and email integration via Klaviyo. Supports multiple domains serving different purposes from a single codebase.
 
 ## Quick Commands
+
 ```bash
 npm run dev              # Start dev server (Turbo mode)
 npm run build            # Build for production
@@ -15,6 +17,7 @@ npm run db:studio        # Open Drizzle Studio (database GUI)
 ```
 
 ## Tech Stack
+
 - **Framework**: Next.js 15, React 19, TypeScript
 - **Database**: Supabase PostgreSQL via Drizzle ORM
 - **Auth**: Supabase Auth with approval workflow
@@ -24,33 +27,38 @@ npm run db:studio        # Open Drizzle Studio (database GUI)
 - **Visual Effects**: GLSL shaders for sacred geometry backgrounds
 
 ## Key Paths
-| Path | Purpose |
-|------|---------|
-| `src/app/` | Next.js App Router pages |
-| `src/app/admin/` | Protected admin area (hub, CRM, brand, shaders, templates, playground, form-builder) |
-| `src/app/api/` | API routes (waitlist, CRM, analytics, questionnaire) |
-| `src/components/pages/` | Homepage components (home, test-home hub) |
-| `src/server/api/routers/` | tRPC routers |
-| `src/server/db/schema.ts` | Database schema (CRM, tracking, galleries) |
-| `src/lib/domains.ts` | Multi-domain configuration |
-| `src/lib/crm/` | CRM service layer |
-| `src/middleware.ts` | Auth & routing middleware |
-| `shaders/` | GLSL shader files for visual effects |
+
+| Path                      | Purpose                                                                              |
+| ------------------------- | ------------------------------------------------------------------------------------ |
+| `src/app/`                | Next.js App Router pages                                                             |
+| `src/app/admin/`          | Protected admin area (hub, CRM, brand, shaders, templates, playground, form-builder) |
+| `src/app/api/`            | API routes (waitlist, CRM, analytics, questionnaire)                                 |
+| `src/components/pages/`   | Homepage components (home, test-home hub)                                            |
+| `src/server/api/routers/` | tRPC routers                                                                         |
+| `src/server/db/schema.ts` | Database schema (CRM, tracking, galleries)                                           |
+| `src/lib/domains.ts`      | Multi-domain configuration                                                           |
+| `src/lib/crm/`            | CRM service layer                                                                    |
+| `src/middleware.ts`       | Auth & routing middleware                                                            |
+| `shaders/`                | GLSL shader files for visual effects                                                 |
 
 ## Routing & Auth
+
 - All `/admin/*` routes require Supabase Auth (login + approval)
 - `/admin/shaders/flower-of-life/embed` is a public embed exception
 - `test.joinnewearthcollective.com` redirects 301 → `/admin`
 - `launch.joinnewearthcollective.com` redirects 301 → main domain
 
 **Local development**:
+
 - `http://localhost:3000` - Public homepage
 - `http://localhost:3000/admin` - Dev hub (requires login)
 - `http://localhost:3000/admin/brand` - Brand assets
 - `http://localhost:3000/admin/shaders` - Shader gallery
 
 ## CRM System
+
 Master CRM tracks all contacts from all forms with:
+
 - Email-based deduplication
 - Multi-source tracking (which forms a contact submitted)
 - Activity timeline (complete interaction history)
@@ -60,7 +68,9 @@ Master CRM tracks all contacts from all forms with:
 Pattern: Each intake form (waitlist, questionnaire, event registration) has its own table linked to master contacts table via foreign key.
 
 ## Tracking & Analytics
+
 Full-funnel user journey tracking:
+
 - Anonymous visitor tracking with session IDs
 - Identity resolution (anonymous to known user)
 - Email link click tracking with unique tokens
@@ -72,6 +82,7 @@ Full-funnel user journey tracking:
 **GitHub account:** Always use `newearthcollectiveteam` (not `miceli583`) for this project.
 
 **Push protocol:**
+
 1. Ensure the active `gh` account is correct: `gh auth status`
 2. If wrong account is active: `gh auth switch --user newearthcollectiveteam`
 3. Remote must use HTTPS (not SSH) so `gh` credential helper routes to the correct account:
@@ -82,4 +93,5 @@ Full-funnel user journey tracking:
 **Why HTTPS over SSH:** The SSH key on this machine is linked to `miceli583`. Using HTTPS with `gh auth setup-git` lets the GitHub CLI token handle auth, routing to whichever `gh` account is active.
 
 ## Current Status
+
 See `STATUS.md` for feature status and `TODO.md` for tracked work.

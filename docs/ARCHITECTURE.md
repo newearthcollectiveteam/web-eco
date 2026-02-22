@@ -15,18 +15,21 @@ Every intake form follows this pattern:
 ### Master CRM Tables
 
 #### `contacts` - Master contact database
+
 - Stores deduplicated contacts from ALL sources
 - Uses `firstSource` to track initial acquisition channel
 - Uses JSONB `metadata` only for truly dynamic/unpredictable fields
 - Commonly needed fields get their own columns (not buried in metadata)
 
 #### `contactActivities` - Interaction history
+
 - Every form submission creates an activity record
 - Tracks the complete timeline of contact interactions
 - Uses `source` to identify which form/page
 - Stores form-specific data in `metadata` that doesn't need to be queried frequently
 
 #### `contactSources` - Multi-source tracking (NEW)
+
 - Tracks ALL sources a contact has interacted with
 - Solves the problem of contacts coming from multiple forms
 - Enables reporting: "How many contacts came from BOTH waitlist AND event registration?"
@@ -88,28 +91,32 @@ export const [formName]Intake = createTable("[form_name]_intake", {
 ### Example: Adding a New "Event Registration" Form
 
 1. Create the table:
+
 ```typescript
-export const eventRegistrationIntake = createTable("event_registration_intake", {
-  id: serial("id").primaryKey(),
-  contactId: integer("contact_id")
-    .notNull()
-    .references(() => contacts.id, { onDelete: "cascade" }),
+export const eventRegistrationIntake = createTable(
+  "event_registration_intake",
+  {
+    id: serial("id").primaryKey(),
+    contactId: integer("contact_id")
+      .notNull()
+      .references(() => contacts.id, { onDelete: "cascade" }),
 
-  // Common fields
-  source: varchar("source", { length: 100 }).notNull(),
-  processed: boolean("processed").default(false).notNull(),
+    // Common fields
+    source: varchar("source", { length: 100 }).notNull(),
+    processed: boolean("processed").default(false).notNull(),
 
-  // Event-specific fields
-  eventId: integer("event_id").notNull(),
-  ticketType: varchar("ticket_type", { length: 50 }),
-  dietaryRestrictions: text("dietary_restrictions"),
-  emergencyContact: varchar("emergency_contact", { length: 255 }),
-  attendeeCount: integer("attendee_count").default(1),
+    // Event-specific fields
+    eventId: integer("event_id").notNull(),
+    ticketType: varchar("ticket_type", { length: 50 }),
+    dietaryRestrictions: text("dietary_restrictions"),
+    emergencyContact: varchar("emergency_contact", { length: 255 }),
+    attendeeCount: integer("attendee_count").default(1),
 
-  createdAt: timestamp("created_at", { withTimezone: true })
-    .default(sql`CURRENT_TIMESTAMP`)
-    .notNull(),
-});
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+  }
+);
 ```
 
 2. Create the API endpoint following the same pattern as `/api/waitlist`
@@ -138,7 +145,10 @@ const multiFormContacts = await db
   .select()
   .from(contacts)
   .innerJoin(waitlistIntake, eq(contacts.id, waitlistIntake.contactId))
-  .innerJoin(eventRegistrationIntake, eq(contacts.id, eventRegistrationIntake.contactId));
+  .innerJoin(
+    eventRegistrationIntake,
+    eq(contacts.id, eventRegistrationIntake.contactId)
+  );
 
 // Find all activities for a contact
 const timeline = await db

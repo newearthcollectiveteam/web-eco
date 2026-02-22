@@ -71,9 +71,7 @@ const TextareaWithCounter = React.forwardRef<
           <span
             className={cn(
               "transition-colors",
-              meetsWordRequirement
-                ? "text-green-400"
-                : "text-neutral-400"
+              meetsWordRequirement ? "text-green-400" : "text-neutral-400"
             )}
           >
             {helperText ? (
@@ -93,9 +91,7 @@ const TextareaWithCounter = React.forwardRef<
           <span
             className={cn(
               "transition-colors",
-              meetsCharRequirement
-                ? "text-green-400"
-                : "text-neutral-400"
+              meetsCharRequirement ? "text-green-400" : "text-neutral-400"
             )}
           >
             {charCount} / {minChars} characters
@@ -103,9 +99,7 @@ const TextareaWithCounter = React.forwardRef<
           </span>
         )}
         {!minWords && !minChars && (
-          <span className="text-neutral-400">
-            {wordCount} words
-          </span>
+          <span className="text-neutral-400">{wordCount} words</span>
         )}
       </div>
     </div>

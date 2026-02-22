@@ -143,12 +143,7 @@ const faqItems = [
     answer:
       "Our events blend immersive workshops, authentic relating, breathwork, sound healing, music, art, and community building. They are containers for deep connection, personal transformation, and collaborative visioning — not just festivals, but catalysts for lasting change.",
   },
-  {
-    question: "Is there a cost to join?",
-    answer:
-      "Joining the community network is free. Our events and experiences have their own pricing, designed to be accessible while sustaining the collective. We believe in circular abundance — energy exchanged, not extracted.",
-  },
-  {
+{
     question: "How do I get involved?",
     answer:
       "Start by filling out our questionnaire — it helps us understand your gifts and how you'd like to contribute. From there, you'll be connected with community members, invited to events, and plugged into collaboration opportunities.",
@@ -215,6 +210,12 @@ function LazyVideo({ src, poster }: { src: string; poster: string }) {
           preload="metadata"
           poster={poster}
           className="max-h-[70vh] w-auto rounded-lg"
+          onPlay={() => {
+            if (currentPlayingVideo && currentPlayingVideo !== videoRef.current) {
+              currentPlayingVideo.pause();
+            }
+            currentPlayingVideo = videoRef.current;
+          }}
           onPause={() => {
             if (currentPlayingVideo === videoRef.current) {
               currentPlayingVideo = null;
@@ -350,10 +351,7 @@ export function HomePage() {
             creators and connect them into a living network for ongoing
             collaboration.
           </p>
-          <p className="animate-in fade-in fill-mode-both mb-10 text-sm text-white/60 italic delay-500 duration-700">
-            100+ heart-led creators connected at The Emergence
-          </p>
-          <div className="animate-in fade-in slide-in-from-bottom-2 fill-mode-both delay-700 duration-700">
+          <div className="animate-in fade-in slide-in-from-bottom-2 fill-mode-both mt-10 delay-700 duration-700">
             <Button
               asChild
               size="lg"
@@ -611,7 +609,9 @@ export function HomePage() {
             </span>
           </h2>
           <p className="mb-12 text-center text-lg text-white/80">
-            Hear from attendees of our first event: The Emergence
+            Hear from attendees of our first event:{" "}
+            <br className="sm:hidden" />
+            The Emergence
           </p>
 
           {/* Video Testimonial Carousel */}
@@ -646,7 +646,7 @@ export function HomePage() {
                 autoScroll
                 autoScrollSpeed={0.5}
               >
-                <CarouselContent className="-ml-4">
+                <CarouselContent className="-ml-4 pr-4">
                   {writtenTestimonials.map((t) => (
                     <CarouselItem
                       key={t.name + t.quote.slice(0, 20)}

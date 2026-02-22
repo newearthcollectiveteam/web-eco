@@ -168,7 +168,7 @@ function DomainLayoutInner({
             </p>
 
             {/* Social and Contact Links */}
-            <div className="flex flex-col sm:flex-row items-center gap-6">
+            <div className="flex flex-col items-center gap-6 sm:flex-row">
               <a
                 href="https://instagram.com/newearthcollectiveco"
                 target="_blank"
@@ -183,7 +183,9 @@ function DomainLayoutInner({
                 className="flex items-center gap-2 text-neutral-600 transition-colors hover:text-[#facf39] dark:text-neutral-400"
               >
                 <Mail className="h-5 w-5" />
-                <span className="text-sm">community@joinnewearthcollective.com</span>
+                <span className="text-sm">
+                  community@joinnewearthcollective.com
+                </span>
               </a>
             </div>
 

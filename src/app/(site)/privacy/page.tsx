@@ -136,10 +136,10 @@ export default function PrivacyPolicyPage() {
               3. Email Communications
             </h2>
             <p className="mb-3">
-              We use Klaviyo as our email service provider. When you provide your
+              We use Resend as our email service provider. When you provide your
               email and consent to communications, your email address and
-              relevant profile data are shared with Klaviyo to deliver email
-              sequences and updates.
+              relevant profile data are shared with Resend to deliver
+              transactional and marketing emails.
             </p>
             <p>
               Every marketing email includes an unsubscribe link. You may also
@@ -193,8 +193,8 @@ export default function PrivacyPolicyPage() {
             </p>
             <ul className="list-disc space-y-1 pl-6">
               <li>
-                <strong className="text-white">Klaviyo</strong> &mdash; email
-                delivery and marketing automation.
+                <strong className="text-white">Resend</strong> &mdash; email
+                delivery.
               </li>
               <li>
                 <strong className="text-white">Supabase</strong> &mdash;
@@ -277,20 +277,7 @@ export default function PrivacyPolicyPage() {
           {/* 8 */}
           <div>
             <h2 className="mb-4 text-xl font-bold text-[#FACF39]">
-              8. Children&apos;s Privacy
-            </h2>
-            <p>
-              Our services are not directed to individuals under 18. We do not
-              knowingly collect personal information from minors. If we learn
-              that we have collected data from a child under 18, we will delete
-              it promptly.
-            </p>
-          </div>
-
-          {/* 9 */}
-          <div>
-            <h2 className="mb-4 text-xl font-bold text-[#FACF39]">
-              9. Changes to This Policy
+              8. Changes to This Policy
             </h2>
             <p>
               We may update this Privacy Policy from time to time. Changes will
@@ -300,10 +287,10 @@ export default function PrivacyPolicyPage() {
             </p>
           </div>
 
-          {/* 10 */}
+          {/* 9 */}
           <div>
             <h2 className="mb-4 text-xl font-bold text-[#FACF39]">
-              10. Contact Us
+              9. Contact Us
             </h2>
             <p>
               If you have questions about this Privacy Policy or your personal

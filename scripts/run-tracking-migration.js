@@ -9,8 +9,8 @@
  * 5. user_identity_map - Anonymous → Known linking
  */
 
-import postgres from 'postgres';
-import * as dotenv from 'dotenv';
+import postgres from "postgres";
+import * as dotenv from "dotenv";
 
 dotenv.config();
 
@@ -18,10 +18,10 @@ const sql = postgres(process.env.DATABASE_URL);
 
 async function runMigration() {
   try {
-    console.log('\n🚀 Starting tracking & analytics migration...\n');
+    console.log("\n🚀 Starting tracking & analytics migration...\n");
 
     // Step 1: Create sessions table
-    console.log('📋 Step 1: Creating sessions table...');
+    console.log("📋 Step 1: Creating sessions table...");
     await sql`
       CREATE TABLE IF NOT EXISTS "web-eco_session" (
         id TEXT PRIMARY KEY,
@@ -46,10 +46,10 @@ async function runMigration() {
         created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL
       )
     `;
-    console.log('✅ Sessions table created\n');
+    console.log("✅ Sessions table created\n");
 
     // Step 2: Create events table
-    console.log('📋 Step 2: Creating events table...');
+    console.log("📋 Step 2: Creating events table...");
     await sql`
       CREATE TABLE IF NOT EXISTS "web-eco_event" (
         id SERIAL PRIMARY KEY,
@@ -75,10 +75,10 @@ async function runMigration() {
         created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL
       )
     `;
-    console.log('✅ Events table created\n');
+    console.log("✅ Events table created\n");
 
     // Step 3: Create email_links table
-    console.log('📋 Step 3: Creating email_links table...');
+    console.log("📋 Step 3: Creating email_links table...");
     await sql`
       CREATE TABLE IF NOT EXISTS "web-eco_email_link" (
         id SERIAL PRIMARY KEY,
@@ -99,10 +99,10 @@ async function runMigration() {
         created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL
       )
     `;
-    console.log('✅ Email links table created\n');
+    console.log("✅ Email links table created\n");
 
     // Step 4: Create email_link_clicks table
-    console.log('📋 Step 4: Creating email_link_clicks table...');
+    console.log("📋 Step 4: Creating email_link_clicks table...");
     await sql`
       CREATE TABLE IF NOT EXISTS "web-eco_email_link_click" (
         id SERIAL PRIMARY KEY,
@@ -121,10 +121,10 @@ async function runMigration() {
         created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL
       )
     `;
-    console.log('✅ Email link clicks table created\n');
+    console.log("✅ Email link clicks table created\n");
 
     // Step 5: Create user_identity_map table
-    console.log('📋 Step 5: Creating user_identity_map table...');
+    console.log("📋 Step 5: Creating user_identity_map table...");
     await sql`
       CREATE TABLE IF NOT EXISTS "web-eco_user_identity_map" (
         id SERIAL PRIMARY KEY,
@@ -137,10 +137,10 @@ async function runMigration() {
         created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL
       )
     `;
-    console.log('✅ User identity map table created\n');
+    console.log("✅ User identity map table created\n");
 
     // Step 6: Create indexes for performance
-    console.log('📋 Step 6: Creating indexes...');
+    console.log("📋 Step 6: Creating indexes...");
 
     const indexes = [
       // Session indexes
@@ -175,10 +175,10 @@ async function runMigration() {
       await indexQuery;
     }
 
-    console.log('✅ All indexes created\n');
+    console.log("✅ All indexes created\n");
 
     // Step 7: Verify migration
-    console.log('📋 Step 7: Verifying migration...');
+    console.log("📋 Step 7: Verifying migration...");
 
     const tableChecks = await sql`
       SELECT table_name
@@ -195,27 +195,26 @@ async function runMigration() {
       ORDER BY table_name
     `;
 
-    console.log('📊 Tracking tables created:');
-    tableChecks.forEach(table => {
+    console.log("📊 Tracking tables created:");
+    tableChecks.forEach((table) => {
       console.log(`   ✅ ${table.table_name}`);
     });
-    console.log('');
+    console.log("");
 
-    console.log('✅ Migration completed successfully!\n');
-    console.log('🎉 Your tracking & analytics system is ready!');
-    console.log('');
-    console.log('New capabilities:');
-    console.log('   ✅ Session tracking (anonymous + known users)');
-    console.log('   ✅ Event tracking (page views, clicks, conversions)');
-    console.log('   ✅ Email link tracking with click attribution');
-    console.log('   ✅ Cross-device user identification');
-    console.log('   ✅ Multi-domain tracking support');
-    console.log('   ✅ UTM parameter capture');
-    console.log('   ✅ Complete user journey tracking\n');
-
+    console.log("✅ Migration completed successfully!\n");
+    console.log("🎉 Your tracking & analytics system is ready!");
+    console.log("");
+    console.log("New capabilities:");
+    console.log("   ✅ Session tracking (anonymous + known users)");
+    console.log("   ✅ Event tracking (page views, clicks, conversions)");
+    console.log("   ✅ Email link tracking with click attribution");
+    console.log("   ✅ Cross-device user identification");
+    console.log("   ✅ Multi-domain tracking support");
+    console.log("   ✅ UTM parameter capture");
+    console.log("   ✅ Complete user journey tracking\n");
   } catch (error) {
-    console.error('\n❌ Migration failed:', error);
-    console.error('\nError details:', error.message);
+    console.error("\n❌ Migration failed:", error);
+    console.error("\nError details:", error.message);
     process.exit(1);
   } finally {
     await sql.end();

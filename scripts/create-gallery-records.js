@@ -1,26 +1,26 @@
-import { readdirSync } from 'fs';
-import { join, dirname } from 'path';
-import { fileURLToPath } from 'url';
-import { config } from 'dotenv';
-import postgres from 'postgres';
+import { readdirSync } from "fs";
+import { join, dirname } from "path";
+import { fileURLToPath } from "url";
+import { config } from "dotenv";
+import postgres from "postgres";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 // Load environment variables
-config({ path: join(__dirname, '../.env') });
+config({ path: join(__dirname, "../.env") });
 
 // Initialize database client
 const sql = postgres(process.env.DATABASE_URL);
 
 async function createGalleryRecords() {
   try {
-    console.log('🚀 Creating gallery database records...\n');
+    console.log("🚀 Creating gallery database records...\n");
 
     // 1. Get all photo files
-    const photosDir = join(__dirname, '../public/community-photos');
+    const photosDir = join(__dirname, "../public/community-photos");
     const files = readdirSync(photosDir)
-      .filter(f => f.endsWith('.jpg'))
+      .filter((f) => f.endsWith(".jpg"))
       .sort(); // Sort alphabetically for consistent ordering
 
     console.log(`📸 Found ${files.length} photos\n`);
@@ -33,14 +33,16 @@ async function createGalleryRecords() {
     let gallery;
     if (existingGallery.length > 0) {
       gallery = existingGallery[0];
-      console.log(`✅ Using existing gallery: ${gallery.title} (ID: ${gallery.id})\n`);
+      console.log(
+        `✅ Using existing gallery: ${gallery.title} (ID: ${gallery.id})\n`
+      );
 
       // Delete existing images for this gallery to avoid duplicates
       await sql`DELETE FROM "web-eco_gallery_image" WHERE gallery_id = ${gallery.id}`;
-      console.log('🧹 Cleared existing image records\n');
+      console.log("🧹 Cleared existing image records\n");
     } else {
       // 3. Create gallery record
-      console.log('📝 Creating new gallery record...');
+      console.log("📝 Creating new gallery record...");
       const [newGallery] = await sql`
         INSERT INTO "web-eco_gallery" (title, description, slug, is_published, display_order)
         VALUES (
@@ -57,7 +59,7 @@ async function createGalleryRecords() {
     }
 
     // 4. Insert image records into database
-    console.log('💾 Creating database records for images...');
+    console.log("💾 Creating database records for images...");
 
     for (let i = 0; i < files.length; i++) {
       const filename = files[i];
@@ -71,7 +73,7 @@ async function createGalleryRecords() {
           ${gallery.id},
           ${publicUrl},
           ${storagePath},
-          ${'New Earth Collective community gathering'},
+          ${"New Earth Collective community gathering"},
           ${i}
         )
       `;
@@ -90,7 +92,7 @@ async function createGalleryRecords() {
       SET cover_image_url = ${coverImageUrl}
       WHERE id = ${gallery.id}
     `;
-    console.log('✅ Set gallery cover image\n');
+    console.log("✅ Set gallery cover image\n");
 
     // 6. Verify the records
     const imageCount = await sql`
@@ -98,7 +100,7 @@ async function createGalleryRecords() {
       WHERE gallery_id = ${gallery.id}
     `;
 
-    console.log('🎉 Gallery setup completed successfully!');
+    console.log("🎉 Gallery setup completed successfully!");
     console.log(`📍 Gallery ID: ${gallery.id}`);
     console.log(`📍 Gallery Slug: ${gallery.slug}`);
     console.log(`📍 Total Images: ${imageCount[0].count}`);
@@ -107,7 +109,7 @@ async function createGalleryRecords() {
     await sql.end();
     process.exit(0);
   } catch (error) {
-    console.error('\n❌ Setup failed:', error);
+    console.error("\n❌ Setup failed:", error);
     await sql.end();
     process.exit(1);
   }

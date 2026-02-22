@@ -268,6 +268,7 @@ export const appRouter = createTRPCRouter({
 ## Step 5: Test Your Implementation
 
 1. **Test API endpoint**:
+
 ```bash
 curl -X POST http://localhost:3000/api/[form-name] \
   -H "Content-Type: application/json" \
@@ -280,11 +281,13 @@ curl -X POST http://localhost:3000/api/[form-name] \
 ```
 
 2. **Verify in database**:
+
 ```bash
 npm run db:studio
 ```
 
 Check these tables:
+
 - `web-eco_contact` - Contact created/updated
 - `web-eco_contact_source` - Source tracked
 - `web-eco_contact_activity` - Activity logged
@@ -293,6 +296,7 @@ Check these tables:
 ## Common Query Patterns
 
 ### Find all contacts who submitted a specific form
+
 ```typescript
 const formContacts = await db
   .select()
@@ -301,6 +305,7 @@ const formContacts = await db
 ```
 
 ### Find contacts who submitted multiple forms
+
 ```typescript
 const multiFormContacts = await db
   .select({
@@ -314,6 +319,7 @@ const multiFormContacts = await db
 ```
 
 ### Get complete timeline for a contact
+
 ```typescript
 const timeline = await db
   .select()

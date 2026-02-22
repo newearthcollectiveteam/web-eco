@@ -28,7 +28,10 @@ function PlaygroundPageContent() {
             <div>
               <h1
                 className="text-2xl font-bold text-white"
-                style={{ fontFamily: "Airwaves, sans-serif", letterSpacing: "0.05em" }}
+                style={{
+                  fontFamily: "Airwaves, sans-serif",
+                  letterSpacing: "0.05em",
+                }}
               >
                 Component Playground
               </h1>

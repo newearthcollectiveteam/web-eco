@@ -60,17 +60,22 @@ export const analyticsRouter = createTRPCRouter({
     }),
 
   overview: publicProcedure.query(async ({ ctx }) => {
-    const [totalContacts, totalSessions, totalEvents, totalEmailLinks, recentContacts] =
-      await Promise.all([
-        ctx.db.select({ count: sql<number>`count(*)` }).from(contacts),
-        ctx.db.select({ count: sql<number>`count(*)` }).from(sessions),
-        ctx.db.select({ count: sql<number>`count(*)` }).from(events),
-        ctx.db.select({ count: sql<number>`count(*)` }).from(emailLinks),
-        ctx.db.query.contacts.findMany({
-          orderBy: [desc(contacts.createdAt)],
-          limit: 10,
-        }),
-      ]);
+    const [
+      totalContacts,
+      totalSessions,
+      totalEvents,
+      totalEmailLinks,
+      recentContacts,
+    ] = await Promise.all([
+      ctx.db.select({ count: sql<number>`count(*)` }).from(contacts),
+      ctx.db.select({ count: sql<number>`count(*)` }).from(sessions),
+      ctx.db.select({ count: sql<number>`count(*)` }).from(events),
+      ctx.db.select({ count: sql<number>`count(*)` }).from(emailLinks),
+      ctx.db.query.contacts.findMany({
+        orderBy: [desc(contacts.createdAt)],
+        limit: 10,
+      }),
+    ]);
 
     return {
       summary: {

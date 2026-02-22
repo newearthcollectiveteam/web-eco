@@ -3,10 +3,7 @@
 import { type ReactNode } from "react";
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
-import {
-  AdminSidebarProvider,
-  useAdminSidebar,
-} from "./admin-sidebar-context";
+import { AdminSidebarProvider, useAdminSidebar } from "./admin-sidebar-context";
 import {
   AdminSidebar,
   SIDEBAR_WIDTH,
@@ -17,10 +14,7 @@ import { AdminHeader } from "./admin-header";
 // Pages that should NOT get the dashboard shell.
 // Gallery listing pages (/admin/shaders, /admin/playground) DO get the shell.
 // Individual shader viewers and playground demos do NOT (they're full-screen).
-const STANDALONE_PREFIXES = [
-  "/admin/login",
-  "/admin/templates/",
-];
+const STANDALONE_PREFIXES = ["/admin/login", "/admin/templates/"];
 
 // These are exact matches for standalone checking — the gallery index pages
 // at /admin/shaders and /admin/playground should get the shell,
@@ -30,10 +24,7 @@ function isStandalonePage(pathname: string): boolean {
   if (STANDALONE_PREFIXES.some((p) => pathname.startsWith(p))) return true;
 
   // Individual shader pages (not the gallery index)
-  if (
-    pathname.startsWith("/admin/shaders/") &&
-    pathname !== "/admin/shaders"
-  ) {
+  if (pathname.startsWith("/admin/shaders/") && pathname !== "/admin/shaders") {
     return true;
   }
 

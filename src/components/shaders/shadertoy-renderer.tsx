@@ -29,10 +29,8 @@ export function ShadertoyRenderer({
       return;
     }
 
-    // Set canvas size — cap DPR at 1 to keep GPU load low
-    // (shaders are decorative backgrounds behind opacity, full retina is wasted)
     const resize = () => {
-      const dpr = Math.min(window.devicePixelRatio || 1, 1);
+      const dpr = window.devicePixelRatio || 1;
       canvas.width = window.innerWidth * dpr;
       canvas.height = window.innerHeight * dpr;
       canvas.style.width = `${window.innerWidth}px`;

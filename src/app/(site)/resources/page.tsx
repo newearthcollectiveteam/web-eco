@@ -8,7 +8,8 @@ export const metadata: Metadata = {
   description: "Explore businesses and technologies aligned with our mission.",
   openGraph: {
     title: "Resources | New Earth Collective",
-    description: "Curated resources for regenerative growth and conscious technology.",
+    description:
+      "Curated resources for regenerative growth and conscious technology.",
     type: "website",
   },
 };
@@ -32,7 +33,8 @@ const alternatives = [
 const partners = [
   {
     title: "Entheos Holistics",
-    description: "Earth-based healing offerings and holistic wellness practices. Explore sacred ceremonies, plant medicine integration, and embodied transformation work.",
+    description:
+      "Earth-based healing offerings and holistic wellness practices. Explore sacred ceremonies, plant medicine integration, and embodied transformation work.",
     url: "https://entheosholistics.com/?sld=newearth",
     category: "Healing & Wellness",
   },
@@ -41,25 +43,29 @@ const partners = [
 const alignedTech = [
   {
     title: "Global Ecovillage Network",
-    description: "Connect with 6,000+ regenerative communities across 114 countries. Living laboratories for technology that facilitates gathering instead of replacing it.",
+    description:
+      "Connect with 6,000+ regenerative communities across 114 countries. Living laboratories for technology that facilitates gathering instead of replacing it.",
     url: "https://ecovillage.org/",
     category: "Community",
   },
   {
     title: "Center for Humane Technology",
-    description: "Design principles for wellbeing. Developing principles that protect attention and wellbeing since 2013.",
+    description:
+      "Design principles for wellbeing. Developing principles that protect attention and wellbeing since 2013.",
     url: "https://www.humanetech.com/",
     category: "Tech Ethics",
   },
   {
     title: "Light Phone",
-    description: "Minimalist tech for focus. A phone designed to be used as little as possible—demonstrating viable alternatives to attention-hijacking interfaces.",
+    description:
+      "Minimalist tech for focus. A phone designed to be used as little as possible—demonstrating viable alternatives to attention-hijacking interfaces.",
     url: "https://www.thelightphone.com/",
     category: "Conscious Tech",
   },
   {
     title: "Regeneration International",
-    description: "Permaculture and soil healing. Integrated systems that enhance biodiversity, enrich soils, and capture carbon while reconnecting humans to the living systems that sustain us.",
+    description:
+      "Permaculture and soil healing. Integrated systems that enhance biodiversity, enrich soils, and capture carbon while reconnecting humans to the living systems that sustain us.",
     url: "https://regenerationinternational.org/",
     category: "Regenerative Agriculture",
   },
@@ -69,7 +75,7 @@ export default function ResourcesPage() {
   return (
     <div className="bg-black">
       {/* Hero Section */}
-      <section className="relative min-h-[50vh] flex items-center justify-center overflow-hidden">
+      <section className="relative flex min-h-[50vh] items-center justify-center overflow-hidden">
         {/* Flower of Life Shader Background */}
         <div className="absolute inset-0 opacity-15">
           <iframe
@@ -87,14 +93,18 @@ export default function ResourcesPage() {
         <div className="relative z-10 mx-auto max-w-4xl px-4 pt-24 text-center">
           <h1
             className="mb-6 text-5xl font-bold md:text-6xl"
-            style={{ fontFamily: "Airwaves, sans-serif", letterSpacing: "0.05em" }}
+            style={{
+              fontFamily: "Airwaves, sans-serif",
+              letterSpacing: "0.05em",
+            }}
           >
             <span className="bg-gradient-to-r from-[#f3a51c] via-[#f6c43f] to-[#f6e45b] bg-clip-text text-transparent">
               Resources for a<br className="md:hidden" /> New Earth
             </span>
           </h1>
           <p className="mx-auto max-w-2xl text-lg text-white/80">
-            Explore businesses and technologies<br className="md:hidden" /> aligned with our mission.
+            Explore businesses and technologies
+            <br className="md:hidden" /> aligned with our mission.
           </p>
         </div>
       </section>
@@ -104,7 +114,10 @@ export default function ResourcesPage() {
         <div className="mx-auto max-w-5xl">
           <h2
             className="mb-8 text-center text-3xl font-bold"
-            style={{ fontFamily: "Airwaves, sans-serif", letterSpacing: "0.05em" }}
+            style={{
+              fontFamily: "Airwaves, sans-serif",
+              letterSpacing: "0.05em",
+            }}
           >
             <span className="bg-gradient-to-r from-[#f3a51c] via-[#f6c43f] to-[#f6e45b] bg-clip-text text-transparent">
               Affiliates
@@ -120,7 +133,7 @@ export default function ResourcesPage() {
                 className="group block max-w-md rounded-lg border border-[#FACF39]/30 bg-black/60 p-6 transition-all hover:border-[#FACF39]/60 hover:shadow-lg hover:shadow-[#FACF39]/10"
               >
                 <div className="mb-2 flex items-center justify-between">
-                  <span className="text-xs font-medium uppercase tracking-wider text-[#FACF39]/70">
+                  <span className="text-xs font-medium tracking-wider text-[#FACF39]/70 uppercase">
                     {resource.category}
                   </span>
                   <ExternalLink className="h-4 w-4 text-white/40 transition-colors group-hover:text-[#FACF39]" />
@@ -145,7 +158,10 @@ export default function ResourcesPage() {
         <div className="mx-auto max-w-5xl">
           <h2
             className="mb-8 text-center text-3xl font-bold"
-            style={{ fontFamily: "Airwaves, sans-serif", letterSpacing: "0.05em" }}
+            style={{
+              fontFamily: "Airwaves, sans-serif",
+              letterSpacing: "0.05em",
+            }}
           >
             <span className="bg-gradient-to-r from-[#f3a51c] via-[#f6c43f] to-[#f6e45b] bg-clip-text text-transparent">
               Aligned Technologies
@@ -161,7 +177,7 @@ export default function ResourcesPage() {
               className="group block max-w-lg rounded-lg border border-[#FACF39]/30 bg-black/60 p-6 transition-all hover:border-[#FACF39]/60 hover:shadow-lg hover:shadow-[#FACF39]/10"
             >
               <div className="mb-2 flex items-center justify-between">
-                <span className="text-xs font-medium uppercase tracking-wider text-[#FACF39]/70">
+                <span className="text-xs font-medium tracking-wider text-[#FACF39]/70 uppercase">
                   Data Sovereignty
                 </span>
                 <ExternalLink className="h-4 w-4 text-white/40 transition-colors group-hover:text-[#FACF39]" />
@@ -173,7 +189,9 @@ export default function ResourcesPage() {
                 Are We Web5 Yet?
               </h3>
               <p className="text-sm leading-relaxed text-white/70">
-                Track the development of Web5—decentralized identity, P2P trust mechanisms, and user-controlled data. Infrastructure for a world where you own your data and control who accesses it.
+                Track the development of Web5—decentralized identity, P2P trust
+                mechanisms, and user-controlled data. Infrastructure for a world
+                where you own your data and control who accesses it.
               </p>
             </a>
           </div>
@@ -188,7 +206,7 @@ export default function ResourcesPage() {
                 className="group block rounded-lg border border-[#FACF39]/30 bg-black/60 p-6 transition-all hover:border-[#FACF39]/60 hover:shadow-lg hover:shadow-[#FACF39]/10"
               >
                 <div className="mb-2 flex items-center justify-between">
-                  <span className="text-xs font-medium uppercase tracking-wider text-[#FACF39]/70">
+                  <span className="text-xs font-medium tracking-wider text-[#FACF39]/70 uppercase">
                     {resource.category}
                   </span>
                   <ExternalLink className="h-4 w-4 text-white/40 transition-colors group-hover:text-[#FACF39]" />
@@ -213,13 +231,14 @@ export default function ResourcesPage() {
         <div className="mx-auto max-w-3xl text-center">
           <h2
             className="mb-6 text-3xl font-bold text-[#FACF39]"
-            style={{ fontFamily: "Airwaves, sans-serif", letterSpacing: "0.05em" }}
+            style={{
+              fontFamily: "Airwaves, sans-serif",
+              letterSpacing: "0.05em",
+            }}
           >
             Share Your Resources
           </h2>
-          <p className="mb-10 text-lg text-white/80">
-            Want to contribute?
-          </p>
+          <p className="mb-10 text-lg text-white/80">Want to contribute?</p>
           <Button
             asChild
             size="lg"
@@ -239,7 +258,10 @@ export default function ResourcesPage() {
         <div className="mx-auto max-w-7xl">
           <h2
             className="mb-12 text-center text-4xl font-bold"
-            style={{ fontFamily: "Airwaves, sans-serif", letterSpacing: "0.05em" }}
+            style={{
+              fontFamily: "Airwaves, sans-serif",
+              letterSpacing: "0.05em",
+            }}
           >
             <span className="bg-gradient-to-r from-[#f3a51c] via-[#f6c43f] to-[#f6e45b] bg-clip-text text-transparent">
               Reclaiming Connection in a Fragmented World
@@ -258,7 +280,9 @@ export default function ResourcesPage() {
                 {challenges.map((point, index) => (
                   <li key={index} className="flex gap-3">
                     <span className="mt-1.5 h-2 w-2 flex-shrink-0 rounded-full bg-[#FACF39]/50" />
-                    <p className="text-sm leading-relaxed text-white/80">{point}</p>
+                    <p className="text-sm leading-relaxed text-white/80">
+                      {point}
+                    </p>
                   </li>
                 ))}
               </ul>
@@ -276,7 +300,9 @@ export default function ResourcesPage() {
                 {alternatives.map((point, index) => (
                   <li key={index} className="flex gap-3">
                     <span className="mt-1.5 h-2 w-2 flex-shrink-0 rounded-full bg-[#FACF39]" />
-                    <p className="text-sm leading-relaxed text-white/80">{point}</p>
+                    <p className="text-sm leading-relaxed text-white/80">
+                      {point}
+                    </p>
                   </li>
                 ))}
               </ul>

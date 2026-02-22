@@ -20,7 +20,9 @@ interface AdminSidebarContextValue {
   closeMobile: () => void;
 }
 
-const AdminSidebarContext = createContext<AdminSidebarContextValue | null>(null);
+const AdminSidebarContext = createContext<AdminSidebarContextValue | null>(
+  null
+);
 
 export function AdminSidebarProvider({ children }: { children: ReactNode }) {
   const [isCollapsed, setIsCollapsed] = useState(false);

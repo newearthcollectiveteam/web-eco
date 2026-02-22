@@ -13,8 +13,22 @@ export interface BirthTimePickerProps {
   disabled?: boolean;
 }
 
-const BirthTimePicker = React.forwardRef<HTMLInputElement, BirthTimePickerProps>(
-  ({ name, id, className, placeholder: _placeholder = "Select birth time", value, onChange, disabled }, ref) => {
+const BirthTimePicker = React.forwardRef<
+  HTMLInputElement,
+  BirthTimePickerProps
+>(
+  (
+    {
+      name,
+      id,
+      className,
+      placeholder: _placeholder = "Select birth time",
+      value,
+      onChange,
+      disabled,
+    },
+    ref
+  ) => {
     // Parse initial value if provided (format: "HH:mm")
     const parseInitialValue = (val: string | undefined) => {
       if (!val) return { hour: "", minute: "", period: "AM" };
@@ -45,7 +59,7 @@ const BirthTimePicker = React.forwardRef<HTMLInputElement, BirthTimePickerProps>
 
     // Generate minutes 00-59
     const minutes = Array.from({ length: 60 }, (_, i) =>
-      i.toString().padStart(2, '0')
+      i.toString().padStart(2, "0")
     );
 
     // Format time for hidden input (24-hour format)
@@ -59,11 +73,15 @@ const BirthTimePicker = React.forwardRef<HTMLInputElement, BirthTimePickerProps>
         hour24 = 0;
       }
 
-      return `${hour24.toString().padStart(2, '0')}:${m}`;
+      return `${hour24.toString().padStart(2, "0")}:${m}`;
     };
 
     // Call onChange when values change
-    const handleChange = (newHour: string, newMinute: string, newPeriod: string) => {
+    const handleChange = (
+      newHour: string,
+      newMinute: string,
+      newPeriod: string
+    ) => {
       const formatted = getFormattedTime(newHour, newMinute, newPeriod);
       if (onChange && formatted) {
         onChange(formatted);
@@ -96,7 +114,11 @@ const BirthTimePicker = React.forwardRef<HTMLInputElement, BirthTimePickerProps>
         <select
           value={hour}
           onChange={(e) => handleHourChange(e.target.value)}
-          className={cn(selectClass, "flex-1", disabled && "opacity-50 cursor-not-allowed")}
+          className={cn(
+            selectClass,
+            "flex-1",
+            disabled && "cursor-not-allowed opacity-50"
+          )}
           aria-label="Hour"
           disabled={disabled}
         >
@@ -114,7 +136,11 @@ const BirthTimePicker = React.forwardRef<HTMLInputElement, BirthTimePickerProps>
         <select
           value={minute}
           onChange={(e) => handleMinuteChange(e.target.value)}
-          className={cn(selectClass, "flex-1", disabled && "opacity-50 cursor-not-allowed")}
+          className={cn(
+            selectClass,
+            "flex-1",
+            disabled && "cursor-not-allowed opacity-50"
+          )}
           aria-label="Minute"
           disabled={disabled}
         >
@@ -132,7 +158,11 @@ const BirthTimePicker = React.forwardRef<HTMLInputElement, BirthTimePickerProps>
         <select
           value={period}
           onChange={(e) => handlePeriodChange(e.target.value)}
-          className={cn(selectClass, "w-20", disabled && "opacity-50 cursor-not-allowed")}
+          className={cn(
+            selectClass,
+            "w-20",
+            disabled && "cursor-not-allowed opacity-50"
+          )}
           aria-label="AM or PM"
           disabled={disabled}
         >

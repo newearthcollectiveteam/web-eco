@@ -9,6 +9,7 @@ Form Submit → API Route → Klaviyo Event → Flow Triggered → Email Sent
 ```
 
 **Key Benefits:**
+
 - ✅ Each form can trigger different flows
 - ✅ Easy to add conditional branching (e.g., questionnaire completion)
 - ✅ Unsubscribe logic can update both Klaviyo and Supabase
@@ -21,20 +22,24 @@ Form Submit → API Route → Klaviyo Event → Flow Triggered → Email Sent
 ### **STEP 1: Create Your First Flow in Klaviyo**
 
 #### 1.1 Access Klaviyo Dashboard
+
 - Go to https://www.klaviyo.com
 - Log in with your account
 
 #### 1.2 Navigate to Flows
+
 - Click **Flows** in the left sidebar
 - Click **Create Flow** button (top right)
 - Select **Create From Scratch**
 
 #### 1.3 Name Your Flow
+
 - **Flow Name:** "Global Landing Waitlist Flow"
 - **Description:** "Welcome series for users who join from the global landing page"
 - Click **Create Flow**
 
 #### 1.4 Add the Trigger
+
 1. Click **Add Trigger** in the flow builder
 2. Select **Metric** as trigger type
 3. In the metric dropdown, type: **`GLOBAL_LANDING_SUBMITTED`**
@@ -46,6 +51,7 @@ Form Submit → API Route → Klaviyo Event → Flow Triggered → Email Sent
 5. Click **Done**
 
 #### 1.5 Create Welcome Email
+
 1. Click the **+** button below your trigger
 2. Select **Email**
 3. Click **Create Email**
@@ -56,6 +62,7 @@ Form Submit → API Route → Klaviyo Event → Flow Triggered → Email Sent
 5. Design your email using Klaviyo's drag-and-drop builder
 
 **Available Variables:**
+
 ```django
 {{ person.first_name }}           # Their first name
 {{ person.last_name }}            # Their last name
@@ -67,6 +74,7 @@ Form Submit → API Route → Klaviyo Event → Flow Triggered → Email Sent
 ```
 
 **Example Email Content:**
+
 ```
 Hi {{ person.first_name }},
 
@@ -89,6 +97,7 @@ The New Earth Collective Team
 7. **Save** the email
 
 #### 1.6 Activate the Flow
+
 1. Click **Review and Turn On** (top right)
 2. Review settings
 3. Click **Turn On Flow**
@@ -98,6 +107,7 @@ The New Earth Collective Team
 ### **STEP 2: Test the Integration**
 
 #### 2.1 Test with Script
+
 Run the test script to verify Klaviyo receives events:
 
 ```bash
@@ -105,23 +115,27 @@ npx tsx scripts/test-klaviyo.ts
 ```
 
 This will:
+
 - Send a test event to Klaviyo
 - Verify the API connection works
 - Show you where to check in Klaviyo
 
 #### 2.2 Verify in Klaviyo
+
 1. Go to **Analytics > Metrics** in Klaviyo
 2. Search for **"GLOBAL_LANDING_SUBMITTED"**
 3. Click on it to see all events
 4. Verify your test event appears
 
 #### 2.3 Check Email Sent
+
 1. Go to **Flows > Global Landing Waitlist Flow**
 2. Click on the email step
 3. Check **Analytics** tab
 4. Verify the email was sent to test@example.com
 
 #### 2.4 Test with Real Form
+
 1. Go to https://launch.joinnewearthcollective.com/global
 2. Fill out the waitlist form with a real email address you control
 3. Submit the form
@@ -133,6 +147,7 @@ This will:
 ### **STEP 3: Monitor and Optimize**
 
 #### Check Flow Analytics
+
 - **Flows > Global Landing Waitlist Flow > Analytics**
 - Monitor:
   - Flow entries (how many people entered)
@@ -141,6 +156,7 @@ This will:
   - Any errors
 
 #### Check Event Data
+
 - **Analytics > Metrics > GLOBAL_LANDING_SUBMITTED**
 - See all events triggered
 - View profile details
@@ -176,12 +192,14 @@ For each new form/flow:
 ## Troubleshooting
 
 ### Event Not Showing in Klaviyo
+
 - ✅ Check API key is correct in `.env`
 - ✅ Verify event name matches exactly (case-sensitive)
 - ✅ Check Klaviyo API status
 - ✅ Look at server logs for errors
 
 ### Email Not Sending
+
 - ✅ Verify flow is **turned on** (not draft)
 - ✅ Check email is **active** (not paused)
 - ✅ Verify trigger conditions are met
@@ -189,6 +207,7 @@ For each new form/flow:
 - ✅ Verify email address is valid
 
 ### Profile Not Created
+
 - ✅ Check email format is valid
 - ✅ Verify API key has write permissions
 - ✅ Check for duplicate profiles

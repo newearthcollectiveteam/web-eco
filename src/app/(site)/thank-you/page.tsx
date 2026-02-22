@@ -5,14 +5,15 @@ import { Button } from "~/components/ui/button";
 
 export const metadata: Metadata = {
   title: "Thank You | New Earth Collective",
-  description: "Thank you for sharing your blueprint with the New Earth Collective.",
+  description:
+    "Thank you for sharing your blueprint with the New Earth Collective.",
 };
 
 export default function ThankYouPage() {
   return (
     <div className="bg-black">
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      <section className="relative flex min-h-screen items-center justify-center overflow-hidden">
         {/* Flower of Life Shader Background */}
         <div className="absolute inset-0 opacity-20">
           <iframe
@@ -30,12 +31,16 @@ export default function ThankYouPage() {
         <div className="relative z-10 mx-auto max-w-3xl px-4 text-center">
           <h1
             className="mb-8 text-5xl font-bold text-[#FACF39] md:text-6xl"
-            style={{ fontFamily: "Airwaves, sans-serif", letterSpacing: "0.05em" }}
+            style={{
+              fontFamily: "Airwaves, sans-serif",
+              letterSpacing: "0.05em",
+            }}
           >
             Thank You!
           </h1>
           <p className="mb-6 text-xl text-white/90">
-            Your responses help us assess alignment and inform the building of our app.
+            Your responses help us assess alignment and inform the building of
+            our app.
           </p>
           <p className="mb-4 text-lg text-white/70">
             We'll connect soon via email or our network.
@@ -58,7 +63,7 @@ export default function ThankYouPage() {
             <Button
               asChild
               variant="outline"
-              className="border-[#FACF39]/50 bg-transparent px-8 py-4 font-bold text-[#FACF39] transition-all hover:bg-[#FACF39]/10 hover:border-[#FACF39]"
+              className="border-[#FACF39]/50 bg-transparent px-8 py-4 font-bold text-[#FACF39] transition-all hover:border-[#FACF39] hover:bg-[#FACF39]/10"
               style={{ fontFamily: "Bourton, sans-serif" }}
             >
               <a

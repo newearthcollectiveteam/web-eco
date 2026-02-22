@@ -90,7 +90,9 @@ export const contacts = createTable("contact", {
   unsubscribeToken: varchar("unsubscribe_token", { length: 64 }).unique(),
 
   // Segmentation and tagging
-  tags: jsonb("tags").$type<string[]>().default(sql`'[]'::jsonb`),
+  tags: jsonb("tags")
+    .$type<string[]>()
+    .default(sql`'[]'::jsonb`),
 
   // Use metadata sparingly - only for truly dynamic fields
   // Common fields should get their own columns
@@ -211,11 +213,15 @@ export const questionnaireResponses = createTable("questionnaire_response", {
 
   // Section 2: Gifts & Identity - Role
   primaryRole: varchar("primary_role", { length: 500 }),
-  identityRoles: jsonb("identity_roles").$type<string[]>().default(sql`'[]'::jsonb`),
+  identityRoles: jsonb("identity_roles")
+    .$type<string[]>()
+    .default(sql`'[]'::jsonb`),
   identityRolesOther: varchar("identity_roles_other", { length: 500 }), // Conditional: when "Other" selected
 
   // Section 2: Gifts & Identity - Skills
-  skills: jsonb("skills").$type<string[]>().default(sql`'[]'::jsonb`),
+  skills: jsonb("skills")
+    .$type<string[]>()
+    .default(sql`'[]'::jsonb`),
 
   // Section 2: Gifts & Identity - Online Presence
   website: varchar("website", { length: 500 }),
@@ -253,7 +259,9 @@ export const questionnaireResponses = createTable("questionnaire_response", {
   seekingConnections: text("seeking_connections"),
 
   // Section 6: Ecosystem Development
-  engagementStyles: jsonb("engagement_styles").$type<string[]>().default(sql`'[]'::jsonb`),
+  engagementStyles: jsonb("engagement_styles")
+    .$type<string[]>()
+    .default(sql`'[]'::jsonb`),
   techAIRelationship: text("tech_ai_relationship"),
   improveSocialNetworks: text("improve_social_networks"),
   ecosystemContribution: varchar("ecosystem_contribution", { length: 50 }), // dev, beta, updates, not_interested
@@ -262,7 +270,9 @@ export const questionnaireResponses = createTable("questionnaire_response", {
 
   // Section 7: Preferences
   profileVisibility: varchar("profile_visibility", { length: 50 }), // public, searchable, private
-  communicationPrefs: jsonb("communication_prefs").$type<string[]>().default(sql`'[]'::jsonb`),
+  communicationPrefs: jsonb("communication_prefs")
+    .$type<string[]>()
+    .default(sql`'[]'::jsonb`),
 
   // Metadata
   source: varchar("source", { length: 100 }).default("questionnaire"),
@@ -514,7 +524,9 @@ export const userIdentityMap = createTable("user_identity_map", {
   identifiedAt: timestamp("identified_at", { withTimezone: true })
     .default(sql`CURRENT_TIMESTAMP`)
     .notNull(),
-  identificationSource: varchar("identification_source", { length: 100 }).notNull(), // waitlist, event-registration, etc.
+  identificationSource: varchar("identification_source", {
+    length: 100,
+  }).notNull(), // waitlist, event-registration, etc.
 
   createdAt: timestamp("created_at", { withTimezone: true })
     .default(sql`CURRENT_TIMESTAMP`)
@@ -541,7 +553,9 @@ export const eventWaivers = createTable("event_waiver", {
   signatureData: text("signature_data").notNull(),
 
   // Waiver version for legal tracking
-  waiverVersion: varchar("waiver_version", { length: 50 }).default("1.0").notNull(),
+  waiverVersion: varchar("waiver_version", { length: 50 })
+    .default("1.0")
+    .notNull(),
 
   // Agreement tracking
   agreedToTerms: boolean("agreed_to_terms").default(false).notNull(),
@@ -583,19 +597,25 @@ export const contactSourcesRelations = relations(contactSources, ({ one }) => ({
   }),
 }));
 
-export const contactActivitiesRelations = relations(contactActivities, ({ one }) => ({
-  contact: one(contacts, {
-    fields: [contactActivities.contactId],
-    references: [contacts.id],
-  }),
-}));
+export const contactActivitiesRelations = relations(
+  contactActivities,
+  ({ one }) => ({
+    contact: one(contacts, {
+      fields: [contactActivities.contactId],
+      references: [contacts.id],
+    }),
+  })
+);
 
-export const questionnaireResponsesRelations = relations(questionnaireResponses, ({ one }) => ({
-  contact: one(contacts, {
-    fields: [questionnaireResponses.contactId],
-    references: [contacts.id],
-  }),
-}));
+export const questionnaireResponsesRelations = relations(
+  questionnaireResponses,
+  ({ one }) => ({
+    contact: one(contacts, {
+      fields: [questionnaireResponses.contactId],
+      references: [contacts.id],
+    }),
+  })
+);
 
 export const waitlistIntakeRelations = relations(waitlistIntake, ({ one }) => ({
   contact: one(contacts, {
@@ -643,24 +663,30 @@ export const emailLinksRelations = relations(emailLinks, ({ one, many }) => ({
   clicks: many(emailLinkClicks),
 }));
 
-export const emailLinkClicksRelations = relations(emailLinkClicks, ({ one }) => ({
-  emailLink: one(emailLinks, {
-    fields: [emailLinkClicks.emailLinkId],
-    references: [emailLinks.id],
-  }),
-  contact: one(contacts, {
-    fields: [emailLinkClicks.contactId],
-    references: [contacts.id],
-  }),
-  session: one(sessions, {
-    fields: [emailLinkClicks.sessionId],
-    references: [sessions.id],
-  }),
-}));
+export const emailLinkClicksRelations = relations(
+  emailLinkClicks,
+  ({ one }) => ({
+    emailLink: one(emailLinks, {
+      fields: [emailLinkClicks.emailLinkId],
+      references: [emailLinks.id],
+    }),
+    contact: one(contacts, {
+      fields: [emailLinkClicks.contactId],
+      references: [contacts.id],
+    }),
+    session: one(sessions, {
+      fields: [emailLinkClicks.sessionId],
+      references: [sessions.id],
+    }),
+  })
+);
 
-export const userIdentityMapRelations = relations(userIdentityMap, ({ one }) => ({
-  contact: one(contacts, {
-    fields: [userIdentityMap.contactId],
-    references: [contacts.id],
-  }),
-}));
+export const userIdentityMapRelations = relations(
+  userIdentityMap,
+  ({ one }) => ({
+    contact: one(contacts, {
+      fields: [userIdentityMap.contactId],
+      references: [contacts.id],
+    }),
+  })
+);

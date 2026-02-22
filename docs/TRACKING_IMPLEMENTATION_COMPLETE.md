@@ -9,24 +9,28 @@ Your New Earth Collective platform now has a **complete, production-ready tracki
 ## 🚀 Capabilities
 
 ### 1. **Anonymous Visitor Tracking**
+
 - Every visitor gets a unique anonymous ID
 - Tracked from first page view
 - Persists across sessions via cookie
 - All activity logged before form submission
 
 ### 2. **User Identification**
+
 - Anonymous → Known user linking
 - Email as universal identifier
 - Automatic retroactive attribution
 - All past events linked to contact after signup
 
 ### 3. **Session Management**
+
 - 30-minute session timeout
 - Device, browser, OS detection
 - Initial source/medium/campaign capture
 - Multi-domain support
 
 ### 4. **Event Tracking**
+
 - Page views (automatic)
 - Form submissions
 - Button clicks
@@ -34,18 +38,21 @@ Your New Earth Collective platform now has a **complete, production-ready tracki
 - Full property tracking
 
 ### 5. **Email Link Tracking**
+
 - Unique tokens per email per contact
 - Click tracking with timestamps
 - Conversion attribution (click → form)
 - Multi-domain link support
 
 ### 6. **Cross-Domain Tracking**
+
 - Shared cookies across all `*.joinnewearthcollective.com` subdomains
 - User recognized across test/launch/app domains
 - Complete journey tracking
 - Multi-touch attribution
 
 ### 7. **Privacy & Compliance**
+
 - IP address hashing (SHA-256)
 - No third-party tracking
 - You own all data
@@ -92,18 +99,22 @@ Your New Earth Collective platform now has a **complete, production-ready tracki
 ### New Files
 
 **Utilities:**
+
 - `src/lib/tracking/utils.ts` - ID generation, parsing, hashing
 - `src/lib/tracking/analytics-service.ts` - Event tracking, session management
 - `src/lib/tracking/link-service.ts` - Email link generation
 - `src/lib/tracking/middleware.ts` - Request tracking middleware
 
 **API Endpoints:**
+
 - `src/app/api/analytics/route.ts` - Query analytics data
 
 **Migration:**
+
 - `scripts/run-tracking-migration.js` - Database migration
 
 **Documentation:**
+
 - `TRACKING_ANALYTICS_DESIGN.md` - System design
 - `MULTI_DOMAIN_TRACKING.md` - Multi-domain guide
 - `TRACKING_IMPLEMENTATION_COMPLETE.md` - This file
@@ -198,6 +209,7 @@ GET /api/analytics?email=user@example.com&type=full
 ```
 
 Response:
+
 ```json
 {
   "contact": { "id": 123, "email": "user@example.com", ... },
@@ -234,6 +246,7 @@ GET /api/analytics
 ```
 
 Response:
+
 ```json
 {
   "summary": {
@@ -265,26 +278,31 @@ IP_HASH_SALT=your-random-salt-here
 ## 🎯 Use Cases Enabled
 
 ### 1. User Journey Tracking
+
 - See complete path: first visit → form → email → conversion
 - Multi-touch attribution
 - Cross-device recognition (via email)
 
 ### 2. Email Performance
+
 - Click-through rates
 - Conversion rates
 - Which emails drive action
 
 ### 3. Source Attribution
+
 - Which domains drive most signups?
 - Organic vs email vs social
 - Campaign effectiveness
 
 ### 4. Funnel Analysis
+
 - Drop-off points
 - Conversion rates by source
 - Time to conversion
 
 ### 5. Engagement Metrics
+
 - Pages per session
 - Return visitor rate
 - Multi-form engagement
@@ -296,33 +314,33 @@ IP_HASH_SALT=your-random-salt-here
 ### Track Custom Events (API Routes)
 
 ```typescript
-import { trackCustomEvent } from '~/lib/tracking/middleware';
+import { trackCustomEvent } from "~/lib/tracking/middleware";
 
 // In your API route
 await trackCustomEvent({
   request,
-  eventType: 'button_click',
-  eventName: 'Clicked Donate Button',
+  eventType: "button_click",
+  eventName: "Clicked Donate Button",
   properties: {
     amount: 100,
-    campaign: 'summer-fundraiser'
-  }
+    campaign: "summer-fundraiser",
+  },
 });
 ```
 
 ### Generate Tracked Email Links
 
 ```typescript
-import { generateTrackedLink } from '~/lib/tracking/link-service';
+import { generateTrackedLink } from "~/lib/tracking/link-service";
 
 const link = await generateTrackedLink({
   contactId: 123,
-  destinationPath: '/event/summer-gathering',
-  destinationDomain: 'launch.joinnewearthcollective.com',
-  emailType: 'event-invitation',
-  emailSubject: 'Join us for Summer Gathering',
-  linkText: 'Register Now',
-  utmCampaign: 'summer-gathering-2025',
+  destinationPath: "/event/summer-gathering",
+  destinationDomain: "launch.joinnewearthcollective.com",
+  emailType: "event-invitation",
+  emailSubject: "Join us for Summer Gathering",
+  linkText: "Register Now",
+  utmCampaign: "summer-gathering-2025",
 });
 
 // Use `link` in your email template
@@ -331,7 +349,7 @@ const link = await generateTrackedLink({
 ### Get Contact Analytics
 
 ```typescript
-import { getContactAnalytics } from '~/lib/tracking/analytics-service';
+import { getContactAnalytics } from "~/lib/tracking/analytics-service";
 
 const analytics = await getContactAnalytics(contactId);
 
@@ -383,6 +401,7 @@ GROUP BY el.email_type;
 ## ✅ What This Enables
 
 ### Before
+
 - ❌ No idea who visits before form submission
 - ❌ Can't track email effectiveness
 - ❌ No cross-domain journey tracking
@@ -390,6 +409,7 @@ GROUP BY el.email_type;
 - ❌ No anonymous user tracking
 
 ### After
+
 - ✅ Track from first page view
 - ✅ Complete email attribution
 - ✅ Seamless multi-domain tracking
@@ -404,12 +424,14 @@ GROUP BY el.email_type;
 ## 🔒 Privacy & Security
 
 **Privacy First:**
+
 - IP addresses are hashed (SHA-256)
 - No third-party tracking
 - All data in your database
 - GDPR/CCPA ready
 
 **Security:**
+
 - HTTP-only cookies for contact ID
 - Secure cookies in production
 - Token expiration (90 days)
@@ -430,6 +452,7 @@ You now have **enterprise-grade tracking and analytics** that:
 ✅ Scales to millions of events
 
 **Next Steps:**
+
 1. Test with a form submission (already integrated)
 2. Add more intake forms using the template
 3. Generate trackable email links
@@ -451,4 +474,4 @@ You now have **enterprise-grade tracking and analytics** that:
 ---
 
 **Built with Claude Code**
-*Implementation Date: November 28, 2025*
+_Implementation Date: November 28, 2025_

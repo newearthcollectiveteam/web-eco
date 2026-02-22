@@ -30,14 +30,16 @@
 }
 
 /* Hide current month text when using dropdowns (redundant) */
-.react-datepicker__month-year-read-view--down-arrow ~ .react-datepicker__current-month,
+.react-datepicker__month-year-read-view--down-arrow
+  ~ .react-datepicker__current-month,
 .react-datepicker__month-dropdown-container ~ .react-datepicker__current-month,
 .react-datepicker__year-dropdown-container ~ .react-datepicker__current-month {
   display: none !important;
 }
 
 /* Alternative: hide if dropdowns exist */
-.react-datepicker__header:has(.react-datepicker__month-dropdown-container) .react-datepicker__current-month {
+.react-datepicker__header:has(.react-datepicker__month-dropdown-container)
+  .react-datepicker__current-month {
   display: none !important;
 }
 
@@ -71,7 +73,8 @@
 }
 
 /* Hide navigation arrows when using dropdowns (redundant) */
-.react-datepicker__header:has(.react-datepicker__month-dropdown-container) ~ .react-datepicker__navigation,
+.react-datepicker__header:has(.react-datepicker__month-dropdown-container)
+  ~ .react-datepicker__navigation,
 .react-datepicker__navigation--previous,
 .react-datepicker__navigation--next {
   display: none !important;

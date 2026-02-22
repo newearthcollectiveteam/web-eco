@@ -67,12 +67,12 @@ function GalleriesPageContent() {
             <div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100 dark:bg-emerald-900/50">
               <Images className="h-8 w-8 text-emerald-600 dark:text-emerald-400" />
             </div>
-            <h1 className="mb-4 text-4xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-5xl">
+            <h1 className="mb-4 text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl dark:text-white">
               Photo Galleries
             </h1>
             <p className="mx-auto max-w-2xl text-lg text-slate-600 dark:text-slate-400">
-              Explore moments of connection, celebration, and transformation from
-              the New Earth Collective community
+              Explore moments of connection, celebration, and transformation
+              from the New Earth Collective community
             </p>
           </div>
         </div>
@@ -98,36 +98,36 @@ function GalleriesPageContent() {
                     {gallery.coverImageUrl ? (
                       <Image
                         src={gallery.coverImageUrl}
-                      alt={gallery.title}
-                      fill
-                      className="object-cover transition-transform duration-500 group-hover:scale-110"
-                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                    />
-                  ) : (
-                    <div className="flex h-full items-center justify-center">
-                      <Images className="h-16 w-16 text-slate-400" />
-                    </div>
-                  )}
-                  {/* Overlay on hover */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-                </div>
-
-                {/* Gallery Info */}
-                <div className="p-6">
-                  <h2 className="mb-2 text-2xl font-bold text-slate-900 dark:text-white">
-                    {gallery.title}
-                  </h2>
-                  {gallery.description && (
-                    <p className="line-clamp-2 text-slate-600 dark:text-slate-400">
-                      {gallery.description}
-                    </p>
-                  )}
-                  <div className="mt-4 flex items-center justify-between">
-                    <span className="text-sm font-medium text-emerald-600 dark:text-emerald-400">
-                      View Gallery →
-                    </span>
+                        alt={gallery.title}
+                        fill
+                        className="object-cover transition-transform duration-500 group-hover:scale-110"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      />
+                    ) : (
+                      <div className="flex h-full items-center justify-center">
+                        <Images className="h-16 w-16 text-slate-400" />
+                      </div>
+                    )}
+                    {/* Overlay on hover */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                   </div>
-                </div>
+
+                  {/* Gallery Info */}
+                  <div className="p-6">
+                    <h2 className="mb-2 text-2xl font-bold text-slate-900 dark:text-white">
+                      {gallery.title}
+                    </h2>
+                    {gallery.description && (
+                      <p className="line-clamp-2 text-slate-600 dark:text-slate-400">
+                        {gallery.description}
+                      </p>
+                    )}
+                    <div className="mt-4 flex items-center justify-between">
+                      <span className="text-sm font-medium text-emerald-600 dark:text-emerald-400">
+                        View Gallery →
+                      </span>
+                    </div>
+                  </div>
                 </Link>
               );
             })}

@@ -15,7 +15,12 @@ export function MainHomePage() {
           content: "";
           position: absolute;
           inset: 0;
-          background: linear-gradient(120deg, transparent 0%, rgba(255,255,255,0.28) 35%, transparent 65%);
+          background: linear-gradient(
+            120deg,
+            transparent 0%,
+            rgba(255, 255, 255, 0.28) 35%,
+            transparent 65%
+          );
           transform: translateX(-120%);
           transition: transform 0.8s ease;
         }
@@ -26,8 +31,13 @@ export function MainHomePage() {
           animation: pulseGlow 3.2s ease-in-out infinite;
         }
         @keyframes pulseGlow {
-          0%, 100% { box-shadow: 0 10px 40px rgba(246,196,63,0.25); }
-          50% { box-shadow: 0 10px 55px rgba(246,196,63,0.38); }
+          0%,
+          100% {
+            box-shadow: 0 10px 40px rgba(246, 196, 63, 0.25);
+          }
+          50% {
+            box-shadow: 0 10px 55px rgba(246, 196, 63, 0.38);
+          }
         }
       `}</style>
       <style jsx global>{`
@@ -45,16 +55,29 @@ export function MainHomePage() {
           position: absolute;
           inset: -8px;
           border-radius: 9999px;
-          background: radial-gradient(circle, rgba(246,196,63,0.4), transparent 55%);
+          background: radial-gradient(
+            circle,
+            rgba(246, 196, 63, 0.4),
+            transparent 55%
+          );
           opacity: 0.7;
           filter: blur(6px);
           z-index: 1;
           animation: heroPulse 3s ease-in-out infinite;
         }
         @keyframes heroPulse {
-          0% { transform: scale(0.95); opacity: 0.55; }
-          50% { transform: scale(1.05); opacity: 0.9; }
-          100% { transform: scale(0.95); opacity: 0.55; }
+          0% {
+            transform: scale(0.95);
+            opacity: 0.55;
+          }
+          50% {
+            transform: scale(1.05);
+            opacity: 0.9;
+          }
+          100% {
+            transform: scale(0.95);
+            opacity: 0.55;
+          }
         }
         [data-hero-cta]::after {
           content: "";
@@ -63,15 +86,26 @@ export function MainHomePage() {
           left: -100%;
           width: 100%;
           height: 100%;
-          background: linear-gradient(90deg, transparent, rgba(255,255,255,0.65), transparent);
+          background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(255, 255, 255, 0.65),
+            transparent
+          );
           animation: buttonShimmer 10s ease-in-out infinite;
           z-index: 3;
           pointer-events: none;
         }
         @keyframes buttonShimmer {
-          0% { left: -100%; }
-          50% { left: 100%; }
-          100% { left: -100%; }
+          0% {
+            left: -100%;
+          }
+          50% {
+            left: 100%;
+          }
+          100% {
+            left: -100%;
+          }
         }
         .hero-text-shimmer {
           position: relative;
@@ -93,23 +127,30 @@ export function MainHomePage() {
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/70 via-black/65 to-black/80" />
 
       <div className="relative flex min-h-screen items-center justify-center px-4">
-        <div className="flex flex-col items-center gap-8 text-center max-w-3xl">
+        <div className="flex max-w-3xl flex-col items-center gap-8 text-center">
           <h1
-            className="text-6xl font-bold leading-tight tracking-tight bg-gradient-to-r from-[#f3a51c] via-[#f6c43f] to-[#f6e45b] bg-clip-text text-transparent md:text-7xl lg:text-8xl"
-            style={{ fontFamily: "Airwaves, sans-serif", letterSpacing: "0.05em" }}
+            className="bg-gradient-to-r from-[#f3a51c] via-[#f6c43f] to-[#f6e45b] bg-clip-text text-6xl leading-tight font-bold tracking-tight text-transparent md:text-7xl lg:text-8xl"
+            style={{
+              fontFamily: "Airwaves, sans-serif",
+              letterSpacing: "0.05em",
+            }}
           >
             NEW EARTH
             <br />
             COLLECTIVE
           </h1>
           <h2
-            className="text-3xl font-bold leading-tight tracking-tight text-white md:text-4xl lg:text-5xl"
-            style={{ fontFamily: "Bourton, sans-serif", letterSpacing: "0.05em" }}
+            className="text-3xl leading-tight font-bold tracking-tight text-white md:text-4xl lg:text-5xl"
+            style={{
+              fontFamily: "Bourton, sans-serif",
+              letterSpacing: "0.05em",
+            }}
           >
             Building a regenerative future together
           </h2>
-          <p className="text-lg text-neutral-300 md:text-xl max-w-2xl">
-            A collective of visionaries, builders, and change-makers co-creating regenerative systems for a thriving planet.
+          <p className="max-w-2xl text-lg text-neutral-300 md:text-xl">
+            A collective of visionaries, builders, and change-makers co-creating
+            regenerative systems for a thriving planet.
           </p>
           <Button
             size="lg"

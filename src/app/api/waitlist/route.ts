@@ -16,9 +16,22 @@ import {
 } from "~/server/db/schema";
 import { eq, desc, sql } from "drizzle-orm";
 import { triggerKlaviyoWaitlistFlow } from "~/lib/klaviyo/klaviyo-service";
-import { identifyUser, trackEvent, markEmailClickConverted } from "~/lib/tracking/analytics-service";
-import { COOKIE_NAMES, parseCookies, setCookieHeader, COOKIE_OPTIONS, generateAnonymousId } from "~/lib/tracking/utils";
-import { generateUnsubscribeToken, getClientIP } from "~/lib/consent/consent-utils";
+import {
+  identifyUser,
+  trackEvent,
+  markEmailClickConverted,
+} from "~/lib/tracking/analytics-service";
+import {
+  COOKIE_NAMES,
+  parseCookies,
+  setCookieHeader,
+  COOKIE_OPTIONS,
+  generateAnonymousId,
+} from "~/lib/tracking/utils";
+import {
+  generateUnsubscribeToken,
+  getClientIP,
+} from "~/lib/consent/consent-utils";
 
 export async function POST(request: NextRequest) {
   try {
@@ -180,16 +193,19 @@ export async function POST(request: NextRequest) {
     console.log(`📊 Source tracked: ${source}`);
 
     // Step 2.5: Link anonymous visitor to contact (identify user)
-    const cookies = parseCookies(request.headers.get('cookie'));
-    const anonymousId = cookies[COOKIE_NAMES.ANONYMOUS_ID] || generateAnonymousId();
+    const cookies = parseCookies(request.headers.get("cookie"));
+    const anonymousId =
+      cookies[COOKIE_NAMES.ANONYMOUS_ID] || generateAnonymousId();
     const sessionId = cookies[COOKIE_NAMES.SESSION_ID];
 
     await identifyUser({
       anonymousId,
       contactId,
-      source: 'waitlist',
+      source: "waitlist",
     });
-    console.log(`🔗 Linked anonymous ID ${anonymousId} to contact ${contactId}`);
+    console.log(
+      `🔗 Linked anonymous ID ${anonymousId} to contact ${contactId}`
+    );
 
     // Step 3: Store in waitlist intake table
     const [waitlistEntry] = await db
@@ -231,12 +247,12 @@ export async function POST(request: NextRequest) {
         contactId,
       },
       {
-        eventType: 'form_submit',
-        eventName: 'Waitlist Signup',
-        domain: request.headers.get('host') || undefined,
-        path: '/api/waitlist',
+        eventType: "form_submit",
+        eventName: "Waitlist Signup",
+        domain: request.headers.get("host") || undefined,
+        path: "/api/waitlist",
         properties: {
-          formType: 'waitlist',
+          formType: "waitlist",
           willingToFillQuestionnaire,
           source,
         },
@@ -253,7 +269,7 @@ export async function POST(request: NextRequest) {
       await markEmailClickConverted({
         emailLinkId: recentClick.emailLinkId,
         contactId,
-        formType: 'waitlist',
+        formType: "waitlist",
       });
     }
 
@@ -280,7 +296,7 @@ export async function POST(request: NextRequest) {
 
     // Set contact ID cookie for future tracking
     response.headers.append(
-      'Set-Cookie',
+      "Set-Cookie",
       setCookieHeader(
         COOKIE_NAMES.CONTACT_ID,
         contactId.toString(),

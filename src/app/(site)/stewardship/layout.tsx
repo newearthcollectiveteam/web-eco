@@ -1,6 +1,6 @@
 import { SiteLayout } from "~/components/layouts/site-layout";
 
-export default function PartnershipsLayout({
+export default function StewardshipLayout({
   children,
 }: {
   children: React.ReactNode;

@@ -1,17 +1,17 @@
-import { config } from 'dotenv';
-import postgres from 'postgres';
+import { config } from "dotenv";
+import postgres from "postgres";
 
 // Load environment variables
-config({ path: '.env' });
+config({ path: ".env" });
 
 const DATABASE_URL = process.env.DATABASE_URL;
 
 if (!DATABASE_URL) {
-  console.error('DATABASE_URL is not set');
+  console.error("DATABASE_URL is not set");
   process.exit(1);
 }
 
-const sql = postgres(DATABASE_URL, { ssl: 'require' });
+const sql = postgres(DATABASE_URL, { ssl: "require" });
 
 const missingColumns = [
   `ALTER TABLE "web-eco_questionnaire_response" ADD COLUMN IF NOT EXISTS "preferred_name" varchar(255)`,
@@ -32,12 +32,14 @@ async function addMissingColumns() {
     for (const stmt of missingColumns) {
       try {
         await sql.unsafe(stmt);
-        console.log(`✓ Added column: ${stmt.match(/\"(\w+)\"/g)?.[1] || 'unknown'}`);
+        console.log(
+          `✓ Added column: ${stmt.match(/\"(\w+)\"/g)?.[1] || "unknown"}`
+        );
       } catch (err) {
         console.error(`✗ Failed:`, err.message);
       }
     }
-    console.log('Done!');
+    console.log("Done!");
   } finally {
     await sql.end();
   }

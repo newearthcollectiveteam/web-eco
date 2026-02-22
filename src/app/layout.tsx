@@ -21,7 +21,8 @@ export const metadata: Metadata = {
     default: "New Earth Collective | Empowering Collective Sovereignty",
     template: "%s | New Earth Collective",
   },
-  description: "Join immersive festivals connecting creators into a sovereign, living network. Honor love, land, and collective intelligence.",
+  description:
+    "Join immersive festivals connecting creators into a sovereign, living network. Honor love, land, and collective intelligence.",
   keywords: [
     "New Earth Collective",
     "regenerative community",
@@ -49,7 +50,8 @@ export const metadata: Metadata = {
     url: "https://joinnewearthcollective.com",
     siteName: "New Earth Collective",
     title: "New Earth Collective | Empowering Collective Sovereignty",
-    description: "Join immersive festivals connecting creators into a sovereign, living network. Honor love, land, and collective intelligence.",
+    description:
+      "Join immersive festivals connecting creators into a sovereign, living network. Honor love, land, and collective intelligence.",
     images: [
       {
         url: "/brand/og-image.png",
@@ -62,7 +64,8 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "New Earth Collective | Empowering Collective Sovereignty",
-    description: "Join immersive festivals connecting creators into a sovereign, living network.",
+    description:
+      "Join immersive festivals connecting creators into a sovereign, living network.",
     images: ["/brand/og-image.png"],
     creator: "@newearthcollectiveco",
   },

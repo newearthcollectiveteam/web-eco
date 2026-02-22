@@ -9,7 +9,9 @@ import Image from "next/image";
 
 function UnsubscribeContent() {
   const searchParams = useSearchParams();
-  const [status, setStatus] = useState<"loading" | "success" | "error">("loading");
+  const [status, setStatus] = useState<"loading" | "success" | "error">(
+    "loading"
+  );
   const [message, setMessage] = useState("");
   const [unsubscribeType, setUnsubscribeType] = useState<string>("all");
   const [homeLink, setHomeLink] = useState("/global");
@@ -34,7 +36,9 @@ function UnsubscribeContent() {
 
     if (!token) {
       setStatus("error");
-      setMessage("Invalid unsubscribe link. Please use the link from your email.");
+      setMessage(
+        "Invalid unsubscribe link. Please use the link from your email."
+      );
       return;
     }
 
@@ -47,12 +51,17 @@ function UnsubscribeContent() {
         } else {
           setStatus("error");
           const data = await response.json().catch(() => ({}));
-          setMessage((data as { error?: string }).error || "Failed to process your request. Please try again.");
+          setMessage(
+            (data as { error?: string }).error ||
+              "Failed to process your request. Please try again."
+          );
         }
       })
       .catch(() => {
         setStatus("error");
-        setMessage("Network error. Please check your connection and try again.");
+        setMessage(
+          "Network error. Please check your connection and try again."
+        );
       });
   }, [searchParams]);
 
@@ -124,21 +133,24 @@ function UnsubscribeContent() {
 
                   <div className="space-y-3 text-sm text-neutral-400">
                     <p>
-                      We're sorry to see you go. If you change your mind, you can
-                      always re-subscribe by joining our waitlist again.
+                      We're sorry to see you go. If you change your mind, you
+                      can always re-subscribe by joining our waitlist again.
                     </p>
                     {unsubscribeType !== "all" && (
                       <p className="text-[#facf39]">
                         Note: You are still subscribed to{" "}
-                        {unsubscribeType === "email" ? "text messages" : "emails"}.
+                        {unsubscribeType === "email"
+                          ? "text messages"
+                          : "emails"}
+                        .
                       </p>
                     )}
                   </div>
 
                   <div className="pt-4">
                     <Button
-                      onClick={() => window.location.href = homeLink}
-                      className="bg-gradient-to-r from-[#f3a51c] via-[#f6c43f] to-[#f6e45b] text-black font-bold hover:opacity-90"
+                      onClick={() => (window.location.href = homeLink)}
+                      className="bg-gradient-to-r from-[#f3a51c] via-[#f6c43f] to-[#f6e45b] font-bold text-black hover:opacity-90"
                     >
                       Return to Home
                     </Button>
@@ -178,7 +190,7 @@ function UnsubscribeContent() {
 
                   <div className="pt-4">
                     <Button
-                      onClick={() => window.location.href = homeLink}
+                      onClick={() => (window.location.href = homeLink)}
                       variant="outline"
                       className="border-[#facf39]/30 text-[#facf39] hover:bg-[#facf39]/10"
                     >
@@ -210,7 +222,13 @@ function UnsubscribeContent() {
 
 export default function UnsubscribePage() {
   return (
-    <Suspense fallback={<div className="flex min-h-screen items-center justify-center"><div className="text-white">Loading...</div></div>}>
+    <Suspense
+      fallback={
+        <div className="flex min-h-screen items-center justify-center">
+          <div className="text-white">Loading...</div>
+        </div>
+      }
+    >
       <UnsubscribeContent />
     </Suspense>
   );

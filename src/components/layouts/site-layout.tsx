@@ -17,7 +17,7 @@ const navLinks = [
   { name: "Values", href: "/values" },
   { name: "Pathway", href: "/pathway" },
   { name: "Impact", href: "/impact" },
-  { name: "Partnerships", href: "/partnerships" },
+  { name: "Stewardship", href: "/stewardship" },
 ];
 
 const footerNavigate = [
@@ -29,8 +29,8 @@ const footerNavigate = [
 
 const footerCommunity = [
   { name: "Impact", href: "/impact" },
-  { name: "Partnerships", href: "/partnerships" },
-  { name: "Questionnaire", href: "/questionnaire" },
+  { name: "Stewardship", href: "/stewardship" },
+  { name: "On-boarding", href: "/questionnaire" },
 ];
 
 const footerLegal = [
@@ -193,6 +193,12 @@ export function SiteLayout({
                 >
                   <Link href="/questionnaire">Join Now</Link>
                 </Button>
+                <a
+                  href="mailto:community@joinnewearthcollective.com"
+                  className="text-sm text-white/60 transition-colors hover:text-[#FACF39]"
+                >
+                  community@joinnewearthcollective.com
+                </a>
                 <div className="flex items-center gap-4">
                   <a
                     href="https://www.instagram.com/newearthcollectiveco/"
@@ -234,7 +240,7 @@ export function SiteLayout({
               </div>
 
               {/* Right Column: 3 Sub-columns */}
-              <div className="grid grid-cols-3 gap-8 text-sm md:justify-items-end">
+              <div className="grid grid-cols-1 gap-4 text-sm sm:grid-cols-3 sm:gap-8 md:justify-items-end">
                 {/* Navigate */}
                 <div>
                   <h4

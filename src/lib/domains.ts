@@ -23,9 +23,7 @@ export const DOMAIN_CONFIG = {
     primaryColor: "#10b981", // emerald
     logo: "NEC",
     tagline: "Co-creating Sustainable Communities & Systems",
-    nav: [
-      { name: "About", href: "/about" },
-    ],
+    nav: [{ name: "About", href: "/about" }],
   },
   [DOMAINS.LAUNCH]: {
     name: "New Earth Collective | Launch",
@@ -107,8 +105,7 @@ export function getDomainFromHeaders(headers: Headers): DomainValue {
 
   if (host.includes("test.joinnewearthcollective.com"))
     return DOMAINS.TEST_DOMAIN;
-  if (host.includes("launch.joinnewearthcollective.com"))
-    return DOMAINS.LAUNCH;
+  if (host.includes("launch.joinnewearthcollective.com")) return DOMAINS.LAUNCH;
   if (host.includes("joinnewearthcollective.com"))
     return DOMAINS.NEW_EARTH_COLLECTIVE;
 

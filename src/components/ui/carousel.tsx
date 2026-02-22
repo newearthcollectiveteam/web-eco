@@ -233,10 +233,10 @@ const CarouselPrevious = React.forwardRef<
     <button
       ref={ref}
       className={cn(
-        "absolute left-4 top-1/2 z-10 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full",
+        "absolute top-1/2 left-4 z-10 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full",
         "bg-white/90 shadow-lg backdrop-blur-sm transition-all duration-300",
-        "hover:bg-white hover:scale-110 disabled:opacity-0",
-        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2",
+        "hover:scale-110 hover:bg-white disabled:opacity-0",
+        "focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2 focus-visible:outline-none",
         className
       )}
       disabled={forceEnabled ? false : !canScrollPrev}
@@ -260,10 +260,10 @@ const CarouselNext = React.forwardRef<
     <button
       ref={ref}
       className={cn(
-        "absolute right-4 top-1/2 z-10 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full",
+        "absolute top-1/2 right-4 z-10 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full",
         "bg-white/90 shadow-lg backdrop-blur-sm transition-all duration-300",
-        "hover:bg-white hover:scale-110 disabled:opacity-0",
-        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2",
+        "hover:scale-110 hover:bg-white disabled:opacity-0",
+        "focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2 focus-visible:outline-none",
         className
       )}
       disabled={forceEnabled ? false : !canScrollNext}

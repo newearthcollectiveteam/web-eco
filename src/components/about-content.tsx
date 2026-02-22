@@ -24,7 +24,7 @@ export function AboutContent() {
       <div className="px-4 py-16">
         <div className="container mx-auto max-w-4xl">
           {/* Hero Section */}
-          <section className="mb-20 mt-16 text-center">
+          <section className="mt-16 mb-20 text-center">
             <div className="mb-8 inline-flex items-center justify-center">
               <div className="relative h-20 w-20 drop-shadow-2xl">
                 <Image
@@ -46,7 +46,7 @@ export function AboutContent() {
                 ABOUT US
               </span>
             </h1>
-            <p className="mx-auto max-w-2xl text-2xl text-neutral-300 dark:text-neutral-300 italic">
+            <p className="mx-auto max-w-2xl text-2xl text-neutral-300 italic dark:text-neutral-300">
               A movement toward the New Earth — a society based on compassion,
               purpose, and unity.
             </p>
@@ -54,7 +54,7 @@ export function AboutContent() {
 
           {/* Mission Section */}
           <section className="mb-20">
-            <Card className="border-2 border-[#facf39]/20 bg-black/60 dark:bg-black/80 shadow-2xl backdrop-blur-md">
+            <Card className="border-2 border-[#facf39]/20 bg-black/60 shadow-2xl backdrop-blur-md dark:bg-black/80">
               <CardContent className="p-8 md:p-12">
                 <div className="mb-6 flex items-center gap-3">
                   <Target className="h-8 w-8 text-[#facf39]" />
@@ -67,7 +67,8 @@ export function AboutContent() {
                 </div>
                 <p className="mb-6 text-2xl font-bold text-[#facf39]">
                   To be the ultimate place of belonging—where every soul feels
-                  seen, loved, and supported in becoming who they are meant to be.
+                  seen, loved, and supported in becoming who they are meant to
+                  be.
                 </p>
                 <div className="space-y-4 text-lg leading-relaxed text-neutral-300 dark:text-neutral-300">
                   <p className="font-semibold text-white">
@@ -108,7 +109,7 @@ export function AboutContent() {
 
           {/* Vision Section */}
           <section className="mb-20">
-            <Card className="border-2 border-[#facf39]/20 bg-black/60 dark:bg-black/80 shadow-2xl backdrop-blur-md">
+            <Card className="border-2 border-[#facf39]/20 bg-black/60 shadow-2xl backdrop-blur-md dark:bg-black/80">
               <CardContent className="p-8 md:p-12">
                 <div className="mb-6 flex items-center gap-3">
                   <Eye className="h-8 w-8 text-[#facf39]" />
@@ -135,8 +136,8 @@ export function AboutContent() {
                   </p>
                   <p className="text-xl font-semibold text-white">
                     This collective is more than a group — it&apos;s a movement
-                    toward the &quot;New Earth,&quot; a society based on compassion, purpose,
-                    and unity.
+                    toward the &quot;New Earth,&quot; a society based on
+                    compassion, purpose, and unity.
                   </p>
                 </div>
 
@@ -160,8 +161,8 @@ export function AboutContent() {
                       that connects these trees into one living forest.
                     </p>
                     <p>
-                      Where the individual synthesizes within their community, and
-                      the communities synthesize with each other.
+                      Where the individual synthesizes within their community,
+                      and the communities synthesize with each other.
                     </p>
                     <p className="text-xl font-bold text-[#facf39]">
                       We seek to bridge intimacy and scale.
@@ -178,10 +179,14 @@ export function AboutContent() {
                     Our Technology Path
                   </h3>
                   <p className="text-neutral-300 dark:text-neutral-300">
-                    We are a <span className="font-bold text-white">community engine</span>. We will use Skool.com as our
-                    digital point of inception and expand into self-hosted
-                    technology, with in-house servers, and technological + AI
-                    systems rooted in heart, nature, and sacred geometry.
+                    We are a{" "}
+                    <span className="font-bold text-white">
+                      community engine
+                    </span>
+                    . We will use Skool.com as our digital point of inception
+                    and expand into self-hosted technology, with in-house
+                    servers, and technological + AI systems rooted in heart,
+                    nature, and sacred geometry.
                   </p>
                 </div>
               </CardContent>
@@ -190,7 +195,7 @@ export function AboutContent() {
 
           {/* Values Section */}
           <section className="mb-20">
-            <Card className="border-2 border-[#facf39]/20 bg-black/60 dark:bg-black/80 shadow-2xl backdrop-blur-md">
+            <Card className="border-2 border-[#facf39]/20 bg-black/60 shadow-2xl backdrop-blur-md dark:bg-black/80">
               <CardContent className="p-8 md:p-12">
                 <div className="mb-8 flex items-center gap-3">
                   <Gem className="h-8 w-8 text-[#facf39]" />
@@ -278,14 +283,14 @@ export function AboutContent() {
                   href="https://instagram.com/newearthcollectiveco"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 text-neutral-300 dark:text-neutral-300 transition-colors hover:text-[#facf39]"
+                  className="flex items-center gap-2 text-neutral-300 transition-colors hover:text-[#facf39] dark:text-neutral-300"
                 >
                   <Instagram className="h-5 w-5" />
                   <span>@newearthcollectiveco</span>
                 </a>
                 <a
                   href="mailto:community@joinnewearthcollective.com"
-                  className="flex items-center gap-2 text-neutral-300 dark:text-neutral-300 transition-colors hover:text-[#facf39]"
+                  className="flex items-center gap-2 text-neutral-300 transition-colors hover:text-[#facf39] dark:text-neutral-300"
                 >
                   <Mail className="h-5 w-5" />
                   <span>community@joinnewearthcollective.com</span>

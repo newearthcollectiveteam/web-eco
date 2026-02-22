@@ -102,9 +102,9 @@ export default function GalleryPage() {
       <div className="relative z-20 border-b border-[#facf39]/20 bg-white/80 backdrop-blur-md dark:border-[#facf39]/20 dark:bg-black/80">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-8 sm:px-6 lg:px-8">
           <BackButton label="Back to Hub" />
-          <div className="text-center flex-1">
+          <div className="flex-1 text-center">
             <h1
-              className="mb-2 text-4xl font-bold tracking-tight text-black dark:text-white sm:text-5xl"
+              className="mb-2 text-4xl font-bold tracking-tight text-black sm:text-5xl dark:text-white"
               style={{
                 fontFamily: "Airwaves, sans-serif",
                 letterSpacing: "0.05em",
@@ -121,7 +121,8 @@ export default function GalleryPage() {
               {gallery.images.length} photos
             </p>
           </div>
-          <div className="hidden w-[116px] sm:block" /> {/* spacer to balance BackButton width */}
+          <div className="hidden w-[116px] sm:block" />{" "}
+          {/* spacer to balance BackButton width */}
         </div>
       </div>
 
@@ -245,7 +246,8 @@ export default function GalleryPage() {
         {/* Gallery Info */}
         <div className="mt-8 text-center">
           <p className="text-sm text-neutral-500 dark:text-neutral-400">
-            Continuously scrolling with smooth motion • Hover to pause • Click arrows or drag to navigate
+            Continuously scrolling with smooth motion • Hover to pause • Click
+            arrows or drag to navigate
           </p>
         </div>
       </div>

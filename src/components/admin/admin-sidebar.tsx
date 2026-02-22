@@ -56,7 +56,7 @@ function NavLink({
         "flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors",
         isActive
           ? "bg-[#FACF39]/10 text-[#FACF39]"
-          : "text-gray-400 hover:bg-white/5 hover:text-white",
+          : "text-gray-400 hover:bg-white/5 hover:text-white"
       )}
     >
       <span className="truncate">{item.title}</span>
@@ -95,7 +95,7 @@ function NavGroup({
   const hasItems = item.items && item.items.length > 0;
   const isActive = item.href === pathname;
   const hasActiveChild = item.items?.some((sub) =>
-    pathname.startsWith(sub.href),
+    pathname.startsWith(sub.href)
   );
   const [isOpen, setIsOpen] = useState(hasActiveChild);
 
@@ -107,7 +107,7 @@ function NavGroup({
           "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
           isActive
             ? "bg-[#FACF39]/10 text-[#FACF39]"
-            : "text-gray-300 hover:bg-white/5 hover:text-white",
+            : "text-gray-300 hover:bg-white/5 hover:text-white"
         )}
       >
         <Icon className="h-5 w-5 flex-shrink-0" />
@@ -138,7 +138,7 @@ function NavGroup({
               "flex cursor-pointer items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
               hasActiveChild
                 ? "bg-[#FACF39]/10 text-[#FACF39]"
-                : "text-gray-300 hover:bg-white/5 hover:text-white",
+                : "text-gray-300 hover:bg-white/5 hover:text-white"
             )}
           >
             <Icon className="h-5 w-5 flex-shrink-0" />
@@ -157,7 +157,7 @@ function NavGroup({
                   "flex items-center rounded-md px-2 py-1.5 text-sm transition-colors",
                   pathname.startsWith(sub.href)
                     ? "bg-[#FACF39]/10 text-[#FACF39]"
-                    : "text-gray-300 hover:bg-white/5 hover:text-white",
+                    : "text-gray-300 hover:bg-white/5 hover:text-white"
                 )}
               >
                 {sub.title}
@@ -177,7 +177,7 @@ function NavGroup({
             "flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
             hasActiveChild
               ? "text-[#FACF39]"
-              : "text-gray-300 hover:bg-white/5 hover:text-white",
+              : "text-gray-300 hover:bg-white/5 hover:text-white"
           )}
         >
           <Icon className="h-5 w-5 flex-shrink-0" />
@@ -185,7 +185,7 @@ function NavGroup({
           <ChevronDown
             className={cn(
               "h-4 w-4 transition-transform",
-              isOpen && "rotate-180",
+              isOpen && "rotate-180"
             )}
           />
         </button>
@@ -215,7 +215,7 @@ function SidebarContent({ isCollapsed }: { isCollapsed: boolean }) {
       <div
         className={cn(
           "flex items-center gap-3 border-b px-4 py-4",
-          isCollapsed && "justify-center px-2",
+          isCollapsed && "justify-center px-2"
         )}
         style={{ borderColor: "rgba(250, 207, 57, 0.2)" }}
       >
@@ -306,7 +306,7 @@ export function AdminSidebar() {
         <button
           onClick={toggle}
           aria-label="Toggle sidebar"
-          className="absolute -right-3 top-20 flex h-6 w-6 items-center justify-center rounded-full border bg-black text-gray-400 transition-colors hover:text-white"
+          className="absolute top-20 -right-3 flex h-6 w-6 items-center justify-center rounded-full border bg-black text-gray-400 transition-colors hover:text-white"
           style={{ borderColor: "rgba(250, 207, 57, 0.3)" }}
         >
           {isCollapsed ? (

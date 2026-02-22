@@ -385,8 +385,8 @@ export function TestHomePage() {
                   </h3>
                 </div>
                 <p className="mb-4 flex-1 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
-                  Global landing page with sacred geometry background,
-                  waitlist form, and event information.
+                  Global landing page with sacred geometry background, waitlist
+                  form, and event information.
                 </p>
 
                 <div className="flex items-center justify-between gap-2">
@@ -405,7 +405,10 @@ export function TestHomePage() {
                     </a>
                     <span className="text-neutral-300">|</span>
                     <button
-                      onClick={() => window.location.href = "/global?domain=launch.joinnewearthcollective.com"}
+                      onClick={() =>
+                        (window.location.href =
+                          "/global?domain=launch.joinnewearthcollective.com")
+                      }
                       className="flex items-center gap-1 text-sm font-medium transition-colors hover:opacity-80"
                       style={{ color: "#facf39" }}
                     >
@@ -434,8 +437,8 @@ export function TestHomePage() {
                   </h3>
                 </div>
                 <p className="mb-4 flex-1 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
-                  Boulder, CO community launch event page with details, RSVP, and
-                  sacred geometry visuals.
+                  Boulder, CO community launch event page with details, RSVP,
+                  and sacred geometry visuals.
                 </p>
 
                 <div className="flex items-center justify-between gap-2">
@@ -454,7 +457,10 @@ export function TestHomePage() {
                     </a>
                     <span className="text-neutral-300">|</span>
                     <button
-                      onClick={() => window.location.href = "/boulder-launch-party?domain=launch.joinnewearthcollective.com"}
+                      onClick={() =>
+                        (window.location.href =
+                          "/boulder-launch-party?domain=launch.joinnewearthcollective.com")
+                      }
                       className="flex items-center gap-1 text-sm font-medium transition-colors hover:opacity-80"
                       style={{ color: "#facf39" }}
                     >
@@ -503,7 +509,10 @@ export function TestHomePage() {
                     </a>
                     <span className="text-neutral-300">|</span>
                     <button
-                      onClick={() => window.location.href = "/questionnaire?domain=launch.joinnewearthcollective.com"}
+                      onClick={() =>
+                        (window.location.href =
+                          "/questionnaire?domain=launch.joinnewearthcollective.com")
+                      }
                       className="flex items-center gap-1 text-sm font-medium transition-colors hover:opacity-80"
                       style={{ color: "#facf39" }}
                     >
@@ -532,8 +541,8 @@ export function TestHomePage() {
                   </h3>
                 </div>
                 <p className="mb-4 flex-1 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
-                  About New Earth Collective - mission, vision, values, and
-                  the principles that guide our community.
+                  About New Earth Collective - mission, vision, values, and the
+                  principles that guide our community.
                 </p>
 
                 <div className="flex items-center justify-between gap-2">
@@ -552,7 +561,10 @@ export function TestHomePage() {
                     </a>
                     <span className="text-neutral-300">|</span>
                     <button
-                      onClick={() => window.location.href = "/about?domain=joinnewearthcollective.com"}
+                      onClick={() =>
+                        (window.location.href =
+                          "/about?domain=joinnewearthcollective.com")
+                      }
                       className="flex items-center gap-1 text-sm font-medium transition-colors hover:opacity-80"
                       style={{ color: "#facf39" }}
                     >
@@ -581,7 +593,8 @@ export function TestHomePage() {
                   </h3>
                 </div>
                 <p className="mb-4 flex-1 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
-                  Unsubscribe page for email and SMS opt-out. Accessible via trackable links in communications (GDPR/CAN-SPAM compliant).
+                  Unsubscribe page for email and SMS opt-out. Accessible via
+                  trackable links in communications (GDPR/CAN-SPAM compliant).
                 </p>
 
                 <div className="flex items-center justify-between gap-2">
@@ -600,7 +613,10 @@ export function TestHomePage() {
                     </a>
                     <span className="text-neutral-300">|</span>
                     <button
-                      onClick={() => window.location.href = "/unsubscribe?domain=launch.joinnewearthcollective.com"}
+                      onClick={() =>
+                        (window.location.href =
+                          "/unsubscribe?domain=launch.joinnewearthcollective.com")
+                      }
                       className="flex items-center gap-1 text-sm font-medium transition-colors hover:opacity-80"
                       style={{ color: "#facf39" }}
                     >
@@ -846,7 +862,8 @@ export function TestHomePage() {
                   </h3>
                 </div>
                 <p className="mb-4 flex-1 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
-                  Complete site map showing all pages across all domains (joinnewearthcollective.com, launch, test).
+                  Complete site map showing all pages across all domains
+                  (joinnewearthcollective.com, launch, test).
                 </p>
 
                 <div className="flex items-center justify-between">
@@ -882,7 +899,8 @@ export function TestHomePage() {
                   </h3>
                 </div>
                 <p className="mb-4 flex-1 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
-                  Rotating carousel of 58 community photos from gatherings and events with smooth animations.
+                  Rotating carousel of 58 community photos from gatherings and
+                  events with smooth animations.
                 </p>
 
                 <div className="flex items-center justify-between">
@@ -919,7 +937,8 @@ export function TestHomePage() {
                   </h3>
                 </div>
                 <p className="mb-4 flex-1 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
-                  Test automated email sequences: 4 emails in 10 minutes, then 2 more at 24h & 36h intervals.
+                  Test automated email sequences: 4 emails in 10 minutes, then 2
+                  more at 24h & 36h intervals.
                 </p>
 
                 <div className="flex items-center justify-between">
@@ -956,7 +975,8 @@ export function TestHomePage() {
                   </h3>
                 </div>
                 <p className="mb-4 flex-1 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
-                  View CRM contacts, questionnaire responses, and event waivers. Database overview and intake form submissions.
+                  View CRM contacts, questionnaire responses, and event waivers.
+                  Database overview and intake form submissions.
                 </p>
 
                 <div className="flex items-center justify-between">

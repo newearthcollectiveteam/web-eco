@@ -8,8 +8,8 @@ export const metadata: Metadata = {
 
 export default function QRVenmoPage() {
   return (
-    <div className="bg-black min-h-screen">
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <div className="min-h-screen bg-black">
+      <section className="relative flex min-h-screen items-center justify-center overflow-hidden">
         {/* Flower of Life Shader Background */}
         <div className="absolute inset-0 opacity-40">
           <iframe
@@ -27,7 +27,10 @@ export default function QRVenmoPage() {
         <div className="relative z-10 mx-auto max-w-2xl px-4 text-center">
           <h1
             className="mb-4 text-4xl font-bold md:text-5xl lg:text-6xl"
-            style={{ fontFamily: "Airwaves, sans-serif", letterSpacing: "0.05em" }}
+            style={{
+              fontFamily: "Airwaves, sans-serif",
+              letterSpacing: "0.05em",
+            }}
           >
             <span className="bg-gradient-to-r from-[#f3a51c] via-[#f6c43f] to-[#f6e45b] bg-clip-text text-transparent">
               Support the Collective
@@ -35,7 +38,10 @@ export default function QRVenmoPage() {
           </h1>
 
           <p className="mb-8 text-lg text-white/80">
-            Your contribution helps us create transformative experiences and <span className="whitespace-nowrap">build our online ecosystem.</span>
+            Your contribution helps us create transformative experiences and{" "}
+            <span className="whitespace-nowrap">
+              build our online ecosystem.
+            </span>
           </p>
 
           {/* QR Code */}
@@ -49,8 +55,11 @@ export default function QRVenmoPage() {
             />
           </div>
 
-          <div className="mb-8 mx-auto w-fit rounded-lg border border-[#FACF39]/30 bg-black/60 px-6 py-3">
-            <p className="text-xl font-bold text-[#FACF39]" style={{ fontFamily: "Bourton, sans-serif" }}>
+          <div className="mx-auto mb-8 w-fit rounded-lg border border-[#FACF39]/30 bg-black/60 px-6 py-3">
+            <p
+              className="text-xl font-bold text-[#FACF39]"
+              style={{ fontFamily: "Bourton, sans-serif" }}
+            >
               @thenewearthcollective
             </p>
           </div>

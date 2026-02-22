@@ -68,7 +68,7 @@ export async function middleware(request: NextRequest) {
   try {
     analyticsResponse = await analyticsMiddleware(request);
   } catch (error) {
-    console.error('Analytics middleware error:', error);
+    console.error("Analytics middleware error:", error);
     analyticsResponse = NextResponse.next();
   }
 
@@ -87,7 +87,7 @@ export async function middleware(request: NextRequest) {
     // Allow public embed routes without auth
     if (isPublicEmbed(pathname)) {
       analyticsResponse.headers.forEach((value, key) => {
-        if (key.toLowerCase() === 'set-cookie') {
+        if (key.toLowerCase() === "set-cookie") {
           supabaseResponse.headers.append(key, value);
         }
       });
@@ -100,12 +100,14 @@ export async function middleware(request: NextRequest) {
       loginUrl.searchParams.set("next", pathname);
 
       if (process.env.NODE_ENV === "development") {
-        console.log(`🔒 [Middleware] Auth required for ${pathname}, redirecting to login`);
+        console.log(
+          `🔒 [Middleware] Auth required for ${pathname}, redirecting to login`
+        );
       }
 
       const redirectResponse = NextResponse.redirect(loginUrl);
       analyticsResponse.headers.forEach((value, key) => {
-        if (key.toLowerCase() === 'set-cookie') {
+        if (key.toLowerCase() === "set-cookie") {
           redirectResponse.headers.append(key, value);
         }
       });
@@ -116,14 +118,17 @@ export async function middleware(request: NextRequest) {
     if (approvalStatus === "pending" || approvalStatus === "rejected") {
       if (pathname === "/auth/pending-approval") {
         analyticsResponse.headers.forEach((value, key) => {
-          if (key.toLowerCase() === 'set-cookie') {
+          if (key.toLowerCase() === "set-cookie") {
             supabaseResponse.headers.append(key, value);
           }
         });
         return supabaseResponse;
       }
 
-      const pendingUrl = new URL("/auth/pending-approval", request.nextUrl.origin);
+      const pendingUrl = new URL(
+        "/auth/pending-approval",
+        request.nextUrl.origin
+      );
       if (process.env.NODE_ENV === "development") {
         console.log(
           `⏳ [Middleware] User not approved (${approvalStatus}), redirecting to pending-approval`
@@ -132,7 +137,7 @@ export async function middleware(request: NextRequest) {
 
       const redirectResponse = NextResponse.redirect(pendingUrl);
       analyticsResponse.headers.forEach((value, key) => {
-        if (key.toLowerCase() === 'set-cookie') {
+        if (key.toLowerCase() === "set-cookie") {
           redirectResponse.headers.append(key, value);
         }
       });
@@ -142,9 +147,11 @@ export async function middleware(request: NextRequest) {
 
   // Public routes: If logged in and trying to access login/signup, redirect to home
   if ((pathname === "/login" || pathname === "/auth/signup") && user) {
-    const redirectResponse = NextResponse.redirect(new URL("/", request.nextUrl.origin));
+    const redirectResponse = NextResponse.redirect(
+      new URL("/", request.nextUrl.origin)
+    );
     analyticsResponse.headers.forEach((value, key) => {
-      if (key.toLowerCase() === 'set-cookie') {
+      if (key.toLowerCase() === "set-cookie") {
         redirectResponse.headers.append(key, value);
       }
     });
@@ -153,7 +160,7 @@ export async function middleware(request: NextRequest) {
 
   // Merge analytics cookies with supabase response for all other routes
   analyticsResponse.headers.forEach((value, key) => {
-    if (key.toLowerCase() === 'set-cookie') {
+    if (key.toLowerCase() === "set-cookie") {
       supabaseResponse.headers.append(key, value);
     }
   });

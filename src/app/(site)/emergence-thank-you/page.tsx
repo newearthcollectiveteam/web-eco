@@ -5,14 +5,15 @@ import { Button } from "~/components/ui/button";
 
 export const metadata: Metadata = {
   title: "Thank You | The Emergence | New Earth Collective",
-  description: "Thank you for completing the Emergence follow-up questionnaire.",
+  description:
+    "Thank you for completing the Emergence follow-up questionnaire.",
 };
 
 export default function EmergenceThankYouPage() {
   return (
     <div className="bg-black">
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      <section className="relative flex min-h-screen items-center justify-center overflow-hidden">
         {/* Flower of Life Shader Background */}
         <div className="absolute inset-0 opacity-20">
           <iframe
@@ -30,7 +31,10 @@ export default function EmergenceThankYouPage() {
         <div className="relative z-10 mx-auto max-w-3xl px-4 text-center">
           <h1
             className="mb-8 text-5xl font-bold text-[#FACF39] md:text-6xl"
-            style={{ fontFamily: "Airwaves, sans-serif", letterSpacing: "0.05em" }}
+            style={{
+              fontFamily: "Airwaves, sans-serif",
+              letterSpacing: "0.05em",
+            }}
           >
             Thank You!
           </h1>
@@ -40,22 +44,31 @@ export default function EmergenceThankYouPage() {
           </p>
 
           {/* Free Access Callout */}
-          <div className="mb-8 mx-auto max-w-xl rounded-2xl bg-[#FACF39]/10 border border-[#FACF39]/40 p-6">
-            <div className="flex items-center justify-center gap-3 mb-3">
+          <div className="mx-auto mb-8 max-w-xl rounded-2xl border border-[#FACF39]/40 bg-[#FACF39]/10 p-6">
+            <div className="mb-3 flex items-center justify-center gap-3">
               <Gift className="h-6 w-6 text-[#FACF39]" />
-              <h2 className="text-xl font-bold text-[#FACF39]" style={{ fontFamily: "Bourton, sans-serif" }}>
+              <h2
+                className="text-xl font-bold text-[#FACF39]"
+                style={{ fontFamily: "Bourton, sans-serif" }}
+              >
                 Unlock Free Lifetime Access
               </h2>
               <Gift className="h-6 w-6 text-[#FACF39]" />
             </div>
-            <p className="text-white/80 mb-4">
-              Want <span className="text-[#FACF39] font-semibold">free lifetime access</span> to our online platform when it launches?
+            <p className="mb-4 text-white/80">
+              Want{" "}
+              <span className="font-semibold text-[#FACF39]">
+                free lifetime access
+              </span>{" "}
+              to our online platform when it launches?
             </p>
-            <p className="text-white/80 mb-4">
-              Submit a short video testimonial sharing your experience at The Emergence and what this community means to you.
+            <p className="mb-4 text-white/80">
+              Submit a short video testimonial sharing your experience at The
+              Emergence and what this community means to you.
             </p>
-            <p className="text-white/60 text-sm mb-5">
-              Your story helps us grow and in return, you'll receive permanent access to our online network — no subscription fees, ever.
+            <p className="mb-5 text-sm text-white/60">
+              Your story helps us grow and in return, you'll receive permanent
+              access to our online network — no subscription fees, ever.
             </p>
             <Button
               asChild
@@ -91,7 +104,7 @@ export default function EmergenceThankYouPage() {
             <Button
               asChild
               variant="outline"
-              className="border-[#FACF39]/50 bg-transparent px-8 py-4 font-bold text-[#FACF39] transition-all hover:bg-[#FACF39]/10 hover:border-[#FACF39]"
+              className="border-[#FACF39]/50 bg-transparent px-8 py-4 font-bold text-[#FACF39] transition-all hover:border-[#FACF39] hover:bg-[#FACF39]/10"
               style={{ fontFamily: "Bourton, sans-serif" }}
             >
               <a

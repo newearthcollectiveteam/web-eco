@@ -73,7 +73,10 @@ export async function POST(request: NextRequest) {
 
     if (!agreedToTerms) {
       return NextResponse.json(
-        { error: "You must agree to the Event Release of Liability & Assumption of Risk" },
+        {
+          error:
+            "You must agree to the Event Release of Liability & Assumption of Risk",
+        },
         { status: 400 }
       );
     }
@@ -94,9 +97,10 @@ export async function POST(request: NextRequest) {
 
     // Get IP address and user agent for legal records
     const forwardedFor = request.headers.get("x-forwarded-for");
-    const ipAddress = forwardedFor?.split(",")[0]?.trim() ||
-                      request.headers.get("x-real-ip") ||
-                      "unknown";
+    const ipAddress =
+      forwardedFor?.split(",")[0]?.trim() ||
+      request.headers.get("x-real-ip") ||
+      "unknown";
     const userAgent = request.headers.get("user-agent") || undefined;
 
     // Store waiver in database
@@ -118,7 +122,9 @@ export async function POST(request: NextRequest) {
       })
       .returning();
 
-    console.log(`Waiver signed: ${signerName} (${signerEmail}) for ${eventName} - ID: ${entry?.id}`);
+    console.log(
+      `Waiver signed: ${signerName} (${signerEmail}) for ${eventName} - ID: ${entry?.id}`
+    );
 
     return NextResponse.json({
       success: true,
@@ -126,7 +132,8 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error("Waiver submission failed:", error);
-    const errorMessage = error instanceof Error ? error.message : "Unknown error";
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error";
     console.error("Error details:", errorMessage);
     return NextResponse.json(
       { error: "Failed to submit waiver", details: errorMessage },

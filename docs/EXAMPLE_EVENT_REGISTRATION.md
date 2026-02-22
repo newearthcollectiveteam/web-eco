@@ -10,38 +10,41 @@ Add to `src/server/db/schema.ts`:
 /**
  * Event Registration Intake - Collects registration data for community events
  */
-export const eventRegistrationIntake = createTable("event_registration_intake", {
-  id: serial("id").primaryKey(),
+export const eventRegistrationIntake = createTable(
+  "event_registration_intake",
+  {
+    id: serial("id").primaryKey(),
 
-  // Foreign key to master CRM
-  contactId: integer("contact_id")
-    .notNull()
-    .references(() => contacts.id, { onDelete: "cascade" }),
+    // Foreign key to master CRM
+    contactId: integer("contact_id")
+      .notNull()
+      .references(() => contacts.id, { onDelete: "cascade" }),
 
-  // Common fields (required for all intake forms)
-  source: varchar("source", { length: 100 }).notNull(),
-  processed: boolean("processed").default(false).notNull(),
+    // Common fields (required for all intake forms)
+    source: varchar("source", { length: 100 }).notNull(),
+    processed: boolean("processed").default(false).notNull(),
 
-  // Basic contact fields
-  name: varchar("name", { length: 255 }).notNull(),
-  email: varchar("email", { length: 255 }).notNull(),
-  phone: varchar("phone", { length: 50 }),
+    // Basic contact fields
+    name: varchar("name", { length: 255 }).notNull(),
+    email: varchar("email", { length: 255 }).notNull(),
+    phone: varchar("phone", { length: 50 }),
 
-  // Event-specific fields
-  eventSlug: varchar("event_slug", { length: 100 }).notNull(), // Which event they're registering for
-  ticketType: varchar("ticket_type", { length: 50 }).notNull(), // general, vip, volunteer, etc.
-  attendeeCount: integer("attendee_count").default(1).notNull(),
-  dietaryRestrictions: text("dietary_restrictions"),
-  specialNeeds: text("special_needs"),
-  emergencyContactName: varchar("emergency_contact_name", { length: 255 }),
-  emergencyContactPhone: varchar("emergency_contact_phone", { length: 50 }),
-  howDidYouHear: varchar("how_did_you_hear", { length: 100 }), // marketing attribution
+    // Event-specific fields
+    eventSlug: varchar("event_slug", { length: 100 }).notNull(), // Which event they're registering for
+    ticketType: varchar("ticket_type", { length: 50 }).notNull(), // general, vip, volunteer, etc.
+    attendeeCount: integer("attendee_count").default(1).notNull(),
+    dietaryRestrictions: text("dietary_restrictions"),
+    specialNeeds: text("special_needs"),
+    emergencyContactName: varchar("emergency_contact_name", { length: 255 }),
+    emergencyContactPhone: varchar("emergency_contact_phone", { length: 50 }),
+    howDidYouHear: varchar("how_did_you_hear", { length: 100 }), // marketing attribution
 
-  // Timestamps
-  createdAt: timestamp("created_at", { withTimezone: true })
-    .default(sql`CURRENT_TIMESTAMP`)
-    .notNull(),
-});
+    // Timestamps
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+  }
+);
 ```
 
 ## API Endpoint
@@ -244,11 +247,13 @@ export async function POST(request: NextRequest) {
 ### 1. Multi-Form Contact Tracking
 
 A contact can now:
+
 - Submit the waitlist form
 - Register for multiple events
 - Each interaction is tracked in `contactSources`
 
 Example query to find contacts who did BOTH:
+
 ```typescript
 const activeContacts = await db
   .select({
@@ -265,6 +270,7 @@ const activeContacts = await db
 ### 2. Event-Specific Queries
 
 Find all registrations for a specific event:
+
 ```typescript
 const eventAttendees = await db
   .select({
@@ -298,6 +304,7 @@ const dietaryNeeds = await db
 ### 4. Marketing Attribution
 
 Track how people heard about your events:
+
 ```typescript
 const attributionReport = await db
   .select({
@@ -312,6 +319,7 @@ const attributionReport = await db
 ### 5. Contact Journey View
 
 See a contact's complete interaction history:
+
 ```typescript
 async function getContactJourney(email: string) {
   const contact = await db.query.contacts.findFirst({
@@ -320,21 +328,22 @@ async function getContactJourney(email: string) {
 
   if (!contact) return null;
 
-  const [activities, sources, waitlistEntries, eventRegistrations] = await Promise.all([
-    db.query.contactActivities.findMany({
-      where: eq(contactActivities.contactId, contact.id),
-      orderBy: (activity, { desc }) => [desc(activity.createdAt)],
-    }),
-    db.query.contactSources.findMany({
-      where: eq(contactSources.contactId, contact.id),
-    }),
-    db.query.waitlistIntake.findMany({
-      where: eq(waitlistIntake.contactId, contact.id),
-    }),
-    db.query.eventRegistrationIntake.findMany({
-      where: eq(eventRegistrationIntake.contactId, contact.id),
-    }),
-  ]);
+  const [activities, sources, waitlistEntries, eventRegistrations] =
+    await Promise.all([
+      db.query.contactActivities.findMany({
+        where: eq(contactActivities.contactId, contact.id),
+        orderBy: (activity, { desc }) => [desc(activity.createdAt)],
+      }),
+      db.query.contactSources.findMany({
+        where: eq(contactSources.contactId, contact.id),
+      }),
+      db.query.waitlistIntake.findMany({
+        where: eq(waitlistIntake.contactId, contact.id),
+      }),
+      db.query.eventRegistrationIntake.findMany({
+        where: eq(eventRegistrationIntake.contactId, contact.id),
+      }),
+    ]);
 
   return {
     contact,
@@ -358,6 +367,7 @@ async function getContactJourney(email: string) {
 ## Next Forms You Might Add
 
 Following this same pattern, you could add:
+
 - `volunteerSignupIntake` - Volunteer applications
 - `donationIntake` - Donation/contribution forms
 - `feedbackIntake` - Feedback and survey submissions

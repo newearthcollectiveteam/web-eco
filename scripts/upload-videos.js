@@ -1,33 +1,33 @@
-import { createClient } from '@supabase/supabase-js';
-import { readFileSync, readdirSync } from 'fs';
-import { join, dirname, extname } from 'path';
-import { fileURLToPath } from 'url';
-import { config } from 'dotenv';
+import { createClient } from "@supabase/supabase-js";
+import { readFileSync, readdirSync } from "fs";
+import { join, dirname, extname } from "path";
+import { fileURLToPath } from "url";
+import { config } from "dotenv";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 // Load environment variables
-config({ path: join(__dirname, '../.env') });
+config({ path: join(__dirname, "../.env") });
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-const BUCKET_NAME = 'Assetts';
-const STORAGE_PREFIX = 'videos/testimonials';
+const BUCKET_NAME = "Assetts";
+const STORAGE_PREFIX = "videos/testimonials";
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 const MIME_TYPES = {
-  '.mp4': 'video/mp4',
-  '.jpg': 'image/jpeg',
-  '.jpeg': 'image/jpeg',
+  ".mp4": "video/mp4",
+  ".jpg": "image/jpeg",
+  ".jpeg": "image/jpeg",
 };
 
 async function uploadVideos() {
   try {
-    const sourceDir = join(__dirname, '../tmp/testimonials');
+    const sourceDir = join(__dirname, "../tmp/testimonials");
     const files = readdirSync(sourceDir).filter(
-      (f) => f.endsWith('.mp4') || f.endsWith('.jpg')
+      (f) => f.endsWith(".mp4") || f.endsWith(".jpg")
     );
 
     console.log(`Found ${files.length} files to upload\n`);
@@ -39,7 +39,7 @@ async function uploadVideos() {
       const filepath = join(sourceDir, filename);
       const storagePath = `${STORAGE_PREFIX}/${filename}`;
       const ext = extname(filename);
-      const contentType = MIME_TYPES[ext] || 'application/octet-stream';
+      const contentType = MIME_TYPES[ext] || "application/octet-stream";
 
       // Check if already uploaded
       const { data: existing } = await supabase.storage
@@ -73,7 +73,7 @@ async function uploadVideos() {
     console.log(`\nDone: ${successCount} uploaded, ${skipCount} skipped`);
     process.exit(0);
   } catch (error) {
-    console.error('Upload failed:', error);
+    console.error("Upload failed:", error);
     process.exit(1);
   }
 }

@@ -12,6 +12,7 @@ _None documented_
 
 - [ ] Unstaged Prettier formatting changes across ~100 files (from quality-check run)
 - [ ] 227 emergence photos in public/ — consider Supabase Storage migration to reduce repo size
+- [ ] 3 lint warnings: unused imports in ecosystem, team, login pages
 
 ## Admin Hub Refactor (multi-session)
 
@@ -23,10 +24,11 @@ _None documented_
 - [x] Update existing pages to remove DomainLayout/BackButton
 - [x] Build overview page with KPI cards, section summaries, quick links
 
-### Session 2: Overview + Analytics
+### Session 2: Overview + Analytics (SCAFFOLDED)
 
-- [ ] Analytics page at /admin/analytics (KPI row, submission sources, trends)
-- [ ] tRPC overviewStats procedure if needed
+- [x] Analytics page placeholder at /admin/analytics
+- [ ] Build out analytics UI (KPI row, submission sources, trends)
+- [ ] tRPC overviewStats procedure with real data
 
 ### Session 3: CRM Refactor (DONE)
 
@@ -40,21 +42,25 @@ _None documented_
 - [x] Voice notes (record, upload, playback with progress)
 - [x] Mobile responsive (tables → cards, stacked filters)
 
-### Session 4: Team + Finance
+### Session 4: Team + Finance (SCAFFOLDED)
 
-- [ ] Team page (/admin/team) with member CRUD
+- [x] Finance placeholder pages scaffolded (overview, revenue, expenses, yearly, tax)
+- [x] Team tRPC router created (src/server/api/routers/team.ts)
+- [ ] Team page (/admin/team) with member CRUD — build out UI
 - [ ] teamMembers DB schema
-- [ ] Finance overview (/admin/finance) with Mercury connection
-- [ ] Finance sub-pages (revenue, expenses, yearly, tax) as boilerplate
+- [ ] Finance pages — build out with Mercury connection
 - [ ] Mercury API client (src/lib/mercury.ts)
 
-### Session 5: CMS + Assets + Ecosystem + Tooling
+### Session 5: CMS + Assets + Ecosystem + Tooling (SCAFFOLDED)
 
-- [ ] CMS Gallery page (/admin/cms/gallery)
+- [x] CMS Gallery page scaffolded (/admin/cms/gallery) — 126 lines
+- [x] Tooling inventory scaffolded (/admin/tooling) — 341 lines
+- [x] Database health scaffolded (/admin/tooling/database)
+- [x] Auth router added (src/server/api/routers/auth.ts)
 - [ ] CMS Email Testing page (/admin/cms/email-testing)
-- [ ] Ecosystem map (/admin/ecosystem) with route inventory
-- [ ] Tooling inventory (/admin/tooling)
-- [ ] Database health (/admin/tooling/database)
+- [ ] Ecosystem map (/admin/ecosystem) — build out route inventory
+- [ ] Build out CMS Gallery with real data
+- [ ] Build out Tooling pages with real data
 - [ ] Remove TestHomePage component
 
 ## Enhancements (nice to have)

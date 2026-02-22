@@ -32,16 +32,18 @@
 
 ## Known Limitations
 
-- Admin hub refactor in progress — Sessions 2, 4, 5 pending (Analytics, Team+Finance, CMS+Ecosystem+Tooling)
+- Admin hub pages scaffolded as placeholders — analytics, finance, tooling need real data/UI
 - DB connection uses Supabase pooler (direct host no longer resolves)
 
 ## Recent Changes
 
 | Date       | Description                                                                            |
 | ---------- | -------------------------------------------------------------------------------------- |
-| 2026-02-22 | CRM enhancements: team tracking (addedBy), bulk phone import, voice notes, mobile responsive |
-| 2026-02-22 | Contact detail redesign: consolidated header, compact timeline, voice note playback    |
-| 2026-02-22 | CRM pages: contacts list, leads list, dashboard — all mobile responsive                |
+| 2026-02-22 | Auth consolidation: merged signup/forgot-password into single /login page               |
+| 2026-02-22 | Admin scaffolding: analytics, CMS gallery, finance (5 pages), tooling (2 pages)         |
+| 2026-02-22 | tRPC: added auth + team routers, hardened admin/analytics procedures                    |
+| 2026-02-22 | Middleware: updated Supabase auth, simplified route protection                          |
+| 2026-02-22 | CRM enhancements: team tracking, bulk import, voice notes, mobile responsive            |
 | 2026-02-21 | Pathway page: interactive timeline, 4 phases, gallery strips, scroll animations        |
 | 2026-02-21 | About page rewrite: cohesive blog-style story with CI philosophy                       |
 

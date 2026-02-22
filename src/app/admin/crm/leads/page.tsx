@@ -119,16 +119,16 @@ function LeadsContent() {
                   <div key={key}>
                     <button
                       onClick={() => toggleExpand(key)}
-                      className="flex w-full items-center justify-between px-5 py-3 text-left hover:bg-white/5"
+                      className="flex w-full flex-col gap-1 px-4 py-3 text-left hover:bg-white/5 sm:flex-row sm:items-center sm:justify-between sm:px-5"
                     >
-                      <div className="flex min-w-0 items-center gap-3">
+                      <div className="flex min-w-0 items-center gap-2.5 sm:gap-3">
                         <Icon className="h-4 w-4 shrink-0 text-gray-400" />
-                        <span className="shrink-0 font-medium text-white">
+                        <span className="min-w-0 truncate font-medium text-white">
                           {lead.name}
                         </span>
                         <Badge
                           variant="outline"
-                          className={`text-[10px] ${badgeColor}`}
+                          className={`shrink-0 text-[10px] ${badgeColor}`}
                         >
                           {lead.source.replace(/_/g, " ")}
                         </Badge>
@@ -138,7 +138,7 @@ function LeadsContent() {
                           </span>
                         )}
                       </div>
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-2 pl-6.5 sm:gap-3 sm:pl-0">
                         <span className="text-xs text-gray-500">
                           {formatDate(lead.date)}
                         </span>
@@ -146,7 +146,7 @@ function LeadsContent() {
                         {/* Waitlist processed indicator */}
                         {lead.source === "waitlist" && (
                           <span
-                            className={`flex h-5 w-5 items-center justify-center rounded-full ${
+                            className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full ${
                               lead.processed
                                 ? "bg-green-900/50 text-green-400"
                                 : "bg-neutral-800 text-neutral-500"
@@ -159,16 +159,18 @@ function LeadsContent() {
                           </span>
                         )}
 
-                        {isExpanded ? (
-                          <ChevronUp className="h-4 w-4 text-gray-500" />
-                        ) : (
-                          <ChevronDown className="h-4 w-4 text-gray-500" />
-                        )}
+                        <span className="ml-auto sm:ml-0">
+                          {isExpanded ? (
+                            <ChevronUp className="h-4 w-4 text-gray-500" />
+                          ) : (
+                            <ChevronDown className="h-4 w-4 text-gray-500" />
+                          )}
+                        </span>
                       </div>
                     </button>
 
                     {isExpanded && (
-                      <div className="border-t border-white/5 bg-white/[0.02] px-5 py-4">
+                      <div className="border-t border-white/5 bg-white/[0.02] px-4 py-4 sm:px-5">
                         <div className="space-y-2 text-sm">
                           <div>
                             <span className="text-gray-500">Name:</span>{" "}
@@ -176,7 +178,7 @@ function LeadsContent() {
                           </div>
                           <div>
                             <span className="text-gray-500">Email:</span>{" "}
-                            <span className="text-gray-200">{lead.email}</span>
+                            <span className="break-all text-gray-200">{lead.email}</span>
                           </div>
                           {lead.preview && (
                             <div>

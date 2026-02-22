@@ -70,7 +70,7 @@ function OverviewContent() {
 
       {/* KPI Cards */}
       {data && (
-        <div className="grid grid-cols-2 gap-4 lg:grid-cols-5">
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
           {[
             { label: "CRM Contacts", value: data.stats.contacts, icon: Users },
             {
@@ -160,15 +160,16 @@ function OverviewContent() {
             <h3 className="mb-4 font-semibold text-white">Recent Contacts</h3>
             <div className="space-y-2">
               {data.recent.contacts.slice(0, 5).map((contact) => (
-                <div
+                <Link
                   key={contact.id}
-                  className="flex items-center justify-between rounded-lg bg-white/5 px-3 py-2"
+                  href={`/admin/crm/contacts/${contact.id}`}
+                  className="flex flex-col gap-1 rounded-lg bg-white/5 px-3 py-2 transition-colors hover:bg-white/[0.07] sm:flex-row sm:items-center sm:justify-between sm:gap-3"
                 >
-                  <div className="flex items-center gap-3">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:gap-3">
                     <span className="font-medium text-white">
                       {contact.name ?? "—"}
                     </span>
-                    <span className="text-sm text-gray-400">
+                    <span className="truncate text-sm text-gray-400">
                       {contact.email}
                     </span>
                   </div>
@@ -186,7 +187,7 @@ function OverviewContent() {
                       })}
                     </span>
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
           </CardContent>
@@ -226,41 +227,41 @@ function OverviewContent() {
         <CardContent className="p-5">
           <h3 className="mb-4 font-semibold text-white">Live Sites</h3>
           <div className="space-y-2">
-            <div className="flex items-center justify-between rounded-lg bg-white/5 px-3 py-2">
+            <div className="flex flex-col gap-1 rounded-lg bg-white/5 px-3 py-2 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex items-center gap-2">
-                <span className="h-2 w-2 rounded-full bg-emerald-500" />
-                <span className="text-sm text-white">
+                <span className="h-2 w-2 shrink-0 rounded-full bg-emerald-500" />
+                <span className="text-sm text-white break-all">
                   joinnewearthcollective.com
                 </span>
               </div>
-              <Badge className="border-emerald-500/30 bg-emerald-500/10 text-xs text-emerald-400">
+              <Badge className="w-fit border-emerald-500/30 bg-emerald-500/10 text-xs text-emerald-400">
                 Live
               </Badge>
             </div>
-            <div className="flex items-center justify-between rounded-lg bg-white/5 px-3 py-2">
+            <div className="flex flex-col gap-1 rounded-lg bg-white/5 px-3 py-2 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex items-center gap-2">
-                <span className="h-2 w-2 rounded-full bg-gray-500" />
-                <span className="text-sm text-gray-400">
+                <span className="h-2 w-2 shrink-0 rounded-full bg-gray-500" />
+                <span className="text-sm text-gray-400 break-all">
                   test.joinnewearthcollective.com
                 </span>
               </div>
               <Badge
                 variant="outline"
-                className="border-gray-600 text-xs text-gray-500"
+                className="w-fit border-gray-600 text-xs text-gray-500"
               >
                 Deprecated
               </Badge>
             </div>
-            <div className="flex items-center justify-between rounded-lg bg-white/5 px-3 py-2">
+            <div className="flex flex-col gap-1 rounded-lg bg-white/5 px-3 py-2 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex items-center gap-2">
-                <span className="h-2 w-2 rounded-full bg-gray-500" />
-                <span className="text-sm text-gray-400">
+                <span className="h-2 w-2 shrink-0 rounded-full bg-gray-500" />
+                <span className="text-sm text-gray-400 break-all">
                   launch.joinnewearthcollective.com
                 </span>
               </div>
               <Badge
                 variant="outline"
-                className="border-gray-600 text-xs text-gray-500"
+                className="w-fit border-gray-600 text-xs text-gray-500"
               >
                 Deprecated
               </Badge>

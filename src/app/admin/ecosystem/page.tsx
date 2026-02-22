@@ -139,7 +139,7 @@ export default function EcosystemPage() {
 
       {/* Stats */}
       {stats && (
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
           <div
             className="rounded-lg border bg-white/5 p-4 text-center"
             style={{ borderColor: "rgba(250, 207, 57, 0.2)" }}
@@ -179,7 +179,7 @@ export default function EcosystemPage() {
       )}
 
       {/* Filters */}
-      <div className="flex flex-wrap items-center gap-3">
+      <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
         <div className="relative min-w-[200px] flex-1">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-500" />
           <input
@@ -190,24 +190,26 @@ export default function EcosystemPage() {
             style={{ borderColor: "rgba(250, 207, 57, 0.2)" }}
           />
         </div>
-        <select
-          value={accessFilter}
-          onChange={(e) => setAccessFilter(e.target.value as Access | "all")}
-          className="rounded-md border border-neutral-700 bg-black/50 px-3 py-2 text-sm text-white"
-        >
-          <option value="all">All Access</option>
-          <option value="public">Public</option>
-          <option value="admin">Admin</option>
-        </select>
-        <select
-          value={typeFilter}
-          onChange={(e) => setTypeFilter(e.target.value as RouteType | "all")}
-          className="rounded-md border border-neutral-700 bg-black/50 px-3 py-2 text-sm text-white"
-        >
-          <option value="all">All Types</option>
-          <option value="page">Pages</option>
-          <option value="api">API</option>
-        </select>
+        <div className="flex gap-2">
+          <select
+            value={accessFilter}
+            onChange={(e) => setAccessFilter(e.target.value as Access | "all")}
+            className="rounded-md border border-neutral-700 bg-black/50 px-3 py-2 text-sm text-white"
+          >
+            <option value="all">All Access</option>
+            <option value="public">Public</option>
+            <option value="admin">Admin</option>
+          </select>
+          <select
+            value={typeFilter}
+            onChange={(e) => setTypeFilter(e.target.value as RouteType | "all")}
+            className="rounded-md border border-neutral-700 bg-black/50 px-3 py-2 text-sm text-white"
+          >
+            <option value="all">All Types</option>
+            <option value="page">Pages</option>
+            <option value="api">API</option>
+          </select>
+        </div>
       </div>
 
       {/* Loading */}
@@ -253,7 +255,34 @@ export default function EcosystemPage() {
                   className="border-t"
                   style={{ borderColor: "rgba(250, 207, 57, 0.1)" }}
                 >
-                  <table className="w-full text-sm">
+                  {/* Mobile: stacked card layout */}
+                  <div className="divide-y sm:hidden" style={{ borderColor: "rgba(250, 207, 57, 0.05)" }}>
+                    {routes.map((route) => (
+                      <div
+                        key={`${route.type}-${route.path}`}
+                        className="px-4 py-2.5 hover:bg-white/5"
+                      >
+                        <code className="text-xs text-neutral-300 break-all">
+                          {route.path}
+                        </code>
+                        <div className="mt-1.5 flex items-center gap-2">
+                          <span className="inline-block rounded-full bg-neutral-800 px-2 py-0.5 text-[10px] text-neutral-400">
+                            {route.type}
+                          </span>
+                          <span
+                            className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] ${ACCESS_COLORS[route.access]}`}
+                          >
+                            {route.access === "public" && <Globe className="h-2.5 w-2.5" />}
+                            {route.access === "admin" && <Shield className="h-2.5 w-2.5" />}
+                            {route.access}
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Desktop: table layout */}
+                  <table className="hidden w-full text-sm sm:table">
                     <thead>
                       <tr
                         className="border-b text-left text-xs uppercase tracking-wider text-neutral-500"

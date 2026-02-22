@@ -147,7 +147,7 @@ function CreateMemberModal({ onClose }: { onClose: () => void }) {
   }, [onClose]);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
       <div
         className="relative w-full max-w-lg rounded-xl border bg-[#0a0a0a] p-6"
         style={{ borderColor: "rgba(250, 207, 57, 0.2)" }}
@@ -287,7 +287,7 @@ function EditMemberModal({
   }, [onClose]);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
       <div
         className="relative w-full max-w-lg rounded-xl border bg-[#0a0a0a] p-6"
         style={{ borderColor: "rgba(250, 207, 57, 0.2)" }}
@@ -402,7 +402,7 @@ function DeleteMemberModal({
   }, [onClose]);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
       <div
         className="relative w-full max-w-sm rounded-xl border bg-[#0a0a0a] p-6"
         style={{ borderColor: "rgba(250, 207, 57, 0.2)" }}
@@ -453,6 +453,7 @@ function DeleteMemberModal({
 export default function TeamPage() {
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [roleFilter, setRoleFilter] = useState("");
   const [page, setPage] = useState(0);
   const [showCreate, setShowCreate] = useState(false);
   const [editMember, setEditMember] = useState<{
@@ -479,6 +480,7 @@ export default function TeamPage() {
 
   const { data, isLoading } = api.team.list.useQuery({
     search: debouncedSearch || undefined,
+    role: roleFilter || undefined,
     limit: PAGE_SIZE,
     offset: page * PAGE_SIZE,
   });
@@ -497,16 +499,34 @@ export default function TeamPage() {
 
       {/* Controls */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="relative flex-1 sm:max-w-sm">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-500" />
-          <input
-            type="text"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search by name or email..."
-            className="block w-full rounded-md border bg-white/5 py-2 pr-4 pl-9 text-sm text-white placeholder-neutral-500 focus:border-[#FACF39] focus:ring-1 focus:ring-[#FACF39]/30 focus:outline-none"
+        <div className="flex flex-1 gap-2 sm:max-w-md">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-500" />
+            <input
+              type="text"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search by name or email..."
+              className="block w-full rounded-md border bg-white/5 py-2 pr-4 pl-9 text-sm text-white placeholder-neutral-500 focus:border-[#FACF39] focus:ring-1 focus:ring-[#FACF39]/30 focus:outline-none"
+              style={{ borderColor: "rgba(250, 207, 57, 0.2)" }}
+            />
+          </div>
+          <select
+            value={roleFilter}
+            onChange={(e) => {
+              setRoleFilter(e.target.value);
+              setPage(0);
+            }}
+            className="rounded-md border bg-white/5 px-3 py-2 text-sm text-white focus:border-[#FACF39] focus:ring-1 focus:ring-[#FACF39]/30 focus:outline-none"
             style={{ borderColor: "rgba(250, 207, 57, 0.2)" }}
-          />
+          >
+            <option value="">All Roles</option>
+            {ROLE_OPTIONS.map((role) => (
+              <option key={role} value={role}>
+                {ROLE_LABELS[role]}
+              </option>
+            ))}
+          </select>
         </div>
 
         <div className="flex items-center gap-3">
@@ -545,11 +565,73 @@ export default function TeamPage() {
           </p>
         </div>
       ) : (
+        <>
+        {/* Mobile Card List */}
+        <div className="space-y-3 md:hidden">
+          {data.members.map((m) => (
+            <div
+              key={m.id}
+              className="rounded-xl border p-4"
+              style={{ borderColor: "rgba(250, 207, 57, 0.1)" }}
+            >
+              <div className="flex items-start justify-between">
+                <h3 className="font-medium text-white">{m.fullName ?? "—"}</h3>
+                <div className="flex items-center gap-1">
+                  <button
+                    onClick={() =>
+                      setEditMember({
+                        id: m.id,
+                        fullName: m.fullName,
+                        email: m.email,
+                        phone: m.phone,
+                        teamRoles: m.teamRoles,
+                      })
+                    }
+                    className="rounded p-1.5 text-neutral-400 transition-colors hover:bg-white/10 hover:text-white"
+                  >
+                    <Pencil className="h-4 w-4" />
+                  </button>
+                  <button
+                    onClick={() =>
+                      setDeleteMember({
+                        id: m.id,
+                        fullName: m.fullName,
+                        email: m.email,
+                      })
+                    }
+                    className="rounded p-1.5 text-neutral-400 transition-colors hover:bg-red-500/10 hover:text-red-400"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </button>
+                </div>
+              </div>
+              <div className="mt-1 flex items-center gap-1.5 text-sm text-neutral-300">
+                <Mail className="h-3.5 w-3.5 text-neutral-500" />
+                <span className="truncate">{m.email}</span>
+              </div>
+              {m.phone && (
+                <div className="mt-0.5 flex items-center gap-1.5 text-sm text-neutral-300">
+                  <Phone className="h-3.5 w-3.5 text-neutral-500" />
+                  {m.phone}
+                </div>
+              )}
+              {(m.teamRoles)?.length ? (
+                <div className="mt-2 flex flex-wrap gap-1">
+                  {(m.teamRoles).map((r) => (
+                    <RoleBadge key={r} role={r} />
+                  ))}
+                </div>
+              ) : null}
+            </div>
+          ))}
+        </div>
+
+        {/* Desktop Table */}
         <div
-          className="overflow-x-auto rounded-xl border"
+          className="hidden overflow-x-auto rounded-xl border md:block"
           style={{ borderColor: "rgba(250, 207, 57, 0.1)" }}
         >
-          <table className="w-full min-w-[700px] text-left text-sm">
+          <table className="w-full text-left text-sm">
             <thead>
               <tr className="border-b border-white/5 text-xs uppercase tracking-wider text-neutral-500">
                 <th className="px-4 py-3 font-medium">Name</th>
@@ -630,6 +712,7 @@ export default function TeamPage() {
             </tbody>
           </table>
         </div>
+        </>
       )}
 
       {/* Pagination */}

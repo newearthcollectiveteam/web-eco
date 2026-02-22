@@ -13,6 +13,7 @@ import {
   Pencil,
   Upload,
   Mic,
+  MessageSquare,
 } from "lucide-react";
 import { api } from "~/trpc/react";
 import { PhoneImportModal } from "~/components/admin/crm/phone-import-modal";
@@ -371,6 +372,75 @@ function VoiceNoteModal({
   );
 }
 
+// ─── Quick Note Modal ────────────────────────────────────────
+
+function QuickNoteModal({
+  contactId,
+  contactName,
+  onClose,
+  onSuccess,
+}: {
+  contactId: number;
+  contactName: string;
+  onClose: () => void;
+  onSuccess: () => void;
+}) {
+  const [note, setNote] = useState("");
+  const addNoteMutation = api.crm.addNote.useMutation({
+    onSuccess: () => {
+      onSuccess();
+      onClose();
+    },
+  });
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+      <div className="w-full max-w-md rounded-2xl border border-white/10 bg-neutral-900 shadow-2xl">
+        <div className="flex items-center justify-between border-b border-white/10 px-6 py-4">
+          <h2
+            className="text-lg font-bold text-white"
+            style={{ fontFamily: "Airwaves, sans-serif" }}
+          >
+            Note — {contactName}
+          </h2>
+          <button onClick={onClose} className="text-gray-400 hover:text-white">
+            <X className="h-5 w-5" />
+          </button>
+        </div>
+        <div className="p-6">
+          <textarea
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
+            rows={4}
+            placeholder="Add a note..."
+            autoFocus
+            className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder-gray-500 focus:border-[#facf39]/50 focus:outline-none"
+          />
+          <div className="mt-3 flex justify-end gap-3">
+            <button
+              onClick={onClose}
+              className="rounded-lg border border-white/10 px-4 py-2 text-sm text-gray-400 hover:text-white"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={() => {
+                if (note.trim()) {
+                  addNoteMutation.mutate({ contactId, note: note.trim() });
+                }
+              }}
+              disabled={!note.trim() || addNoteMutation.isPending}
+              className="rounded-lg bg-gradient-to-r from-[#facf39] to-[#f59e0b] px-5 py-2 text-sm font-medium text-black transition-opacity hover:opacity-90 disabled:opacity-50"
+            >
+              {addNoteMutation.isPending ? "Saving..." : "Save Note"}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ─── Contacts Page ───────────────────────────────────────────
 
 function ContactsContent() {
@@ -385,6 +455,7 @@ function ContactsContent() {
   } | null>(null);
   const [showImport, setShowImport] = useState(false);
   const [voiceNoteContact, setVoiceNoteContact] = useState<{ id: number; name: string } | null>(null);
+  const [quickNoteContact, setQuickNoteContact] = useState<{ id: number; name: string } | null>(null);
 
   const contactsQuery = api.crm.getContacts.useQuery({
     search: search || undefined,
@@ -433,6 +504,15 @@ function ContactsContent() {
         />
       )}
 
+      {quickNoteContact && (
+        <QuickNoteModal
+          contactId={quickNoteContact.id}
+          contactName={quickNoteContact.name}
+          onClose={() => setQuickNoteContact(null)}
+          onSuccess={() => void contactsQuery.refetch()}
+        />
+      )}
+
       {/* Header */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
@@ -444,17 +524,17 @@ function ContactsContent() {
           </h1>
           <p className="text-sm text-gray-400">{total} contacts</p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex w-full gap-2 sm:w-auto">
           <button
             onClick={() => setShowImport(true)}
-            className="inline-flex items-center gap-2 rounded-lg border border-white/20 bg-white/5 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-white/10"
+            className="inline-flex flex-1 items-center justify-center gap-2 rounded-lg border border-white/20 bg-white/5 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-white/10 sm:flex-initial"
           >
             <Upload className="h-4 w-4" />
-            <span className="hidden sm:inline">Import</span>
+            Import
           </button>
           <button
             onClick={() => setModal({ mode: "create" })}
-            className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-[#facf39] to-[#f59e0b] px-4 py-2 text-sm font-medium text-black transition-opacity hover:opacity-90"
+            className="inline-flex flex-1 items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-[#facf39] to-[#f59e0b] px-4 py-2 text-sm font-medium text-black transition-opacity hover:opacity-90 sm:flex-initial"
           >
             <Plus className="h-4 w-4" />
             Add Contact
@@ -517,7 +597,7 @@ function ContactsContent() {
               }}
               className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white focus:border-[#facf39]/50 focus:outline-none"
             >
-              <option value="">Added By</option>
+              <option value="">Team Member</option>
               {teamQuery.data?.map((tm) => (
                 <option key={tm.id} value={tm.id}>
                   {tm.name}
@@ -539,7 +619,7 @@ function ContactsContent() {
                   <th className="px-5 py-3">Contact</th>
                   <th className="px-5 py-3">Sources</th>
                   <th className="px-5 py-3">Status</th>
-                  <th className="px-5 py-3">Added By</th>
+                  <th className="px-5 py-3">Associations</th>
                   <th className="px-5 py-3">Tags</th>
                   <th className="px-5 py-3">Last Contact</th>
                   <th className="px-5 py-3 text-right">Actions</th>
@@ -590,7 +670,11 @@ function ContactsContent() {
                       </span>
                     </td>
                     <td className="px-5 py-3 text-sm text-gray-400">
-                      {c.addedByName ?? "—"}
+                      {c.associations?.length > 0
+                        ? c.associations.length <= 2
+                          ? c.associations.map((a: { id: string; name: string }) => a.name).join(", ")
+                          : `${c.associations[0]?.name}, +${c.associations.length - 1} more`
+                        : "—"}
                     </td>
                     <td className="px-5 py-3">
                       <div className="flex flex-wrap gap-1">
@@ -610,9 +694,16 @@ function ContactsContent() {
                     <td className="px-5 py-3 text-right">
                       <div className="flex items-center justify-end gap-1">
                         <button
+                          onClick={() => setQuickNoteContact({ id: c.id, name: c.name ?? "Contact" })}
+                          className="rounded-lg p-1.5 text-gray-400 hover:bg-white/10 hover:text-[#facf39]"
+                          title="Quick note"
+                        >
+                          <MessageSquare className="h-4 w-4" />
+                        </button>
+                        <button
                           onClick={() => setVoiceNoteContact({ id: c.id, name: c.name ?? "Contact" })}
                           className="rounded-lg p-1.5 text-gray-400 hover:bg-white/10 hover:text-red-400"
-                          title="Record voice note"
+                          title="Voice memo"
                         >
                           <Mic className="h-4 w-4" />
                         </button>
@@ -717,18 +808,53 @@ function ContactsContent() {
                 ))}
               </div>
               <div className="mt-2 flex items-center justify-between text-xs text-gray-500">
-                <span>{c.addedByName ? `Added by ${c.addedByName}` : ""}</span>
-                <div className="flex items-center gap-2">
+                <span>
+                  {c.associations?.length > 0
+                    ? c.associations.map((a: { id: string; name: string }) => a.name).join(", ")
+                    : ""}
+                </span>
+                <div className="flex items-center gap-1">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setQuickNoteContact({ id: c.id, name: c.name ?? "Contact" });
+                    }}
+                    className="rounded p-1.5 text-gray-500 hover:bg-white/10 hover:text-[#facf39]"
+                  >
+                    <MessageSquare className="h-3.5 w-3.5" />
+                  </button>
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
                       setVoiceNoteContact({ id: c.id, name: c.name ?? "Contact" });
                     }}
-                    className="rounded p-1 text-gray-500 hover:bg-white/10 hover:text-red-400"
+                    className="rounded p-1.5 text-gray-500 hover:bg-white/10 hover:text-red-400"
                   >
                     <Mic className="h-3.5 w-3.5" />
                   </button>
-                  <span>{formatDate(c.lastContactDate)}</span>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setModal({
+                        mode: "edit",
+                        contact: {
+                          id: c.id,
+                          name: c.name,
+                          email: c.email,
+                          phone: c.phone,
+                          status: c.status,
+                          tags: c.tags,
+                          notes: c.notes,
+                          createdAt: c.createdAt,
+                          lastContactDate: c.lastContactDate,
+                        },
+                      });
+                    }}
+                    className="rounded p-1.5 text-gray-500 hover:bg-white/10 hover:text-white"
+                  >
+                    <Pencil className="h-3.5 w-3.5" />
+                  </button>
+                  <span className="ml-1">{formatDate(c.lastContactDate)}</span>
                 </div>
               </div>
             </CardContent>
@@ -745,19 +871,19 @@ function ContactsContent() {
               <button
                 onClick={() => setPage(Math.max(0, page - 1))}
                 disabled={page === 0}
-                className="rounded-lg p-1.5 text-gray-400 hover:text-white disabled:opacity-30"
+                className="min-h-[44px] min-w-[44px] rounded-lg p-2 text-gray-400 hover:text-white disabled:opacity-30"
               >
-                <ChevronLeft className="h-4 w-4" />
+                <ChevronLeft className="h-5 w-5" />
               </button>
-              <span className="px-2 text-xs text-gray-400">
+              <span className="px-2 text-sm text-gray-400">
                 {page + 1} / {totalPages}
               </span>
               <button
                 onClick={() => setPage(Math.min(totalPages - 1, page + 1))}
                 disabled={page >= totalPages - 1}
-                className="rounded-lg p-1.5 text-gray-400 hover:text-white disabled:opacity-30"
+                className="min-h-[44px] min-w-[44px] rounded-lg p-2 text-gray-400 hover:text-white disabled:opacity-30"
               >
-                <ChevronRight className="h-4 w-4" />
+                <ChevronRight className="h-5 w-5" />
               </button>
             </div>
           </div>

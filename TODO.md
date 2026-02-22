@@ -47,8 +47,8 @@ _None documented_
 
 - [x] Finance placeholder pages scaffolded (overview, revenue, expenses, yearly, tax)
 - [x] Team tRPC router created (src/server/api/routers/team.ts)
-- [ ] Team page (/admin/team) with member CRUD — build out UI
-- [ ] teamMembers DB schema
+- [x] Team page (/admin/team) with member CRUD — mobile cards, role filter, modal padding
+- [x] teamMembers DB schema
 - [ ] Finance pages — build out with Mercury connection
 - [ ] Mercury API client (src/lib/mercury.ts)
 
@@ -59,7 +59,7 @@ _None documented_
 - [x] Database health scaffolded (/admin/tooling/database)
 - [x] Auth router added (src/server/api/routers/auth.ts)
 - [ ] CMS Email Testing page (/admin/cms/email-testing)
-- [ ] Ecosystem map (/admin/ecosystem) — build out route inventory
+- [x] Ecosystem map (/admin/ecosystem) — built + mobile responsive
 - [ ] Build out CMS Gallery with real data
 - [ ] Build out Tooling pages with real data
 - [ ] Remove TestHomePage component

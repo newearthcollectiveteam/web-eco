@@ -9,6 +9,7 @@ import {
   integer,
   jsonb,
   unique,
+  index,
 } from "drizzle-orm/pg-core";
 
 /**
@@ -610,6 +611,31 @@ export const voiceNotes = createTable("voice_note", {
 });
 
 /**
+ * Contact Associations - Many-to-many between contacts and team members
+ * Replaces single addedBy FK with flexible association system
+ */
+export const contactAssociations = createTable(
+  "contact_association",
+  {
+    id: serial("id").primaryKey(),
+    contactId: integer("contact_id")
+      .notNull()
+      .references(() => contacts.id, { onDelete: "cascade" }),
+    userId: text("user_id")
+      .notNull()
+      .references(() => userProfiles.id, { onDelete: "cascade" }),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+  },
+  (t) => [
+    unique("unique_contact_user").on(t.contactId, t.userId),
+    index("idx_contact_associations_contact").on(t.contactId),
+    index("idx_contact_associations_user").on(t.userId),
+  ]
+);
+
+/**
  * Drizzle Relations
  * Enable type-safe eager loading with `with:` syntax
  */
@@ -617,6 +643,7 @@ export const voiceNotes = createTable("voice_note", {
 export const contactsRelations = relations(contacts, ({ one, many }) => ({
   sources: many(contactSources),
   activities: many(contactActivities),
+  associations: many(contactAssociations),
   questionnaireResponses: many(questionnaireResponses, {
     relationName: "submitter",
   }),
@@ -635,6 +662,20 @@ export const contactsRelations = relations(contacts, ({ one, many }) => ({
     references: [userProfiles.id],
   }),
 }));
+
+export const contactAssociationsRelations = relations(
+  contactAssociations,
+  ({ one }) => ({
+    contact: one(contacts, {
+      fields: [contactAssociations.contactId],
+      references: [contacts.id],
+    }),
+    user: one(userProfiles, {
+      fields: [contactAssociations.userId],
+      references: [userProfiles.id],
+    }),
+  })
+);
 
 export const contactSourcesRelations = relations(contactSources, ({ one }) => ({
   contact: one(contacts, {

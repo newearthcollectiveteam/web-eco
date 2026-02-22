@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure, adminProcedure } from "~/server/api/trpc";
 import { userProfiles } from "~/server/db/schema";
-import { eq, ilike, or, count } from "drizzle-orm";
+import { eq, ilike, or, count, sql, and, type SQL } from "drizzle-orm";
 import { createAdminClient } from "~/lib/supabase/admin";
 
 const VALID_ROLES = [
@@ -18,19 +18,26 @@ export const teamRouter = createTRPCRouter({
     .input(
       z.object({
         search: z.string().optional(),
+        role: z.string().optional(),
         limit: z.number().min(1).max(100).default(25),
         offset: z.number().min(0).default(0),
       })
     )
     .query(async ({ ctx, input }) => {
-      const { search, limit, offset } = input;
+      const { search, role, limit, offset } = input;
 
-      const where = search
-        ? or(
-            ilike(userProfiles.fullName, `%${search}%`),
-            ilike(userProfiles.email, `%${search}%`)
-          )
-        : undefined;
+      const conditions: SQL[] = [];
+      if (search) {
+        const searchCond = or(
+          ilike(userProfiles.fullName, `%${search}%`),
+          ilike(userProfiles.email, `%${search}%`)
+        );
+        if (searchCond) conditions.push(searchCond);
+      }
+      if (role) {
+        conditions.push(sql`${userProfiles.teamRoles} ? ${role}`);
+      }
+      const where = conditions.length > 0 ? and(...conditions) : undefined;
 
       const [members, [totalRow]] = await Promise.all([
         ctx.db

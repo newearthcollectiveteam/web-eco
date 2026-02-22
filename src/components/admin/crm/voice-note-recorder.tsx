@@ -25,6 +25,7 @@ interface VoiceNoteRecorderProps {
 }
 
 type RecorderState = "idle" | "recording" | "uploading";
+type RecorderError = "mic_denied" | null;
 
 function formatDuration(seconds: number): string {
   const m = Math.floor(seconds / 60);
@@ -34,6 +35,7 @@ function formatDuration(seconds: number): string {
 
 export function VoiceNoteRecorder({ contactId, notes, onUpdate }: VoiceNoteRecorderProps) {
   const [state, setState] = useState<RecorderState>("idle");
+  const [recorderError, setRecorderError] = useState<RecorderError>(null);
   const [elapsed, setElapsed] = useState(0);
   const [playingId, setPlayingId] = useState<number | null>(null);
   const [playbackProgress, setPlaybackProgress] = useState(0);
@@ -93,6 +95,7 @@ export function VoiceNoteRecorder({ contactId, notes, onUpdate }: VoiceNoteRecor
 
   // ─── Recording ───────────────────────────────────
   const startRecording = async () => {
+    setRecorderError(null);
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
 
@@ -130,7 +133,7 @@ export function VoiceNoteRecorder({ contactId, notes, onUpdate }: VoiceNoteRecor
         setElapsed(secs);
       }, 500);
     } catch {
-      // Microphone permission denied
+      setRecorderError("mic_denied");
     }
   };
 
@@ -211,6 +214,10 @@ export function VoiceNoteRecorder({ contactId, notes, onUpdate }: VoiceNoteRecor
       stopPlayback();
     };
 
+    audio.onerror = () => {
+      stopPlayback();
+    };
+
     audio.onplay = () => {
       rafRef.current = requestAnimationFrame(updateProgress);
     };
@@ -225,16 +232,13 @@ export function VoiceNoteRecorder({ contactId, notes, onUpdate }: VoiceNoteRecor
     });
   };
 
-  // Seek on progress bar click
+  // Seek on progress bar click — use knownDurationRef (webm reports Infinity for duration)
   const handleSeek = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!audioRef.current || !playingId) return;
+    if (!audioRef.current || !playingId || knownDurationRef.current <= 0) return;
     const rect = e.currentTarget.getBoundingClientRect();
     const pct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
     const seekTo = pct * knownDurationRef.current;
-    // Only seek if audio.duration is valid (not Infinity)
-    if (isFinite(audioRef.current.duration)) {
-      audioRef.current.currentTime = seekTo;
-    }
+    audioRef.current.currentTime = seekTo;
     setPlaybackProgress(pct);
     setPlaybackTime(seekTo);
   };
@@ -261,14 +265,14 @@ export function VoiceNoteRecorder({ contactId, notes, onUpdate }: VoiceNoteRecor
           <div className="flex items-center gap-3">
             <button
               onClick={stopRecording}
-              className="flex items-center gap-2 rounded-lg bg-red-600 px-3 py-2 text-sm font-medium text-white transition-opacity hover:opacity-90"
+              className="flex min-h-[44px] items-center gap-2 rounded-lg bg-red-600 px-4 py-2.5 text-sm font-medium text-white transition-opacity hover:opacity-90"
             >
-              <Square className="h-3.5 w-3.5 fill-current" />
+              <Square className="h-4 w-4 fill-current" />
               Stop
             </button>
             <div className="flex items-center gap-2">
-              <span className="h-2 w-2 animate-pulse rounded-full bg-red-500" />
-              <span className="text-sm tabular-nums text-red-400">
+              <span className="h-3 w-3 animate-pulse rounded-full bg-red-500" />
+              <span className="text-base font-medium tabular-nums text-red-400">
                 {formatDuration(elapsed)}
               </span>
             </div>
@@ -282,6 +286,12 @@ export function VoiceNoteRecorder({ contactId, notes, onUpdate }: VoiceNoteRecor
           </div>
         )}
       </div>
+
+      {recorderError === "mic_denied" && (
+        <p className="text-xs text-red-400">
+          Microphone access denied. Please allow microphone access in your browser settings.
+        </p>
+      )}
 
       {/* Notes list */}
       {notes.length > 0 && (

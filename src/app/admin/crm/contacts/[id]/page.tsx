@@ -243,6 +243,7 @@ function ContactDetailContent({ id }: { id: number }) {
   const [editingTags, setEditingTags] = useState(false);
   const [tagInput, setTagInput] = useState("");
   const [editTags, setEditTags] = useState<string[]>([]);
+  const [activeTab, setActiveTab] = useState<"notes" | "voice">("notes");
 
   const contactQuery = api.crm.getContact.useQuery({ id });
   const utils = api.useUtils();
@@ -280,7 +281,7 @@ function ContactDetailContent({ id }: { id: number }) {
     sources,
     activities,
     voiceNotes,
-    addedByProfile,
+    associations,
   } = contactQuery.data;
 
   const toggleExpand = (key: string) => {
@@ -436,13 +437,20 @@ function ContactDetailContent({ id }: { id: number }) {
               ))}
             </div>
 
-            {/* Added by */}
-            {addedByProfile && (
+            {/* Associations */}
+            {associations && associations.length > 0 && (
               <>
                 <div className="hidden h-4 w-px bg-white/10 sm:block" />
-                <span className="text-xs text-gray-500">
-                  Added by {addedByProfile.fullName ?? addedByProfile.email}
-                </span>
+                <div className="flex flex-wrap items-center gap-1.5">
+                  {associations.map((a: { id: string; name: string }) => (
+                    <span
+                      key={a.id}
+                      className="inline-flex rounded-full bg-[#facf39]/10 px-2.5 py-0.5 text-xs text-[#facf39]"
+                    >
+                      {a.name}
+                    </span>
+                  ))}
+                </div>
               </>
             )}
           </div>
@@ -540,233 +548,276 @@ function ContactDetailContent({ id }: { id: number }) {
         </CardContent>
       </Card>
 
-      {/* ─── Two Column Layout ─── */}
-      <div className="grid gap-5 lg:grid-cols-3">
-        {/* ─── Left: Timeline (2/3) ─── */}
-        <div className="space-y-2 lg:col-span-2">
-          <h2 className="mb-1 text-xs font-medium tracking-wide text-gray-500 uppercase">
-            Timeline
-          </h2>
-
-          {timeline.length === 0 && (
-            <p className="py-8 text-center text-sm text-gray-500">
-              No submissions or activities yet
-            </p>
-          )}
-
-          <div className="divide-y divide-white/5 rounded-xl border border-white/10 bg-white/5">
-            {timeline.map((item) => {
-              const isExpanded = expandedItems.has(item.key);
-              const Icon = SOURCE_ICONS[item.type] ?? MessageSquare;
-              const badgeColor =
-                SOURCE_BADGE_COLORS[item.type] ?? "border-gray-500/40 text-gray-400";
-              const label =
-                SOURCE_LABELS[item.type] ??
-                item.type.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
-
-              // Inline preview for compact types
-              const previewText =
-                item.type === "note_added" || item.type === "status_changed" || item.type === "contact_created" || item.type === "voice_note_added"
-                  ? String(item.data.description ?? "")
-                  : item.type === "event_waiver"
-                    ? String(item.data.eventName ?? "")
-                    : null;
-
-              return (
-                <div key={item.key}>
-                  <button
-                    onClick={() => toggleExpand(item.key)}
-                    className="flex w-full items-center justify-between px-4 py-2.5 text-left hover:bg-white/[0.03]"
-                  >
-                    <div className="flex min-w-0 items-center gap-2.5">
-                      <Icon className="h-3.5 w-3.5 shrink-0 text-gray-500" />
-                      <Badge variant="outline" className={`shrink-0 text-[10px] ${badgeColor}`}>
-                        {label}
-                      </Badge>
-                      {previewText && (
-                        <span className="min-w-0 truncate text-xs text-gray-500">
-                          {previewText}
-                        </span>
-                      )}
-                    </div>
-                    <div className="flex shrink-0 items-center gap-2 pl-2">
-                      <span className="text-[11px] text-gray-600">
-                        {formatDateTime(item.date)}
-                      </span>
-                      {isExpanded ? (
-                        <ChevronUp className="h-3.5 w-3.5 text-gray-600" />
-                      ) : (
-                        <ChevronDown className="h-3.5 w-3.5 text-gray-600" />
-                      )}
-                    </div>
-                  </button>
-
-                  {isExpanded && (
-                    <div className="border-t border-white/5 bg-white/[0.02] px-4 py-3">
-                      {item.type === "questionnaire" && (
-                        <QuestionnaireViewer response={item.data} />
-                      )}
-
-                      {item.type === "waitlist" && (
-                        <div className="space-y-1.5 text-sm">
-                          <div>
-                            <span className="text-gray-500">Name:</span>{" "}
-                            <span className="text-gray-200">{String(item.data.name ?? "")}</span>
-                          </div>
-                          <div>
-                            <span className="text-gray-500">Email:</span>{" "}
-                            <span className="text-gray-200">{String(item.data.email ?? "")}</span>
-                          </div>
-                          {typeof item.data.phone === "string" && item.data.phone && (
-                            <div>
-                              <span className="text-gray-500">Phone:</span>{" "}
-                              <span className="text-gray-200">{String(item.data.phone)}</span>
-                            </div>
-                          )}
-                          {typeof item.data.message === "string" && item.data.message && (
-                            <div>
-                              <span className="text-gray-500">Message:</span>
-                              <p className="mt-1 text-gray-200 whitespace-pre-wrap">{String(item.data.message)}</p>
-                            </div>
-                          )}
-                          <div>
-                            <span className="text-gray-500">Willing to fill questionnaire:</span>{" "}
-                            <span className="text-gray-200">
-                              {item.data.willingToFillQuestionnaire ? "Yes" : "No"}
-                            </span>
-                          </div>
-                        </div>
-                      )}
-
-                      {item.type === "event_waiver" && (
-                        <div className="space-y-2 text-sm">
-                          <div className="grid grid-cols-1 gap-1.5 sm:grid-cols-2">
-                            <div><span className="text-gray-500">Event:</span> <span className="text-gray-200">{String(item.data.eventName ?? "")}</span></div>
-                            <div><span className="text-gray-500">Date:</span> <span className="text-gray-200">{String(item.data.eventDate ?? "")}</span></div>
-                            <div><span className="text-gray-500">Location:</span> <span className="text-gray-200">{String(item.data.eventLocation ?? "")}</span></div>
-                            <div><span className="text-gray-500">Signer:</span> <span className="text-gray-200">{String(item.data.signerName ?? "")}</span></div>
-                          </div>
-                          <div className="flex gap-4 text-xs">
-                            <span className="text-gray-500">
-                              Terms: <span className={item.data.agreedToTerms ? "text-green-400" : "text-red-400"}>
-                                {item.data.agreedToTerms ? "Agreed" : "Not Agreed"}
-                              </span>
-                            </span>
-                            <span className="text-gray-500">
-                              Photo/Video: <span className={item.data.agreedToPhotoVideo ? "text-green-400" : "text-red-400"}>
-                                {item.data.agreedToPhotoVideo ? "Agreed" : "Not Agreed"}
-                              </span>
-                            </span>
-                          </div>
-                          {typeof item.data.signatureData === "string" && item.data.signatureData && (
-                            <div>
-                              <span className="text-gray-500">Signature:</span>
-                              {/* eslint-disable-next-line @next/next/no-img-element */}
-                              <img src={String(item.data.signatureData)} alt="Signature" className="mt-1 h-14 rounded border border-white/10 bg-white/5" />
-                            </div>
-                          )}
-                        </div>
-                      )}
-
-                      {(item.type === "note_added" || item.type === "status_changed" || item.type === "contact_created" || item.type === "voice_note_added") && (
-                        <p className="text-sm text-gray-300 whitespace-pre-wrap">
-                          {String(item.data.description ?? "")}
-                        </p>
-                      )}
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
+      {/* ─── Tabs: Notes / Voice Memos ─── */}
+      <div>
+        <div className="flex border-b border-white/10">
+          <button
+            onClick={() => setActiveTab("notes")}
+            className={`px-4 py-2.5 text-sm font-medium transition-colors ${
+              activeTab === "notes"
+                ? "border-b-2 border-[#facf39] text-[#facf39]"
+                : "text-gray-400 hover:text-white"
+            }`}
+          >
+            Notes
+          </button>
+          <button
+            onClick={() => setActiveTab("voice")}
+            className={`px-4 py-2.5 text-sm font-medium transition-colors ${
+              activeTab === "voice"
+                ? "border-b-2 border-[#facf39] text-[#facf39]"
+                : "text-gray-400 hover:text-white"
+            }`}
+          >
+            Voice Memos
+          </button>
         </div>
 
-        {/* ─── Right: Actions Sidebar (1/3) ─── */}
-        <div className="space-y-4">
-          {/* Voice Notes */}
-          <Card className="border-white/10 bg-white/5">
-            <CardContent className="p-4">
+        <Card className="mt-4 border-white/10 bg-white/5">
+          <CardContent className="p-4">
+            {activeTab === "notes" && (
+              <div className="space-y-4">
+                {/* Add Note */}
+                <div>
+                  <textarea
+                    value={noteText}
+                    onChange={(e) => setNoteText(e.target.value)}
+                    rows={2}
+                    placeholder="Add a note..."
+                    className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder-gray-500 focus:border-[#facf39]/50 focus:outline-none"
+                  />
+                  <button
+                    onClick={() => {
+                      if (noteText.trim()) {
+                        addNoteMutation.mutate({
+                          contactId: contact.id,
+                          note: noteText.trim(),
+                        });
+                      }
+                    }}
+                    disabled={!noteText.trim() || addNoteMutation.isPending}
+                    className="mt-2 rounded-lg bg-white/10 px-4 py-1.5 text-sm text-white transition-colors hover:bg-white/20 disabled:opacity-30"
+                  >
+                    {addNoteMutation.isPending ? "Saving..." : "Save Note"}
+                  </button>
+                </div>
+
+                {/* Pinned notes */}
+                {contact.notes && (
+                  <div className="border-t border-white/5 pt-3">
+                    <span className="text-[10px] text-gray-500 uppercase">Pinned notes</span>
+                    <p className="mt-1 text-sm text-gray-400 whitespace-pre-wrap">
+                      {contact.notes}
+                    </p>
+                  </div>
+                )}
+
+                {/* Recent note activities */}
+                {(() => {
+                  const noteActivities = timeline.filter((t) => t.type === "note_added");
+                  if (noteActivities.length === 0) return null;
+                  return (
+                    <div className="border-t border-white/5 pt-3">
+                      <span className="text-[10px] text-gray-500 uppercase">Recent Notes</span>
+                      <div className="mt-2 space-y-2">
+                        {noteActivities.slice(0, 10).map((item) => (
+                          <div key={item.key} className="rounded-lg bg-white/[0.03] px-3 py-2">
+                            <p className="text-sm text-gray-300 whitespace-pre-wrap">
+                              {String(item.data.description ?? "")}
+                            </p>
+                            <span className="mt-1 block text-[11px] text-gray-600">
+                              {formatDateTime(item.date)}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })()}
+              </div>
+            )}
+
+            {activeTab === "voice" && (
               <VoiceNoteRecorder
                 contactId={contact.id}
                 notes={voiceNotes}
                 onUpdate={() => void utils.crm.getContact.invalidate({ id })}
               />
-            </CardContent>
-          </Card>
-
-          {/* Add Note */}
-          <Card className="border-white/10 bg-white/5">
-            <CardContent className="p-4">
-              <h3 className="mb-2 text-xs font-medium text-gray-500 uppercase">
-                Add Note
-              </h3>
-              <textarea
-                value={noteText}
-                onChange={(e) => setNoteText(e.target.value)}
-                rows={2}
-                placeholder="Add a note..."
-                className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder-gray-500 focus:border-[#facf39]/50 focus:outline-none"
-              />
-              <button
-                onClick={() => {
-                  if (noteText.trim()) {
-                    addNoteMutation.mutate({
-                      contactId: contact.id,
-                      note: noteText.trim(),
-                    });
-                  }
-                }}
-                disabled={!noteText.trim() || addNoteMutation.isPending}
-                className="mt-2 w-full rounded-lg bg-white/10 px-3 py-1.5 text-sm text-white transition-colors hover:bg-white/20 disabled:opacity-30"
-              >
-                {addNoteMutation.isPending ? "Saving..." : "Save Note"}
-              </button>
-
-              {contact.notes && (
-                <div className="mt-3 border-t border-white/5 pt-2">
-                  <span className="text-[10px] text-gray-500 uppercase">Pinned notes</span>
-                  <p className="mt-1 text-xs text-gray-400 whitespace-pre-wrap">
-                    {contact.notes}
-                  </p>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-
-          {/* Danger Zone */}
-          <div className="pt-2">
-            {showDeleteConfirm ? (
-              <div className="space-y-2 rounded-xl border border-red-900/50 bg-red-900/10 p-3">
-                <p className="text-xs text-red-400">
-                  Delete contact and all data? Cannot be undone.
-                </p>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => deleteMutation.mutate({ id: contact.id })}
-                    disabled={deleteMutation.isPending}
-                    className="flex-1 rounded-lg bg-red-600 px-3 py-1.5 text-xs text-white hover:bg-red-700 disabled:opacity-50"
-                  >
-                    {deleteMutation.isPending ? "Deleting..." : "Confirm"}
-                  </button>
-                  <button
-                    onClick={() => setShowDeleteConfirm(false)}
-                    className="rounded-lg border border-white/10 px-3 py-1.5 text-xs text-gray-400 hover:text-white"
-                  >
-                    Cancel
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <button
-                onClick={() => setShowDeleteConfirm(true)}
-                className="flex w-full items-center justify-center gap-1.5 rounded-lg border border-red-900/30 px-3 py-2 text-xs text-red-400/70 transition-colors hover:border-red-900/50 hover:bg-red-900/10 hover:text-red-400"
-              >
-                <Trash2 className="h-3.5 w-3.5" />
-                Delete Contact
-              </button>
             )}
-          </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* ─── Timeline ─── */}
+      <div className="space-y-2">
+        <h2 className="text-xs font-medium tracking-wide text-gray-500 uppercase">
+          Timeline
+        </h2>
+
+        {timeline.length === 0 && (
+          <p className="py-8 text-center text-sm text-gray-500">
+            No submissions or activities yet
+          </p>
+        )}
+
+        <div className="divide-y divide-white/5 rounded-xl border border-white/10 bg-white/5">
+          {timeline.map((item) => {
+            const isExpanded = expandedItems.has(item.key);
+            const Icon = SOURCE_ICONS[item.type] ?? MessageSquare;
+            const badgeColor =
+              SOURCE_BADGE_COLORS[item.type] ?? "border-gray-500/40 text-gray-400";
+            const label =
+              SOURCE_LABELS[item.type] ??
+              item.type.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+
+            const previewText =
+              item.type === "note_added" || item.type === "status_changed" || item.type === "contact_created" || item.type === "voice_note_added"
+                ? String(item.data.description ?? "")
+                : item.type === "event_waiver"
+                  ? String(item.data.eventName ?? "")
+                  : null;
+
+            return (
+              <div key={item.key}>
+                <button
+                  onClick={() => toggleExpand(item.key)}
+                  className="flex w-full items-center justify-between px-4 py-2.5 text-left hover:bg-white/[0.03]"
+                >
+                  <div className="flex min-w-0 items-center gap-2.5">
+                    <Icon className="h-3.5 w-3.5 shrink-0 text-gray-500" />
+                    <Badge variant="outline" className={`shrink-0 text-[10px] ${badgeColor}`}>
+                      {label}
+                    </Badge>
+                    {previewText && (
+                      <span className="min-w-0 truncate text-xs text-gray-500">
+                        {previewText}
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex shrink-0 items-center gap-2 pl-2">
+                    <span className="text-[11px] text-gray-600">
+                      {formatDateTime(item.date)}
+                    </span>
+                    {isExpanded ? (
+                      <ChevronUp className="h-3.5 w-3.5 text-gray-600" />
+                    ) : (
+                      <ChevronDown className="h-3.5 w-3.5 text-gray-600" />
+                    )}
+                  </div>
+                </button>
+
+                {isExpanded && (
+                  <div className="border-t border-white/5 bg-white/[0.02] px-4 py-3">
+                    {item.type === "questionnaire" && (
+                      <QuestionnaireViewer response={item.data} />
+                    )}
+
+                    {item.type === "waitlist" && (
+                      <div className="space-y-1.5 text-sm">
+                        <div>
+                          <span className="text-gray-500">Name:</span>{" "}
+                          <span className="text-gray-200">{String(item.data.name ?? "")}</span>
+                        </div>
+                        <div>
+                          <span className="text-gray-500">Email:</span>{" "}
+                          <span className="text-gray-200">{String(item.data.email ?? "")}</span>
+                        </div>
+                        {typeof item.data.phone === "string" && item.data.phone && (
+                          <div>
+                            <span className="text-gray-500">Phone:</span>{" "}
+                            <span className="text-gray-200">{String(item.data.phone)}</span>
+                          </div>
+                        )}
+                        {typeof item.data.message === "string" && item.data.message && (
+                          <div>
+                            <span className="text-gray-500">Message:</span>
+                            <p className="mt-1 text-gray-200 whitespace-pre-wrap">{String(item.data.message)}</p>
+                          </div>
+                        )}
+                        <div>
+                          <span className="text-gray-500">Willing to fill questionnaire:</span>{" "}
+                          <span className="text-gray-200">
+                            {item.data.willingToFillQuestionnaire ? "Yes" : "No"}
+                          </span>
+                        </div>
+                      </div>
+                    )}
+
+                    {item.type === "event_waiver" && (
+                      <div className="space-y-2 text-sm">
+                        <div className="grid grid-cols-1 gap-1.5 sm:grid-cols-2">
+                          <div><span className="text-gray-500">Event:</span> <span className="text-gray-200">{String(item.data.eventName ?? "")}</span></div>
+                          <div><span className="text-gray-500">Date:</span> <span className="text-gray-200">{String(item.data.eventDate ?? "")}</span></div>
+                          <div><span className="text-gray-500">Location:</span> <span className="text-gray-200">{String(item.data.eventLocation ?? "")}</span></div>
+                          <div><span className="text-gray-500">Signer:</span> <span className="text-gray-200">{String(item.data.signerName ?? "")}</span></div>
+                        </div>
+                        <div className="flex gap-4 text-xs">
+                          <span className="text-gray-500">
+                            Terms: <span className={item.data.agreedToTerms ? "text-green-400" : "text-red-400"}>
+                              {item.data.agreedToTerms ? "Agreed" : "Not Agreed"}
+                            </span>
+                          </span>
+                          <span className="text-gray-500">
+                            Photo/Video: <span className={item.data.agreedToPhotoVideo ? "text-green-400" : "text-red-400"}>
+                              {item.data.agreedToPhotoVideo ? "Agreed" : "Not Agreed"}
+                            </span>
+                          </span>
+                        </div>
+                        {typeof item.data.signatureData === "string" && item.data.signatureData && (
+                          <div>
+                            <span className="text-gray-500">Signature:</span>
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img src={String(item.data.signatureData)} alt="Signature" className="mt-1 h-14 rounded border border-white/10 bg-white/5" />
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {(item.type === "note_added" || item.type === "status_changed" || item.type === "contact_created" || item.type === "voice_note_added") && (
+                      <p className="text-sm text-gray-300 whitespace-pre-wrap">
+                        {String(item.data.description ?? "")}
+                      </p>
+                    )}
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
+      </div>
+
+      {/* ─── Danger Zone ─── */}
+      <div className="pt-2">
+        {showDeleteConfirm ? (
+          <div className="space-y-2 rounded-xl border border-red-900/50 bg-red-900/10 p-3">
+            <p className="text-xs text-red-400">
+              Delete contact and all data? Cannot be undone.
+            </p>
+            <div className="flex gap-2">
+              <button
+                onClick={() => deleteMutation.mutate({ id: contact.id })}
+                disabled={deleteMutation.isPending}
+                className="flex-1 rounded-lg bg-red-600 px-3 py-1.5 text-xs text-white hover:bg-red-700 disabled:opacity-50"
+              >
+                {deleteMutation.isPending ? "Deleting..." : "Confirm"}
+              </button>
+              <button
+                onClick={() => setShowDeleteConfirm(false)}
+                className="rounded-lg border border-white/10 px-3 py-1.5 text-xs text-gray-400 hover:text-white"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        ) : (
+          <button
+            onClick={() => setShowDeleteConfirm(true)}
+            className="flex w-full items-center justify-center gap-1.5 rounded-lg border border-red-900/30 px-3 py-2 text-xs text-red-400/70 transition-colors hover:border-red-900/50 hover:bg-red-900/10 hover:text-red-400"
+          >
+            <Trash2 className="h-3.5 w-3.5" />
+            Delete Contact
+          </button>
+        )}
       </div>
     </div>
   );

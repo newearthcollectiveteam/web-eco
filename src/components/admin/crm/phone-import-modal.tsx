@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { X, Upload, Smartphone, FileSpreadsheet, Check, AlertCircle } from "lucide-react";
+import { X, Upload, Smartphone, FileSpreadsheet, FileText, Check, AlertCircle } from "lucide-react";
 import { api } from "~/trpc/react";
 
 interface ContactEntry {
@@ -71,38 +71,75 @@ export function PhoneImportModal({ onClose, onSuccess }: PhoneImportModalProps) 
     }
   };
 
-  // ─── CSV Import ──────────────────────────────────
-  const handleCSVUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // ─── vCard Parser ───────────────────────────────
+  const parseVCard = (text: string): ContactEntry[] => {
+    const contacts: ContactEntry[] = [];
+    const blocks = text.split("BEGIN:VCARD").slice(1);
+
+    for (const block of blocks) {
+      const lines = block.split(/\r?\n/);
+      let name = "";
+      let email: string | undefined;
+      let phone: string | undefined;
+
+      for (const line of lines) {
+        const upper = line.toUpperCase();
+        if (upper.startsWith("FN:") || upper.startsWith("FN;")) {
+          name = line.substring(line.indexOf(":") + 1).trim();
+        } else if (upper.startsWith("EMAIL:") || upper.startsWith("EMAIL;")) {
+          email = line.substring(line.indexOf(":") + 1).trim();
+        } else if (upper.startsWith("TEL:") || upper.startsWith("TEL;")) {
+          phone = line.substring(line.indexOf(":") + 1).trim();
+        }
+      }
+
+      if (name) {
+        contacts.push({ name, email, phone, selected: true });
+      }
+    }
+
+    return contacts;
+  };
+
+  // ─── CSV Parser ────────────────────────────────
+  const parseCSV = (text: string): ContactEntry[] => {
+    const lines = text.split("\n").filter((l) => l.trim());
+    if (lines.length < 2) return [];
+
+    const header = lines[0]!.toLowerCase().split(",").map((h) => h.trim().replace(/"/g, ""));
+    const nameIdx = header.findIndex((h) => h === "name" || h === "full name" || h === "full_name");
+    const emailIdx = header.findIndex((h) => h === "email" || h === "e-mail" || h === "email address");
+    const phoneIdx = header.findIndex((h) => h === "phone" || h === "tel" || h === "telephone" || h === "phone number");
+
+    if (nameIdx === -1) return [];
+
+    const parsed: ContactEntry[] = [];
+    for (let i = 1; i < lines.length; i++) {
+      const cols = lines[i]!.split(",").map((c) => c.trim().replace(/"/g, ""));
+      const name = cols[nameIdx];
+      if (!name) continue;
+
+      parsed.push({
+        name,
+        email: emailIdx >= 0 ? cols[emailIdx] || undefined : undefined,
+        phone: phoneIdx >= 0 ? cols[phoneIdx] || undefined : undefined,
+        selected: true,
+      });
+    }
+
+    return parsed;
+  };
+
+  // ─── File Import (CSV or vCard) ────────────────
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
     const reader = new FileReader();
     reader.onload = (evt) => {
       const text = evt.target?.result as string;
-      const lines = text.split("\n").filter((l) => l.trim());
-      if (lines.length < 2) return;
-
-      // Parse header
-      const header = lines[0]!.toLowerCase().split(",").map((h) => h.trim().replace(/"/g, ""));
-      const nameIdx = header.findIndex((h) => h === "name" || h === "full name" || h === "full_name");
-      const emailIdx = header.findIndex((h) => h === "email" || h === "e-mail" || h === "email address");
-      const phoneIdx = header.findIndex((h) => h === "phone" || h === "tel" || h === "telephone" || h === "phone number");
-
-      if (nameIdx === -1) return;
-
-      const parsed: ContactEntry[] = [];
-      for (let i = 1; i < lines.length; i++) {
-        const cols = lines[i]!.split(",").map((c) => c.trim().replace(/"/g, ""));
-        const name = cols[nameIdx];
-        if (!name) continue;
-
-        parsed.push({
-          name,
-          email: emailIdx >= 0 ? cols[emailIdx] || undefined : undefined,
-          phone: phoneIdx >= 0 ? cols[phoneIdx] || undefined : undefined,
-          selected: true,
-        });
-      }
+      const isVCard = file.name.toLowerCase().endsWith(".vcf") || text.includes("BEGIN:VCARD");
+      const parsed = isVCard ? parseVCard(text) : parseCSV(text);
 
       if (parsed.length > 0) {
         setEntries(parsed);
@@ -178,27 +215,37 @@ export function PhoneImportModal({ onClose, onSuccess }: PhoneImportModalProps) 
                   </button>
                 )}
 
-                {/* CSV Upload */}
+                {/* File Upload (CSV or vCard) */}
                 <button
                   onClick={() => fileRef.current?.click()}
                   className="flex flex-col items-center gap-3 rounded-xl border border-white/10 bg-white/5 p-6 text-center transition-colors hover:border-[#facf39]/30 hover:bg-[#facf39]/5"
                 >
                   <FileSpreadsheet className="h-8 w-8 text-[#facf39]" />
                   <div>
-                    <p className="font-medium text-white">CSV Upload</p>
+                    <p className="font-medium text-white">Import from File</p>
                     <p className="mt-1 text-xs text-gray-400">
-                      Upload a CSV with name, email, phone columns
+                      CSV or vCard (.vcf) file
                     </p>
                   </div>
                 </button>
               </div>
 
+              {!hasContactPicker() && (
+                <div className="flex items-start gap-2 rounded-lg border border-white/5 bg-white/[0.02] px-3 py-2.5">
+                  <FileText className="mt-0.5 h-4 w-4 shrink-0 text-gray-500" />
+                  <p className="text-xs text-gray-500">
+                    <span className="font-medium text-gray-400">iOS tip:</span> Open
+                    Contacts app → select contacts → Share → export as vCard → upload here.
+                  </p>
+                </div>
+              )}
+
               <input
                 ref={fileRef}
                 type="file"
-                accept=".csv"
+                accept=".csv,.vcf"
                 className="hidden"
-                onChange={handleCSVUpload}
+                onChange={handleFileUpload}
               />
             </div>
           )}

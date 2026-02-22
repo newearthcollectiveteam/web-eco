@@ -9,13 +9,14 @@ import {
   contacts,
   contactSources,
   contactActivities,
+  contactAssociations,
   questionnaireResponses,
   waitlistIntake,
   eventWaivers,
   voiceNotes,
   userProfiles,
 } from "~/server/db/schema";
-import { and, desc, eq, like, or, sql, inArray, isNotNull, type SQL } from "drizzle-orm";
+import { and, desc, eq, like, or, sql, inArray, type SQL } from "drizzle-orm";
 import { createAdminClient } from "~/lib/supabase/admin";
 
 export const crmRouter = createTRPCRouter({
@@ -51,7 +52,7 @@ export const crmRouter = createTRPCRouter({
         search: z.string().optional(),
         status: z.string().optional(),
         source: z.string().optional(),
-        addedBy: z.string().optional(),
+        addedBy: z.string().optional(), // kept for backwards compat, now filters associations
         limit: z.number().min(1).max(100).default(25),
         offset: z.number().min(0).default(0),
       })
@@ -67,8 +68,11 @@ export const crmRouter = createTRPCRouter({
         conditions.push(eq(contacts.firstSource, input.source));
       }
 
+      // Filter by associated team member
       if (input.addedBy) {
-        conditions.push(eq(contacts.addedBy, input.addedBy));
+        conditions.push(
+          sql`${contacts.id} IN (SELECT contact_id FROM "web-eco_contact_association" WHERE user_id = ${input.addedBy})`
+        );
       }
 
       if (input.search) {
@@ -97,40 +101,49 @@ export const crmRouter = createTRPCRouter({
 
       const ids = rows.map((r) => r.id);
       const sourcesMap: Record<number, string[]> = {};
-
-      // Batch load submission sources + addedBy names
-      const addedByIds = [...new Set(rows.map((r) => r.addedBy).filter(Boolean))] as string[];
-      const addedByMap: Record<string, string> = {};
+      const associationsMap: Record<number, { id: string; name: string }[]> = {};
 
       if (ids.length > 0) {
-        const sources = await ctx.db
-          .select({
-            contactId: contactSources.contactId,
-            source: contactSources.source,
-          })
-          .from(contactSources)
-          .where(inArray(contactSources.contactId, ids));
+        const [sources, assocs] = await Promise.all([
+          ctx.db
+            .select({
+              contactId: contactSources.contactId,
+              source: contactSources.source,
+            })
+            .from(contactSources)
+            .where(inArray(contactSources.contactId, ids)),
+          ctx.db
+            .select({
+              contactId: contactAssociations.contactId,
+              userId: contactAssociations.userId,
+              fullName: userProfiles.fullName,
+              email: userProfiles.email,
+            })
+            .from(contactAssociations)
+            .innerJoin(userProfiles, eq(contactAssociations.userId, userProfiles.id))
+            .where(inArray(contactAssociations.contactId, ids)),
+        ]);
 
         for (const s of sources) {
           if (!sourcesMap[s.contactId]) sourcesMap[s.contactId] = [];
           sourcesMap[s.contactId]!.push(s.source);
         }
-      }
 
-      if (addedByIds.length > 0) {
-        const profiles = await ctx.db
-          .select({ id: userProfiles.id, fullName: userProfiles.fullName, email: userProfiles.email })
-          .from(userProfiles)
-          .where(inArray(userProfiles.id, addedByIds));
-        for (const p of profiles) {
-          addedByMap[p.id] = p.fullName ?? p.email;
+        for (const a of assocs) {
+          if (!associationsMap[a.contactId]) associationsMap[a.contactId] = [];
+          associationsMap[a.contactId]!.push({
+            id: a.userId,
+            name: a.fullName ?? a.email,
+          });
         }
       }
 
       const contactsWithSources = rows.map((c) => ({
         ...c,
         submissionSources: sourcesMap[c.id] ?? [c.firstSource],
-        addedByName: c.addedBy ? (addedByMap[c.addedBy] ?? null) : null,
+        associations: associationsMap[c.id] ?? [],
+        // Keep addedByName for backwards compat (derived from associations)
+        addedByName: associationsMap[c.id]?.[0]?.name ?? null,
       }));
 
       return { contacts: contactsWithSources, total };
@@ -150,7 +163,7 @@ export const crmRouter = createTRPCRouter({
         });
       }
 
-      const [qResponses, wIntakes, waivers, sources, activities, notes, addedByProfile] =
+      const [qResponses, wIntakes, waivers, sources, activities, notes, associations] =
         await Promise.all([
           ctx.db.query.questionnaireResponses.findMany({
             where: eq(questionnaireResponses.contactId, input.id),
@@ -204,12 +217,16 @@ export const crmRouter = createTRPCRouter({
             );
             return signedNotes;
           })(),
-          // Added by profile
-          contact.addedBy
-            ? ctx.db.query.userProfiles.findFirst({
-                where: eq(userProfiles.id, contact.addedBy),
-              })
-            : Promise.resolve(null),
+          // Associations (team members linked to this contact)
+          ctx.db
+            .select({
+              userId: contactAssociations.userId,
+              fullName: userProfiles.fullName,
+              email: userProfiles.email,
+            })
+            .from(contactAssociations)
+            .innerJoin(userProfiles, eq(contactAssociations.userId, userProfiles.id))
+            .where(eq(contactAssociations.contactId, input.id)),
         ]);
 
       return {
@@ -220,7 +237,14 @@ export const crmRouter = createTRPCRouter({
         sources,
         activities,
         voiceNotes: notes,
-        addedByProfile: addedByProfile ? { id: addedByProfile.id, fullName: addedByProfile.fullName, email: addedByProfile.email } : null,
+        associations: associations.map((a) => ({
+          id: a.userId,
+          name: a.fullName ?? a.email,
+        })),
+        // Keep addedByProfile for backwards compat
+        addedByProfile: associations[0]
+          ? { id: associations[0].userId, fullName: associations[0].fullName, email: associations[0].email }
+          : null,
       };
     }),
 
@@ -396,19 +420,23 @@ export const crmRouter = createTRPCRouter({
         });
       }
 
-      // Create source record
-      await ctx.db.insert(contactSources).values({
-        contactId: newContact.id,
-        source: input.source,
-      });
-
-      // Create activity
-      await ctx.db.insert(contactActivities).values({
-        contactId: newContact.id,
-        activityType: "contact_created",
-        source: input.source,
-        description: `Contact created manually`,
-      });
+      // Create source record + association + activity
+      await Promise.all([
+        ctx.db.insert(contactSources).values({
+          contactId: newContact.id,
+          source: input.source,
+        }),
+        ctx.db.insert(contactAssociations).values({
+          contactId: newContact.id,
+          userId: ctx.user.id,
+        }),
+        ctx.db.insert(contactActivities).values({
+          contactId: newContact.id,
+          activityType: "contact_created",
+          source: input.source,
+          description: `Contact created manually`,
+        }),
+      ]);
 
       return newContact;
     }),
@@ -516,16 +544,16 @@ export const crmRouter = createTRPCRouter({
 
   // ─── Team Tracking ──────────────────────────────────────────
 
-  getTeamMembersWhoAddedContacts: protectedProcedure.query(async ({ ctx }) => {
+  getTeamMembers: protectedProcedure.query(async ({ ctx }) => {
+    // Return all team members who have at least one association
     const rows = await ctx.db
       .select({
-        addedBy: contacts.addedBy,
+        userId: contactAssociations.userId,
       })
-      .from(contacts)
-      .where(isNotNull(contacts.addedBy))
-      .groupBy(contacts.addedBy);
+      .from(contactAssociations)
+      .groupBy(contactAssociations.userId);
 
-    const ids = rows.map((r) => r.addedBy).filter(Boolean) as string[];
+    const ids = rows.map((r) => r.userId);
     if (ids.length === 0) return [];
 
     const profiles = await ctx.db
@@ -538,6 +566,51 @@ export const crmRouter = createTRPCRouter({
       name: p.fullName ?? p.email,
     }));
   }),
+
+  // Keep old name as alias for backwards compat
+  getTeamMembersWhoAddedContacts: protectedProcedure.query(async ({ ctx }) => {
+    const rows = await ctx.db
+      .select({ userId: contactAssociations.userId })
+      .from(contactAssociations)
+      .groupBy(contactAssociations.userId);
+
+    const ids = rows.map((r) => r.userId);
+    if (ids.length === 0) return [];
+
+    const profiles = await ctx.db
+      .select({ id: userProfiles.id, fullName: userProfiles.fullName, email: userProfiles.email })
+      .from(userProfiles)
+      .where(inArray(userProfiles.id, ids));
+
+    return profiles.map((p) => ({
+      id: p.id,
+      name: p.fullName ?? p.email,
+    }));
+  }),
+
+  addAssociation: protectedProcedure
+    .input(z.object({ contactId: z.number(), userId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      await ctx.db
+        .insert(contactAssociations)
+        .values({ contactId: input.contactId, userId: input.userId })
+        .onConflictDoNothing();
+      return { success: true };
+    }),
+
+  removeAssociation: protectedProcedure
+    .input(z.object({ contactId: z.number(), userId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      await ctx.db
+        .delete(contactAssociations)
+        .where(
+          and(
+            eq(contactAssociations.contactId, input.contactId),
+            eq(contactAssociations.userId, input.userId)
+          )
+        );
+      return { success: true };
+    }),
 
   // ─── Bulk Import ────────────────────────────────────────────
 
@@ -593,16 +666,22 @@ export const crmRouter = createTRPCRouter({
                 })
                 .returning();
               if (newContact) {
-                await ctx.db.insert(contactSources).values({
-                  contactId: newContact.id,
-                  source: "phone_import",
-                });
-                await ctx.db.insert(contactActivities).values({
-                  contactId: newContact.id,
-                  activityType: "contact_created",
-                  source: "phone_import",
-                  description: "Imported from phone contacts",
-                });
+                await Promise.all([
+                  ctx.db.insert(contactSources).values({
+                    contactId: newContact.id,
+                    source: "phone_import",
+                  }),
+                  ctx.db.insert(contactAssociations).values({
+                    contactId: newContact.id,
+                    userId: ctx.user.id,
+                  }),
+                  ctx.db.insert(contactActivities).values({
+                    contactId: newContact.id,
+                    activityType: "contact_created",
+                    source: "phone_import",
+                    description: "Imported from phone contacts",
+                  }),
+                ]);
                 created++;
               }
             } else {
@@ -625,16 +704,22 @@ export const crmRouter = createTRPCRouter({
             .returning();
 
           if (newContact) {
-            await ctx.db.insert(contactSources).values({
-              contactId: newContact.id,
-              source: "phone_import",
-            });
-            await ctx.db.insert(contactActivities).values({
-              contactId: newContact.id,
-              activityType: "contact_created",
-              source: "phone_import",
-              description: "Imported from phone contacts",
-            });
+            await Promise.all([
+              ctx.db.insert(contactSources).values({
+                contactId: newContact.id,
+                source: "phone_import",
+              }),
+              ctx.db.insert(contactAssociations).values({
+                contactId: newContact.id,
+                userId: ctx.user.id,
+              }),
+              ctx.db.insert(contactActivities).values({
+                contactId: newContact.id,
+                activityType: "contact_created",
+                source: "phone_import",
+                description: "Imported from phone contacts",
+              }),
+            ]);
             created++;
           }
         } catch (err) {

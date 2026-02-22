@@ -17,7 +17,7 @@
 | Admin dashboard shell | Working | Sidebar nav, breadcrumbs, collapsible, mobile sheet           |
 | Admin overview        | Working | KPI cards, section summaries, recent activity, quick links    |
 | Admin routing         | Working | /admin/\* path-based auth, test subdomain redirects to /admin |
-| CRM system            | Working | Contacts, leads, voice notes, bulk import, team tracking, mobile responsive |
+| CRM system            | Working | Contacts, leads, voice notes, bulk import, associations, vCard import, mobile responsive |
 | Waitlist intake       | Working | Form submission with CRM integration                          |
 | Questionnaire         | Working | Full alignment survey, multi-select intention, referral QR, abandon reminders |
 | Event waivers         | Working | Digital signature capture for liability                       |
@@ -46,5 +46,11 @@
 | 2026-02-22 | Email polish: cross-client HTML templates, abandon reminder with resume link            |
 | 2026-02-22 | Fix: persist aiPhoneCallOptIn/marketingOptIn, show Other text on review screen          |
 | 2026-02-22 | Give & Receive: added Other options to both sections, removed New Earth max-select cap  |
+| 2026-02-22 | Admin mobile overhaul: overview, team, CRM contacts, ecosystem pages responsive          |
+| 2026-02-22 | CRM associations: many-to-many contact↔team member, replaces single addedBy FK           |
+| 2026-02-22 | Contact detail: tabbed layout (Notes/Voice Memos), full-width timeline, danger zone       |
+| 2026-02-22 | Voice memo fixes: seeking, mic error feedback, onerror handler, prominent recording UI    |
+| 2026-02-22 | vCard import: .vcf file parsing for iOS contact export, auto-detect CSV vs vCard           |
+| 2026-02-22 | Quick Note modal: inline note creation from contacts list (desktop + mobile)               |
 
 See `git log --oneline` for full history.

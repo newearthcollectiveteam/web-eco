@@ -67,6 +67,8 @@ export function QuestionScreen({
   referrer,
 }: QuestionScreenProps) {
   const [showOther, setShowOther] = useState(false);
+  const [showGiftOther, setShowGiftOther] = useState(false);
+  const [showSeekOther, setShowSeekOther] = useState(false);
 
   const isAtMax = (field: keyof FormData) => {
     if (!screen.maxSelect) return false;
@@ -451,6 +453,27 @@ export function QuestionScreen({
                 );
               })}
             </div>
+            <SelectionPill
+              label="Other"
+              selected={showGiftOther || !!data.uniqueGiftOther}
+              onToggle={() => {
+                if (showGiftOther || data.uniqueGiftOther) {
+                  setShowGiftOther(false);
+                  update("uniqueGiftOther", "");
+                } else {
+                  setShowGiftOther(true);
+                }
+              }}
+            />
+            {(showGiftOther || !!data.uniqueGiftOther) && (
+              <Input
+                className={inputClass}
+                placeholder="What else do you bring?"
+                value={data.uniqueGiftOther}
+                onChange={(e) => update("uniqueGiftOther", e.target.value)}
+                autoFocus
+              />
+            )}
           </div>
 
           <div className="border-t border-white/10" />
@@ -477,6 +500,27 @@ export function QuestionScreen({
                 );
               })}
             </div>
+            <SelectionPill
+              label="Other"
+              selected={showSeekOther || !!data.receiveFromCommunityOther}
+              onToggle={() => {
+                if (showSeekOther || data.receiveFromCommunityOther) {
+                  setShowSeekOther(false);
+                  update("receiveFromCommunityOther", "");
+                } else {
+                  setShowSeekOther(true);
+                }
+              }}
+            />
+            {(showSeekOther || !!data.receiveFromCommunityOther) && (
+              <Input
+                className={inputClass}
+                placeholder="What else are you looking for?"
+                value={data.receiveFromCommunityOther}
+                onChange={(e) => update("receiveFromCommunityOther", e.target.value)}
+                autoFocus
+              />
+            )}
           </div>
         </div>
       )}

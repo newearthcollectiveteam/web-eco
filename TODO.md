@@ -2,7 +2,7 @@
 
 ## Critical (blocks production)
 
-_None currently_
+- [ ] **Referral tracking**: QR referrals store display name only — need `referred_by` FK on contacts, encode referrer email in QR URL, resolve to contact ID on submit. Currently no way to link referrer to referred in CRM.
 
 ## Bugs (broken functionality)
 
@@ -13,6 +13,7 @@ _None documented_
 - [ ] Unstaged Prettier formatting changes across ~100 files (from quality-check run)
 - [ ] 227 emergence photos in public/ — consider Supabase Storage migration to reduce repo size
 - [ ] 3 lint warnings: unused imports in ecosystem, team, login pages
+- [ ] `drizzle-kit push` crashes on Node v24 (checkValue.replace bug) — use raw SQL for migrations
 
 ## Admin Hub Refactor (multi-session)
 
@@ -65,10 +66,13 @@ _None documented_
 
 ## Enhancements (nice to have)
 
+### Questionnaire
+
+- [ ] Conditional branching in Klaviyo based on questionnaire completion
+- [ ] Questionnaire progress saving (draft mode)
+
 ### Public Site
 
-- [x] Flesh out /about page with real content
-- [x] Flesh out /pathway page with journey/funnel content
 - [ ] Add contact submission form to /stewardship page
 - [ ] Scroll-triggered entrance animations for below-fold sections
 
@@ -93,8 +97,3 @@ _None documented_
 - [ ] Funnel analysis visualization
 - [ ] Cookie consent banner (GDPR)
 - [ ] Auto-delete old sessions (90 days)
-
-### Questionnaire
-
-- [ ] Conditional branching in Klaviyo based on questionnaire completion
-- [ ] Questionnaire progress saving (draft mode)

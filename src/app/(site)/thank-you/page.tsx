@@ -85,7 +85,8 @@ export default function ThankYouPage() {
                 Know someone who'd be a great fit?
               </p>
               <p className="mb-4 text-sm text-white/60">
-                Share this QR code — they'll be linked to you as their referrer.
+                Share this QR code —<br />
+                they'll be linked to you as their referrer.
               </p>
               <div className="mb-4 inline-block rounded-xl bg-white p-3">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -122,7 +123,7 @@ export default function ThankYouPage() {
             In the meantime, follow our journey on Instagram.
           </p>
 
-          <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center sm:gap-6">
+          <div className="flex flex-col items-center gap-4 pb-16 sm:flex-row sm:justify-center sm:gap-6 sm:pb-0">
             <Button
               asChild
               className="bg-gradient-to-r from-[#FFD700] to-[#FACF39] px-8 py-4 font-bold text-black transition-all hover:scale-105 hover:shadow-lg hover:shadow-[#FACF39]/30"

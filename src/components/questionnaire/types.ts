@@ -57,7 +57,7 @@ export interface FormData {
   newEarthMeaning: string[];
   newEarthMeaningOther: string;
   // Screen 7: Intention
-  primaryIntention: string;
+  primaryIntention: string[];
   primaryIntentionOther: string;
   // Screen 8: Give & Receive
   uniqueGift: string[];
@@ -95,7 +95,7 @@ export const initialFormData: FormData = {
   primaryRole: "",
   newEarthMeaning: [],
   newEarthMeaningOther: "",
-  primaryIntention: "",
+  primaryIntention: [],
   primaryIntentionOther: "",
   uniqueGift: [],
   uniqueGiftOther: "",

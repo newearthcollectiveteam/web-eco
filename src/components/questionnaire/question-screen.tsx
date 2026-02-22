@@ -10,13 +10,14 @@ import type { ScreenConfig, FormData } from "./types";
 import { screens } from "./screens";
 
 const inputClass =
-  "bg-black/40 text-white border border-[#FACF39]/30 focus:border-[#FACF39] focus:ring-[#FACF39]/20 placeholder:text-neutral-500";
+  "bg-black/40 text-white text-base border border-[#FACF39]/30 focus:border-[#FACF39] focus:ring-[#FACF39]/20 placeholder:text-neutral-500";
 
 interface QuestionScreenProps {
   screen: ScreenConfig;
   data: FormData;
   update: <K extends keyof FormData>(field: K, value: FormData[K]) => void;
   toggleArray: (field: keyof FormData, value: string) => void;
+  referrer?: string;
 }
 
 // Communication preference options
@@ -63,6 +64,7 @@ export function QuestionScreen({
   data,
   update,
   toggleArray,
+  referrer,
 }: QuestionScreenProps) {
   const [showOther, setShowOther] = useState(false);
 
@@ -355,6 +357,11 @@ export function QuestionScreen({
       {/* SINGLE-SELECT */}
       {screen.type === "single-select" && (
         <div className="space-y-3">
+          {screen.id === "found-us" && referrer && (
+            <div className="rounded-lg border border-[#FACF39]/30 bg-[#FACF39]/10 px-4 py-2.5 text-sm text-[#FACF39]">
+              Recommended by {referrer}
+            </div>
+          )}
           <div className="grid grid-cols-1 gap-2">
             {screen.options?.map((opt) => {
               const selected = (data[screen.field as keyof FormData] as string) === opt.id;

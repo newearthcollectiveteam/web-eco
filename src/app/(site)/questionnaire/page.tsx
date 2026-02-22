@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, Suspense } from "react";
+import { useState, useEffect, useCallback, useRef, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { ChevronLeft } from "lucide-react";
 import { ProgressBar } from "~/components/questionnaire/progress-bar";
@@ -17,6 +17,7 @@ function QuestionnaireFlow() {
   const [data, setData] = useState<FormData>(initialFormData);
   const [status, setStatus] = useState<"idle" | "submitting" | "error">("idle");
   const [error, setError] = useState<string | null>(null);
+  const submittingRef = useRef(false);
 
   const totalScreens = screens.length;
   const screen = screens[idx]!;
@@ -27,19 +28,35 @@ function QuestionnaireFlow() {
     window.scrollTo({ left: 0, top: 0, behavior: "instant" });
   }, [idx]);
 
-  // Pre-fill from URL params
+  // Pre-fill from URL params (name/email/phone + referrer)
   useEffect(() => {
     const name = searchParams.get("name") ?? "";
     const email = searchParams.get("email") ?? "";
     const phone = searchParams.get("phone") ?? "";
-    if (name || email || phone) {
-      setData((prev) => ({
-        ...prev,
-        fullName: name || prev.fullName,
-        email: email || prev.email,
-        phone: phone || prev.phone,
-      }));
-    }
+    const referrer = searchParams.get("referrer") ?? "";
+    const refSource = searchParams.get("refSource") ?? "";
+
+    setData((prev) => {
+      const updates: Partial<FormData> = {};
+      if (name) updates.fullName = name;
+      if (email) updates.email = email;
+      if (phone) updates.phone = phone;
+
+      // Referral pre-fill: set found-us based on referrer param
+      if (referrer) {
+        if (refSource === "event") {
+          updates.howFoundUs = "event";
+          updates.howFoundUsDetail = referrer;
+        } else {
+          updates.howFoundUs = "invitation";
+          updates.howFoundUsDetail = referrer;
+        }
+      }
+
+      return Object.keys(updates).length > 0
+        ? { ...prev, ...updates }
+        : prev;
+    });
   }, [searchParams]);
 
   const update = useCallback(
@@ -113,6 +130,9 @@ function QuestionnaireFlow() {
   };
 
   const handleSubmit = async () => {
+    if (submittingRef.current) return;
+    submittingRef.current = true;
+
     setStatus("submitting");
     setError(null);
 
@@ -136,8 +156,22 @@ function QuestionnaireFlow() {
         throw new Error(body.details || body.error || "Failed to submit");
       }
 
+      // Store name for thank-you page QR code
+      try {
+        sessionStorage.setItem(
+          "nec_referrer",
+          JSON.stringify({
+            name: data.fullName,
+            preferredName: data.preferredName,
+          })
+        );
+      } catch {
+        // sessionStorage unavailable — non-critical
+      }
+
       window.location.href = "/thank-you";
     } catch (err: unknown) {
+      submittingRef.current = false;
       const message =
         err instanceof Error ? err.message : "Failed to submit questionnaire";
       setError(message);
@@ -157,6 +191,7 @@ function QuestionnaireFlow() {
             data={data}
             update={update}
             toggleArray={toggleArray}
+            referrer={searchParams.get("referrer") ?? undefined}
           />
         </div>
       </div>

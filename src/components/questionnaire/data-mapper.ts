@@ -86,10 +86,11 @@ export function mapFormToPayload(
     .concat(data.receiveFromCommunityOther ? [data.receiveFromCommunityOther] : [])
     .join(", ");
 
-  const intentionText =
-    data.primaryIntention === "other"
-      ? data.primaryIntentionOther || data.primaryIntention
-      : idToLabel(data.primaryIntention, "intention");
+  const intentionText = joinWithOther(
+    data.primaryIntention,
+    "intention",
+    data.primaryIntentionOther
+  );
 
   return {
     // Section 1

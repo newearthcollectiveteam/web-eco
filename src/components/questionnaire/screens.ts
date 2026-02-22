@@ -109,9 +109,9 @@ export const screens: ScreenConfig[] = [
   // 7. Intention
   {
     id: "intention",
-    type: "single-select",
+    type: "multi-select",
     title: "What's your primary intention for joining?",
-    subtitle: "Pick the one that speaks to you most",
+    subtitle: "Select all that resonate",
     field: "primaryIntention",
     hasOther: true,
     otherPlaceholder: "Your intention...",

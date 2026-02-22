@@ -1,12 +1,22 @@
-import { type Metadata } from "next";
-import Image from "next/image";
+"use client";
 
-export const metadata: Metadata = {
-  title: "Join the Collective | New Earth Collective",
-  description: "Scan to fill out our community alignment questionnaire.",
-};
+import { useState, useEffect } from "react";
+import QRCode from "qrcode";
+
+const QR_URL =
+  "https://joinnewearthcollective.com/questionnaire?referrer=NEC+x+Envision&refSource=event";
 
 export default function QRQuestionnairePage() {
+  const [qrDataUrl, setQrDataUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    void QRCode.toDataURL(QR_URL, {
+      width: 300,
+      margin: 2,
+      color: { dark: "#000000", light: "#FFFFFF" },
+    }).then(setQrDataUrl);
+  }, []);
+
   return (
     <div className="min-h-screen bg-black">
       <section className="relative flex min-h-screen items-center justify-center overflow-hidden">
@@ -43,13 +53,20 @@ export default function QRQuestionnairePage() {
 
           {/* QR Code */}
           <div className="mb-8 inline-block rounded-2xl border border-[#FACF39]/30 bg-white p-6 shadow-2xl shadow-[#FACF39]/10">
-            <Image
-              src="/qr-questionnaire.png"
-              alt="Scan to access questionnaire"
-              width={250}
-              height={250}
-              className="rounded-lg"
-            />
+            {qrDataUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={qrDataUrl}
+                alt="Scan to access questionnaire"
+                width={250}
+                height={250}
+                className="rounded-lg"
+              />
+            ) : (
+              <div className="flex h-[250px] w-[250px] items-center justify-center">
+                <div className="h-8 w-8 animate-spin rounded-full border-2 border-[#FACF39] border-t-transparent" />
+              </div>
+            )}
           </div>
         </div>
       </section>

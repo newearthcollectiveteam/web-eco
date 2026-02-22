@@ -1,18 +1,48 @@
-import { type Metadata } from "next";
-import Link from "next/link";
-import { Instagram, Home } from "lucide-react";
-import { Button } from "~/components/ui/button";
+"use client";
 
-export const metadata: Metadata = {
-  title: "Thank You | New Earth Collective",
-  description:
-    "Thank you for sharing your blueprint with the New Earth Collective.",
-};
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import { Instagram, Home, Download } from "lucide-react";
+import { Button } from "~/components/ui/button";
+import QRCode from "qrcode";
 
 export default function ThankYouPage() {
+  const [qrDataUrl, setQrDataUrl] = useState<string | null>(null);
+  const [displayName, setDisplayName] = useState<string>("");
+
+  useEffect(() => {
+    try {
+      const raw = sessionStorage.getItem("nec_referrer");
+      if (!raw) return;
+      const { name, preferredName } = JSON.parse(raw) as {
+        name: string;
+        preferredName?: string;
+      };
+      const referrerName = preferredName || name;
+      if (!referrerName) return;
+      setDisplayName(referrerName);
+
+      const url = `https://joinnewearthcollective.com/questionnaire?referrer=${encodeURIComponent(referrerName)}`;
+      void QRCode.toDataURL(url, {
+        width: 280,
+        margin: 2,
+        color: { dark: "#000000", light: "#FFFFFF" },
+      }).then(setQrDataUrl);
+    } catch {
+      // sessionStorage unavailable or parse error — non-critical
+    }
+  }, []);
+
+  const downloadQr = () => {
+    if (!qrDataUrl) return;
+    const a = document.createElement("a");
+    a.href = qrDataUrl;
+    a.download = "nec-referral-qr.png";
+    a.click();
+  };
+
   return (
     <div className="bg-black">
-      {/* Hero Section */}
       <section className="relative flex min-h-screen items-center justify-center overflow-hidden">
         {/* Flower of Life Shader Background */}
         <div className="absolute inset-0 opacity-20">
@@ -45,6 +75,47 @@ export default function ThankYouPage() {
           <p className="mb-4 text-lg text-white/70">
             We'll connect soon via email or our network.
           </p>
+
+          {/* QR Referral Section */}
+          {qrDataUrl && (
+            <div className="mb-8 rounded-2xl border border-[#FACF39]/20 bg-white/5 p-6">
+              <p className="mb-4 text-lg font-medium text-[#FACF39]">
+                Know someone who'd be a great fit?
+              </p>
+              <p className="mb-4 text-sm text-white/60">
+                Share this QR code — they'll be linked to you as their referrer.
+              </p>
+              <div className="mb-4 inline-block rounded-xl bg-white p-3">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={qrDataUrl}
+                  alt="Referral QR code"
+                  width={240}
+                  height={240}
+                />
+              </div>
+              <div className="flex flex-col items-center gap-2">
+                <Button
+                  onClick={downloadQr}
+                  variant="outline"
+                  className="border-[#FACF39]/50 bg-transparent text-[#FACF39] hover:border-[#FACF39] hover:bg-[#FACF39]/10"
+                  style={{ fontFamily: "Bourton, sans-serif" }}
+                >
+                  <Download className="mr-2 h-4 w-4" />
+                  Download QR
+                </Button>
+                <p className="text-xs text-white/40">
+                  or screenshot to share
+                </p>
+              </div>
+              {displayName && (
+                <p className="mt-3 text-xs text-white/40">
+                  Referrals will show &quot;Recommended by {displayName}&quot;
+                </p>
+              )}
+            </div>
+          )}
+
           <p className="mb-12 text-lg text-white/70">
             In the meantime, follow our journey on Instagram.
           </p>

@@ -195,7 +195,7 @@ export function SiteLayout({
                 </Button>
                 <a
                   href="mailto:community@joinnewearthcollective.com"
-                  className="text-sm text-white/60 transition-colors hover:text-[#FACF39]"
+                  className="break-all text-sm text-white/60 transition-colors hover:text-[#FACF39]"
                 >
                   community@joinnewearthcollective.com
                 </a>
@@ -239,8 +239,8 @@ export function SiteLayout({
                 </p>
               </div>
 
-              {/* Right Column: 3 Sub-columns */}
-              <div className="grid grid-cols-1 gap-4 text-sm sm:grid-cols-3 sm:gap-8 md:justify-items-end">
+              {/* Right Column: 3 Sub-columns — always 3-col, links are short */}
+              <div className="grid grid-cols-3 gap-4 text-sm text-center md:gap-8 md:justify-items-end md:text-left">
                 {/* Navigate */}
                 <div>
                   <h4

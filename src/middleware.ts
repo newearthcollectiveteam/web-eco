@@ -36,6 +36,10 @@ export async function middleware(request: NextRequest) {
 
   // Rewrite apps subdomain to /apps/* routes (no redirect, keeps URL clean)
   if (isAppsHost) {
+    // Skip rewrite if path already starts with /apps (prevents double-prefix from internal links)
+    if (pathname.startsWith("/apps")) {
+      return NextResponse.rewrite(request.nextUrl);
+    }
     // /el-nido-chat → /apps/el-nido-chat, / → /apps
     const appsPath = pathname === "/" || pathname === "" ? "/apps" : `/apps${pathname}`;
     const url = request.nextUrl.clone();

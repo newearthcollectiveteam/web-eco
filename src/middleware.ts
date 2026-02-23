@@ -25,12 +25,22 @@ export async function middleware(request: NextRequest) {
 
   const isTestHost = hostname.includes("test.joinnewearthcollective.com");
   const isLaunchHost = hostname.includes("launch.joinnewearthcollective.com");
+  const isAppsHost = hostname.includes("apps.joinnewearthcollective.com");
 
   // Redirect launch subdomain to main domain (launch subdomain deprecated)
   if (isLaunchHost) {
     const targetUrl = new URL(request.nextUrl.toString());
     targetUrl.hostname = "joinnewearthcollective.com";
     return NextResponse.redirect(targetUrl, { status: 301 });
+  }
+
+  // Rewrite apps subdomain to /apps/* routes (no redirect, keeps URL clean)
+  if (isAppsHost) {
+    // /el-nido-chat → /apps/el-nido-chat, / → /apps
+    const appsPath = pathname === "/" || pathname === "" ? "/apps" : `/apps${pathname}`;
+    const url = request.nextUrl.clone();
+    url.pathname = appsPath;
+    return NextResponse.rewrite(url);
   }
 
   // Redirect test subdomain to main domain /admin path

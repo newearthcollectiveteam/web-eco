@@ -7,6 +7,7 @@ export const DOMAINS = {
   NEW_EARTH_COLLECTIVE: "joinnewearthcollective.com",
   LAUNCH: "launch.joinnewearthcollective.com",
   TEST_DOMAIN: "test.joinnewearthcollective.com",
+  APPS: "apps.joinnewearthcollective.com",
 } as const;
 
 export type DomainKey = keyof typeof DOMAINS;

@@ -19,6 +19,7 @@ export const env = createEnv({
     KLAVIYO_API_KEY: z.string().optional(),
     KLAVIYO_METRIC_ID: z.string().optional(),
     SUPABASE_SERVICE_ROLE_KEY: z.string().min(1),
+    ANTHROPIC_API_KEY: z.string().optional(),
   },
 
   /**
@@ -52,6 +53,7 @@ export const env = createEnv({
     KLAVIYO_API_KEY: process.env.KLAVIYO_API_KEY,
     KLAVIYO_METRIC_ID: process.env.KLAVIYO_METRIC_ID,
     SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY,
+    ANTHROPIC_API_KEY: process.env.ANTHROPIC_API_KEY,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially

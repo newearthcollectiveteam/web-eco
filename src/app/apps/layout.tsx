@@ -1,4 +1,12 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  themeColor: "#0a0a0a",
+};
 
 export const metadata: Metadata = {
   title: "NEC Apps",
@@ -7,7 +15,7 @@ export const metadata: Metadata = {
 
 export default function AppsLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-white">
+    <div className="bg-[#0a0a0a] text-white">
       {children}
     </div>
   );

@@ -252,9 +252,24 @@ export default function ElNidoChatPage() {
     }
   };
 
+  // Auto-grow textarea
+  const adjustTextarea = useCallback(() => {
+    const el = inputRef.current;
+    if (!el) return;
+    el.style.height = "auto";
+    el.style.height = `${Math.min(el.scrollHeight, 128)}px`;
+  }, []);
+
+  useEffect(() => {
+    adjustTextarea();
+  }, [input, adjustTextarea]);
+
   // ── Render ───────────────────────────────────────────────
   return (
-    <div className="flex h-[100dvh] overflow-hidden">
+    <div
+      className="fixed inset-0 flex overflow-hidden bg-[#0a0a0a]"
+      style={{ overscrollBehavior: "none" }}
+    >
       {/* Mobile sidebar overlay */}
       {sidebarOpen && (
         <div
@@ -265,7 +280,7 @@ export default function ElNidoChatPage() {
 
       {/* Sidebar */}
       <aside
-        className={`fixed inset-y-0 left-0 z-50 flex w-72 flex-col border-r border-white/10 bg-[#0a0a0a] transition-transform md:relative md:translate-x-0 ${
+        className={`fixed inset-y-0 left-0 z-50 flex w-[85vw] max-w-72 flex-col border-r border-white/10 bg-[#0a0a0a] transition-transform md:relative md:w-72 md:max-w-none md:translate-x-0 ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
@@ -278,7 +293,7 @@ export default function ElNidoChatPage() {
           </span>
           <button
             onClick={() => setSidebarOpen(false)}
-            className="rounded p-1 text-gray-400 hover:text-white md:hidden"
+            className="rounded p-1.5 text-gray-400 hover:text-white md:hidden"
           >
             <X className="h-5 w-5" />
           </button>
@@ -292,7 +307,7 @@ export default function ElNidoChatPage() {
           New Chat
         </button>
 
-        <div className="mt-3 flex-1 overflow-y-auto px-3">
+        <div className="mt-3 flex-1 overflow-y-auto overscroll-contain px-3">
           {threads.map((t) => (
             <div
               key={t.id}
@@ -316,10 +331,10 @@ export default function ElNidoChatPage() {
               </button>
               <button
                 onClick={() => deleteThread(t.id)}
-                className="mr-2 hidden rounded p-1 text-gray-500 hover:text-red-400 group-hover:block"
+                className="mr-2 rounded p-2 text-gray-500 hover:text-red-400 md:hidden md:p-1 md:group-hover:block"
                 title="Delete thread"
               >
-                <Trash2 className="h-3.5 w-3.5" />
+                <Trash2 className="h-4 w-4 md:h-3.5 md:w-3.5" />
               </button>
             </div>
           ))}
@@ -328,7 +343,7 @@ export default function ElNidoChatPage() {
         {/* Back to Apps */}
         <a
           href="/apps"
-          className="flex items-center gap-2 border-t border-white/10 px-4 py-3 text-xs text-gray-500 transition-colors hover:text-gray-300"
+          className="flex items-center gap-2 border-t border-white/10 px-4 py-3.5 text-xs text-gray-500 transition-colors hover:text-gray-300"
         >
           <ChevronLeft className="h-3 w-3" />
           All Apps
@@ -338,20 +353,20 @@ export default function ElNidoChatPage() {
       {/* Main Chat Area */}
       <main className="flex flex-1 flex-col overflow-hidden">
         {/* Top bar */}
-        <header className="flex items-center gap-3 border-b border-white/10 px-4 py-3">
+        <header className="flex shrink-0 items-center gap-3 border-b border-white/10 px-4 py-3">
           <button
             onClick={() => setSidebarOpen(true)}
-            className="rounded p-1 text-gray-400 hover:text-white md:hidden"
+            className="rounded p-1.5 text-gray-400 hover:text-white md:hidden"
           >
             <Menu className="h-5 w-5" />
           </button>
-          <h1 className="text-sm font-medium text-white">
+          <h1 className="truncate text-sm font-medium text-white">
             {activeThread?.title ?? "El Nido Chat"}
           </h1>
         </header>
 
         {/* Messages */}
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1 overflow-y-auto overscroll-contain">
           {!activeThread || activeThread.messages.length === 0 ? (
             <WelcomeScreen
               onPromptClick={(p) => {
@@ -394,7 +409,7 @@ export default function ElNidoChatPage() {
         </div>
 
         {/* Input */}
-        <div className="border-t border-white/10 px-4 py-3">
+        <div className="shrink-0 border-t border-white/10 px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3">
           <form
             onSubmit={handleSubmit}
             className="mx-auto flex max-w-3xl items-end gap-2"
@@ -406,7 +421,7 @@ export default function ElNidoChatPage() {
               onKeyDown={handleKeyDown}
               placeholder="Ask about El Nido..."
               rows={1}
-              className="max-h-32 min-h-[44px] flex-1 resize-none rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder-gray-500 outline-none focus:border-[#facf39]/40"
+              className="max-h-32 min-h-[44px] flex-1 resize-none rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-[16px] leading-snug text-white placeholder-gray-500 outline-none focus:border-[#facf39]/40 sm:text-sm"
             />
             <button
               type="submit"
@@ -416,16 +431,16 @@ export default function ElNidoChatPage() {
               <Send className="h-4 w-4" />
             </button>
           </form>
-          <div className="mx-auto mt-3 flex max-w-3xl items-center justify-center gap-2">
+          <div className="mx-auto mt-2 flex max-w-3xl items-center justify-center gap-2">
             <Image
               src="/brand/symbol.svg"
               alt="NEC"
-              width={16}
-              height={16}
-              className="opacity-60"
+              width={14}
+              height={14}
+              className="opacity-50"
             />
-            <span className="text-xs text-gray-400">
-              Powered by <span className="font-medium text-gray-300">New Earth Collective</span>
+            <span className="text-[10px] text-gray-500">
+              Powered by <span className="font-medium text-gray-400">New Earth Collective</span>
             </span>
           </div>
         </div>
@@ -441,34 +456,34 @@ function WelcomeScreen({
   onPromptClick: (prompt: string) => void;
 }) {
   return (
-    <div className="flex h-full items-center justify-center px-4 py-8">
+    <div className="flex h-full flex-col items-center overflow-y-auto overscroll-contain px-4 py-6 sm:justify-center sm:py-8">
       <div className="w-full max-w-2xl">
-        <div className="mb-8 text-center">
-          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-[#facf39]/20">
-            <MessageCircle className="h-7 w-7 text-[#facf39]" />
+        <div className="mb-6 text-center sm:mb-8">
+          <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-[#facf39]/20 sm:mb-4 sm:h-14 sm:w-14">
+            <MessageCircle className="h-6 w-6 text-[#facf39] sm:h-7 sm:w-7" />
           </div>
           <h2
-            className="mb-1 text-xl font-bold text-white sm:text-2xl"
+            className="mb-1 text-lg font-bold text-white sm:text-2xl"
             style={{ fontFamily: "Airwaves, sans-serif", letterSpacing: "0.05em" }}
           >
             El Nido Chat
           </h2>
-          <p className="text-sm text-gray-400">
+          <p className="text-xs text-gray-400 sm:text-sm">
             Your guide to the El Nido stage at Envision 2026
           </p>
         </div>
 
         {/* Stage-specific prompts */}
         <div className="mb-4">
-          <p className="mb-2 text-xs font-medium uppercase tracking-wider text-gray-500">
+          <p className="mb-2 text-[10px] font-medium uppercase tracking-wider text-gray-500 sm:text-xs">
             El Nido Stage
           </p>
-          <div className="grid gap-2 sm:grid-cols-2">
+          <div className="grid grid-cols-2 gap-2">
             {EL_NIDO_FAQ_PROMPTS.stageSpecific.map((faq) => (
               <button
                 key={faq.label}
                 onClick={() => onPromptClick(faq.prompt)}
-                className="rounded-xl border border-white/10 px-4 py-3 text-left text-sm text-gray-300 transition-colors hover:border-[#facf39]/30 hover:bg-white/5 hover:text-white"
+                className="min-h-[44px] rounded-xl border border-white/10 px-3 py-2.5 text-left text-xs text-gray-300 transition-colors hover:border-[#facf39]/30 hover:bg-white/5 hover:text-white active:bg-white/10 sm:px-4 sm:py-3 sm:text-sm"
               >
                 {faq.label}
               </button>
@@ -478,15 +493,15 @@ function WelcomeScreen({
 
         {/* General festival prompts */}
         <div>
-          <p className="mb-2 text-xs font-medium uppercase tracking-wider text-gray-500">
+          <p className="mb-2 text-[10px] font-medium uppercase tracking-wider text-gray-500 sm:text-xs">
             General Festival
           </p>
-          <div className="grid gap-2 sm:grid-cols-2">
+          <div className="grid grid-cols-2 gap-2">
             {EL_NIDO_FAQ_PROMPTS.general.map((faq) => (
               <button
                 key={faq.label}
                 onClick={() => onPromptClick(faq.prompt)}
-                className="rounded-xl border border-white/10 px-4 py-3 text-left text-sm text-gray-300 transition-colors hover:border-[#facf39]/30 hover:bg-white/5 hover:text-white"
+                className="min-h-[44px] rounded-xl border border-white/10 px-3 py-2.5 text-left text-xs text-gray-300 transition-colors hover:border-[#facf39]/30 hover:bg-white/5 hover:text-white active:bg-white/10 sm:px-4 sm:py-3 sm:text-sm"
               >
                 {faq.label}
               </button>

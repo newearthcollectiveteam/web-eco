@@ -416,16 +416,16 @@ export default function ElNidoChatPage() {
               <Send className="h-4 w-4" />
             </button>
           </form>
-          <div className="mx-auto mt-2 flex max-w-3xl items-center justify-center gap-1.5">
+          <div className="mx-auto mt-3 flex max-w-3xl items-center justify-center gap-2">
             <Image
               src="/brand/symbol.svg"
               alt="NEC"
-              width={14}
-              height={14}
-              className="opacity-40"
+              width={16}
+              height={16}
+              className="opacity-60"
             />
-            <span className="text-[10px] text-gray-600">
-              Powered by New Earth Collective
+            <span className="text-xs text-gray-400">
+              Powered by <span className="font-medium text-gray-300">New Earth Collective</span>
             </span>
           </div>
         </div>
@@ -492,19 +492,6 @@ function WelcomeScreen({
               </button>
             ))}
           </div>
-        {/* Powered by NEC */}
-        <div className="mt-8 flex items-center justify-center gap-2">
-          <Image
-            src="/brand/symbol.svg"
-            alt="NEC"
-            width={18}
-            height={18}
-            className="opacity-50"
-          />
-          <span className="text-xs text-gray-600">
-            Powered by New Earth Collective
-          </span>
-        </div>
         </div>
       </div>
     </div>

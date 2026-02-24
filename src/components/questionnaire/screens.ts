@@ -81,29 +81,12 @@ export const screens: ScreenConfig[] = [
   // 6. New Earth
   {
     id: "new-earth",
-    type: "multi-select",
+    type: "long-text",
     title: "What does New Earth mean to you?",
-    subtitle: "Select at least 2 that resonate",
+    subtitle: "Share in your own words — 10 word minimum",
     field: "newEarthMeaning",
-    minSelect: 2,
-    hasOther: true,
-    otherPlaceholder: "In your own words...",
-    otherField: "newEarthMeaningOther",
+    minWords: 10,
     required: true,
-    options: [
-      { id: "harmony", label: "Living in harmony with nature and each other" },
-      { id: "new-systems", label: "Building systems outside the old paradigm" },
-      { id: "sovereignty", label: "Sovereignty over body, mind, and spirit" },
-      { id: "authenticity", label: "Community rooted in authenticity and love" },
-      { id: "regen-economics", label: "Regenerative economics and gift economy" },
-      { id: "healing-trauma", label: "Healing intergenerational trauma collectively" },
-      { id: "tech-service", label: "Technology in service of humanity, not control" },
-      { id: "sacred-land", label: "Sacred relationship with the land" },
-      { id: "co-create", label: "Co-creating a world that works for everyone" },
-      { id: "indigenous-wisdom", label: "Returning to indigenous wisdom and practices" },
-      { id: "conscious-evolution", label: "Conscious evolution of human potential" },
-      { id: "decentralized", label: "Decentralized, self-governing communities" },
-    ],
   },
   // 7. Intention
   {

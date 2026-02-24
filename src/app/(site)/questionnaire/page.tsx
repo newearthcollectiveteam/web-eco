@@ -192,8 +192,10 @@ function QuestionnaireFlow() {
         );
       case "your-role":
         return data.identityRoles.length > 0 || data.primaryRole.trim().length > 0;
-      case "new-earth":
-        return data.newEarthMeaning.length >= 2;
+      case "new-earth": {
+        const words = data.newEarthMeaning.trim().split(/\s+/).filter(Boolean);
+        return words.length >= 10;
+      }
       case "intention":
         return data.primaryIntention.length > 0;
       case "give-receive":
@@ -214,7 +216,12 @@ function QuestionnaireFlow() {
 
   const goForward = () => {
     if (!validate()) {
-      setError("Please complete this step before continuing.");
+      if (screen.id === "new-earth") {
+        const wc = data.newEarthMeaning.trim().split(/\s+/).filter(Boolean).length;
+        setError(`Please write at least 10 words (currently ${wc}).`);
+      } else {
+        setError("Please complete this step before continuing.");
+      }
       return;
     }
     setError(null);

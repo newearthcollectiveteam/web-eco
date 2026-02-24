@@ -123,11 +123,7 @@ export function mapFormToPayload(
     otherSocial: undefined,
 
     // Section 3
-    newEarthMeaning: joinWithOther(
-      data.newEarthMeaning,
-      "new-earth",
-      data.newEarthMeaningOther
-    ),
+    newEarthMeaning: data.newEarthMeaning.trim() || undefined,
     primaryIntention: intentionText,
     sovereigntyMeaning: undefined, // removed screen — send empty
 

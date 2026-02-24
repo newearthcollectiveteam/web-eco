@@ -1,6 +1,7 @@
 export type ScreenType =
   | "text"
   | "text-pills"
+  | "long-text"
   | "autocomplete"
   | "birth-info"
   | "multi-select"
@@ -24,6 +25,7 @@ export interface ScreenConfig {
   options?: SelectOption[];
   minSelect?: number;
   maxSelect?: number;
+  minWords?: number;
   hasOther?: boolean;
   otherPlaceholder?: string;
   otherField?: string;
@@ -54,8 +56,7 @@ export interface FormData {
   identityRolesOther: string;
   primaryRole: string;
   // Screen 6: New Earth
-  newEarthMeaning: string[];
-  newEarthMeaningOther: string;
+  newEarthMeaning: string;
   // Screen 7: Intention
   primaryIntention: string[];
   primaryIntentionOther: string;
@@ -93,8 +94,7 @@ export const initialFormData: FormData = {
   identityRoles: [],
   identityRolesOther: "",
   primaryRole: "",
-  newEarthMeaning: [],
-  newEarthMeaningOther: "",
+  newEarthMeaning: "",
   primaryIntention: [],
   primaryIntentionOther: "",
   uniqueGift: [],

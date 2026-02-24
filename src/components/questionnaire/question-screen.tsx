@@ -289,6 +289,33 @@ export function QuestionScreen({
         </div>
       )}
 
+      {/* LONG-TEXT: open-ended textarea with word count */}
+      {screen.type === "long-text" && (() => {
+        const text = (data[screen.field as keyof FormData] as string) || "";
+        const wordCount = text.trim() ? text.trim().split(/\s+/).length : 0;
+        const minWords = screen.minWords ?? 0;
+        const isMet = wordCount >= minWords;
+        return (
+          <div className="space-y-3">
+            <textarea
+              className={`${inputClass} min-h-[160px] w-full rounded-md px-3 py-2.5 resize-y`}
+              placeholder="In your own words..."
+              value={text}
+              onChange={(e) =>
+                update(screen.field as keyof FormData, e.target.value as never)
+              }
+              autoFocus
+            />
+            {minWords > 0 && (
+              <p className={`text-xs ${isMet ? "text-green-400/80" : "text-white/40"}`}>
+                {wordCount} / {minWords} words{" "}
+                {isMet ? "— looking great" : "minimum"}
+              </p>
+            )}
+          </div>
+        );
+      })()}
+
       {/* MULTI-SELECT */}
       {screen.type === "multi-select" && (
         <div className="space-y-3">
@@ -664,7 +691,7 @@ function ReviewScreen({ data }: { data: FormData }) {
     { label: "Phone", value: data.phone },
     { label: "Location", value: data.currentLocation + (data.isNomadic ? " (nomadic)" : "") },
     { label: "Roles", value: withOther(labelFor("your-role", data.identityRoles), data.identityRolesOther) },
-    { label: "New Earth", value: withOther(labelFor("new-earth", data.newEarthMeaning), data.newEarthMeaningOther) },
+    { label: "New Earth", value: data.newEarthMeaning },
     { label: "Intention", value: withOther(labelFor("intention", data.primaryIntention), data.primaryIntentionOther) },
     { label: "You Bring", value: giftLabels },
     { label: "You Seek", value: seekLabels },

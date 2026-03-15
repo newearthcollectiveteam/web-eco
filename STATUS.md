@@ -1,7 +1,7 @@
 # Project Status
 
 **Version:** 0.1.0
-**Last Updated:** 2026-02-22
+**Last Updated:** 2026-03-15
 
 ## Feature Status
 
@@ -16,8 +16,9 @@
 | Privacy & Terms       | Working | Full legal pages at /privacy and /terms                       |
 | Admin dashboard shell | Working | Sidebar nav, breadcrumbs, collapsible, mobile sheet           |
 | Admin overview        | Working | KPI cards, section summaries, recent activity, quick links    |
-| Admin routing         | Working | /admin/\* path-based auth, test subdomain redirects to /admin |
-| CRM system            | Working | Contacts, leads, voice notes, bulk import, associations, vCard import, mobile responsive |
+| Admin routing         | Working | /admin/* path-based auth, test subdomain redirects to /admin  |
+| CRM system            | Working | Contacts, leads, community tags, voice notes, bulk import, associations, vCard import, mobile responsive |
+| CRM community tags    | **New** | Hierarchical community/location taxonomy, contact tagging, independent filtering |
 | Waitlist intake       | Working | Form submission with CRM integration                          |
 | Questionnaire         | Working | Full alignment survey, multi-select intention, referral QR, abandon reminders |
 | Event waivers         | Working | Digital signature capture for liability                       |
@@ -36,21 +37,16 @@
 - Admin hub pages scaffolded as placeholders — analytics, finance, tooling need real data/UI
 - DB connection uses Supabase pooler (direct host no longer resolves)
 - Referral tracking stores referrer as display name text, not a contact FK — needs proper linking
+- Communities page (/admin/crm/communities) not yet built — nav link added, page needed
 
 ## Recent Changes
 
 | Date       | Description                                                                            |
 | ---------- | -------------------------------------------------------------------------------------- |
-| 2026-02-22 | Questionnaire: mobile zoom fix, double-submit guard, multi-select intention            |
-| 2026-02-22 | Referral QR system: QR on thank-you page, pre-fill from URL params, team QR at /questionnaire/teamqr |
-| 2026-02-22 | Email polish: cross-client HTML templates, abandon reminder with resume link            |
-| 2026-02-22 | Fix: persist aiPhoneCallOptIn/marketingOptIn, show Other text on review screen          |
-| 2026-02-22 | Give & Receive: added Other options to both sections, removed New Earth max-select cap  |
-| 2026-02-22 | Admin mobile overhaul: overview, team, CRM contacts, ecosystem pages responsive          |
-| 2026-02-22 | CRM associations: many-to-many contact↔team member, replaces single addedBy FK           |
-| 2026-02-22 | Contact detail: tabbed layout (Notes/Voice Memos), full-width timeline, danger zone       |
-| 2026-02-22 | Voice memo fixes: seeking, mic error feedback, onerror handler, prominent recording UI    |
-| 2026-02-22 | vCard import: .vcf file parsing for iOS contact export, auto-detect CSV vs vCard           |
-| 2026-02-22 | Quick Note modal: inline note creation from contacts list (desktop + mobile)               |
+| 2026-03-15 | CRM community tags: schema, migration, seed 15 communities/locations, tag 92 Emergence + 19 Envision contacts |
+| 2026-03-15 | CRM leads: unified list with independent source/community filters, sorting, pagination, contact links |
+| 2026-03-15 | CRM contacts: community tag badges, independent community filter, removed inline editing (use contact page) |
+| 2026-03-15 | Data cleanup: merged Lydia duplicate, phone_import→manual source, removed waitlist source |
+| 2026-03-15 | CRM router: 9 new community tag procedures, social media from questionnaire, sorting support |
 
 See `git log --oneline` for full history.

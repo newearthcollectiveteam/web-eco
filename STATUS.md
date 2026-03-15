@@ -18,9 +18,9 @@
 | Admin overview        | Working | KPI cards, section summaries, recent activity, quick links    |
 | Admin routing         | Working | /admin/* path-based auth, test subdomain redirects to /admin  |
 | CRM system            | Working | Contacts, leads, community tags, voice notes, bulk import, associations, vCard import, mobile responsive |
-| CRM community tags    | **New** | Hierarchical community/location taxonomy, contact tagging, independent filtering |
+| CRM communities       | Working | Hierarchical community/location taxonomy, tree view CRUD, contact tagging, auto-tagging from questionnaire |
 | Waitlist intake       | Working | Form submission with CRM integration                          |
-| Questionnaire         | Working | Full alignment survey, multi-select intention, referral QR, abandon reminders |
+| Questionnaire         | Working | Full alignment survey, multi-select intention, referral QR, abandon reminders, community auto-tagging |
 | Event waivers         | Working | Digital signature capture for liability                       |
 | User auth             | Working | Supabase Auth with approval workflow                          |
 | Impact Missions       | Working | /impact index + /impact/joyskitchen                          |
@@ -36,17 +36,16 @@
 
 - Admin hub pages scaffolded as placeholders — analytics, finance, tooling need real data/UI
 - DB connection uses Supabase pooler (direct host no longer resolves)
-- Referral tracking stores referrer as display name text, not a contact FK — needs proper linking
-- Communities page (/admin/crm/communities) not yet built — nav link added, page needed
+- Community auto-tagging uses exact name matching — fuzzy matching not yet implemented
 
 ## Recent Changes
 
 | Date       | Description                                                                            |
 | ---------- | -------------------------------------------------------------------------------------- |
-| 2026-03-15 | CRM community tags: schema, migration, seed 15 communities/locations, tag 92 Emergence + 19 Envision contacts |
-| 2026-03-15 | CRM leads: unified list with independent source/community filters, sorting, pagination, contact links |
-| 2026-03-15 | CRM contacts: community tag badges, independent community filter, removed inline editing (use contact page) |
-| 2026-03-15 | Data cleanup: merged Lydia duplicate, phone_import→manual source, removed waitlist source |
-| 2026-03-15 | CRM router: 9 new community tag procedures, social media from questionnaire, sorting support |
+| 2026-03-15 | Communities page: tree view CRUD at /admin/crm/communities, split El Nido + Bridge and Extreme |
+| 2026-03-15 | Contact detail: community tags add/remove UI, social media links from questionnaire |
+| 2026-03-15 | Questionnaire auto-tagging: auto-detect community names from free-text fields on submit |
+| 2026-03-15 | CRM overhaul: community tags schema, 16 tags seeded, 111 contacts tagged, independent filtering |
+| 2026-03-15 | Data cleanup: merged duplicates, phone_import→manual source, removed waitlist source |
 
 See `git log --oneline` for full history.

@@ -2,25 +2,7 @@
 
 ## Critical (blocks production)
 
-- [ ] **Referral tracking**: QR referrals store display name only — need `referred_by` FK on contacts, encode referrer email in QR URL, resolve to contact ID on submit. Currently no way to link referrer to referred in CRM.
-
-## CRM Community Overhaul (in progress)
-
-### Completed
-- [x] Community tags schema (community_tag + contact_community_tag tables)
-- [x] Seed 10 communities + 5 locations with hierarchy
-- [x] Tag existing contacts (92 Emergence, 19 Envision)
-- [x] CRM router: getCommunityTags, getCommunityTagsFlat, create/update/delete, assign/remove/bulkAssign
-- [x] Leads page: unified list, independent source + community filters, sorting, pagination, contact links
-- [x] Contacts page: community tag badges, independent community filter, removed inline editing
-- [x] Data migration: merge Lydia duplicate, phone_import→manual, remove waitlist source
-- [x] Social media pulled from questionnaire in getContact response
-
-### Remaining
-- [ ] **Communities tab** (`/admin/crm/communities`): tree view with CRUD UI for managing community/location hierarchy (nav link added, page not built)
-- [ ] **Questionnaire auto-tagging**: update questionnaire submit route to auto-tag community based on how_found_us_detail and other_communities fields
-- [ ] **Contact detail page**: show community tags with add/remove UI, show social media links
-- [ ] Intelligent community detection from questionnaire other_communities free text (e.g. "Bridge and Extreme" → auto-tag)
+_None_
 
 ## Bugs (broken functionality)
 
@@ -33,10 +15,15 @@ _None documented_
 - [ ] 3 lint warnings: unused imports in ecosystem, team, login pages
 - [ ] `drizzle-kit push` crashes on Node v24 (checkValue.replace bug) — use raw SQL for migrations
 
+## CRM Enhancements
+
+- [ ] Intelligent community detection improvements (fuzzy matching, abbreviations, common misspellings)
+
 ## Admin Hub Refactor (multi-session)
 
 ### Session 1: Foundation (DONE)
 ### Session 3: CRM Refactor (DONE)
+### Session 3b: CRM Community Overhaul (DONE)
 ### Session 4: Team + Finance (SCAFFOLDED)
 - [ ] Finance pages — build out with Mercury connection
 

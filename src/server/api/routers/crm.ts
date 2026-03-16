@@ -10,6 +10,8 @@ import {
   contactSources,
   contactActivities,
   contactAssociations,
+  contactCommunityTags,
+  communityTags,
   questionnaireResponses,
   waitlistIntake,
   eventWaivers,
@@ -52,7 +54,10 @@ export const crmRouter = createTRPCRouter({
         search: z.string().optional(),
         status: z.string().optional(),
         source: z.string().optional(),
-        addedBy: z.string().optional(), // kept for backwards compat, now filters associations
+        communityTagId: z.number().optional(),
+        addedBy: z.string().optional(),
+        sortBy: z.enum(["name", "date", "source", "lastContact"]).default("lastContact"),
+        sortOrder: z.enum(["asc", "desc"]).default("desc"),
         limit: z.number().min(1).max(100).default(25),
         offset: z.number().min(0).default(0),
       })
@@ -68,7 +73,13 @@ export const crmRouter = createTRPCRouter({
         conditions.push(eq(contacts.firstSource, input.source));
       }
 
-      // Filter by associated team member
+      // Community tag filter (independent from source)
+      if (input.communityTagId) {
+        conditions.push(
+          sql`${contacts.id} IN (SELECT contact_id FROM "web-eco_contact_community_tag" WHERE community_tag_id = ${input.communityTagId})`
+        );
+      }
+
       if (input.addedBy) {
         conditions.push(
           sql`${contacts.id} IN (SELECT contact_id FROM "web-eco_contact_association" WHERE user_id = ${input.addedBy})`
@@ -83,12 +94,20 @@ export const crmRouter = createTRPCRouter({
 
       const where = conditions.length > 0 ? and(...conditions) : undefined;
 
+      // Sorting
+      const orderMap = {
+        name: input.sortOrder === "asc" ? sql`${contacts.name} ASC NULLS LAST` : sql`${contacts.name} DESC NULLS LAST`,
+        date: input.sortOrder === "asc" ? sql`${contacts.createdAt} ASC` : sql`${contacts.createdAt} DESC`,
+        source: input.sortOrder === "asc" ? sql`${contacts.firstSource} ASC` : sql`${contacts.firstSource} DESC`,
+        lastContact: input.sortOrder === "asc" ? sql`${contacts.lastContactDate} ASC` : sql`${contacts.lastContactDate} DESC`,
+      };
+
       const [rows, countResult] = await Promise.all([
         ctx.db
           .select()
           .from(contacts)
           .where(where)
-          .orderBy(desc(contacts.lastContactDate))
+          .orderBy(orderMap[input.sortBy])
           .limit(input.limit)
           .offset(input.offset),
         ctx.db
@@ -102,9 +121,10 @@ export const crmRouter = createTRPCRouter({
       const ids = rows.map((r) => r.id);
       const sourcesMap: Record<number, string[]> = {};
       const associationsMap: Record<number, { id: string; name: string }[]> = {};
+      const communityMap: Record<number, { id: number; name: string; color: string | null; type: string }[]> = {};
 
       if (ids.length > 0) {
-        const [sources, assocs] = await Promise.all([
+        const [sources, assocs, comTags] = await Promise.all([
           ctx.db
             .select({
               contactId: contactSources.contactId,
@@ -122,6 +142,17 @@ export const crmRouter = createTRPCRouter({
             .from(contactAssociations)
             .innerJoin(userProfiles, eq(contactAssociations.userId, userProfiles.id))
             .where(inArray(contactAssociations.contactId, ids)),
+          ctx.db
+            .select({
+              contactId: contactCommunityTags.contactId,
+              tagId: communityTags.id,
+              tagName: communityTags.name,
+              tagColor: communityTags.color,
+              tagType: communityTags.type,
+            })
+            .from(contactCommunityTags)
+            .innerJoin(communityTags, eq(contactCommunityTags.communityTagId, communityTags.id))
+            .where(inArray(contactCommunityTags.contactId, ids)),
         ]);
 
         for (const s of sources) {
@@ -136,13 +167,23 @@ export const crmRouter = createTRPCRouter({
             name: a.fullName ?? a.email,
           });
         }
+
+        for (const ct of comTags) {
+          if (!communityMap[ct.contactId]) communityMap[ct.contactId] = [];
+          communityMap[ct.contactId]!.push({
+            id: ct.tagId,
+            name: ct.tagName,
+            color: ct.tagColor,
+            type: ct.tagType,
+          });
+        }
       }
 
       const contactsWithSources = rows.map((c) => ({
         ...c,
         submissionSources: sourcesMap[c.id] ?? [c.firstSource],
         associations: associationsMap[c.id] ?? [],
-        // Keep addedByName for backwards compat (derived from associations)
+        communityTags: communityMap[c.id] ?? [],
         addedByName: associationsMap[c.id]?.[0]?.name ?? null,
       }));
 
@@ -163,7 +204,7 @@ export const crmRouter = createTRPCRouter({
         });
       }
 
-      const [qResponses, wIntakes, waivers, sources, activities, notes, associations] =
+      const [qResponses, wIntakes, waivers, sources, activities, notes, associations, referredByContact, referralCount, comTags] =
         await Promise.all([
           ctx.db.query.questionnaireResponses.findMany({
             where: eq(questionnaireResponses.contactId, input.id),
@@ -227,7 +268,47 @@ export const crmRouter = createTRPCRouter({
             .from(contactAssociations)
             .innerJoin(userProfiles, eq(contactAssociations.userId, userProfiles.id))
             .where(eq(contactAssociations.contactId, input.id)),
+          // Referral: who referred this contact
+          contact.referredByContactId
+            ? ctx.db.query.contacts.findFirst({
+                where: eq(contacts.id, contact.referredByContactId),
+                columns: { id: true, name: true, email: true },
+              })
+            : Promise.resolve(null),
+          // Referral: how many people this contact referred
+          ctx.db
+            .select({ count: sql<number>`count(*)::int` })
+            .from(contacts)
+            .where(eq(contacts.referredByContactId, input.id))
+            .then((rows) => rows[0]?.count ?? 0),
+          // Community tags
+          ctx.db
+            .select({
+              id: communityTags.id,
+              name: communityTags.name,
+              slug: communityTags.slug,
+              color: communityTags.color,
+              type: communityTags.type,
+            })
+            .from(contactCommunityTags)
+            .innerJoin(communityTags, eq(contactCommunityTags.communityTagId, communityTags.id))
+            .where(eq(contactCommunityTags.contactId, input.id)),
         ]);
+
+      // Extract social media from latest questionnaire response
+      const latestQ = qResponses[0];
+      const socialMedia = latestQ
+        ? {
+            instagram: latestQ.instagram,
+            twitter: latestQ.twitter,
+            linkedin: latestQ.linkedin,
+            tiktok: latestQ.tiktok,
+            youtube: latestQ.youtube,
+            facebook: latestQ.facebook,
+            otherSocial: latestQ.otherSocial,
+            website: latestQ.website,
+          }
+        : null;
 
       return {
         contact,
@@ -237,14 +318,19 @@ export const crmRouter = createTRPCRouter({
         sources,
         activities,
         voiceNotes: notes,
+        communityTags: comTags,
+        socialMedia,
         associations: associations.map((a) => ({
           id: a.userId,
           name: a.fullName ?? a.email,
         })),
-        // Keep addedByProfile for backwards compat
         addedByProfile: associations[0]
           ? { id: associations[0].userId, fullName: associations[0].fullName, email: associations[0].email }
           : null,
+        referredBy: referredByContact
+          ? { id: referredByContact.id, name: referredByContact.name ?? referredByContact.email }
+          : null,
+        referralCount,
       };
     }),
 
@@ -295,39 +381,48 @@ export const crmRouter = createTRPCRouter({
   }),
 
   getLeads: protectedProcedure
-    .input(z.object({ source: z.string().optional() }).optional())
+    .input(
+      z.object({
+        source: z.string().optional(),
+        communityTagId: z.number().optional(),
+        search: z.string().optional(),
+        sortBy: z.enum(["name", "date", "source"]).default("date"),
+        sortOrder: z.enum(["asc", "desc"]).default("desc"),
+        limit: z.number().min(1).max(100).default(50),
+        offset: z.number().min(0).default(0),
+      }).optional()
+    )
     .query(async ({ ctx, input }) => {
       const sourceFilter = input?.source;
+      const communityFilter = input?.communityTagId;
+      const search = input?.search;
+
+      // If community filter is active, get contact IDs in that community
+      let communityContactIds: number[] | null = null;
+      if (communityFilter) {
+        const rows = await ctx.db
+          .select({ contactId: contactCommunityTags.contactId })
+          .from(contactCommunityTags)
+          .where(eq(contactCommunityTags.communityTagId, communityFilter));
+        communityContactIds = rows.map((r) => r.contactId);
+        if (communityContactIds.length === 0) {
+          return { leads: [], total: 0 };
+        }
+      }
 
       type LeadItem = {
         id: number;
+        contactId: number | null;
         source: string;
         name: string;
         email: string;
         date: Date;
         preview: string;
         processed: boolean;
+        communityTags: { id: number; name: string; color: string | null }[];
       };
 
       const results: LeadItem[] = [];
-
-      // Waitlist submissions
-      if (!sourceFilter || sourceFilter === "waitlist") {
-        const waitlists = await ctx.db.query.waitlistIntake.findMany({
-          orderBy: [desc(waitlistIntake.createdAt)],
-        });
-        for (const w of waitlists) {
-          results.push({
-            id: w.id,
-            source: "waitlist",
-            name: w.name,
-            email: w.email,
-            date: w.createdAt,
-            preview: w.message?.slice(0, 100) ?? "",
-            processed: w.processed,
-          });
-        }
-      }
 
       // Questionnaire submissions
       if (!sourceFilter || sourceFilter === "questionnaire") {
@@ -336,14 +431,21 @@ export const crmRouter = createTRPCRouter({
             orderBy: [desc(questionnaireResponses.createdAt)],
           });
         for (const q of questionnaires) {
+          if (communityContactIds && !communityContactIds.includes(q.contactId)) continue;
+          if (search) {
+            const s = search.toLowerCase();
+            if (!q.name.toLowerCase().includes(s) && !q.email.toLowerCase().includes(s)) continue;
+          }
           results.push({
             id: q.id,
+            contactId: q.contactId,
             source: "questionnaire",
             name: q.name,
             email: q.email,
             date: q.createdAt,
             preview: q.primaryRole?.slice(0, 100) ?? "",
-            processed: true, // questionnaires are always "processed"
+            processed: true,
+            communityTags: [],
           });
         }
       }
@@ -354,22 +456,93 @@ export const crmRouter = createTRPCRouter({
           orderBy: [desc(eventWaivers.signedAt)],
         });
         for (const w of waivers) {
+          // Find contact ID by email for community filtering
+          if (communityContactIds) {
+            const contact = await ctx.db.query.contacts.findFirst({
+              where: eq(contacts.email, w.signerEmail),
+              columns: { id: true },
+            });
+            if (!contact || !communityContactIds.includes(contact.id)) continue;
+          }
+          if (search) {
+            const s = search.toLowerCase();
+            if (!w.signerName.toLowerCase().includes(s) && !w.signerEmail.toLowerCase().includes(s)) continue;
+          }
           results.push({
             id: w.id,
+            contactId: null,
             source: "event_waiver",
             name: w.signerName,
             email: w.signerEmail,
             date: w.signedAt,
             preview: `${w.eventName} — ${w.eventDate}`,
             processed: true,
+            communityTags: [],
           });
         }
       }
 
-      // Sort all by date DESC
-      results.sort((a, b) => b.date.getTime() - a.date.getTime());
+      // Resolve contactId for waivers and fetch community tags
+      const allEmails = [...new Set(results.map((r) => r.email))];
+      if (allEmails.length > 0) {
+        const contactRows = await ctx.db
+          .select({ id: contacts.id, email: contacts.email })
+          .from(contacts)
+          .where(inArray(contacts.email, allEmails));
+        const emailToId: Record<string, number> = {};
+        for (const c of contactRows) emailToId[c.email] = c.id;
 
-      return results;
+        // Assign contactIds for waivers
+        for (const r of results) {
+          if (!r.contactId && emailToId[r.email]) {
+            r.contactId = emailToId[r.email]!;
+          }
+        }
+
+        // Fetch community tags for all contacts
+        const contactIds = [...new Set(results.map((r) => r.contactId).filter((id): id is number => id !== null))];
+        if (contactIds.length > 0) {
+          const tags = await ctx.db
+            .select({
+              contactId: contactCommunityTags.contactId,
+              tagId: communityTags.id,
+              tagName: communityTags.name,
+              tagColor: communityTags.color,
+            })
+            .from(contactCommunityTags)
+            .innerJoin(communityTags, eq(contactCommunityTags.communityTagId, communityTags.id))
+            .where(inArray(contactCommunityTags.contactId, contactIds));
+
+          const tagMap: Record<number, { id: number; name: string; color: string | null }[]> = {};
+          for (const t of tags) {
+            if (!tagMap[t.contactId]) tagMap[t.contactId] = [];
+            tagMap[t.contactId]!.push({ id: t.tagId, name: t.tagName, color: t.tagColor });
+          }
+          for (const r of results) {
+            if (r.contactId && tagMap[r.contactId]) {
+              r.communityTags = tagMap[r.contactId]!;
+            }
+          }
+        }
+      }
+
+      // Sorting
+      const sortBy = input?.sortBy ?? "date";
+      const sortOrder = input?.sortOrder ?? "desc";
+      results.sort((a, b) => {
+        let cmp = 0;
+        if (sortBy === "name") cmp = a.name.localeCompare(b.name);
+        else if (sortBy === "source") cmp = a.source.localeCompare(b.source);
+        else cmp = a.date.getTime() - b.date.getTime();
+        return sortOrder === "desc" ? -cmp : cmp;
+      });
+
+      const total = results.length;
+      const limit = input?.limit ?? 50;
+      const offset = input?.offset ?? 0;
+      const paged = results.slice(offset, offset + limit);
+
+      return { leads: paged, total };
     }),
 
   // ─── Mutations ─────────────────────────────────────────────
@@ -659,7 +832,7 @@ export const crmRouter = createTRPCRouter({
                   name: c.name,
                   email: placeholder,
                   phone: c.phone,
-                  firstSource: "phone_import",
+                  firstSource: "manual",
                   status: "lead",
                   tags: input.tags ?? [],
                   addedBy: ctx.user.id,
@@ -669,7 +842,7 @@ export const crmRouter = createTRPCRouter({
                 await Promise.all([
                   ctx.db.insert(contactSources).values({
                     contactId: newContact.id,
-                    source: "phone_import",
+                    source: "manual",
                   }),
                   ctx.db.insert(contactAssociations).values({
                     contactId: newContact.id,
@@ -678,7 +851,7 @@ export const crmRouter = createTRPCRouter({
                   ctx.db.insert(contactActivities).values({
                     contactId: newContact.id,
                     activityType: "contact_created",
-                    source: "phone_import",
+                    source: "manual",
                     description: "Imported from phone contacts",
                   }),
                 ]);
@@ -696,7 +869,7 @@ export const crmRouter = createTRPCRouter({
               name: c.name,
               email: c.email,
               phone: c.phone ?? null,
-              firstSource: "phone_import",
+              firstSource: "manual",
               status: "lead",
               tags: input.tags ?? [],
               addedBy: ctx.user.id,
@@ -707,7 +880,7 @@ export const crmRouter = createTRPCRouter({
             await Promise.all([
               ctx.db.insert(contactSources).values({
                 contactId: newContact.id,
-                source: "phone_import",
+                source: "manual",
               }),
               ctx.db.insert(contactAssociations).values({
                 contactId: newContact.id,
@@ -716,7 +889,7 @@ export const crmRouter = createTRPCRouter({
               ctx.db.insert(contactActivities).values({
                 contactId: newContact.id,
                 activityType: "contact_created",
-                source: "phone_import",
+                source: "manual",
                 description: "Imported from phone contacts",
               }),
             ]);
@@ -795,5 +968,186 @@ export const crmRouter = createTRPCRouter({
       await ctx.db.delete(voiceNotes).where(eq(voiceNotes.id, input.id));
 
       return { success: true };
+    }),
+
+  // ─── Community Tags ──────────────────────────────────────────
+
+  getCommunityTags: protectedProcedure.query(async ({ ctx }) => {
+    const allTags = await ctx.db
+      .select()
+      .from(communityTags)
+      .orderBy(communityTags.displayOrder);
+
+    // Count contacts per tag
+    const counts = await ctx.db
+      .select({
+        communityTagId: contactCommunityTags.communityTagId,
+        count: sql<number>`count(*)::int`,
+      })
+      .from(contactCommunityTags)
+      .groupBy(contactCommunityTags.communityTagId);
+
+    const countMap: Record<number, number> = {};
+    for (const c of counts) countMap[c.communityTagId] = c.count;
+
+    // Build tree structure
+    type TagNode = (typeof allTags)[0] & {
+      contactCount: number;
+      children: TagNode[];
+    };
+
+    const nodeMap: Record<number, TagNode> = {};
+    const roots: TagNode[] = [];
+
+    for (const tag of allTags) {
+      nodeMap[tag.id] = { ...tag, contactCount: countMap[tag.id] ?? 0, children: [] };
+    }
+
+    for (const tag of allTags) {
+      const node = nodeMap[tag.id]!;
+      if (tag.parentId && nodeMap[tag.parentId]) {
+        nodeMap[tag.parentId]!.children.push(node);
+      } else {
+        roots.push(node);
+      }
+    }
+
+    return roots;
+  }),
+
+  getCommunityTagsFlat: protectedProcedure.query(async ({ ctx }) => {
+    const tags = await ctx.db
+      .select()
+      .from(communityTags)
+      .orderBy(communityTags.type, communityTags.displayOrder);
+    return tags;
+  }),
+
+  createCommunityTag: protectedProcedure
+    .input(
+      z.object({
+        name: z.string().min(1),
+        type: z.enum(["community", "location"]).default("community"),
+        description: z.string().optional(),
+        color: z.string().optional(),
+        parentId: z.number().optional().nullable(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const slug = input.name
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-|-$/g, "");
+
+      const [tag] = await ctx.db
+        .insert(communityTags)
+        .values({
+          name: input.name,
+          slug,
+          type: input.type,
+          description: input.description,
+          color: input.color,
+          parentId: input.parentId ?? null,
+        })
+        .returning();
+
+      return tag;
+    }),
+
+  updateCommunityTag: protectedProcedure
+    .input(
+      z.object({
+        id: z.number(),
+        name: z.string().optional(),
+        type: z.enum(["community", "location"]).optional(),
+        description: z.string().optional().nullable(),
+        color: z.string().optional().nullable(),
+        parentId: z.number().optional().nullable(),
+        displayOrder: z.number().optional(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { id, ...updates } = input;
+      const data: Record<string, unknown> = {};
+
+      if (updates.name !== undefined) {
+        data.name = updates.name;
+        data.slug = updates.name
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, "-")
+          .replace(/^-|-$/g, "");
+      }
+      if (updates.type !== undefined) data.type = updates.type;
+      if (updates.description !== undefined) data.description = updates.description;
+      if (updates.color !== undefined) data.color = updates.color;
+      if (updates.parentId !== undefined) data.parentId = updates.parentId;
+      if (updates.displayOrder !== undefined) data.displayOrder = updates.displayOrder;
+
+      const [updated] = await ctx.db
+        .update(communityTags)
+        .set(data)
+        .where(eq(communityTags.id, id))
+        .returning();
+
+      return updated;
+    }),
+
+  deleteCommunityTag: adminProcedure
+    .input(z.object({ id: z.number() }))
+    .mutation(async ({ ctx, input }) => {
+      await ctx.db.delete(communityTags).where(eq(communityTags.id, input.id));
+      return { success: true };
+    }),
+
+  assignContactCommunity: protectedProcedure
+    .input(z.object({ contactId: z.number(), communityTagId: z.number() }))
+    .mutation(async ({ ctx, input }) => {
+      await ctx.db
+        .insert(contactCommunityTags)
+        .values({
+          contactId: input.contactId,
+          communityTagId: input.communityTagId,
+          taggedBy: "manual",
+        })
+        .onConflictDoNothing();
+
+      return { success: true };
+    }),
+
+  removeContactCommunity: protectedProcedure
+    .input(z.object({ contactId: z.number(), communityTagId: z.number() }))
+    .mutation(async ({ ctx, input }) => {
+      await ctx.db
+        .delete(contactCommunityTags)
+        .where(
+          and(
+            eq(contactCommunityTags.contactId, input.contactId),
+            eq(contactCommunityTags.communityTagId, input.communityTagId)
+          )
+        );
+
+      return { success: true };
+    }),
+
+  bulkAssignCommunity: protectedProcedure
+    .input(
+      z.object({
+        contactIds: z.array(z.number()).min(1),
+        communityTagId: z.number(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const values = input.contactIds.map((contactId) => ({
+        contactId,
+        communityTagId: input.communityTagId,
+        taggedBy: "manual" as const,
+      }));
+
+      await ctx.db
+        .insert(contactCommunityTags)
+        .values(values)
+        .onConflictDoNothing();
+
+      return { success: true, count: input.contactIds.length };
     }),
 });

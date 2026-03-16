@@ -10,6 +10,7 @@ import {
   jsonb,
   unique,
   index,
+  type AnyPgColumn,
 } from "drizzle-orm/pg-core";
 
 /**
@@ -103,6 +104,12 @@ export const contacts = createTable("contact", {
 
   // Who added this contact (team member tracking)
   addedBy: text("added_by").references(() => userProfiles.id, { onDelete: "set null" }),
+
+  // Referral tracking — who referred this contact
+  referredByContactId: integer("referred_by_contact_id").references(
+    (): AnyPgColumn => contacts.id,
+    { onDelete: "set null" }
+  ),
 
   // Internal notes
   notes: text("notes"),
@@ -611,6 +618,56 @@ export const voiceNotes = createTable("voice_note", {
 });
 
 /**
+ * Community Tags - Hierarchical taxonomy for communities and locations
+ * type: 'community' for groups/events, 'location' for geographic hubs
+ * parent_id enables tree structure (location → community, meta → sub)
+ */
+export const communityTags = createTable("community_tag", {
+  id: serial("id").primaryKey(),
+  name: varchar("name", { length: 255 }).notNull(),
+  slug: varchar("slug", { length: 255 }).notNull().unique(),
+  type: varchar("type", { length: 50 }).notNull().default("community"), // 'community' or 'location'
+  description: text("description"),
+  color: varchar("color", { length: 20 }),
+  parentId: integer("parent_id").references(
+    (): AnyPgColumn => communityTags.id,
+    { onDelete: "set null" }
+  ),
+  displayOrder: integer("display_order").default(0).notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .$onUpdate(() => new Date()),
+});
+
+/**
+ * Contact Community Tags - Many-to-many between contacts and community tags
+ */
+export const contactCommunityTags = createTable(
+  "contact_community_tag",
+  {
+    id: serial("id").primaryKey(),
+    contactId: integer("contact_id")
+      .notNull()
+      .references(() => contacts.id, { onDelete: "cascade" }),
+    communityTagId: integer("community_tag_id")
+      .notNull()
+      .references(() => communityTags.id, { onDelete: "cascade" }),
+    taggedAt: timestamp("tagged_at", { withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    taggedBy: varchar("tagged_by", { length: 100 }), // 'system', 'manual', 'questionnaire'
+  },
+  (t) => [
+    unique("unique_contact_community").on(t.contactId, t.communityTagId),
+    index("idx_contact_community_contact").on(t.contactId),
+    index("idx_contact_community_tag").on(t.communityTagId),
+  ]
+);
+
+/**
  * Contact Associations - Many-to-many between contacts and team members
  * Replaces single addedBy FK with flexible association system
  */
@@ -640,15 +697,50 @@ export const contactAssociations = createTable(
  * Enable type-safe eager loading with `with:` syntax
  */
 
+export const communityTagsRelations = relations(communityTags, ({ one, many }) => ({
+  parent: one(communityTags, {
+    fields: [communityTags.parentId],
+    references: [communityTags.id],
+    relationName: "communityTagHierarchy",
+  }),
+  children: many(communityTags, {
+    relationName: "communityTagHierarchy",
+  }),
+  contactTags: many(contactCommunityTags),
+}));
+
+export const contactCommunityTagsRelations = relations(
+  contactCommunityTags,
+  ({ one }) => ({
+    contact: one(contacts, {
+      fields: [contactCommunityTags.contactId],
+      references: [contacts.id],
+    }),
+    communityTag: one(communityTags, {
+      fields: [contactCommunityTags.communityTagId],
+      references: [communityTags.id],
+    }),
+  })
+);
+
 export const contactsRelations = relations(contacts, ({ one, many }) => ({
   sources: many(contactSources),
   activities: many(contactActivities),
   associations: many(contactAssociations),
+  communityTags: many(contactCommunityTags),
   questionnaireResponses: many(questionnaireResponses, {
     relationName: "submitter",
   }),
   referrals: many(questionnaireResponses, {
     relationName: "referrer",
+  }),
+  referredBy: one(contacts, {
+    fields: [contacts.referredByContactId],
+    references: [contacts.id],
+    relationName: "contactReferrals",
+  }),
+  referredContacts: many(contacts, {
+    relationName: "contactReferrals",
   }),
   waitlistIntakes: many(waitlistIntake),
   voiceNotes: many(voiceNotes),

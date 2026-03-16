@@ -48,6 +48,7 @@ export const ADMIN_SIDEBAR_NAV: NavItem[] = [
       { title: "Dashboard", href: "/admin/crm" },
       { title: "Contacts", href: "/admin/crm/contacts" },
       { title: "Leads", href: "/admin/crm/leads" },
+      { title: "Communities", href: "/admin/crm/communities" },
     ],
   },
   {

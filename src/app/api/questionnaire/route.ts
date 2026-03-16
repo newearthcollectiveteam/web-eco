@@ -7,6 +7,8 @@ import {
   contacts,
   contactActivities,
   contactSources,
+  contactCommunityTags,
+  communityTags,
   questionnaireResponses,
   emailLinkClicks,
 } from "~/server/db/schema";
@@ -348,6 +350,11 @@ export async function POST(request: NextRequest) {
       });
       if (referrer) {
         referrerContactId = referrer.id;
+        // Set referral FK on the contact record
+        await db
+          .update(contacts)
+          .set({ referredByContactId: referrer.id })
+          .where(eq(contacts.id, contactId!));
       }
     }
 
@@ -496,6 +503,48 @@ export async function POST(request: NextRequest) {
         ...(referrerContactId ? { referrerContactId } : {}),
       },
     });
+
+    // ─── Auto-tag community based on questionnaire responses ───
+    try {
+      // Collect text fields that may reference communities
+      const communityHints: string[] = [];
+      if (howFoundUsDetail) communityHints.push(howFoundUsDetail);
+      if (howFoundUsOther) communityHints.push(howFoundUsOther);
+      if (otherCommunities) communityHints.push(otherCommunities);
+      if (existingConnections) communityHints.push(existingConnections);
+
+      if (communityHints.length > 0) {
+        const allCommunityTags = await db
+          .select({ id: communityTags.id, name: communityTags.name, slug: communityTags.slug })
+          .from(communityTags);
+
+        const combinedText = communityHints.join(" ").toLowerCase();
+        const matchedTagIds: number[] = [];
+
+        for (const tag of allCommunityTags) {
+          // Match by name (case-insensitive, word boundary aware)
+          const nameLower = tag.name.toLowerCase();
+          if (combinedText.includes(nameLower)) {
+            matchedTagIds.push(tag.id);
+          }
+        }
+
+        if (matchedTagIds.length > 0) {
+          await db
+            .insert(contactCommunityTags)
+            .values(
+              matchedTagIds.map((tagId) => ({
+                contactId: contactId!,
+                communityTagId: tagId,
+                taggedBy: "questionnaire" as const,
+              }))
+            )
+            .onConflictDoNothing();
+        }
+      }
+    } catch (err) {
+      console.error("Community auto-tagging failed:", err);
+    }
 
     // Track event
     await trackEvent(

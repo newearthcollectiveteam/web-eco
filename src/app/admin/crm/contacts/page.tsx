@@ -10,14 +10,10 @@ import {
   X,
   ChevronLeft,
   ChevronRight,
-  Pencil,
   Upload,
-  Mic,
-  MessageSquare,
 } from "lucide-react";
 import { api } from "~/trpc/react";
 import { PhoneImportModal } from "~/components/admin/crm/phone-import-modal";
-import { VoiceNoteRecorder } from "~/components/admin/crm/voice-note-recorder";
 
 const STATUS_OPTIONS = ["lead", "qualified", "customer", "inactive"] as const;
 const STATUS_LABELS: Record<string, string> = {
@@ -33,19 +29,19 @@ const STATUS_COLORS: Record<string, string> = {
   inactive: "bg-neutral-800 text-neutral-400",
 };
 const SOURCE_LABELS: Record<string, string> = {
-  waitlist: "Waitlist",
   questionnaire: "Questionnaire",
   event_waiver: "Event Waiver",
   manual: "Manual",
-  phone_import: "Phone Import",
+  "emergence-followup": "Emergence Followup",
+  "community-landing": "Community Landing",
   other: "Other",
 };
 const SOURCE_COLORS: Record<string, string> = {
-  waitlist: "border-amber-500/40 text-amber-400",
   questionnaire: "border-emerald-500/40 text-emerald-400",
   event_waiver: "border-purple-500/40 text-purple-400",
   manual: "border-blue-500/40 text-blue-400",
-  phone_import: "border-cyan-500/40 text-cyan-400",
+  "emergence-followup": "border-amber-500/40 text-amber-400",
+  "community-landing": "border-cyan-500/40 text-cyan-400",
   other: "border-neutral-500/40 text-neutral-400",
 };
 
@@ -326,127 +322,13 @@ function ContactModal({ mode, contact, onClose, onSuccess }: ContactModalProps) 
   );
 }
 
-// ─── Voice Note Modal ────────────────────────────────────────
-
-function VoiceNoteModal({
-  contactId,
-  contactName,
-  onClose,
-}: {
-  contactId: number;
-  contactName: string;
-  onClose: () => void;
-}) {
-  const contactQuery = api.crm.getContact.useQuery({ id: contactId });
-  const utils = api.useUtils();
-
-  const voiceNotes = contactQuery.data?.voiceNotes ?? [];
-
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
-      <div className="w-full max-w-md rounded-2xl border border-white/10 bg-neutral-900 shadow-2xl">
-        <div className="flex items-center justify-between border-b border-white/10 px-6 py-4">
-          <h2
-            className="text-lg font-bold text-white"
-            style={{ fontFamily: "Airwaves, sans-serif" }}
-          >
-            Voice Notes — {contactName}
-          </h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-white">
-            <X className="h-5 w-5" />
-          </button>
-        </div>
-        <div className="p-6">
-          {contactQuery.isLoading ? (
-            <p className="py-4 text-center text-sm text-gray-500">Loading...</p>
-          ) : (
-            <VoiceNoteRecorder
-              contactId={contactId}
-              notes={voiceNotes}
-              onUpdate={() => void utils.crm.getContact.invalidate({ id: contactId })}
-            />
-          )}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// ─── Quick Note Modal ────────────────────────────────────────
-
-function QuickNoteModal({
-  contactId,
-  contactName,
-  onClose,
-  onSuccess,
-}: {
-  contactId: number;
-  contactName: string;
-  onClose: () => void;
-  onSuccess: () => void;
-}) {
-  const [note, setNote] = useState("");
-  const addNoteMutation = api.crm.addNote.useMutation({
-    onSuccess: () => {
-      onSuccess();
-      onClose();
-    },
-  });
-
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
-      <div className="w-full max-w-md rounded-2xl border border-white/10 bg-neutral-900 shadow-2xl">
-        <div className="flex items-center justify-between border-b border-white/10 px-6 py-4">
-          <h2
-            className="text-lg font-bold text-white"
-            style={{ fontFamily: "Airwaves, sans-serif" }}
-          >
-            Note — {contactName}
-          </h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-white">
-            <X className="h-5 w-5" />
-          </button>
-        </div>
-        <div className="p-6">
-          <textarea
-            value={note}
-            onChange={(e) => setNote(e.target.value)}
-            rows={4}
-            placeholder="Add a note..."
-            autoFocus
-            className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder-gray-500 focus:border-[#facf39]/50 focus:outline-none"
-          />
-          <div className="mt-3 flex justify-end gap-3">
-            <button
-              onClick={onClose}
-              className="rounded-lg border border-white/10 px-4 py-2 text-sm text-gray-400 hover:text-white"
-            >
-              Cancel
-            </button>
-            <button
-              onClick={() => {
-                if (note.trim()) {
-                  addNoteMutation.mutate({ contactId, note: note.trim() });
-                }
-              }}
-              disabled={!note.trim() || addNoteMutation.isPending}
-              className="rounded-lg bg-gradient-to-r from-[#facf39] to-[#f59e0b] px-5 py-2 text-sm font-medium text-black transition-opacity hover:opacity-90 disabled:opacity-50"
-            >
-              {addNoteMutation.isPending ? "Saving..." : "Save Note"}
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 // ─── Contacts Page ───────────────────────────────────────────
 
 function ContactsContent() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [sourceFilter, setSourceFilter] = useState("");
+  const [communityFilter, setCommunityFilter] = useState<number | undefined>();
   const [addedByFilter, setAddedByFilter] = useState("");
   const [page, setPage] = useState(0);
   const [modal, setModal] = useState<{
@@ -454,19 +336,19 @@ function ContactsContent() {
     contact?: ContactModalProps["contact"];
   } | null>(null);
   const [showImport, setShowImport] = useState(false);
-  const [voiceNoteContact, setVoiceNoteContact] = useState<{ id: number; name: string } | null>(null);
-  const [quickNoteContact, setQuickNoteContact] = useState<{ id: number; name: string } | null>(null);
 
   const contactsQuery = api.crm.getContacts.useQuery({
     search: search || undefined,
     status: statusFilter || undefined,
     source: sourceFilter || undefined,
+    communityTagId: communityFilter,
     addedBy: addedByFilter || undefined,
     limit: PAGE_SIZE,
     offset: page * PAGE_SIZE,
   });
 
   const teamQuery = api.crm.getTeamMembersWhoAddedContacts.useQuery();
+  const communityTagsQuery = api.crm.getCommunityTagsFlat.useQuery();
 
   const contacts = contactsQuery.data?.contacts ?? [];
   const total = contactsQuery.data?.total ?? 0;
@@ -492,23 +374,6 @@ function ContactsContent() {
       {showImport && (
         <PhoneImportModal
           onClose={() => setShowImport(false)}
-          onSuccess={() => void contactsQuery.refetch()}
-        />
-      )}
-
-      {voiceNoteContact && (
-        <VoiceNoteModal
-          contactId={voiceNoteContact.id}
-          contactName={voiceNoteContact.name}
-          onClose={() => setVoiceNoteContact(null)}
-        />
-      )}
-
-      {quickNoteContact && (
-        <QuickNoteModal
-          contactId={quickNoteContact.id}
-          contactName={quickNoteContact.name}
-          onClose={() => setQuickNoteContact(null)}
           onSuccess={() => void contactsQuery.refetch()}
         />
       )}
@@ -588,6 +453,32 @@ function ContactsContent() {
               </option>
             ))}
           </select>
+          {/* Community Filter (independent) */}
+          <select
+            value={communityFilter ?? ""}
+            onChange={(e) => {
+              setCommunityFilter(e.target.value ? Number(e.target.value) : undefined);
+              setPage(0);
+            }}
+            className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white focus:border-[#facf39]/50 focus:outline-none"
+          >
+            <option value="">All Communities</option>
+            {(communityTagsQuery.data ?? [])
+              .filter((t) => t.type === "community")
+              .map((tag) => (
+                <option key={tag.id} value={tag.id}>
+                  {tag.name}
+                </option>
+              ))}
+            <option disabled>──────────</option>
+            {(communityTagsQuery.data ?? [])
+              .filter((t) => t.type === "location")
+              .map((tag) => (
+                <option key={tag.id} value={tag.id}>
+                  {tag.name}
+                </option>
+              ))}
+          </select>
           {(teamQuery.data?.length ?? 0) > 0 && (
             <select
               value={addedByFilter}
@@ -618,9 +509,8 @@ function ContactsContent() {
                   <th className="px-5 py-3">Name</th>
                   <th className="px-5 py-3">Contact</th>
                   <th className="px-5 py-3">Sources</th>
+                  <th className="px-5 py-3">Communities</th>
                   <th className="px-5 py-3">Status</th>
-                  <th className="px-5 py-3">Associations</th>
-                  <th className="px-5 py-3">Tags</th>
                   <th className="px-5 py-3">Last Contact</th>
                   <th className="px-5 py-3 text-right">Actions</th>
                 </tr>
@@ -628,7 +518,7 @@ function ContactsContent() {
               <tbody className="divide-y divide-white/5">
                 {contacts.length === 0 && (
                   <tr>
-                    <td colSpan={8} className="px-5 py-12 text-center text-sm text-gray-500">
+                    <td colSpan={6} className="px-5 py-12 text-center text-sm text-gray-500">
                       {contactsQuery.isLoading ? "Loading..." : "No contacts found"}
                     </td>
                   </tr>
@@ -663,73 +553,43 @@ function ContactsContent() {
                       </div>
                     </td>
                     <td className="px-5 py-3">
+                      <div className="flex flex-wrap gap-1">
+                        {c.communityTags?.map((ct) => (
+                          <Badge
+                            key={ct.id}
+                            variant="outline"
+                            className="text-[10px]"
+                            style={{
+                              borderColor: ct.color ? `${ct.color}66` : undefined,
+                              color: ct.color ?? undefined,
+                            }}
+                          >
+                            {ct.name}
+                          </Badge>
+                        ))}
+                        {(!c.communityTags || c.communityTags.length === 0) && (
+                          <span className="text-xs text-gray-600">—</span>
+                        )}
+                      </div>
+                    </td>
+                    <td className="px-5 py-3">
                       <span
                         className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_COLORS[c.status] ?? ""}`}
                       >
                         {STATUS_LABELS[c.status] ?? c.status}
                       </span>
                     </td>
-                    <td className="px-5 py-3 text-sm text-gray-400">
-                      {c.associations?.length > 0
-                        ? c.associations.length <= 2
-                          ? c.associations.map((a: { id: string; name: string }) => a.name).join(", ")
-                          : `${c.associations[0]?.name}, +${c.associations.length - 1} more`
-                        : "—"}
-                    </td>
-                    <td className="px-5 py-3">
-                      <div className="flex flex-wrap gap-1">
-                        {c.tags?.map((tag) => (
-                          <span
-                            key={tag}
-                            className="rounded-full bg-white/10 px-2 py-0.5 text-[10px] text-gray-300"
-                          >
-                            {tag}
-                          </span>
-                        ))}
-                      </div>
-                    </td>
                     <td className="px-5 py-3 text-sm text-gray-500">
                       {formatDate(c.lastContactDate)}
                     </td>
                     <td className="px-5 py-3 text-right">
-                      <div className="flex items-center justify-end gap-1">
-                        <button
-                          onClick={() => setQuickNoteContact({ id: c.id, name: c.name ?? "Contact" })}
-                          className="rounded-lg p-1.5 text-gray-400 hover:bg-white/10 hover:text-[#facf39]"
-                          title="Quick note"
-                        >
-                          <MessageSquare className="h-4 w-4" />
-                        </button>
-                        <button
-                          onClick={() => setVoiceNoteContact({ id: c.id, name: c.name ?? "Contact" })}
-                          className="rounded-lg p-1.5 text-gray-400 hover:bg-white/10 hover:text-red-400"
-                          title="Voice memo"
-                        >
-                          <Mic className="h-4 w-4" />
-                        </button>
-                        <button
-                          onClick={() =>
-                            setModal({
-                              mode: "edit",
-                              contact: {
-                                id: c.id,
-                                name: c.name,
-                                email: c.email,
-                                phone: c.phone,
-                                status: c.status,
-                                tags: c.tags,
-                                notes: c.notes,
-                                createdAt: c.createdAt,
-                                lastContactDate: c.lastContactDate,
-                              },
-                            })
-                          }
-                          className="rounded-lg p-1.5 text-gray-400 hover:bg-white/10 hover:text-white"
-                          title="Edit contact"
-                        >
-                          <Pencil className="h-4 w-4" />
-                        </button>
-                      </div>
+                      <Link
+                        href={`/admin/crm/contacts/${c.id}`}
+                        className="inline-flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-xs text-gray-400 hover:bg-white/10 hover:text-[#facf39]"
+                      >
+                        View
+                        <ChevronRight className="h-3 w-3" />
+                      </Link>
                     </td>
                   </tr>
                 ))}
@@ -806,56 +666,29 @@ function ContactsContent() {
                     {SOURCE_LABELS[src] ?? src}
                   </Badge>
                 ))}
+                {c.communityTags?.map((ct) => (
+                  <Badge
+                    key={ct.id}
+                    variant="outline"
+                    className="text-[10px]"
+                    style={{
+                      borderColor: ct.color ? `${ct.color}66` : undefined,
+                      color: ct.color ?? undefined,
+                    }}
+                  >
+                    {ct.name}
+                  </Badge>
+                ))}
               </div>
               <div className="mt-2 flex items-center justify-between text-xs text-gray-500">
-                <span>
-                  {c.associations?.length > 0
-                    ? c.associations.map((a: { id: string; name: string }) => a.name).join(", ")
-                    : ""}
-                </span>
-                <div className="flex items-center gap-1">
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setQuickNoteContact({ id: c.id, name: c.name ?? "Contact" });
-                    }}
-                    className="rounded p-1.5 text-gray-500 hover:bg-white/10 hover:text-[#facf39]"
-                  >
-                    <MessageSquare className="h-3.5 w-3.5" />
-                  </button>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setVoiceNoteContact({ id: c.id, name: c.name ?? "Contact" });
-                    }}
-                    className="rounded p-1.5 text-gray-500 hover:bg-white/10 hover:text-red-400"
-                  >
-                    <Mic className="h-3.5 w-3.5" />
-                  </button>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setModal({
-                        mode: "edit",
-                        contact: {
-                          id: c.id,
-                          name: c.name,
-                          email: c.email,
-                          phone: c.phone,
-                          status: c.status,
-                          tags: c.tags,
-                          notes: c.notes,
-                          createdAt: c.createdAt,
-                          lastContactDate: c.lastContactDate,
-                        },
-                      });
-                    }}
-                    className="rounded p-1.5 text-gray-500 hover:bg-white/10 hover:text-white"
-                  >
-                    <Pencil className="h-3.5 w-3.5" />
-                  </button>
-                  <span className="ml-1">{formatDate(c.lastContactDate)}</span>
-                </div>
+                <span>{formatDate(c.lastContactDate)}</span>
+                <Link
+                  href={`/admin/crm/contacts/${c.id}`}
+                  className="inline-flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-xs text-gray-400 hover:bg-white/10 hover:text-[#facf39]"
+                >
+                  View
+                  <ChevronRight className="h-3 w-3" />
+                </Link>
               </div>
             </CardContent>
           </Card>

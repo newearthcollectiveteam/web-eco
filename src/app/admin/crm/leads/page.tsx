@@ -3,48 +3,74 @@
 import { useState, Suspense } from "react";
 import { Card, CardContent } from "~/components/ui/card";
 import { Badge } from "~/components/ui/badge";
+import Link from "next/link";
 import {
+  ArrowUpDown,
   Check,
   ChevronDown,
+  ChevronLeft,
+  ChevronRight,
   ChevronUp,
   ClipboardList,
+  ExternalLink,
   FileSignature,
-  UserPlus,
+  Filter,
+  Search,
 } from "lucide-react";
 import { api } from "~/trpc/react";
 
-const SOURCE_TABS = [
-  { key: "", label: "All" },
-  { key: "waitlist", label: "Waitlist" },
+const SOURCE_OPTIONS = [
+  { key: "", label: "All Sources" },
   { key: "questionnaire", label: "Questionnaire" },
   { key: "event_waiver", label: "Event Waivers" },
 ] as const;
 
 const SOURCE_BADGE_COLORS: Record<string, string> = {
-  waitlist: "border-amber-500/40 text-amber-400",
   questionnaire: "border-emerald-500/40 text-emerald-400",
   event_waiver: "border-purple-500/40 text-purple-400",
 };
 
 const SOURCE_ICONS: Record<string, typeof ClipboardList> = {
-  waitlist: UserPlus,
   questionnaire: ClipboardList,
   event_waiver: FileSignature,
 };
 
+const SORT_OPTIONS = [
+  { key: "date" as const, label: "Date" },
+  { key: "name" as const, label: "Name" },
+  { key: "source" as const, label: "Source" },
+];
+
+const PAGE_SIZE = 25;
+
 function LeadsContent() {
-  const [sourceTab, setSourceTab] = useState("");
+  const [sourceFilter, setSourceFilter] = useState("");
+  const [communityFilter, setCommunityFilter] = useState<number | undefined>();
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortBy, setSortBy] = useState<"date" | "name" | "source">("date");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
+  const [page, setPage] = useState(0);
   const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
 
-  const leadsQuery = api.crm.getLeads.useQuery(
-    sourceTab ? { source: sourceTab } : undefined
-  );
+  const communityTagsQuery = api.crm.getCommunityTagsFlat.useQuery();
+
+  const leadsQuery = api.crm.getLeads.useQuery({
+    source: sourceFilter || undefined,
+    communityTagId: communityFilter,
+    search: searchQuery || undefined,
+    sortBy,
+    sortOrder,
+    limit: PAGE_SIZE,
+    offset: page * PAGE_SIZE,
+  });
 
   const markProcessedMutation = api.crm.markWaitlistProcessed.useMutation({
     onSuccess: () => void leadsQuery.refetch(),
   });
 
-  const leads = leadsQuery.data ?? [];
+  const data = leadsQuery.data ?? { leads: [], total: 0 };
+  const { leads, total } = data;
+  const totalPages = Math.ceil(total / PAGE_SIZE);
 
   const toggleExpand = (key: string) => {
     setExpandedItems((prev) => {
@@ -55,12 +81,24 @@ function LeadsContent() {
     });
   };
 
+  const toggleSort = (col: "date" | "name" | "source") => {
+    if (sortBy === col) {
+      setSortOrder((o) => (o === "asc" ? "desc" : "asc"));
+    } else {
+      setSortBy(col);
+      setSortOrder(col === "name" ? "asc" : "desc");
+    }
+    setPage(0);
+  };
+
   const formatDate = (d: Date | string) =>
     new Date(d).toLocaleDateString("en-US", {
       month: "short",
       day: "numeric",
       year: "numeric",
     });
+
+  const communityTags = communityTagsQuery.data ?? [];
 
   return (
     <div className="space-y-6">
@@ -73,28 +111,97 @@ function LeadsContent() {
           Leads & Submissions
         </h1>
         <p className="text-sm text-gray-400">
-          Raw submissions from all intake forms
+          Raw submissions from all intake forms &middot; {total} total
         </p>
       </div>
 
-      {/* Source Tabs */}
-      <div className="flex gap-1 overflow-x-auto rounded-lg bg-white/5 p-1">
-        {SOURCE_TABS.map((tab) => (
+      {/* Filters Row */}
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+        {/* Search */}
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
+          <input
+            type="text"
+            placeholder="Search by name or email..."
+            value={searchQuery}
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+              setPage(0);
+            }}
+            className="w-full rounded-lg border border-white/10 bg-white/5 py-2 pl-9 pr-3 text-sm text-white placeholder:text-gray-500 focus:border-[#facf39]/40 focus:outline-none"
+          />
+        </div>
+
+        {/* Source Filter */}
+        <div className="relative">
+          <Filter className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-gray-500" />
+          <select
+            value={sourceFilter}
+            onChange={(e) => {
+              setSourceFilter(e.target.value);
+              setPage(0);
+            }}
+            className="appearance-none rounded-lg border border-white/10 bg-white/5 py-2 pl-8 pr-8 text-sm text-white focus:border-[#facf39]/40 focus:outline-none"
+          >
+            {SOURCE_OPTIONS.map((opt) => (
+              <option key={opt.key} value={opt.key} className="bg-neutral-900">
+                {opt.label}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Community Filter (independent) */}
+        <div className="relative">
+          <select
+            value={communityFilter ?? ""}
+            onChange={(e) => {
+              setCommunityFilter(e.target.value ? Number(e.target.value) : undefined);
+              setPage(0);
+            }}
+            className="appearance-none rounded-lg border border-white/10 bg-white/5 py-2 pl-3 pr-8 text-sm text-white focus:border-[#facf39]/40 focus:outline-none"
+          >
+            <option value="" className="bg-neutral-900">All Communities</option>
+            {communityTags
+              .filter((t) => t.type === "community")
+              .map((tag) => (
+                <option key={tag.id} value={tag.id} className="bg-neutral-900">
+                  {tag.name}
+                </option>
+              ))}
+            <option disabled className="bg-neutral-900">──────────</option>
+            {communityTags
+              .filter((t) => t.type === "location")
+              .map((tag) => (
+                <option key={tag.id} value={tag.id} className="bg-neutral-900">
+                  📍 {tag.name}
+                </option>
+              ))}
+          </select>
+        </div>
+      </div>
+
+      {/* Sort Controls */}
+      <div className="flex items-center gap-1 text-xs text-gray-500">
+        <ArrowUpDown className="mr-1 h-3.5 w-3.5" />
+        Sort by:
+        {SORT_OPTIONS.map((opt) => (
           <button
-            key={tab.key}
-            onClick={() => setSourceTab(tab.key)}
-            className={`shrink-0 flex-1 rounded-md px-4 py-2 text-xs font-medium transition-colors sm:text-sm ${
-              sourceTab === tab.key
+            key={opt.key}
+            onClick={() => toggleSort(opt.key)}
+            className={`rounded px-2 py-1 transition-colors ${
+              sortBy === opt.key
                 ? "bg-[#facf39]/20 text-[#facf39]"
-                : "text-gray-400 hover:text-white"
+                : "hover:text-white"
             }`}
           >
-            {tab.label}
+            {opt.label}
+            {sortBy === opt.key && (sortOrder === "asc" ? " ↑" : " ↓")}
           </button>
         ))}
       </div>
 
-      {/* Leads Table */}
+      {/* Leads List */}
       <Card className="border-white/10 bg-white/5">
         <CardContent className="p-0">
           {leadsQuery.isLoading ? (
@@ -132,6 +239,20 @@ function LeadsContent() {
                         >
                           {lead.source.replace(/_/g, " ")}
                         </Badge>
+                        {/* Community badges */}
+                        {lead.communityTags.map((ct) => (
+                          <Badge
+                            key={ct.id}
+                            variant="outline"
+                            className="shrink-0 text-[10px]"
+                            style={{
+                              borderColor: ct.color ? `${ct.color}66` : undefined,
+                              color: ct.color ?? undefined,
+                            }}
+                          >
+                            {ct.name}
+                          </Badge>
+                        ))}
                         {lead.preview && (
                           <span className="hidden max-w-xs truncate text-sm text-gray-500 md:inline">
                             {lead.preview}
@@ -142,23 +263,6 @@ function LeadsContent() {
                         <span className="text-xs text-gray-500">
                           {formatDate(lead.date)}
                         </span>
-
-                        {/* Waitlist processed indicator */}
-                        {lead.source === "waitlist" && (
-                          <span
-                            className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full ${
-                              lead.processed
-                                ? "bg-green-900/50 text-green-400"
-                                : "bg-neutral-800 text-neutral-500"
-                            }`}
-                            title={
-                              lead.processed ? "Processed" : "Not processed"
-                            }
-                          >
-                            <Check className="h-3 w-3" />
-                          </span>
-                        )}
-
                         <span className="ml-auto sm:ml-0">
                           {isExpanded ? (
                             <ChevronUp className="h-4 w-4 text-gray-500" />
@@ -185,18 +289,34 @@ function LeadsContent() {
                               <span className="text-gray-500">
                                 {lead.source === "event_waiver"
                                   ? "Event:"
-                                  : lead.source === "questionnaire"
-                                    ? "Role:"
-                                    : "Message:"}
+                                  : "Role:"}
                               </span>{" "}
                               <span className="text-gray-200">
                                 {lead.preview}
                               </span>
                             </div>
                           )}
+                          {lead.communityTags.length > 0 && (
+                            <div className="flex items-center gap-1.5">
+                              <span className="text-gray-500">Communities:</span>
+                              {lead.communityTags.map((ct) => (
+                                <Badge
+                                  key={ct.id}
+                                  variant="outline"
+                                  className="text-[10px]"
+                                  style={{
+                                    borderColor: ct.color ? `${ct.color}66` : undefined,
+                                    color: ct.color ?? undefined,
+                                  }}
+                                >
+                                  {ct.name}
+                                </Badge>
+                              ))}
+                            </div>
+                          )}
 
                           <div className="flex items-center gap-3 pt-2">
-                            {/* Mark processed (waitlist only) */}
+                            {/* Mark processed (waitlist only - legacy) */}
                             {lead.source === "waitlist" && !lead.processed && (
                               <button
                                 onClick={() =>
@@ -217,11 +337,15 @@ function LeadsContent() {
                               </span>
                             )}
 
-                            {/* Link to full view if contact exists */}
-                            {lead.source !== "waitlist" && (
-                              <span className="text-xs text-gray-500">
-                                View full details on the contact page
-                              </span>
+                            {/* Link to contact page */}
+                            {lead.contactId && (
+                              <Link
+                                href={`/admin/crm/contacts/${lead.contactId}`}
+                                className="inline-flex items-center gap-1.5 rounded-lg bg-[#facf39]/10 px-3 py-1.5 text-xs text-[#facf39] hover:bg-[#facf39]/20"
+                              >
+                                <ExternalLink className="h-3 w-3" />
+                                View Contact
+                              </Link>
                             )}
                           </div>
                         </div>
@@ -234,6 +358,34 @@ function LeadsContent() {
           )}
         </CardContent>
       </Card>
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="flex items-center justify-between">
+          <span className="text-xs text-gray-500">
+            Showing {page * PAGE_SIZE + 1}–{Math.min((page + 1) * PAGE_SIZE, total)} of {total}
+          </span>
+          <div className="flex items-center gap-1">
+            <button
+              onClick={() => setPage((p) => Math.max(0, p - 1))}
+              disabled={page === 0}
+              className="rounded p-1.5 text-gray-400 hover:bg-white/10 hover:text-white disabled:opacity-30"
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </button>
+            <span className="px-2 text-xs text-gray-400">
+              {page + 1} / {totalPages}
+            </span>
+            <button
+              onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
+              disabled={page >= totalPages - 1}
+              className="rounded p-1.5 text-gray-400 hover:bg-white/10 hover:text-white disabled:opacity-30"
+            >
+              <ChevronRight className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

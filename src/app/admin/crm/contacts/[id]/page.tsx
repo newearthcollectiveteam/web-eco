@@ -17,6 +17,9 @@ import {
   Pencil,
   X,
   Mic,
+  Plus,
+  Globe,
+  ExternalLink,
 } from "lucide-react";
 import { api } from "~/trpc/react";
 import { VoiceNoteRecorder } from "~/components/admin/crm/voice-note-recorder";
@@ -234,6 +237,186 @@ function QuestionnaireViewer({ response: r }: QuestionnaireViewerProps) {
   );
 }
 
+// ─── Community Tags Section ──────────────────────────────────
+
+interface CommunityTagsSectionProps {
+  contactId: number;
+  communityTags: { id: number; name: string; slug: string; color: string | null; type: string }[];
+  onUpdate: () => void;
+}
+
+function CommunityTagsSection({ contactId, communityTags, onUpdate }: CommunityTagsSectionProps) {
+  const [adding, setAdding] = useState(false);
+  const [selectedTagId, setSelectedTagId] = useState<number | "">("");
+  const allTagsQuery = api.crm.getCommunityTagsFlat.useQuery(undefined, { enabled: adding });
+
+  const assignMutation = api.crm.assignContactCommunity.useMutation({
+    onSuccess: () => {
+      setSelectedTagId("");
+      setAdding(false);
+      onUpdate();
+    },
+  });
+
+  const removeMutation = api.crm.removeContactCommunity.useMutation({
+    onSuccess: () => onUpdate(),
+  });
+
+  const existingIds = new Set(communityTags.map((t) => t.id));
+  const availableTags = (allTagsQuery.data ?? []).filter((t) => !existingIds.has(t.id));
+
+  return (
+    <div className="flex items-center gap-2 border-t border-white/5 px-4 py-2.5 sm:px-5">
+      <span className="shrink-0 text-[10px] text-gray-500 uppercase">Communities</span>
+      <div className="flex flex-1 flex-wrap items-center gap-1.5">
+        {communityTags.map((tag) => (
+          <span
+            key={tag.id}
+            className="inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-xs"
+            style={{
+              borderColor: tag.color ? `${tag.color}66` : "rgba(255,255,255,0.1)",
+              color: tag.color ?? "#d1d5db",
+            }}
+          >
+            {tag.name}
+            <button
+              onClick={() =>
+                removeMutation.mutate({ contactId, communityTagId: tag.id })
+              }
+              className="opacity-50 hover:opacity-100"
+            >
+              <X className="h-3 w-3" />
+            </button>
+          </span>
+        ))}
+        {communityTags.length === 0 && !adding && (
+          <span className="text-xs text-gray-600">No communities</span>
+        )}
+        {adding ? (
+          <div className="flex items-center gap-1.5">
+            <select
+              value={selectedTagId}
+              onChange={(e) => setSelectedTagId(e.target.value ? Number(e.target.value) : "")}
+              className="rounded border border-white/10 bg-white/5 px-2 py-0.5 text-xs text-white focus:border-[#facf39]/50 focus:outline-none"
+              autoFocus
+            >
+              <option value="">Select...</option>
+              {availableTags
+                .filter((t) => t.type === "community")
+                .map((t) => (
+                  <option key={t.id} value={t.id}>{t.name}</option>
+                ))}
+              {availableTags.some((t) => t.type === "location") && (
+                <option disabled>── Locations ──</option>
+              )}
+              {availableTags
+                .filter((t) => t.type === "location")
+                .map((t) => (
+                  <option key={t.id} value={t.id}>{t.name}</option>
+                ))}
+            </select>
+            <button
+              onClick={() => {
+                if (selectedTagId) {
+                  assignMutation.mutate({ contactId, communityTagId: Number(selectedTagId) });
+                }
+              }}
+              disabled={!selectedTagId || assignMutation.isPending}
+              className="rounded bg-[#facf39]/20 px-2 py-0.5 text-xs text-[#facf39] hover:bg-[#facf39]/30 disabled:opacity-30"
+            >
+              Add
+            </button>
+            <button
+              onClick={() => setAdding(false)}
+              className="rounded px-2 py-0.5 text-xs text-gray-400 hover:text-white"
+            >
+              Cancel
+            </button>
+          </div>
+        ) : (
+          <button
+            onClick={() => setAdding(true)}
+            className="rounded p-0.5 text-gray-500 hover:text-[#facf39]"
+          >
+            <Plus className="h-3.5 w-3.5" />
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ─── Social Media Section ───────────────────────────────────
+
+interface SocialMediaSectionProps {
+  socialMedia: {
+    instagram: string | null;
+    twitter: string | null;
+    linkedin: string | null;
+    tiktok: string | null;
+    youtube: string | null;
+    facebook: string | null;
+    otherSocial: string | null;
+    website: string | null;
+  };
+}
+
+function SocialMediaSection({ socialMedia }: SocialMediaSectionProps) {
+  const links: { label: string; value: string; prefix?: string }[] = [];
+
+  if (socialMedia.website) links.push({ label: "Website", value: socialMedia.website });
+  if (socialMedia.instagram) links.push({ label: "Instagram", value: socialMedia.instagram, prefix: "https://instagram.com/" });
+  if (socialMedia.twitter) links.push({ label: "X/Twitter", value: socialMedia.twitter, prefix: "https://x.com/" });
+  if (socialMedia.linkedin) links.push({ label: "LinkedIn", value: socialMedia.linkedin, prefix: "https://linkedin.com/in/" });
+  if (socialMedia.tiktok) links.push({ label: "TikTok", value: socialMedia.tiktok, prefix: "https://tiktok.com/@" });
+  if (socialMedia.youtube) links.push({ label: "YouTube", value: socialMedia.youtube, prefix: "https://youtube.com/@" });
+  if (socialMedia.facebook) links.push({ label: "Facebook", value: socialMedia.facebook, prefix: "https://facebook.com/" });
+  if (socialMedia.otherSocial) links.push({ label: "Other", value: socialMedia.otherSocial });
+
+  if (links.length === 0) return null;
+
+  const getUrl = (link: { value: string; prefix?: string }) => {
+    if (link.value.startsWith("http")) return link.value;
+    if (link.prefix) {
+      // Strip @ prefix if present for handles
+      const handle = link.value.startsWith("@") ? link.value.slice(1) : link.value;
+      return `${link.prefix}${handle}`;
+    }
+    return link.value.startsWith("http") ? link.value : `https://${link.value}`;
+  };
+
+  return (
+    <div className="flex items-center gap-2 border-t border-white/5 px-4 py-2.5 sm:px-5">
+      <Globe className="h-3.5 w-3.5 shrink-0 text-gray-500" />
+      <div className="flex flex-1 flex-wrap items-center gap-2">
+        {links.map((link) => {
+          const url = getUrl(link);
+          const isUrl = url.startsWith("http");
+          return isUrl ? (
+            <a
+              key={link.label}
+              href={url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 rounded-full bg-white/5 px-2.5 py-0.5 text-xs text-gray-300 hover:bg-white/10 hover:text-white"
+            >
+              {link.label}
+              <ExternalLink className="h-2.5 w-2.5" />
+            </a>
+          ) : (
+            <span
+              key={link.label}
+              className="inline-flex items-center gap-1 rounded-full bg-white/5 px-2.5 py-0.5 text-xs text-gray-300"
+            >
+              {link.label}: {link.value}
+            </span>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 // ─── Contact Detail Content ──────────────────────────────────
 
 function ContactDetailContent({ id }: { id: number }) {
@@ -281,7 +464,11 @@ function ContactDetailContent({ id }: { id: number }) {
     sources,
     activities,
     voiceNotes,
+    communityTags: contactCommunityTags,
+    socialMedia,
     associations,
+    referredBy,
+    referralCount,
   } = contactQuery.data;
 
   const toggleExpand = (key: string) => {
@@ -453,6 +640,28 @@ function ContactDetailContent({ id }: { id: number }) {
                 </div>
               </>
             )}
+
+            {/* Referral info */}
+            {(referredBy ?? referralCount > 0) && (
+              <>
+                <div className="hidden h-4 w-px bg-white/10 sm:block" />
+                <div className="flex flex-wrap items-center gap-1.5">
+                  {referredBy && (
+                    <Link
+                      href={`/admin/crm/contacts/${referredBy.id}`}
+                      className="inline-flex items-center gap-1 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-0.5 text-xs text-emerald-400 hover:bg-emerald-500/20"
+                    >
+                      Referred by {referredBy.name}
+                    </Link>
+                  )}
+                  {referralCount > 0 && (
+                    <span className="inline-flex rounded-full border border-[#facf39]/30 bg-[#facf39]/10 px-2.5 py-0.5 text-xs text-[#facf39]">
+                      Referred {referralCount} {referralCount === 1 ? "person" : "people"}
+                    </span>
+                  )}
+                </div>
+              </>
+            )}
           </div>
 
           {/* Tags row */}
@@ -528,6 +737,16 @@ function ContactDetailContent({ id }: { id: number }) {
               <span>Last: {formatDate(contact.lastContactDate)}</span>
             </div>
           </div>
+
+          {/* Community Tags */}
+          <CommunityTagsSection
+            contactId={contact.id}
+            communityTags={contactCommunityTags}
+            onUpdate={() => void utils.crm.getContact.invalidate({ id })}
+          />
+
+          {/* Social Media Links */}
+          {socialMedia && <SocialMediaSection socialMedia={socialMedia} />}
 
           {/* Mobile status select */}
           <div className="border-t border-white/5 px-4 py-2.5 sm:hidden">

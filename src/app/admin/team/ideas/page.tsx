@@ -21,7 +21,6 @@ import {
   Circle,
   Minus,
   Tag,
-  ArrowUpDown,
 } from "lucide-react";
 import { api } from "~/trpc/react";
 
@@ -562,13 +561,11 @@ function EditHistoryPanel({
 
 function IdeaCard({
   idea,
-  categories,
   onEdit,
   onDelete,
   onHistory,
 }: {
   idea: IdeaItem;
-  categories: string[];
   onEdit: (idea: IdeaItem) => void;
   onDelete: (idea: { id: number; title: string }) => void;
   onHistory: (ideaId: number) => void;
@@ -819,7 +816,6 @@ export default function IdeasPage() {
             <IdeaCard
               key={idea.id}
               idea={idea}
-              categories={data.categories}
               onEdit={setEditIdea}
               onDelete={setDeleteIdea}
               onHistory={setHistoryIdeaId}

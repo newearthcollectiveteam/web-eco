@@ -710,7 +710,7 @@ function ContactsContent() {
     offset: page * PAGE_SIZE,
   });
 
-  const teamQuery = api.crm.getTeamMembersWhoAddedContacts.useQuery();
+  const teamQuery = api.crm.getTeamMembers.useQuery();
   const communityTagsQuery = api.crm.getCommunityTagsFlat.useQuery();
 
   const contacts = contactsQuery.data?.contacts ?? [];

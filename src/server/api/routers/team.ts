@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { TRPCError } from "@trpc/server";
 import { createTRPCRouter, protectedProcedure, adminProcedure } from "~/server/api/trpc";
 import { userProfiles } from "~/server/db/schema";
 import { eq, ilike, or, count, sql, and, type SQL } from "drizzle-orm";
@@ -83,7 +84,7 @@ export const teamRouter = createTRPCRouter({
         });
 
       if (authError) {
-        throw new Error(`Failed to create auth user: ${authError.message}`);
+        throw new TRPCError({ code: "BAD_REQUEST", message: `Failed to create auth user: ${authError.message}` });
       }
 
       // The handle_new_user trigger creates the profile.
@@ -140,7 +141,7 @@ export const teamRouter = createTRPCRouter({
         await adminClient.auth.admin.deleteUser(input.id);
 
       if (authError) {
-        throw new Error(`Failed to delete auth user: ${authError.message}`);
+        throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: `Failed to delete auth user: ${authError.message}` });
       }
 
       // Delete profile row

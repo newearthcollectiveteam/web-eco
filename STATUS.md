@@ -31,6 +31,7 @@
 | Email system          | Working | Polished HTML templates, confirmation + abandon reminder emails |
 | Email link tracking   | Working | Link generation service, click tracking                       |
 | Consent management    | Working | GDPR/CAN-SPAM compliant with unsubscribe tokens               |
+| Task Management       | Working | Kanban board with drag-and-drop, custom status categories, tab persistence |
 
 ## Known Limitations
 
@@ -47,5 +48,6 @@
 | 2026-03-15 | Questionnaire auto-tagging: auto-detect community names from free-text fields on submit |
 | 2026-03-15 | CRM overhaul: community tags schema, 16 tags seeded, 111 contacts tagged, independent filtering |
 | 2026-03-15 | Data cleanup: merged duplicates, phone_import→manual source, removed waitlist source |
+| 2026-03-16 | Tasks: Kanban board with drag-and-drop, custom status categories, tab persistence |
 
 See `git log --oneline` for full history.

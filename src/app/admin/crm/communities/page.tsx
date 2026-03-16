@@ -471,7 +471,7 @@ function TreeNode({ node, depth, allTags, onEdit, onAddChild, onDelete }: TreeNo
     <div>
       <div
         className="group flex items-center gap-2 rounded-lg px-3 py-2 hover:bg-white/5"
-        style={{ paddingLeft: `${depth * 24 + 12}px` }}
+        style={{ paddingLeft: `${Math.min(depth * 24, 72) + 12}px` }}
       >
         {/* Expand toggle */}
         <button
@@ -518,7 +518,7 @@ function TreeNode({ node, depth, allTags, onEdit, onAddChild, onDelete }: TreeNo
         </div>
 
         {/* Actions */}
-        <div className="flex shrink-0 items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100">
+        <div className="flex shrink-0 items-center gap-1 opacity-100 transition-opacity sm:opacity-0 sm:group-hover:opacity-100">
           <button
             onClick={() => onAddChild(node.id)}
             title="Add child"

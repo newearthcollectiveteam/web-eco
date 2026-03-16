@@ -1,68 +1,35 @@
-// PostgreSQL imports
-import { drizzle as drizzlePg } from "drizzle-orm/postgres-js";
+import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
-
-// SQLite imports
-import { drizzle as drizzleSqlite } from "drizzle-orm/libsql";
-import { createClient } from "@libsql/client";
 
 import { env } from "~/env";
 import * as schema from "./schema";
 
 /**
  * Database client configuration
- *
- * Automatically detects and uses the appropriate database driver based on DATABASE_URL:
- * - PostgreSQL/Supabase: URLs starting with "postgresql://"
- * - SQLite/LibSQL: URLs starting with "file:" or "libsql://"
+ * PostgreSQL via Supabase pooler
  */
 
 // Lazy database connection - only created when first accessed
 // This prevents build-time connection attempts in Vercel
-let _db:
-  | ReturnType<typeof drizzlePg>
-  | ReturnType<typeof drizzleSqlite>
-  | null = null;
+let _db: ReturnType<typeof drizzle> | null = null;
 
 function createDatabase() {
-  // Detect database type from URL
-  const isPostgres =
-    env.DATABASE_URL.startsWith("postgresql://") ||
-    env.DATABASE_URL.startsWith("postgres://");
+  const globalForDb = globalThis as unknown as {
+    conn: ReturnType<typeof postgres> | undefined;
+  };
 
-  if (isPostgres) {
-    // PostgreSQL/Supabase configuration
-    const globalForDb = globalThis as unknown as {
-      conn: ReturnType<typeof postgres> | undefined;
-    };
+  const conn =
+    globalForDb.conn ??
+    postgres(env.DATABASE_URL, {
+      prepare: false,
+    });
+  if (env.NODE_ENV !== "production") globalForDb.conn = conn;
 
-    const conn =
-      globalForDb.conn ??
-      postgres(env.DATABASE_URL, {
-        prepare: false,
-      });
-    if (env.NODE_ENV !== "production") globalForDb.conn = conn;
-
-    return drizzlePg(conn, { schema });
-  } else {
-    // SQLite/LibSQL configuration
-    const globalForDb = globalThis as unknown as {
-      conn: ReturnType<typeof createClient> | undefined;
-    };
-
-    const conn =
-      globalForDb.conn ??
-      createClient({
-        url: env.DATABASE_URL,
-      });
-    if (env.NODE_ENV !== "production") globalForDb.conn = conn;
-
-    return drizzleSqlite(conn, { schema });
-  }
+  return drizzle(conn, { schema });
 }
 
 // Type helper to get the database type with schema
-type DatabaseType = ReturnType<typeof drizzlePg<typeof schema>>;
+type DatabaseType = ReturnType<typeof drizzle<typeof schema>>;
 
 // Use a Proxy to lazily create the database connection only when accessed
 export const db = new Proxy({} as DatabaseType, {

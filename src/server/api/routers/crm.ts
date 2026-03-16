@@ -492,21 +492,16 @@ export const crmRouter = createTRPCRouter({
       };
 
       // Use a SQL UNION for both sources — single query, DB-level sort + pagination
-      // Build conditions for each source
-      const qSearchCond = search ? `AND (qr.name ILIKE '%${search.replace(/'/g, "''")}%' OR qr.email ILIKE '%${search.replace(/'/g, "''")}%')` : "";
-      const wSearchCond = search ? `AND (ew.signer_name ILIKE '%${search.replace(/'/g, "''")}%' OR ew.signer_email ILIKE '%${search.replace(/'/g, "''")}%')` : "";
-      const qCommunityCond = communityContactIds ? `AND qr.contact_id = ANY(ARRAY[${communityContactIds.join(",")}])` : "";
-      const wCommunityCond = communityContactIds ? `AND ew.contact_id = ANY(ARRAY[${communityContactIds.join(",")}])` : "";
+      // Build parameterized conditions for each source
+      const searchPattern = search ? `%${search}%` : null;
 
       const orderCol = sortBy === "name" ? "name" : "date";
-      const orderDir = sortOrder === "asc" ? "ASC" : "DESC";
-      const nullsDir = sortOrder === "asc" ? "NULLS FIRST" : "NULLS LAST";
 
-      // Only include the source types that match the filter
-      const parts: string[] = [];
+      // Build parameterized SQL fragments for each source
+      const parts: ReturnType<typeof sql>[] = [];
 
       if (!sourceFilter || sourceFilter === "questionnaire") {
-        parts.push(`
+        const qBase = sql`
           SELECT
             qr.id, qr.contact_id as contact_id, 'questionnaire' as source,
             qr.name, qr.email, qr.phone,
@@ -515,12 +510,18 @@ export const crmRouter = createTRPCRouter({
             c.status
           FROM "web-eco_questionnaire_response" qr
           INNER JOIN "web-eco_contact" c ON qr.contact_id = c.id
-          WHERE 1=1 ${qSearchCond} ${qCommunityCond}
-        `);
+          WHERE 1=1`;
+        const qSearch = searchPattern
+          ? sql` AND (qr.name ILIKE ${searchPattern} OR qr.email ILIKE ${searchPattern})`
+          : sql``;
+        const qCommunity = communityContactIds
+          ? sql` AND qr.contact_id = ANY(${communityContactIds})`
+          : sql``;
+        parts.push(sql`${qBase}${qSearch}${qCommunity}`);
       }
 
       if (!sourceFilter || sourceFilter === "event_waiver") {
-        parts.push(`
+        const wBase = sql`
           SELECT
             ew.id, COALESCE(ew.contact_id, 0) as contact_id, 'event_waiver' as source,
             ew.signer_name as name, ew.signer_email as email, NULL as phone,
@@ -529,29 +530,44 @@ export const crmRouter = createTRPCRouter({
             COALESCE(c2.status, 'lead') as status
           FROM "web-eco_event_waiver" ew
           LEFT JOIN "web-eco_contact" c2 ON ew.contact_id = c2.id
-          WHERE 1=1 ${wSearchCond} ${wCommunityCond}
-        `);
+          WHERE 1=1`;
+        const wSearch = searchPattern
+          ? sql` AND (ew.signer_name ILIKE ${searchPattern} OR ew.signer_email ILIKE ${searchPattern})`
+          : sql``;
+        const wCommunity = communityContactIds
+          ? sql` AND ew.contact_id = ANY(${communityContactIds})`
+          : sql``;
+        parts.push(sql`${wBase}${wSearch}${wCommunity}`);
       }
 
       if (parts.length === 0) {
         return { leads: [], total: 0 };
       }
 
-      const unionQuery = parts.join(" UNION ALL ");
+      // Join parts with UNION ALL (parameterized)
+      let unionQuery = parts[0]!;
+      for (let i = 1; i < parts.length; i++) {
+        unionQuery = sql`${unionQuery} UNION ALL ${parts[i]}`;
+      }
+
+      // Order direction must be static SQL (validated via enum above)
+      const orderSql = orderCol === "name"
+        ? (sortOrder === "asc"
+            ? sql`ORDER BY name ASC NULLS FIRST`
+            : sql`ORDER BY name DESC NULLS LAST`)
+        : (sortOrder === "asc"
+            ? sql`ORDER BY date ASC NULLS FIRST`
+            : sql`ORDER BY date DESC NULLS LAST`);
 
       // Count total
       const countResult = await ctx.db.execute(
-        sql.raw(`SELECT count(*) as cnt FROM (${unionQuery}) sub`)
+        sql`SELECT count(*)::int as cnt FROM (${unionQuery}) sub`
       ) as unknown as Array<Record<string, unknown>>;
       const total = Number(countResult[0]?.cnt ?? 0);
 
       // Fetch paged results
       const dataResult = await ctx.db.execute(
-        sql.raw(`
-          SELECT * FROM (${unionQuery}) sub
-          ORDER BY ${orderCol === "name" ? "name" : "date"} ${orderDir} ${nullsDir}
-          LIMIT ${limit} OFFSET ${offset}
-        `)
+        sql`SELECT * FROM (${unionQuery}) sub ${orderSql} LIMIT ${limit} OFFSET ${offset}`
       ) as unknown as Array<Record<string, unknown>>;
 
       const rows = dataResult as Array<{
@@ -819,26 +835,6 @@ export const crmRouter = createTRPCRouter({
     }));
   }),
 
-  // Keep old name as alias for backwards compat
-  getTeamMembersWhoAddedContacts: protectedProcedure.query(async ({ ctx }) => {
-    const rows = await ctx.db
-      .select({ userId: contactAssociations.userId })
-      .from(contactAssociations)
-      .groupBy(contactAssociations.userId);
-
-    const ids = rows.map((r) => r.userId);
-    if (ids.length === 0) return [];
-
-    const profiles = await ctx.db
-      .select({ id: userProfiles.id, fullName: userProfiles.fullName, email: userProfiles.email })
-      .from(userProfiles)
-      .where(inArray(userProfiles.id, ids));
-
-    return profiles.map((p) => ({
-      id: p.id,
-      name: p.fullName ?? p.email,
-    }));
-  }),
 
   addAssociation: protectedProcedure
     .input(z.object({ contactId: z.number(), userId: z.string() }))

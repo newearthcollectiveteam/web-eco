@@ -21,13 +21,13 @@ export const adminRouter = createTRPCRouter({
       recentQuestionnaires,
       recentWaivers,
     ] = await Promise.all([
-      ctx.db.select({ count: sql<number>`count(*)` }).from(contacts),
+      ctx.db.select({ count: sql<number>`count(*)::int` }).from(contacts),
       ctx.db
-        .select({ count: sql<number>`count(*)` })
+        .select({ count: sql<number>`count(*)::int` })
         .from(questionnaireResponses),
-      ctx.db.select({ count: sql<number>`count(*)` }).from(eventWaivers),
-      ctx.db.select({ count: sql<number>`count(*)` }).from(contactActivities),
-      ctx.db.select({ count: sql<number>`count(*)` }).from(contactSources),
+      ctx.db.select({ count: sql<number>`count(*)::int` }).from(eventWaivers),
+      ctx.db.select({ count: sql<number>`count(*)::int` }).from(contactActivities),
+      ctx.db.select({ count: sql<number>`count(*)::int` }).from(contactSources),
       ctx.db.query.contacts.findMany({
         orderBy: [desc(contacts.createdAt)],
         limit: 5,
@@ -72,7 +72,7 @@ export const adminRouter = createTRPCRouter({
           limit: input.limit,
         });
         const total = await ctx.db
-          .select({ count: sql<number>`count(*)` })
+          .select({ count: sql<number>`count(*)::int` })
           .from(contacts);
         return { data, total: total[0]?.count ?? 0 };
       }
@@ -83,7 +83,7 @@ export const adminRouter = createTRPCRouter({
           limit: input.limit,
         });
         const total = await ctx.db
-          .select({ count: sql<number>`count(*)` })
+          .select({ count: sql<number>`count(*)::int` })
           .from(questionnaireResponses);
         return { data, total: total[0]?.count ?? 0 };
       }
@@ -94,7 +94,7 @@ export const adminRouter = createTRPCRouter({
         limit: input.limit,
       });
       const total = await ctx.db
-        .select({ count: sql<number>`count(*)` })
+        .select({ count: sql<number>`count(*)::int` })
         .from(eventWaivers);
       return { data, total: total[0]?.count ?? 0 };
     }),

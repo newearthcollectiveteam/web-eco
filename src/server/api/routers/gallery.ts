@@ -24,6 +24,13 @@ export const galleryRouter = createTRPCRouter({
         .where(eq(galleries.slug, input.slug))
         .limit(1);
 
+      if (!gallery) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Gallery not found",
+        });
+      }
+
       return gallery;
     }),
 

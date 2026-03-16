@@ -160,15 +160,15 @@ function FormattingToolbar({
 
   return (
     <div className="flex items-center gap-0.5 border-b border-white/5 px-2 py-1">
-      <button type="button" onClick={() => insertAtCursor("**", "**", "bold")} className="rounded p-1.5 text-neutral-500 hover:bg-white/5 hover:text-white" title="Bold"><Bold className="h-3.5 w-3.5" /></button>
-      <button type="button" onClick={() => insertAtCursor("*", "*", "italic")} className="rounded p-1.5 text-neutral-500 hover:bg-white/5 hover:text-white" title="Italic"><Italic className="h-3.5 w-3.5" /></button>
+      <button type="button" onClick={() => insertAtCursor("**", "**", "bold")} className="rounded p-1.5 text-neutral-500 hover:bg-white/5 hover:text-white" aria-label="Bold"><Bold className="h-3.5 w-3.5" /></button>
+      <button type="button" onClick={() => insertAtCursor("*", "*", "italic")} className="rounded p-1.5 text-neutral-500 hover:bg-white/5 hover:text-white" aria-label="Italic"><Italic className="h-3.5 w-3.5" /></button>
       <div className="mx-1 h-4 w-px bg-white/10" />
-      <button type="button" onClick={() => insertLine("## ")} className="rounded p-1.5 text-neutral-500 hover:bg-white/5 hover:text-white" title="Heading"><Heading2 className="h-3.5 w-3.5" /></button>
-      <button type="button" onClick={() => insertLine("- ")} className="rounded p-1.5 text-neutral-500 hover:bg-white/5 hover:text-white" title="Bullet list"><ListIcon className="h-3.5 w-3.5" /></button>
-      <button type="button" onClick={() => insertLine("1. ")} className="rounded p-1.5 text-neutral-500 hover:bg-white/5 hover:text-white" title="Numbered list"><ListOrdered className="h-3.5 w-3.5" /></button>
-      <button type="button" onClick={() => insertLine("- [ ] ")} className="rounded p-1.5 text-neutral-500 hover:bg-white/5 hover:text-white" title="Checklist"><CheckCircle2 className="h-3.5 w-3.5" /></button>
+      <button type="button" onClick={() => insertLine("## ")} className="rounded p-1.5 text-neutral-500 hover:bg-white/5 hover:text-white" aria-label="Heading"><Heading2 className="h-3.5 w-3.5" /></button>
+      <button type="button" onClick={() => insertLine("- ")} className="rounded p-1.5 text-neutral-500 hover:bg-white/5 hover:text-white" aria-label="Bullet list"><ListIcon className="h-3.5 w-3.5" /></button>
+      <button type="button" onClick={() => insertLine("1. ")} className="rounded p-1.5 text-neutral-500 hover:bg-white/5 hover:text-white" aria-label="Numbered list"><ListOrdered className="h-3.5 w-3.5" /></button>
+      <button type="button" onClick={() => insertLine("- [ ] ")} className="rounded p-1.5 text-neutral-500 hover:bg-white/5 hover:text-white" aria-label="Checklist"><CheckCircle2 className="h-3.5 w-3.5" /></button>
       <div className="mx-1 h-4 w-px bg-white/10" />
-      <button type="button" onClick={() => insertLine("---\n")} className="rounded p-1.5 text-neutral-500 hover:bg-white/5 hover:text-white" title="Divider"><Minus className="h-3.5 w-3.5" /></button>
+      <button type="button" onClick={() => insertLine("---\n")} className="rounded p-1.5 text-neutral-500 hover:bg-white/5 hover:text-white" aria-label="Divider"><Minus className="h-3.5 w-3.5" /></button>
     </div>
   );
 }
@@ -361,33 +361,33 @@ function TaskModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
-      <div className="relative w-full max-w-lg rounded-xl border bg-[#0a0a0a] p-6" style={{ borderColor: "rgba(250, 207, 57, 0.2)" }}>
-        <button onClick={onClose} className="absolute right-4 top-4 text-neutral-400 hover:text-white"><X className="h-5 w-5" /></button>
-        <h2 className="mb-1 text-lg font-semibold text-white">{task ? "Edit Task" : "New Task"}</h2>
+      <div role="dialog" aria-modal="true" aria-labelledby="task-modal-title" className="relative w-full max-w-lg rounded-xl border bg-[#0a0a0a] p-6" style={{ borderColor: "rgba(250, 207, 57, 0.2)" }}>
+        <button onClick={onClose} aria-label="Close" className="absolute right-4 top-4 text-neutral-400 hover:text-white"><X className="h-5 w-5" /></button>
+        <h2 id="task-modal-title" className="mb-1 text-lg font-semibold text-white">{task ? "Edit Task" : "New Task"}</h2>
         <p className="mb-5 text-sm text-neutral-400">{task ? "Update task details." : "Add a task and assign it to a team member."}</p>
         {error && <div className="mb-4 rounded-md border border-red-500/20 bg-red-900/20 px-4 py-3 text-sm text-red-200">{error}</div>}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-neutral-300">Title</label>
-            <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} required className="block w-full rounded-md border bg-white/5 px-3 py-2.5 text-white placeholder-neutral-500 focus:border-[#FACF39] focus:ring-1 focus:ring-[#FACF39]/30 focus:outline-none" style={{ borderColor: "rgba(250, 207, 57, 0.2)" }} placeholder="What needs to be done?" autoFocus />
+            <label htmlFor="task-title" className="mb-1.5 block text-sm font-medium text-neutral-300">Title</label>
+            <input id="task-title" type="text" value={title} onChange={(e) => setTitle(e.target.value)} required className="block w-full rounded-md border bg-white/5 px-3 py-2.5 text-white placeholder-neutral-500 focus:border-[#FACF39] focus:ring-1 focus:ring-[#FACF39]/30 focus:outline-none" style={{ borderColor: "rgba(250, 207, 57, 0.2)" }} placeholder="What needs to be done?" autoFocus />
           </div>
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-neutral-300">Notes</label>
+            <label htmlFor="task-notes" className="mb-1.5 block text-sm font-medium text-neutral-300">Notes</label>
             <div className="overflow-hidden rounded-md border bg-white/5" style={{ borderColor: "rgba(250, 207, 57, 0.2)" }}>
               <FormattingToolbar textareaRef={descRef} value={description} onChange={setDescription} />
-              <textarea ref={descRef} value={description} onChange={(e) => setDescription(e.target.value)} rows={5} className="block w-full bg-transparent px-3 py-2.5 text-sm text-white placeholder-neutral-500 focus:outline-none" placeholder="Detailed notes... Use the toolbar for formatting." />
+              <textarea id="task-notes" ref={descRef} value={description} onChange={(e) => setDescription(e.target.value)} rows={5} className="block w-full bg-transparent px-3 py-2.5 text-sm text-white placeholder-neutral-500 focus:outline-none" placeholder="Detailed notes... Use the toolbar for formatting." />
             </div>
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="mb-1.5 block text-sm font-medium text-neutral-300">Priority</label>
-              <select value={priority} onChange={(e) => setPriority(e.target.value)} className="block w-full rounded-md border bg-white/5 px-3 py-2.5 text-white focus:border-[#FACF39] focus:ring-1 focus:ring-[#FACF39]/30 focus:outline-none" style={{ borderColor: "rgba(250, 207, 57, 0.2)" }}>
+              <label htmlFor="task-priority" className="mb-1.5 block text-sm font-medium text-neutral-300">Priority</label>
+              <select id="task-priority" value={priority} onChange={(e) => setPriority(e.target.value)} className="block w-full rounded-md border bg-white/5 px-3 py-2.5 text-white focus:border-[#FACF39] focus:ring-1 focus:ring-[#FACF39]/30 focus:outline-none" style={{ borderColor: "rgba(250, 207, 57, 0.2)" }}>
                 {PRIORITY_OPTIONS.map((p) => (<option key={p} value={p}>{PRIORITY_LABELS[p]}</option>))}
               </select>
             </div>
             <div>
-              <label className="mb-1.5 block text-sm font-medium text-neutral-300">Assign To</label>
-              <select value={assignedTo} onChange={(e) => setAssignedTo(e.target.value)} className="block w-full rounded-md border bg-white/5 px-3 py-2.5 text-white focus:border-[#FACF39] focus:ring-1 focus:ring-[#FACF39]/30 focus:outline-none" style={{ borderColor: "rgba(250, 207, 57, 0.2)" }}>
+              <label htmlFor="task-assignee" className="mb-1.5 block text-sm font-medium text-neutral-300">Assign To</label>
+              <select id="task-assignee" value={assignedTo} onChange={(e) => setAssignedTo(e.target.value)} className="block w-full rounded-md border bg-white/5 px-3 py-2.5 text-white focus:border-[#FACF39] focus:ring-1 focus:ring-[#FACF39]/30 focus:outline-none" style={{ borderColor: "rgba(250, 207, 57, 0.2)" }}>
                 <option value="">Unassigned</option>
                 {teamQuery.data?.map((m) => (<option key={m.id} value={m.id}>{m.name}</option>))}
               </select>
@@ -395,12 +395,12 @@ function TaskModal({
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="mb-1.5 block text-sm font-medium text-neutral-300">Start Date <span className="text-neutral-500">(optional)</span></label>
-              <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} className="block w-full rounded-md border bg-white/5 px-3 py-2.5 text-white focus:border-[#FACF39] focus:ring-1 focus:ring-[#FACF39]/30 focus:outline-none [color-scheme:dark]" style={{ borderColor: "rgba(250, 207, 57, 0.2)" }} />
+              <label htmlFor="task-start-date" className="mb-1.5 block text-sm font-medium text-neutral-300">Start Date <span className="text-neutral-500">(optional)</span></label>
+              <input id="task-start-date" type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} className="block w-full rounded-md border bg-white/5 px-3 py-2.5 text-white focus:border-[#FACF39] focus:ring-1 focus:ring-[#FACF39]/30 focus:outline-none [color-scheme:dark]" style={{ borderColor: "rgba(250, 207, 57, 0.2)" }} />
             </div>
             <div>
-              <label className="mb-1.5 block text-sm font-medium text-neutral-300">Due Date <span className="text-neutral-500">(optional)</span></label>
-              <input type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} className="block w-full rounded-md border bg-white/5 px-3 py-2.5 text-white focus:border-[#FACF39] focus:ring-1 focus:ring-[#FACF39]/30 focus:outline-none [color-scheme:dark]" style={{ borderColor: "rgba(250, 207, 57, 0.2)" }} />
+              <label htmlFor="task-due-date" className="mb-1.5 block text-sm font-medium text-neutral-300">Due Date <span className="text-neutral-500">(optional)</span></label>
+              <input id="task-due-date" type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} className="block w-full rounded-md border bg-white/5 px-3 py-2.5 text-white focus:border-[#FACF39] focus:ring-1 focus:ring-[#FACF39]/30 focus:outline-none [color-scheme:dark]" style={{ borderColor: "rgba(250, 207, 57, 0.2)" }} />
             </div>
           </div>
           <button type="submit" disabled={pending || !title.trim()} className="flex w-full items-center justify-center rounded-md px-4 py-2.5 text-sm font-semibold text-black transition-all disabled:cursor-not-allowed disabled:opacity-50" style={{ background: "linear-gradient(135deg, #FFF3C4 0%, #FACF39 100%)" }}>
@@ -451,7 +451,7 @@ function TaskCard({
   return (
     <div className={`rounded-xl border transition-colors ${isLastStatus ? "opacity-60" : ""}`} style={{ borderColor: "rgba(250, 207, 57, 0.1)" }}>
       <div className="flex items-start gap-3 px-4 py-3">
-        <button onClick={nextStatus} className={`mt-0.5 shrink-0 rounded-full border p-0.5 transition-colors hover:bg-white/5 ${statusColor}`} title={`Status: ${statusConfig?.name ?? task.status} (click to advance)`}>
+        <button onClick={nextStatus} className={`mt-0.5 shrink-0 rounded-full border p-0.5 transition-colors hover:bg-white/5 ${statusColor}`} aria-label={`Status: ${statusConfig?.name ?? task.status} (click to advance)`}>
           <StatusIcon className="h-4 w-4" />
         </button>
         <div className="min-w-0 flex-1">
@@ -481,14 +481,14 @@ function TaskCard({
           </div>
         </div>
         <div className="flex shrink-0 items-center gap-0.5">
-          <button onClick={onEdit} className="rounded p-1.5 text-neutral-500 hover:bg-white/5 hover:text-white"><Pencil className="h-3.5 w-3.5" /></button>
+          <button onClick={onEdit} aria-label="Edit task" className="rounded p-2 sm:p-1.5 min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 text-neutral-500 hover:bg-white/5 hover:text-white"><Pencil className="h-3.5 w-3.5" /></button>
           {confirmDelete ? (
             <div className="flex items-center gap-1">
               <button onClick={onDelete} className="rounded px-2 py-1 text-[10px] text-red-400 hover:bg-red-900/30">Delete</button>
               <button onClick={() => setConfirmDelete(false)} className="rounded px-2 py-1 text-[10px] text-neutral-400 hover:text-white">No</button>
             </div>
           ) : (
-            <button onClick={() => setConfirmDelete(true)} className="rounded p-1.5 text-neutral-500 hover:bg-white/5 hover:text-red-400"><Trash2 className="h-3.5 w-3.5" /></button>
+            <button onClick={() => setConfirmDelete(true)} aria-label="Delete task" className="rounded p-2 sm:p-1.5 min-h-[44px] min-w-[44px] sm:min-h-0 sm:min-w-0 text-neutral-500 hover:bg-white/5 hover:text-red-400"><Trash2 className="h-3.5 w-3.5" /></button>
           )}
         </div>
       </div>
@@ -539,7 +539,7 @@ function KanbanCard({
       } ${isLastStatus ? "opacity-60" : ""}`}
     >
       <div className="flex items-start gap-2">
-        <button {...attributes} {...listeners} className="mt-0.5 shrink-0 cursor-grab text-neutral-600 hover:text-neutral-400 active:cursor-grabbing">
+        <button {...attributes} {...listeners} aria-label="Drag to reorder" className="mt-0.5 shrink-0 cursor-grab text-neutral-600 hover:text-neutral-400 active:cursor-grabbing">
           <GripVertical className="h-4 w-4" />
         </button>
         <button onClick={onEdit} className="min-w-0 flex-1 text-left">
@@ -973,10 +973,10 @@ export default function TasksPage() {
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-1 rounded-lg border border-white/10 bg-white/5 p-1">
-            <button onClick={() => setActiveView("list")} className={`inline-flex items-center gap-2 rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${activeView === "list" ? "bg-white/10 text-white" : "text-gray-400 hover:text-white"}`}>
+            <button onClick={() => setActiveView("list")} aria-pressed={activeView === "list"} className={`inline-flex items-center gap-2 rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${activeView === "list" ? "bg-white/10 text-white" : "text-gray-400 hover:text-white"}`}>
               <List className="h-4 w-4" />List
             </button>
-            <button onClick={() => setActiveView("kanban")} className={`inline-flex items-center gap-2 rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${activeView === "kanban" ? "bg-white/10 text-white" : "text-gray-400 hover:text-white"}`}>
+            <button onClick={() => setActiveView("kanban")} aria-pressed={activeView === "kanban"} className={`inline-flex items-center gap-2 rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${activeView === "kanban" ? "bg-white/10 text-white" : "text-gray-400 hover:text-white"}`}>
               <Columns3 className="h-4 w-4" />Kanban
             </button>
           </div>
@@ -990,16 +990,16 @@ export default function TasksPage() {
         </div>
 
         <div className="flex flex-wrap gap-2">
-          <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} className="rounded-md border bg-white/5 px-3 py-2 text-sm text-white focus:border-[#FACF39] focus:ring-1 focus:ring-[#FACF39]/30 focus:outline-none" style={{ borderColor: "rgba(250, 207, 57, 0.2)" }}>
+          <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} aria-label="Filter by status" className="rounded-md border bg-white/5 px-3 py-2 text-sm text-white focus:border-[#FACF39] focus:ring-1 focus:ring-[#FACF39]/30 focus:outline-none" style={{ borderColor: "rgba(250, 207, 57, 0.2)" }}>
             <option value="">All Statuses</option>
             {statuses.map((s) => (<option key={s.id} value={s.slug}>{s.name}</option>))}
           </select>
-          <select value={priorityFilter} onChange={(e) => setPriorityFilter(e.target.value)} className="rounded-md border bg-white/5 px-3 py-2 text-sm text-white focus:border-[#FACF39] focus:ring-1 focus:ring-[#FACF39]/30 focus:outline-none" style={{ borderColor: "rgba(250, 207, 57, 0.2)" }}>
+          <select value={priorityFilter} onChange={(e) => setPriorityFilter(e.target.value)} aria-label="Filter by priority" className="rounded-md border bg-white/5 px-3 py-2 text-sm text-white focus:border-[#FACF39] focus:ring-1 focus:ring-[#FACF39]/30 focus:outline-none" style={{ borderColor: "rgba(250, 207, 57, 0.2)" }}>
             <option value="">All Priorities</option>
             {PRIORITY_OPTIONS.map((p) => (<option key={p} value={p}>{PRIORITY_LABELS[p]}</option>))}
           </select>
           {(teamQuery.data?.length ?? 0) > 0 && (
-            <select value={assignedFilter} onChange={(e) => setAssignedFilter(e.target.value)} className="rounded-md border bg-white/5 px-3 py-2 text-sm text-white focus:border-[#FACF39] focus:ring-1 focus:ring-[#FACF39]/30 focus:outline-none" style={{ borderColor: "rgba(250, 207, 57, 0.2)" }}>
+            <select value={assignedFilter} onChange={(e) => setAssignedFilter(e.target.value)} aria-label="Filter by team member" className="rounded-md border bg-white/5 px-3 py-2 text-sm text-white focus:border-[#FACF39] focus:ring-1 focus:ring-[#FACF39]/30 focus:outline-none" style={{ borderColor: "rgba(250, 207, 57, 0.2)" }}>
               <option value="">All Members</option>
               {teamQuery.data?.map((m) => (<option key={m.id} value={m.id}>{m.name}</option>))}
             </select>

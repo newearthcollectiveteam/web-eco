@@ -4,7 +4,6 @@ import { useState, useMemo } from "react";
 import {
   Map,
   Globe,
-  Lock,
   Shield,
   Search,
   ChevronDown,

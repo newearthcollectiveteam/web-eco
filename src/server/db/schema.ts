@@ -48,19 +48,6 @@ export const userProfiles = createTable("user_profile", {
     .$onUpdate(() => new Date()),
 });
 
-// Example table - can be removed when adding real application tables
-export const posts = createTable("post", {
-  id: serial("id").primaryKey(),
-  title: varchar("title", { length: 256 }).notNull(),
-  content: text("content"),
-  createdAt: timestamp("created_at", { withTimezone: true })
-    .default(sql`CURRENT_TIMESTAMP`)
-    .notNull(),
-  updatedAt: timestamp("updated_at", { withTimezone: true })
-    .default(sql`CURRENT_TIMESTAMP`)
-    .$onUpdate(() => new Date()),
-});
-
 /**
  * Master CRM System
  */

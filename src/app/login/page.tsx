@@ -2,7 +2,6 @@
 
 import { useState, Suspense } from "react";
 import { createClient } from "~/lib/supabase/client";
-import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import {
   Mail,
@@ -51,7 +50,6 @@ function LoginPageContent() {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [claimName, setClaimName] = useState<string | null>(null);
-  const searchParams = useSearchParams();
 
   const checkEmailQuery = api.auth.checkEmailForClaim.useQuery(
     { email },

@@ -12,7 +12,6 @@ _None documented_
 
 - [ ] Unstaged Prettier formatting changes across ~100 files (from quality-check run)
 - [ ] 227 emergence photos in public/ — consider Supabase Storage migration to reduce repo size
-- [ ] 3 lint warnings: unused imports in ecosystem, team, login pages
 - [ ] `drizzle-kit push` crashes on Node v24 (checkValue.replace bug) — use raw SQL for migrations
 
 ## CRM Enhancements
@@ -53,7 +52,6 @@ _None documented_
 - [ ] Automated status progression
 
 ### Task Management
-- [ ] Kanban board view — drag-and-drop columns (To Do, In Progress, Done) for visual task management
 - [ ] Google Calendar integration — sync tasks with due dates to a shared Google Calendar that team members can subscribe to
 
 ### Email & Notifications

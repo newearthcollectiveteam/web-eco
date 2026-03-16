@@ -979,3 +979,75 @@ export const userIdentityMapRelations = relations(
     }),
   })
 );
+
+/**
+ * Team Ideas - Collaborative idea board
+ * Less structured than tasks — no assignees or statuses
+ * Any team member can edit any idea; edit history is tracked
+ */
+export const teamIdeas = createTable(
+  "team_idea",
+  {
+    id: serial("id").primaryKey(),
+    title: varchar("title", { length: 500 }).notNull(),
+    content: text("content"), // rich text / markdown
+    category: varchar("category", { length: 100 }),
+    createdBy: text("created_by")
+      .notNull()
+      .references(() => userProfiles.id, { onDelete: "set null" }),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .$onUpdate(() => new Date()),
+  },
+  (t) => [
+    index("idx_idea_category").on(t.category),
+    index("idx_idea_created_by").on(t.createdBy),
+  ]
+);
+
+/**
+ * Idea Edit History - Tracks who changed what and when
+ */
+export const ideaEdits = createTable(
+  "idea_edit",
+  {
+    id: serial("id").primaryKey(),
+    ideaId: integer("idea_id")
+      .notNull()
+      .references(() => teamIdeas.id, { onDelete: "cascade" }),
+    editedBy: text("edited_by")
+      .notNull()
+      .references(() => userProfiles.id, { onDelete: "set null" }),
+    previousTitle: varchar("previous_title", { length: 500 }),
+    previousContent: text("previous_content"),
+    previousCategory: varchar("previous_category", { length: 100 }),
+    editedAt: timestamp("edited_at", { withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+  },
+  (t) => [index("idx_idea_edit_idea").on(t.ideaId)]
+);
+
+export const teamIdeasRelations = relations(teamIdeas, ({ one, many }) => ({
+  creator: one(userProfiles, {
+    fields: [teamIdeas.createdBy],
+    references: [userProfiles.id],
+    relationName: "ideaCreator",
+  }),
+  edits: many(ideaEdits),
+}));
+
+export const ideaEditsRelations = relations(ideaEdits, ({ one }) => ({
+  idea: one(teamIdeas, {
+    fields: [ideaEdits.ideaId],
+    references: [teamIdeas.id],
+  }),
+  editor: one(userProfiles, {
+    fields: [ideaEdits.editedBy],
+    references: [userProfiles.id],
+    relationName: "ideaEditor",
+  }),
+}));

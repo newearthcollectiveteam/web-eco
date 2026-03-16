@@ -1,7 +1,7 @@
 # Project Status
 
 **Version:** 0.1.0
-**Last Updated:** 2026-03-16
+**Last Updated:** 2026-03-17
 
 ## Feature Status
 
@@ -32,6 +32,7 @@
 | Email link tracking   | Working | Link generation service, click tracking                       |
 | Consent management    | Working | GDPR/CAN-SPAM compliant with unsubscribe tokens               |
 | Task Management       | Working | Kanban board with drag-and-drop, custom status categories, tab persistence |
+| Ideas Board           | Working | Collaborative idea board with rich text, categories, edit history tracking |
 
 ## Known Limitations
 
@@ -43,10 +44,10 @@
 
 | Date       | Description                                                                            |
 | ---------- | -------------------------------------------------------------------------------------- |
+| 2026-03-17 | Ideas board: collaborative idea board with rich text, categories, edit history |
+| 2026-03-17 | Team nav consolidation: Team/Tasks merged into expandable Team section with Roles/Tasks/Ideas subtabs |
 | 2026-03-16 | Quality sweep: SQL injection fix, a11y (ARIA, labels, touch targets), dead code removal |
 | 2026-03-16 | Tasks: Kanban board with drag-and-drop, custom status categories, tab persistence |
 | 2026-03-16 | 6 new patterns + 2 updated promoted to global framework (v1.19.0) |
-| 2026-03-15 | CRM overhaul: community tags schema, 16 tags seeded, 111 contacts tagged |
-| 2026-03-15 | Communities page: tree view CRUD, questionnaire auto-tagging |
 
 See `git log --oneline` for full history.

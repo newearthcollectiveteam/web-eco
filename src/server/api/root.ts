@@ -7,6 +7,7 @@ import { authRouter } from "~/server/api/routers/auth";
 import { teamRouter } from "~/server/api/routers/team";
 import { ecosystemRouter } from "~/server/api/routers/ecosystem";
 import { tasksRouter } from "~/server/api/routers/tasks";
+import { ideasRouter } from "~/server/api/routers/ideas";
 import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
 
 /**
@@ -24,6 +25,7 @@ export const appRouter = createTRPCRouter({
   team: teamRouter,
   ecosystem: ecosystemRouter,
   tasks: tasksRouter,
+  ideas: ideasRouter,
 });
 
 // export type definition of API

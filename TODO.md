@@ -35,6 +35,7 @@ _None documented_
 ## Enhancements (nice to have)
 
 ### Questionnaire
+- [ ] Voice memo as questionnaire response — allow audio answers in addition to text
 - [ ] Conditional branching in Klaviyo based on questionnaire completion
 - [ ] Questionnaire progress saving (draft mode)
 
@@ -43,11 +44,17 @@ _None documented_
 - [ ] Scroll-triggered entrance animations for below-fold sections
 
 ### CRM System
+- [ ] Social media tagging on contacts — link/display social profiles directly on contact records
+- [ ] Contact syncing when someone joins the ecosystem — mutual contacts / shared connections feature
 - [ ] Bulk import/export contacts
 - [ ] Advanced contact segmentation
 - [ ] Contact scoring system
 - [ ] Merge duplicate contacts feature
 - [ ] Automated status progression
+
+### Task Management
+- [ ] Kanban board view — drag-and-drop columns (To Do, In Progress, Done) for visual task management
+- [ ] Google Calendar integration — sync tasks with due dates to a shared Google Calendar that team members can subscribe to
 
 ### Email & Notifications
 - [ ] Email open/click tracking integration with CRM

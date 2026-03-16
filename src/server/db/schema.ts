@@ -647,6 +647,75 @@ export const voiceNotes = createTable("voice_note", {
 });
 
 /**
+ * Team Tasks - Lightweight task management
+ * Assigned to team members with notes and priority
+ */
+export const teamTasks = createTable(
+  "team_task",
+  {
+    id: serial("id").primaryKey(),
+    title: varchar("title", { length: 500 }).notNull(),
+    description: text("description"), // rich notes
+    status: varchar("status", { length: 50 }).default("todo").notNull(), // todo, in_progress, done
+    priority: varchar("priority", { length: 20 }).default("medium").notNull(), // low, medium, high, urgent
+    assignedTo: text("assigned_to").references(() => userProfiles.id, { onDelete: "set null" }),
+    createdBy: text("created_by")
+      .notNull()
+      .references(() => userProfiles.id, { onDelete: "set null" }),
+    startDate: timestamp("start_date", { withTimezone: true }),
+    dueDate: timestamp("due_date", { withTimezone: true }),
+    completedAt: timestamp("completed_at", { withTimezone: true }),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .$onUpdate(() => new Date()),
+  },
+  (t) => [
+    index("idx_task_assigned").on(t.assignedTo),
+    index("idx_task_status").on(t.status),
+    index("idx_task_due").on(t.dueDate),
+  ]
+);
+
+/**
+ * Task Statuses - Custom status columns for kanban/list views
+ * Slug is stored in teamTasks.status to link tasks to their column
+ */
+export const taskStatuses = createTable("task_status", {
+  id: serial("id").primaryKey(),
+  name: varchar("name", { length: 100 }).notNull(), // Display name: "To Do", "In Progress"
+  slug: varchar("slug", { length: 50 }).notNull().unique(), // Stored in tasks: "todo", "in_progress"
+  color: varchar("color", { length: 100 }).default("text-gray-400 border-gray-500/30"),
+  icon: varchar("icon", { length: 50 }).default("circle"), // Lucide icon name
+  sortOrder: integer("sort_order").default(0).notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .$onUpdate(() => new Date()),
+});
+
+export const taskStatusesRelations = relations(taskStatuses, ({ many }) => ({
+  tasks: many(teamTasks),
+}));
+
+export const teamTasksRelations = relations(teamTasks, ({ one }) => ({
+  assignee: one(userProfiles, {
+    fields: [teamTasks.assignedTo],
+    references: [userProfiles.id],
+    relationName: "taskAssignee",
+  }),
+  creator: one(userProfiles, {
+    fields: [teamTasks.createdBy],
+    references: [userProfiles.id],
+    relationName: "taskCreator",
+  }),
+}));
+
+/**
  * Community Tags - Hierarchical taxonomy for communities and locations
  * type: 'community' for groups/events, 'location' for geographic hubs
  * parent_id enables tree structure (location → community, meta → sub)

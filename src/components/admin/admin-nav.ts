@@ -8,6 +8,7 @@ import {
   Wrench,
   DollarSign,
   BarChart3,
+  ClipboardCheck,
   type LucideIcon,
 } from "lucide-react";
 
@@ -40,6 +41,11 @@ export const ADMIN_SIDEBAR_NAV: NavItem[] = [
     title: "Team",
     href: "/admin/team",
     icon: UserPlus,
+  },
+  {
+    title: "Tasks",
+    href: "/admin/tasks",
+    icon: ClipboardCheck,
   },
   {
     title: "CRM",

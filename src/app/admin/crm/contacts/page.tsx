@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, Suspense } from "react";
+import { useState, useRef, Suspense } from "react";
 import Link from "next/link";
 import { Card, CardContent } from "~/components/ui/card";
 import { Badge } from "~/components/ui/badge";
@@ -11,9 +11,14 @@ import {
   ChevronLeft,
   ChevronRight,
   Upload,
+  MessageSquare,
+  Mic,
+  Square,
+  Loader2,
 } from "lucide-react";
 import { api } from "~/trpc/react";
 import { PhoneImportModal } from "~/components/admin/crm/phone-import-modal";
+import { createClient } from "~/lib/supabase/client";
 
 const STATUS_OPTIONS = ["lead", "qualified", "customer", "inactive"] as const;
 const STATUS_LABELS: Record<string, string> = {
@@ -45,7 +50,247 @@ const SOURCE_COLORS: Record<string, string> = {
   other: "border-neutral-500/40 text-neutral-400",
 };
 
+const ACTIVITY_LABELS: Record<string, string> = {
+  note_added: "Note added",
+  status_changed: "Status changed",
+  contact_created: "Created",
+  voice_note_added: "Voice memo",
+  form_submission: "Form submitted",
+};
+
 const PAGE_SIZE = 25;
+
+function isPlaceholderEmail(email: string) {
+  return email.endsWith("@placeholder.local");
+}
+
+// ─── Quick Note Modal ──────────────────────────────────────────
+
+function QuickNoteModal({
+  contactId,
+  contactName,
+  onClose,
+  onSuccess,
+}: {
+  contactId: number;
+  contactName: string;
+  onClose: () => void;
+  onSuccess: () => void;
+}) {
+  const [note, setNote] = useState("");
+  const addNoteMutation = api.crm.addNote.useMutation({
+    onSuccess: () => {
+      onSuccess();
+      onClose();
+    },
+  });
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+      <div className="w-full max-w-md rounded-2xl border border-white/10 bg-neutral-900 shadow-2xl">
+        <div className="flex items-center justify-between border-b border-white/10 px-5 py-3">
+          <h3 className="text-sm font-medium text-white">
+            Note for {contactName}
+          </h3>
+          <button onClick={onClose} className="text-gray-400 hover:text-white">
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+        <div className="p-5">
+          <textarea
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
+            rows={3}
+            placeholder="Add a note..."
+            autoFocus
+            className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder-gray-500 focus:border-[#facf39]/50 focus:outline-none"
+          />
+          <div className="mt-3 flex justify-end gap-2">
+            <button
+              onClick={onClose}
+              className="rounded-lg border border-white/10 px-3 py-1.5 text-sm text-gray-400 hover:text-white"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={() => {
+                if (note.trim()) {
+                  addNoteMutation.mutate({ contactId, note: note.trim() });
+                }
+              }}
+              disabled={!note.trim() || addNoteMutation.isPending}
+              className="rounded-lg bg-[#facf39]/20 px-4 py-1.5 text-sm text-[#facf39] hover:bg-[#facf39]/30 disabled:opacity-30"
+            >
+              {addNoteMutation.isPending ? "Saving..." : "Save"}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Quick Voice Memo Modal ─────────────────────────────────────
+
+function QuickVoiceMemoModal({
+  contactId,
+  contactName,
+  onClose,
+  onSuccess,
+}: {
+  contactId: number;
+  contactName: string;
+  onClose: () => void;
+  onSuccess: () => void;
+}) {
+  const [state, setState] = useState<"idle" | "recording" | "uploading">("idle");
+  const [elapsed, setElapsed] = useState(0);
+  const [error, setError] = useState("");
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const chunksRef = useRef<Blob[]>([]);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const elapsedRef = useRef(0);
+
+  const saveMutation = api.crm.saveVoiceNote.useMutation({
+    onSuccess: () => {
+      setState("idle");
+      onSuccess();
+      onClose();
+    },
+    onError: () => setState("idle"),
+  });
+
+  const startRecording = async () => {
+    setError("");
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mimeType = MediaRecorder.isTypeSupported("audio/webm;codecs=opus")
+        ? "audio/webm;codecs=opus"
+        : MediaRecorder.isTypeSupported("audio/mp4")
+          ? "audio/mp4"
+          : "audio/webm";
+
+      const recorder = new MediaRecorder(stream, { mimeType });
+      chunksRef.current = [];
+
+      recorder.ondataavailable = (e) => {
+        if (e.data.size > 0) chunksRef.current.push(e.data);
+      };
+
+      recorder.onstop = () => {
+        stream.getTracks().forEach((t) => t.stop());
+        const blob = new Blob(chunksRef.current, { type: mimeType });
+        void uploadRecording(blob, mimeType, elapsedRef.current);
+      };
+
+      recorder.start();
+      mediaRecorderRef.current = recorder;
+      elapsedRef.current = 0;
+      setElapsed(0);
+      setState("recording");
+
+      const startTime = Date.now();
+      timerRef.current = setInterval(() => {
+        const secs = Math.round((Date.now() - startTime) / 1000);
+        elapsedRef.current = secs;
+        setElapsed(secs);
+      }, 500);
+    } catch {
+      setError("Microphone access denied");
+    }
+  };
+
+  const stopRecording = () => {
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+    if (mediaRecorderRef.current?.state === "recording") {
+      mediaRecorderRef.current.stop();
+    }
+    setState("uploading");
+  };
+
+  const uploadRecording = async (blob: Blob, mimeType: string, durationSecs: number) => {
+    const supabase = createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
+    const ext = mimeType.includes("mp4") ? "mp4" : "webm";
+    const path = `${user.id}/${contactId}/${Date.now()}.${ext}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from("voice-notes")
+      .upload(path, blob, { contentType: mimeType });
+
+    if (uploadError) {
+      setState("idle");
+      setError("Upload failed");
+      return;
+    }
+
+    const { data: urlData } = supabase.storage.from("voice-notes").getPublicUrl(path);
+
+    saveMutation.mutate({
+      contactId,
+      storagePath: path,
+      publicUrl: urlData.publicUrl,
+      durationSeconds: durationSecs,
+      fileSizeBytes: blob.size,
+      mimeType,
+    });
+  };
+
+  const formatDuration = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+      <div className="w-full max-w-sm rounded-2xl border border-white/10 bg-neutral-900 shadow-2xl">
+        <div className="flex items-center justify-between border-b border-white/10 px-5 py-3">
+          <h3 className="text-sm font-medium text-white">
+            Voice memo for {contactName}
+          </h3>
+          <button onClick={onClose} className="text-gray-400 hover:text-white">
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+        <div className="flex flex-col items-center gap-4 p-6">
+          {state === "idle" && (
+            <button
+              onClick={startRecording}
+              className="flex h-16 w-16 items-center justify-center rounded-full border-2 border-red-500/50 bg-red-900/20 text-red-400 transition-colors hover:bg-red-900/40"
+            >
+              <Mic className="h-7 w-7" />
+            </button>
+          )}
+          {state === "recording" && (
+            <>
+              <div className="flex items-center gap-3">
+                <span className="h-3 w-3 animate-pulse rounded-full bg-red-500" />
+                <span className="text-2xl font-medium tabular-nums text-red-400">
+                  {formatDuration(elapsed)}
+                </span>
+              </div>
+              <button
+                onClick={stopRecording}
+                className="flex h-14 w-14 items-center justify-center rounded-full bg-red-600 text-white transition-opacity hover:opacity-90"
+              >
+                <Square className="h-5 w-5 fill-current" />
+              </button>
+            </>
+          )}
+          {state === "uploading" && (
+            <div className="flex items-center gap-2 text-sm text-gray-400">
+              <Loader2 className="h-5 w-5 animate-spin" />
+              Uploading...
+            </div>
+          )}
+          {error && <p className="text-xs text-red-400">{error}</p>}
+        </div>
+      </div>
+    </div>
+  );
+}
 
 // ─── Contact Modal ───────────────────────────────────────────
 
@@ -322,13 +567,128 @@ function ContactModal({ mode, contact, onClose, onSuccess }: ContactModalProps) 
   );
 }
 
+// ─── Bulk Actions Bar ────────────────────────────────────────────
+
+function BulkActionsBar({
+  selectedCount,
+  selectedIds,
+  onClear,
+  onSuccess,
+}: {
+  selectedCount: number;
+  selectedIds: number[];
+  onClear: () => void;
+  onSuccess: () => void;
+}) {
+  const [showStatusSelect, setShowStatusSelect] = useState(false);
+  const [showCommunitySelect, setShowCommunitySelect] = useState(false);
+  const communityTagsQuery = api.crm.getCommunityTagsFlat.useQuery();
+
+  const bulkStatusMutation = api.crm.bulkUpdateStatus.useMutation({
+    onSuccess: () => {
+      onSuccess();
+      onClear();
+      setShowStatusSelect(false);
+    },
+  });
+
+  const bulkAssignMutation = api.crm.bulkAssignCommunity.useMutation({
+    onSuccess: () => {
+      onSuccess();
+      onClear();
+      setShowCommunitySelect(false);
+    },
+  });
+
+  return (
+    <div className="flex flex-wrap items-center gap-2 rounded-lg border border-[#facf39]/30 bg-[#facf39]/5 px-4 py-2.5">
+      <span className="text-sm font-medium text-[#facf39]">
+        {selectedCount} selected
+      </span>
+      <div className="h-4 w-px bg-white/10" />
+
+      {showStatusSelect ? (
+        <div className="flex items-center gap-1.5">
+          <select
+            onChange={(e) => {
+              if (e.target.value) {
+                bulkStatusMutation.mutate({ contactIds: selectedIds, status: e.target.value });
+              }
+            }}
+            className="rounded border border-white/10 bg-white/5 px-2 py-1 text-xs text-white focus:border-[#facf39]/50 focus:outline-none"
+            autoFocus
+          >
+            <option value="">Set status...</option>
+            {STATUS_OPTIONS.map((s) => (
+              <option key={s} value={s}>{STATUS_LABELS[s]}</option>
+            ))}
+          </select>
+          <button onClick={() => setShowStatusSelect(false)} className="text-xs text-gray-400 hover:text-white">
+            Cancel
+          </button>
+        </div>
+      ) : (
+        <button
+          onClick={() => setShowStatusSelect(true)}
+          className="rounded-lg bg-white/10 px-3 py-1 text-xs text-white hover:bg-white/20"
+        >
+          Change Status
+        </button>
+      )}
+
+      {showCommunitySelect ? (
+        <div className="flex items-center gap-1.5">
+          <select
+            onChange={(e) => {
+              if (e.target.value) {
+                bulkAssignMutation.mutate({ contactIds: selectedIds, communityTagId: Number(e.target.value) });
+              }
+            }}
+            className="rounded border border-white/10 bg-white/5 px-2 py-1 text-xs text-white focus:border-[#facf39]/50 focus:outline-none"
+            autoFocus
+          >
+            <option value="">Assign community...</option>
+            {(communityTagsQuery.data ?? []).map((t) => (
+              <option key={t.id} value={t.id}>{t.name}</option>
+            ))}
+          </select>
+          <button onClick={() => setShowCommunitySelect(false)} className="text-xs text-gray-400 hover:text-white">
+            Cancel
+          </button>
+        </div>
+      ) : (
+        <button
+          onClick={() => setShowCommunitySelect(true)}
+          className="rounded-lg bg-white/10 px-3 py-1 text-xs text-white hover:bg-white/20"
+        >
+          Assign Community
+        </button>
+      )}
+
+      <button
+        onClick={onClear}
+        className="ml-auto text-xs text-gray-400 hover:text-white"
+      >
+        Clear
+      </button>
+    </div>
+  );
+}
+
 // ─── Contacts Page ───────────────────────────────────────────
 
 function ContactsContent() {
+  // Read community filter from URL if present (drill-down from communities page)
+  const initialCommunity = typeof window !== "undefined"
+    ? new URLSearchParams(window.location.search).get("community")
+    : null;
+
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [sourceFilter, setSourceFilter] = useState("");
-  const [communityFilter, setCommunityFilter] = useState<number | undefined>();
+  const [communityFilter, setCommunityFilter] = useState<number | undefined>(
+    initialCommunity ? Number(initialCommunity) : undefined
+  );
   const [addedByFilter, setAddedByFilter] = useState("");
   const [page, setPage] = useState(0);
   const [modal, setModal] = useState<{
@@ -336,6 +696,9 @@ function ContactsContent() {
     contact?: ContactModalProps["contact"];
   } | null>(null);
   const [showImport, setShowImport] = useState(false);
+  const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
+  const [quickNote, setQuickNote] = useState<{ id: number; name: string } | null>(null);
+  const [quickVoice, setQuickVoice] = useState<{ id: number; name: string } | null>(null);
 
   const contactsQuery = api.crm.getContacts.useQuery({
     search: search || undefined,
@@ -360,6 +723,23 @@ function ContactsContent() {
       day: "numeric",
     });
 
+  const toggleSelect = (id: number) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedIds.size === contacts.length) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(contacts.map((c) => c.id)));
+    }
+  };
+
   return (
     <div className="space-y-6">
       {modal && (
@@ -374,6 +754,24 @@ function ContactsContent() {
       {showImport && (
         <PhoneImportModal
           onClose={() => setShowImport(false)}
+          onSuccess={() => void contactsQuery.refetch()}
+        />
+      )}
+
+      {quickNote && (
+        <QuickNoteModal
+          contactId={quickNote.id}
+          contactName={quickNote.name}
+          onClose={() => setQuickNote(null)}
+          onSuccess={() => void contactsQuery.refetch()}
+        />
+      )}
+
+      {quickVoice && (
+        <QuickVoiceMemoModal
+          contactId={quickVoice.id}
+          contactName={quickVoice.name}
+          onClose={() => setQuickVoice(null)}
           onSuccess={() => void contactsQuery.refetch()}
         />
       )}
@@ -453,7 +851,6 @@ function ContactsContent() {
               </option>
             ))}
           </select>
-          {/* Community Filter (independent) */}
           <select
             value={communityFilter ?? ""}
             onChange={(e) => {
@@ -499,6 +896,16 @@ function ContactsContent() {
         </div>
       </div>
 
+      {/* Bulk Actions */}
+      {selectedIds.size > 0 && (
+        <BulkActionsBar
+          selectedCount={selectedIds.size}
+          selectedIds={[...selectedIds]}
+          onClear={() => setSelectedIds(new Set())}
+          onSuccess={() => void contactsQuery.refetch()}
+        />
+      )}
+
       {/* Desktop Table */}
       <Card className="hidden border-white/10 bg-white/5 md:block">
         <CardContent className="p-0">
@@ -506,26 +913,42 @@ function ContactsContent() {
             <table className="w-full">
               <thead>
                 <tr className="text-left text-xs font-medium tracking-wide text-gray-500 uppercase">
-                  <th className="px-5 py-3">Name</th>
-                  <th className="px-5 py-3">Contact</th>
-                  <th className="px-5 py-3">Sources</th>
-                  <th className="px-5 py-3">Communities</th>
-                  <th className="px-5 py-3">Status</th>
-                  <th className="px-5 py-3">Last Contact</th>
-                  <th className="px-5 py-3 text-right">Actions</th>
+                  <th className="w-10 px-3 py-3">
+                    <input
+                      type="checkbox"
+                      checked={contacts.length > 0 && selectedIds.size === contacts.length}
+                      onChange={toggleSelectAll}
+                      className="rounded border-white/20 bg-white/5"
+                    />
+                  </th>
+                  <th className="px-4 py-3">Name</th>
+                  <th className="px-4 py-3">Contact</th>
+                  <th className="px-4 py-3">Communities</th>
+                  <th className="px-4 py-3">Sources</th>
+                  <th className="px-4 py-3">Status</th>
+                  <th className="px-4 py-3">Last Activity</th>
+                  <th className="px-4 py-3 text-right">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/5">
                 {contacts.length === 0 && (
                   <tr>
-                    <td colSpan={6} className="px-5 py-12 text-center text-sm text-gray-500">
+                    <td colSpan={8} className="px-5 py-12 text-center text-sm text-gray-500">
                       {contactsQuery.isLoading ? "Loading..." : "No contacts found"}
                     </td>
                   </tr>
                 )}
                 {contacts.map((c) => (
                   <tr key={c.id} className="hover:bg-white/5">
-                    <td className="px-5 py-3">
+                    <td className="w-10 px-3 py-3">
+                      <input
+                        type="checkbox"
+                        checked={selectedIds.has(c.id)}
+                        onChange={() => toggleSelect(c.id)}
+                        className="rounded border-white/20 bg-white/5"
+                      />
+                    </td>
+                    <td className="px-4 py-3">
                       <Link
                         href={`/admin/crm/contacts/${c.id}`}
                         className="font-medium text-white hover:text-[#facf39]"
@@ -533,13 +956,39 @@ function ContactsContent() {
                         {c.name ?? "—"}
                       </Link>
                     </td>
-                    <td className="px-5 py-3">
-                      <div className="text-sm text-gray-400">{c.email}</div>
+                    <td className="px-4 py-3">
+                      {!isPlaceholderEmail(c.email) && (
+                        <div className="text-sm text-gray-400">{c.email}</div>
+                      )}
                       {c.phone && (
                         <div className="text-xs text-gray-500">{c.phone}</div>
                       )}
+                      {isPlaceholderEmail(c.email) && !c.phone && (
+                        <span className="text-xs text-gray-600">Phone import</span>
+                      )}
                     </td>
-                    <td className="px-5 py-3">
+                    {/* Communities BEFORE sources */}
+                    <td className="px-4 py-3">
+                      <div className="flex flex-wrap gap-1">
+                        {c.communityTags?.map((ct) => (
+                          <Badge
+                            key={ct.id}
+                            variant="outline"
+                            className="text-[10px]"
+                            style={{
+                              borderColor: ct.color ? `${ct.color}66` : undefined,
+                              color: ct.color ?? undefined,
+                            }}
+                          >
+                            {ct.parentName ? `${ct.parentName} > ` : ""}{ct.name}
+                          </Badge>
+                        ))}
+                        {(!c.communityTags || c.communityTags.length === 0) && (
+                          <span className="text-xs text-gray-600">—</span>
+                        )}
+                      </div>
+                    </td>
+                    <td className="px-4 py-3">
                       <div className="flex flex-wrap gap-1">
                         {c.submissionSources.map((src) => (
                           <Badge
@@ -552,44 +1001,51 @@ function ContactsContent() {
                         ))}
                       </div>
                     </td>
-                    <td className="px-5 py-3">
-                      <div className="flex flex-wrap gap-1">
-                        {c.communityTags?.map((ct) => (
-                          <Badge
-                            key={ct.id}
-                            variant="outline"
-                            className="text-[10px]"
-                            style={{
-                              borderColor: ct.color ? `${ct.color}66` : undefined,
-                              color: ct.color ?? undefined,
-                            }}
-                          >
-                            {ct.name}
-                          </Badge>
-                        ))}
-                        {(!c.communityTags || c.communityTags.length === 0) && (
-                          <span className="text-xs text-gray-600">—</span>
-                        )}
-                      </div>
-                    </td>
-                    <td className="px-5 py-3">
+                    <td className="px-4 py-3">
                       <span
                         className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_COLORS[c.status] ?? ""}`}
                       >
                         {STATUS_LABELS[c.status] ?? c.status}
                       </span>
                     </td>
-                    <td className="px-5 py-3 text-sm text-gray-500">
-                      {formatDate(c.lastContactDate)}
+                    <td className="px-4 py-3">
+                      {c.lastActivity ? (
+                        <div>
+                          <span className="text-xs text-gray-400">
+                            {ACTIVITY_LABELS[c.lastActivity.type] ?? c.lastActivity.type.replace(/_/g, " ")}
+                          </span>
+                          <div className="text-[11px] text-gray-600">
+                            {formatDate(c.lastActivity.date)}
+                          </div>
+                        </div>
+                      ) : (
+                        <span className="text-xs text-gray-600">{formatDate(c.lastContactDate)}</span>
+                      )}
                     </td>
-                    <td className="px-5 py-3 text-right">
-                      <Link
-                        href={`/admin/crm/contacts/${c.id}`}
-                        className="inline-flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-xs text-gray-400 hover:bg-white/10 hover:text-[#facf39]"
-                      >
-                        View
-                        <ChevronRight className="h-3 w-3" />
-                      </Link>
+                    <td className="px-4 py-3">
+                      <div className="flex items-center justify-end gap-1">
+                        <button
+                          onClick={() => setQuickNote({ id: c.id, name: c.name ?? "Contact" })}
+                          title="Quick note"
+                          className="rounded p-1.5 text-gray-500 hover:bg-white/10 hover:text-[#facf39]"
+                        >
+                          <MessageSquare className="h-3.5 w-3.5" />
+                        </button>
+                        <button
+                          onClick={() => setQuickVoice({ id: c.id, name: c.name ?? "Contact" })}
+                          title="Quick voice memo"
+                          className="rounded p-1.5 text-gray-500 hover:bg-white/10 hover:text-red-400"
+                        >
+                          <Mic className="h-3.5 w-3.5" />
+                        </button>
+                        <Link
+                          href={`/admin/crm/contacts/${c.id}`}
+                          className="inline-flex items-center gap-1 rounded-lg px-2 py-1.5 text-xs text-gray-400 hover:bg-white/10 hover:text-[#facf39]"
+                        >
+                          View
+                          <ChevronRight className="h-3 w-3" />
+                        </Link>
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -652,20 +1108,14 @@ function ContactsContent() {
                   {STATUS_LABELS[c.status] ?? c.status}
                 </span>
               </div>
-              <p className="mt-1 truncate text-sm text-gray-400">{c.email}</p>
+              {!isPlaceholderEmail(c.email) && (
+                <p className="mt-1 truncate text-sm text-gray-400">{c.email}</p>
+              )}
               {c.phone && (
                 <p className="text-xs text-gray-500">{c.phone}</p>
               )}
+              {/* Community tags first, then sources */}
               <div className="mt-2 flex flex-wrap gap-1">
-                {c.submissionSources.map((src) => (
-                  <Badge
-                    key={src}
-                    variant="outline"
-                    className={`text-[10px] ${SOURCE_COLORS[src] ?? "border-neutral-500/40 text-neutral-400"}`}
-                  >
-                    {SOURCE_LABELS[src] ?? src}
-                  </Badge>
-                ))}
                 {c.communityTags?.map((ct) => (
                   <Badge
                     key={ct.id}
@@ -676,19 +1126,48 @@ function ContactsContent() {
                       color: ct.color ?? undefined,
                     }}
                   >
-                    {ct.name}
+                    {ct.parentName ? `${ct.parentName} > ` : ""}{ct.name}
+                  </Badge>
+                ))}
+                {c.submissionSources.map((src) => (
+                  <Badge
+                    key={src}
+                    variant="outline"
+                    className={`text-[10px] ${SOURCE_COLORS[src] ?? "border-neutral-500/40 text-neutral-400"}`}
+                  >
+                    {SOURCE_LABELS[src] ?? src}
                   </Badge>
                 ))}
               </div>
               <div className="mt-2 flex items-center justify-between text-xs text-gray-500">
-                <span>{formatDate(c.lastContactDate)}</span>
-                <Link
-                  href={`/admin/crm/contacts/${c.id}`}
-                  className="inline-flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-xs text-gray-400 hover:bg-white/10 hover:text-[#facf39]"
-                >
-                  View
-                  <ChevronRight className="h-3 w-3" />
-                </Link>
+                <div className="flex items-center gap-2">
+                  {c.lastActivity ? (
+                    <span>{ACTIVITY_LABELS[c.lastActivity.type] ?? c.lastActivity.type} · {formatDate(c.lastActivity.date)}</span>
+                  ) : (
+                    <span>{formatDate(c.lastContactDate)}</span>
+                  )}
+                </div>
+                <div className="flex items-center gap-1">
+                  <button
+                    onClick={() => setQuickNote({ id: c.id, name: c.name ?? "Contact" })}
+                    className="min-h-[44px] min-w-[44px] rounded-lg p-2 text-gray-400 hover:text-[#facf39]"
+                  >
+                    <MessageSquare className="h-4 w-4" />
+                  </button>
+                  <button
+                    onClick={() => setQuickVoice({ id: c.id, name: c.name ?? "Contact" })}
+                    className="min-h-[44px] min-w-[44px] rounded-lg p-2 text-gray-400 hover:text-red-400"
+                  >
+                    <Mic className="h-4 w-4" />
+                  </button>
+                  <Link
+                    href={`/admin/crm/contacts/${c.id}`}
+                    className="inline-flex min-h-[44px] items-center gap-1 rounded-lg px-2.5 py-2 text-xs text-gray-400 hover:bg-white/10 hover:text-[#facf39]"
+                  >
+                    View
+                    <ChevronRight className="h-3 w-3" />
+                  </Link>
+                </div>
               </div>
             </CardContent>
           </Card>

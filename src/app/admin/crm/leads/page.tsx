@@ -6,15 +6,11 @@ import { Badge } from "~/components/ui/badge";
 import Link from "next/link";
 import {
   ArrowUpDown,
-  Check,
-  ChevronDown,
   ChevronLeft,
   ChevronRight,
-  ChevronUp,
   ClipboardList,
   ExternalLink,
   FileSignature,
-  Filter,
   Search,
 } from "lucide-react";
 import { api } from "~/trpc/react";
@@ -30,9 +26,17 @@ const SOURCE_BADGE_COLORS: Record<string, string> = {
   event_waiver: "border-purple-500/40 text-purple-400",
 };
 
-const SOURCE_ICONS: Record<string, typeof ClipboardList> = {
-  questionnaire: ClipboardList,
-  event_waiver: FileSignature,
+const STATUS_LABELS: Record<string, string> = {
+  lead: "Lead",
+  qualified: "Qualified",
+  customer: "Member",
+  inactive: "Inactive",
+};
+const STATUS_COLORS: Record<string, string> = {
+  lead: "bg-yellow-900/50 text-yellow-400",
+  qualified: "bg-blue-900/50 text-blue-400",
+  customer: "bg-green-900/50 text-green-400",
+  inactive: "bg-neutral-800 text-neutral-400",
 };
 
 const SORT_OPTIONS = [
@@ -50,7 +54,6 @@ function LeadsContent() {
   const [sortBy, setSortBy] = useState<"date" | "name" | "source">("date");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [page, setPage] = useState(0);
-  const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
 
   const communityTagsQuery = api.crm.getCommunityTagsFlat.useQuery();
 
@@ -64,22 +67,9 @@ function LeadsContent() {
     offset: page * PAGE_SIZE,
   });
 
-  const markProcessedMutation = api.crm.markWaitlistProcessed.useMutation({
-    onSuccess: () => void leadsQuery.refetch(),
-  });
-
   const data = leadsQuery.data ?? { leads: [], total: 0 };
   const { leads, total } = data;
   const totalPages = Math.ceil(total / PAGE_SIZE);
-
-  const toggleExpand = (key: string) => {
-    setExpandedItems((prev) => {
-      const next = new Set(prev);
-      if (next.has(key)) next.delete(key);
-      else next.add(key);
-      return next;
-    });
-  };
 
   const toggleSort = (col: "date" | "name" | "source") => {
     if (sortBy === col) {
@@ -116,9 +106,8 @@ function LeadsContent() {
       </div>
 
       {/* Filters Row */}
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-        {/* Search */}
-        <div className="relative flex-1">
+      <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
+        <div className="relative flex-1 min-w-[200px]">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
           <input
             type="text"
@@ -132,49 +121,44 @@ function LeadsContent() {
           />
         </div>
 
-        {/* Source Filter */}
-        <div className="relative">
-          <Filter className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-gray-500" />
+        <div className="flex flex-wrap gap-2">
           <select
             value={sourceFilter}
             onChange={(e) => {
               setSourceFilter(e.target.value);
               setPage(0);
             }}
-            className="appearance-none rounded-lg border border-white/10 bg-white/5 py-2 pl-8 pr-8 text-sm text-white focus:border-[#facf39]/40 focus:outline-none"
+            className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white focus:border-[#facf39]/40 focus:outline-none"
           >
             {SOURCE_OPTIONS.map((opt) => (
-              <option key={opt.key} value={opt.key} className="bg-neutral-900">
+              <option key={opt.key} value={opt.key}>
                 {opt.label}
               </option>
             ))}
           </select>
-        </div>
 
-        {/* Community Filter (independent) */}
-        <div className="relative">
           <select
             value={communityFilter ?? ""}
             onChange={(e) => {
               setCommunityFilter(e.target.value ? Number(e.target.value) : undefined);
               setPage(0);
             }}
-            className="appearance-none rounded-lg border border-white/10 bg-white/5 py-2 pl-3 pr-8 text-sm text-white focus:border-[#facf39]/40 focus:outline-none"
+            className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white focus:border-[#facf39]/40 focus:outline-none"
           >
-            <option value="" className="bg-neutral-900">All Communities</option>
+            <option value="">All Communities</option>
             {communityTags
               .filter((t) => t.type === "community")
               .map((tag) => (
-                <option key={tag.id} value={tag.id} className="bg-neutral-900">
+                <option key={tag.id} value={tag.id}>
                   {tag.name}
                 </option>
               ))}
-            <option disabled className="bg-neutral-900">──────────</option>
+            <option disabled>──────────</option>
             {communityTags
               .filter((t) => t.type === "location")
               .map((tag) => (
-                <option key={tag.id} value={tag.id} className="bg-neutral-900">
-                  📍 {tag.name}
+                <option key={tag.id} value={tag.id}>
+                  {tag.name}
                 </option>
               ))}
           </select>
@@ -201,191 +185,239 @@ function LeadsContent() {
         ))}
       </div>
 
-      {/* Leads List */}
-      <Card className="border-white/10 bg-white/5">
+      {/* Desktop Table */}
+      <Card className="hidden border-white/10 bg-white/5 md:block">
         <CardContent className="p-0">
-          {leadsQuery.isLoading ? (
-            <div className="py-12 text-center text-sm text-gray-500">
-              Loading...
-            </div>
-          ) : leads.length === 0 ? (
-            <div className="py-12 text-center text-sm text-gray-500">
-              No submissions found
-            </div>
-          ) : (
-            <div className="divide-y divide-white/5">
-              {leads.map((lead) => {
-                const key = `${lead.source}-${lead.id}`;
-                const isExpanded = expandedItems.has(key);
-                const Icon = SOURCE_ICONS[lead.source] ?? ClipboardList;
-                const badgeColor =
-                  SOURCE_BADGE_COLORS[lead.source] ??
-                  "border-gray-500/40 text-gray-400";
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="text-left text-xs font-medium tracking-wide text-gray-500 uppercase">
+                  <th className="px-5 py-3">Name</th>
+                  <th className="px-5 py-3">Contact</th>
+                  <th className="px-5 py-3">Communities</th>
+                  <th className="px-5 py-3">Source</th>
+                  <th className="px-5 py-3">Status</th>
+                  <th className="px-5 py-3">Preview</th>
+                  <th className="px-5 py-3">Date</th>
+                  <th className="px-5 py-3 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-white/5">
+                {leadsQuery.isLoading && (
+                  <tr>
+                    <td colSpan={8} className="px-5 py-12 text-center text-sm text-gray-500">
+                      Loading...
+                    </td>
+                  </tr>
+                )}
+                {!leadsQuery.isLoading && leads.length === 0 && (
+                  <tr>
+                    <td colSpan={8} className="px-5 py-12 text-center text-sm text-gray-500">
+                      No submissions found
+                    </td>
+                  </tr>
+                )}
+                {leads.map((lead) => {
+                  const key = `${lead.source}-${lead.id}`;
+                  const Icon = lead.source === "event_waiver" ? FileSignature : ClipboardList;
+                  const badgeColor = SOURCE_BADGE_COLORS[lead.source] ?? "border-gray-500/40 text-gray-400";
 
-                return (
-                  <div key={key}>
-                    <button
-                      onClick={() => toggleExpand(key)}
-                      className="flex w-full flex-col gap-1 px-4 py-3 text-left hover:bg-white/5 sm:flex-row sm:items-center sm:justify-between sm:px-5"
-                    >
-                      <div className="flex min-w-0 items-center gap-2.5 sm:gap-3">
-                        <Icon className="h-4 w-4 shrink-0 text-gray-400" />
-                        <span className="min-w-0 truncate font-medium text-white">
-                          {lead.name}
-                        </span>
-                        <Badge
-                          variant="outline"
-                          className={`shrink-0 text-[10px] ${badgeColor}`}
-                        >
+                  return (
+                    <tr key={key} className="hover:bg-white/5">
+                      <td className="px-5 py-3">
+                        <div className="flex items-center gap-2">
+                          <Icon className="h-3.5 w-3.5 shrink-0 text-gray-500" />
+                          <span className="font-medium text-white">{lead.name}</span>
+                        </div>
+                      </td>
+                      <td className="px-5 py-3">
+                        <div className="text-sm text-gray-400">{lead.email}</div>
+                        {lead.phone && (
+                          <div className="text-xs text-gray-500">{lead.phone}</div>
+                        )}
+                      </td>
+                      {/* Communities BEFORE source */}
+                      <td className="px-5 py-3">
+                        <div className="flex flex-wrap gap-1">
+                          {lead.communityTags.map((ct) => (
+                            <Badge
+                              key={ct.id}
+                              variant="outline"
+                              className="text-[10px]"
+                              style={{
+                                borderColor: ct.color ? `${ct.color}66` : undefined,
+                                color: ct.color ?? undefined,
+                              }}
+                            >
+                              {ct.parentName ? `${ct.parentName} > ` : ""}{ct.name}
+                            </Badge>
+                          ))}
+                          {lead.communityTags.length === 0 && (
+                            <span className="text-xs text-gray-600">—</span>
+                          )}
+                        </div>
+                      </td>
+                      <td className="px-5 py-3">
+                        <Badge variant="outline" className={`text-[10px] ${badgeColor}`}>
                           {lead.source.replace(/_/g, " ")}
                         </Badge>
-                        {/* Community badges */}
-                        {lead.communityTags.map((ct) => (
-                          <Badge
-                            key={ct.id}
-                            variant="outline"
-                            className="shrink-0 text-[10px]"
-                            style={{
-                              borderColor: ct.color ? `${ct.color}66` : undefined,
-                              color: ct.color ?? undefined,
-                            }}
+                      </td>
+                      <td className="px-5 py-3">
+                        <span
+                          className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_COLORS[lead.status] ?? ""}`}
+                        >
+                          {STATUS_LABELS[lead.status] ?? lead.status}
+                        </span>
+                      </td>
+                      <td className="max-w-[200px] px-5 py-3">
+                        <span className="truncate text-xs text-gray-500">
+                          {lead.preview || "—"}
+                        </span>
+                      </td>
+                      <td className="px-5 py-3 text-sm text-gray-500">
+                        {formatDate(lead.date)}
+                      </td>
+                      <td className="px-5 py-3 text-right">
+                        {lead.contactId ? (
+                          <Link
+                            href={`/admin/crm/contacts/${lead.contactId}`}
+                            className="inline-flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-xs text-gray-400 hover:bg-white/10 hover:text-[#facf39]"
                           >
-                            {ct.name}
-                          </Badge>
-                        ))}
-                        {lead.preview && (
-                          <span className="hidden max-w-xs truncate text-sm text-gray-500 md:inline">
-                            {lead.preview}
-                          </span>
+                            View
+                            <ExternalLink className="h-3 w-3" />
+                          </Link>
+                        ) : (
+                          <span className="text-xs text-gray-600">—</span>
                         )}
-                      </div>
-                      <div className="flex items-center gap-2 pl-6.5 sm:gap-3 sm:pl-0">
-                        <span className="text-xs text-gray-500">
-                          {formatDate(lead.date)}
-                        </span>
-                        <span className="ml-auto sm:ml-0">
-                          {isExpanded ? (
-                            <ChevronUp className="h-4 w-4 text-gray-500" />
-                          ) : (
-                            <ChevronDown className="h-4 w-4 text-gray-500" />
-                          )}
-                        </span>
-                      </div>
-                    </button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
 
-                    {isExpanded && (
-                      <div className="border-t border-white/5 bg-white/[0.02] px-4 py-4 sm:px-5">
-                        <div className="space-y-2 text-sm">
-                          <div>
-                            <span className="text-gray-500">Name:</span>{" "}
-                            <span className="text-gray-200">{lead.name}</span>
-                          </div>
-                          <div>
-                            <span className="text-gray-500">Email:</span>{" "}
-                            <span className="break-all text-gray-200">{lead.email}</span>
-                          </div>
-                          {lead.preview && (
-                            <div>
-                              <span className="text-gray-500">
-                                {lead.source === "event_waiver"
-                                  ? "Event:"
-                                  : "Role:"}
-                              </span>{" "}
-                              <span className="text-gray-200">
-                                {lead.preview}
-                              </span>
-                            </div>
-                          )}
-                          {lead.communityTags.length > 0 && (
-                            <div className="flex items-center gap-1.5">
-                              <span className="text-gray-500">Communities:</span>
-                              {lead.communityTags.map((ct) => (
-                                <Badge
-                                  key={ct.id}
-                                  variant="outline"
-                                  className="text-[10px]"
-                                  style={{
-                                    borderColor: ct.color ? `${ct.color}66` : undefined,
-                                    color: ct.color ?? undefined,
-                                  }}
-                                >
-                                  {ct.name}
-                                </Badge>
-                              ))}
-                            </div>
-                          )}
-
-                          <div className="flex items-center gap-3 pt-2">
-                            {/* Mark processed (waitlist only - legacy) */}
-                            {lead.source === "waitlist" && !lead.processed && (
-                              <button
-                                onClick={() =>
-                                  markProcessedMutation.mutate({ id: lead.id })
-                                }
-                                disabled={markProcessedMutation.isPending}
-                                className="inline-flex items-center gap-1.5 rounded-lg bg-green-900/30 px-3 py-1.5 text-xs text-green-400 hover:bg-green-900/50"
-                              >
-                                <Check className="h-3 w-3" />
-                                Mark Processed
-                              </button>
-                            )}
-
-                            {lead.source === "waitlist" && lead.processed && (
-                              <span className="inline-flex items-center gap-1.5 text-xs text-green-400">
-                                <Check className="h-3 w-3" />
-                                Processed
-                              </span>
-                            )}
-
-                            {/* Link to contact page */}
-                            {lead.contactId && (
-                              <Link
-                                href={`/admin/crm/contacts/${lead.contactId}`}
-                                className="inline-flex items-center gap-1.5 rounded-lg bg-[#facf39]/10 px-3 py-1.5 text-xs text-[#facf39] hover:bg-[#facf39]/20"
-                              >
-                                <ExternalLink className="h-3 w-3" />
-                                View Contact
-                              </Link>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="flex items-center justify-between border-t border-white/10 px-5 py-3">
+              <span className="text-xs text-gray-500">
+                Showing {page * PAGE_SIZE + 1}–{Math.min((page + 1) * PAGE_SIZE, total)} of {total}
+              </span>
+              <div className="flex items-center gap-1">
+                <button
+                  onClick={() => setPage((p) => Math.max(0, p - 1))}
+                  disabled={page === 0}
+                  className="rounded p-1.5 text-gray-400 hover:bg-white/10 hover:text-white disabled:opacity-30"
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                </button>
+                <span className="px-2 text-xs text-gray-400">
+                  {page + 1} / {totalPages}
+                </span>
+                <button
+                  onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
+                  disabled={page >= totalPages - 1}
+                  className="rounded p-1.5 text-gray-400 hover:bg-white/10 hover:text-white disabled:opacity-30"
+                >
+                  <ChevronRight className="h-4 w-4" />
+                </button>
+              </div>
             </div>
           )}
         </CardContent>
       </Card>
 
-      {/* Pagination */}
-      {totalPages > 1 && (
-        <div className="flex items-center justify-between">
-          <span className="text-xs text-gray-500">
-            Showing {page * PAGE_SIZE + 1}–{Math.min((page + 1) * PAGE_SIZE, total)} of {total}
-          </span>
-          <div className="flex items-center gap-1">
-            <button
-              onClick={() => setPage((p) => Math.max(0, p - 1))}
-              disabled={page === 0}
-              className="rounded p-1.5 text-gray-400 hover:bg-white/10 hover:text-white disabled:opacity-30"
-            >
-              <ChevronLeft className="h-4 w-4" />
-            </button>
-            <span className="px-2 text-xs text-gray-400">
-              {page + 1} / {totalPages}
+      {/* Mobile Card List */}
+      <div className="space-y-3 md:hidden">
+        {leadsQuery.isLoading && (
+          <p className="py-12 text-center text-sm text-gray-500">Loading...</p>
+        )}
+        {!leadsQuery.isLoading && leads.length === 0 && (
+          <p className="py-12 text-center text-sm text-gray-500">No submissions found</p>
+        )}
+        {leads.map((lead) => {
+          const key = `${lead.source}-${lead.id}`;
+          const badgeColor = SOURCE_BADGE_COLORS[lead.source] ?? "border-gray-500/40 text-gray-400";
+
+          return (
+            <Card key={key} className="border-white/10 bg-white/5">
+              <CardContent className="p-4">
+                <div className="flex items-start justify-between">
+                  <span className="font-medium text-white">{lead.name}</span>
+                  <span
+                    className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_COLORS[lead.status] ?? ""}`}
+                  >
+                    {STATUS_LABELS[lead.status] ?? lead.status}
+                  </span>
+                </div>
+                <p className="mt-1 truncate text-sm text-gray-400">{lead.email}</p>
+                {/* Community tags first */}
+                <div className="mt-2 flex flex-wrap gap-1">
+                  {lead.communityTags.map((ct) => (
+                    <Badge
+                      key={ct.id}
+                      variant="outline"
+                      className="text-[10px]"
+                      style={{
+                        borderColor: ct.color ? `${ct.color}66` : undefined,
+                        color: ct.color ?? undefined,
+                      }}
+                    >
+                      {ct.parentName ? `${ct.parentName} > ` : ""}{ct.name}
+                    </Badge>
+                  ))}
+                  <Badge variant="outline" className={`text-[10px] ${badgeColor}`}>
+                    {lead.source.replace(/_/g, " ")}
+                  </Badge>
+                </div>
+                {lead.preview && (
+                  <p className="mt-2 truncate text-xs text-gray-500">{lead.preview}</p>
+                )}
+                <div className="mt-2 flex items-center justify-between text-xs text-gray-500">
+                  <span>{formatDate(lead.date)}</span>
+                  {lead.contactId && (
+                    <Link
+                      href={`/admin/crm/contacts/${lead.contactId}`}
+                      className="inline-flex min-h-[44px] items-center gap-1 rounded-lg px-2.5 py-2 text-xs text-[#facf39] hover:bg-white/10"
+                    >
+                      View Contact
+                      <ExternalLink className="h-3 w-3" />
+                    </Link>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          );
+        })}
+
+        {/* Mobile Pagination */}
+        {totalPages > 1 && (
+          <div className="flex items-center justify-between py-2">
+            <span className="text-xs text-gray-500">
+              {page * PAGE_SIZE + 1}–{Math.min((page + 1) * PAGE_SIZE, total)} of {total}
             </span>
-            <button
-              onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
-              disabled={page >= totalPages - 1}
-              className="rounded p-1.5 text-gray-400 hover:bg-white/10 hover:text-white disabled:opacity-30"
-            >
-              <ChevronRight className="h-4 w-4" />
-            </button>
+            <div className="flex items-center gap-1">
+              <button
+                onClick={() => setPage((p) => Math.max(0, p - 1))}
+                disabled={page === 0}
+                className="min-h-[44px] min-w-[44px] rounded-lg p-2 text-gray-400 hover:text-white disabled:opacity-30"
+              >
+                <ChevronLeft className="h-5 w-5" />
+              </button>
+              <span className="px-2 text-sm text-gray-400">
+                {page + 1} / {totalPages}
+              </span>
+              <button
+                onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
+                disabled={page >= totalPages - 1}
+                className="min-h-[44px] min-w-[44px] rounded-lg p-2 text-gray-400 hover:text-white disabled:opacity-30"
+              >
+                <ChevronRight className="h-5 w-5" />
+              </button>
+            </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }

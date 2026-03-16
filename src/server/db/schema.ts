@@ -69,67 +69,76 @@ export const posts = createTable("post", {
  * Contacts - Master CRM database
  * Central repository for all contacts from all forms and sources
  */
-export const contacts = createTable("contact", {
-  id: serial("id").primaryKey(),
-  email: varchar("email", { length: 255 }).notNull().unique(),
-  name: varchar("name", { length: 255 }),
-  phone: varchar("phone", { length: 50 }),
+export const contacts = createTable(
+  "contact",
+  {
+    id: serial("id").primaryKey(),
+    email: varchar("email", { length: 255 }).notNull().unique(),
+    name: varchar("name", { length: 255 }),
+    phone: varchar("phone", { length: 50 }),
 
-  // Track the FIRST source where this contact came from
-  firstSource: varchar("first_source", { length: 100 }).notNull(),
+    // Track the FIRST source where this contact came from
+    firstSource: varchar("first_source", { length: 100 }).notNull(),
 
-  // Lead lifecycle status
-  status: varchar("status", { length: 50 }).default("lead").notNull(), // lead, qualified, customer, inactive
+    // Lead lifecycle status
+    status: varchar("status", { length: 50 }).default("lead").notNull(), // lead, qualified, customer, inactive
 
-  // Consent tracking (GDPR/CAN-SPAM compliance)
-  emailConsent: boolean("email_consent").default(false).notNull(),
-  smsConsent: boolean("sms_consent").default(false).notNull(),
-  consentGrantedAt: timestamp("consent_granted_at", { withTimezone: true }),
-  consentIpAddress: varchar("consent_ip_address", { length: 45 }),
+    // Consent tracking (GDPR/CAN-SPAM compliance)
+    emailConsent: boolean("email_consent").default(false).notNull(),
+    smsConsent: boolean("sms_consent").default(false).notNull(),
+    consentGrantedAt: timestamp("consent_granted_at", { withTimezone: true }),
+    consentIpAddress: varchar("consent_ip_address", { length: 45 }),
 
-  // Unsubscribe tracking
-  unsubscribedEmail: boolean("unsubscribed_email").default(false).notNull(),
-  unsubscribedSms: boolean("unsubscribed_sms").default(false).notNull(),
-  unsubscribedAt: timestamp("unsubscribed_at", { withTimezone: true }),
-  unsubscribeToken: varchar("unsubscribe_token", { length: 64 }).unique(),
+    // Unsubscribe tracking
+    unsubscribedEmail: boolean("unsubscribed_email").default(false).notNull(),
+    unsubscribedSms: boolean("unsubscribed_sms").default(false).notNull(),
+    unsubscribedAt: timestamp("unsubscribed_at", { withTimezone: true }),
+    unsubscribeToken: varchar("unsubscribe_token", { length: 64 }).unique(),
 
-  // Segmentation and tagging
-  tags: jsonb("tags")
-    .$type<string[]>()
-    .default(sql`'[]'::jsonb`),
+    // Segmentation and tagging
+    tags: jsonb("tags")
+      .$type<string[]>()
+      .default(sql`'[]'::jsonb`),
 
-  // Use metadata sparingly - only for truly dynamic fields
-  // Common fields should get their own columns
-  metadata: jsonb("metadata").default(sql`'{}'::jsonb`),
+    // Use metadata sparingly - only for truly dynamic fields
+    // Common fields should get their own columns
+    metadata: jsonb("metadata").default(sql`'{}'::jsonb`),
 
-  // Who added this contact (team member tracking)
-  addedBy: text("added_by").references(() => userProfiles.id, { onDelete: "set null" }),
+    // Who added this contact (team member tracking)
+    addedBy: text("added_by").references(() => userProfiles.id, { onDelete: "set null" }),
 
-  // Referral tracking — who referred this contact
-  referredByContactId: integer("referred_by_contact_id").references(
-    (): AnyPgColumn => contacts.id,
-    { onDelete: "set null" }
-  ),
+    // Referral tracking — who referred this contact
+    referredByContactId: integer("referred_by_contact_id").references(
+      (): AnyPgColumn => contacts.id,
+      { onDelete: "set null" }
+    ),
 
-  // Internal notes
-  notes: text("notes"),
+    // Internal notes
+    notes: text("notes"),
 
-  // Engagement tracking
-  firstContactDate: timestamp("first_contact_date", { withTimezone: true })
-    .default(sql`CURRENT_TIMESTAMP`)
-    .notNull(),
-  lastContactDate: timestamp("last_contact_date", { withTimezone: true })
-    .default(sql`CURRENT_TIMESTAMP`)
-    .notNull(),
+    // Engagement tracking
+    firstContactDate: timestamp("first_contact_date", { withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    lastContactDate: timestamp("last_contact_date", { withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
 
-  // Timestamps
-  createdAt: timestamp("created_at", { withTimezone: true })
-    .default(sql`CURRENT_TIMESTAMP`)
-    .notNull(),
-  updatedAt: timestamp("updated_at", { withTimezone: true })
-    .default(sql`CURRENT_TIMESTAMP`)
-    .$onUpdate(() => new Date()),
-});
+    // Timestamps
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .$onUpdate(() => new Date()),
+  },
+  (t) => [
+    index("idx_contact_status").on(t.status),
+    index("idx_contact_first_source").on(t.firstSource),
+    index("idx_contact_last_contact").on(t.lastContactDate),
+    index("idx_contact_created").on(t.createdAt),
+  ]
+);
 
 /**
  * Contact Sources - Track ALL sources a contact has interacted with
@@ -170,30 +179,38 @@ export const contactSources = createTable(
 /**
  * Contact Activities - Track all interactions with contacts
  */
-export const contactActivities = createTable("contact_activity", {
-  id: serial("id").primaryKey(),
+export const contactActivities = createTable(
+  "contact_activity",
+  {
+    id: serial("id").primaryKey(),
 
-  // Foreign key with constraint
-  contactId: integer("contact_id")
-    .notNull()
-    .references(() => contacts.id, { onDelete: "cascade" }),
+    // Foreign key with constraint
+    contactId: integer("contact_id")
+      .notNull()
+      .references(() => contacts.id, { onDelete: "cascade" }),
 
-  // Type of activity
-  activityType: varchar("activity_type", { length: 50 }).notNull(), // form_submission, note_added, email_sent, etc.
+    // Type of activity
+    activityType: varchar("activity_type", { length: 50 }).notNull(), // form_submission, note_added, email_sent, etc.
 
-  // Which form/page triggered this
-  source: varchar("source", { length: 100 }),
+    // Which form/page triggered this
+    source: varchar("source", { length: 100 }),
 
-  // Description of the activity
-  description: text("description"),
+    // Description of the activity
+    description: text("description"),
 
-  // Additional activity data (form-specific details)
-  metadata: jsonb("metadata").default(sql`'{}'::jsonb`),
+    // Additional activity data (form-specific details)
+    metadata: jsonb("metadata").default(sql`'{}'::jsonb`),
 
-  createdAt: timestamp("created_at", { withTimezone: true })
-    .default(sql`CURRENT_TIMESTAMP`)
-    .notNull(),
-});
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+  },
+  (t) => [
+    index("idx_activity_contact").on(t.contactId),
+    index("idx_activity_type").on(t.activityType),
+    index("idx_activity_created").on(t.createdAt),
+  ]
+);
 
 /**
  * Questionnaire Responses - Alignment survey submissions
@@ -558,41 +575,53 @@ export const userIdentityMap = createTable("user_identity_map", {
  * Event Waivers - Signed liability waivers for events
  * Stores waiver submissions with digital signatures
  */
-export const eventWaivers = createTable("event_waiver", {
-  id: serial("id").primaryKey(),
+export const eventWaivers = createTable(
+  "event_waiver",
+  {
+    id: serial("id").primaryKey(),
 
-  // Signer information
-  signerName: varchar("signer_name", { length: 255 }).notNull(),
-  signerEmail: varchar("signer_email", { length: 255 }).notNull(),
+    // FK to contacts (nullable for legacy waivers without a contact)
+    contactId: integer("contact_id").references(() => contacts.id, {
+      onDelete: "set null",
+    }),
 
-  // Event details
-  eventName: varchar("event_name", { length: 255 }).notNull(),
-  eventDate: varchar("event_date", { length: 50 }).notNull(),
-  eventLocation: varchar("event_location", { length: 255 }).notNull(),
+    // Signer information
+    signerName: varchar("signer_name", { length: 255 }).notNull(),
+    signerEmail: varchar("signer_email", { length: 255 }).notNull(),
 
-  // Signature data (base64 PNG)
-  signatureData: text("signature_data").notNull(),
+    // Event details
+    eventName: varchar("event_name", { length: 255 }).notNull(),
+    eventDate: varchar("event_date", { length: 50 }).notNull(),
+    eventLocation: varchar("event_location", { length: 255 }).notNull(),
 
-  // Waiver version for legal tracking
-  waiverVersion: varchar("waiver_version", { length: 50 })
-    .default("1.0")
-    .notNull(),
+    // Signature data (base64 PNG)
+    signatureData: text("signature_data").notNull(),
 
-  // Agreement tracking
-  agreedToTerms: boolean("agreed_to_terms").default(false).notNull(),
-  agreedToPhotoVideo: boolean("agreed_to_photo_video").default(false).notNull(),
+    // Waiver version for legal tracking
+    waiverVersion: varchar("waiver_version", { length: 50 })
+      .default("1.0")
+      .notNull(),
 
-  // Submission metadata
-  ipAddress: varchar("ip_address", { length: 45 }),
-  userAgent: text("user_agent"),
+    // Agreement tracking
+    agreedToTerms: boolean("agreed_to_terms").default(false).notNull(),
+    agreedToPhotoVideo: boolean("agreed_to_photo_video").default(false).notNull(),
 
-  signedAt: timestamp("signed_at", { withTimezone: true })
-    .default(sql`CURRENT_TIMESTAMP`)
-    .notNull(),
-  createdAt: timestamp("created_at", { withTimezone: true })
-    .default(sql`CURRENT_TIMESTAMP`)
-    .notNull(),
-});
+    // Submission metadata
+    ipAddress: varchar("ip_address", { length: 45 }),
+    userAgent: text("user_agent"),
+
+    signedAt: timestamp("signed_at", { withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+  },
+  (t) => [
+    index("idx_waiver_contact").on(t.contactId),
+    index("idx_waiver_signer_email").on(t.signerEmail),
+  ]
+);
 
 /**
  * Voice Notes - Audio recordings attached to contacts
@@ -743,6 +772,7 @@ export const contactsRelations = relations(contacts, ({ one, many }) => ({
     relationName: "contactReferrals",
   }),
   waitlistIntakes: many(waitlistIntake),
+  eventWaivers: many(eventWaivers),
   voiceNotes: many(voiceNotes),
   sessions: many(sessions),
   events: many(events),
@@ -865,6 +895,13 @@ export const emailLinkClicksRelations = relations(
     }),
   })
 );
+
+export const eventWaiversRelations = relations(eventWaivers, ({ one }) => ({
+  contact: one(contacts, {
+    fields: [eventWaivers.contactId],
+    references: [contacts.id],
+  }),
+}));
 
 export const voiceNotesRelations = relations(voiceNotes, ({ one }) => ({
   contact: one(contacts, {

@@ -185,6 +185,14 @@ function QuestionnaireViewer({ response: r }: QuestionnaireViewerProps) {
             ? r.communicationPrefs.join(", ")
             : null,
         },
+        {
+          label: "AI Phone Call Opt-In",
+          value: r.aiPhoneCallOptIn === true ? "Yes" : r.aiPhoneCallOptIn === false ? "No" : null,
+        },
+        {
+          label: "Marketing Opt-In",
+          value: r.marketingOptIn === true ? "Yes" : r.marketingOptIn === false ? "No" : null,
+        },
       ],
     },
   ];
@@ -241,7 +249,7 @@ function QuestionnaireViewer({ response: r }: QuestionnaireViewerProps) {
 
 interface CommunityTagsSectionProps {
   contactId: number;
-  communityTags: { id: number; name: string; slug: string; color: string | null; type: string }[];
+  communityTags: { id: number; name: string; slug: string; color: string | null; type: string; parentName?: string | null }[];
   onUpdate: () => void;
 }
 
@@ -278,7 +286,7 @@ function CommunityTagsSection({ contactId, communityTags, onUpdate }: CommunityT
               color: tag.color ?? "#d1d5db",
             }}
           >
-            {tag.name}
+            {tag.parentName ? `${tag.parentName} > ` : ""}{tag.name}
             <button
               onClick={() =>
                 removeMutation.mutate({ contactId, communityTagId: tag.id })
@@ -448,6 +456,10 @@ function ContactDetailContent({ id }: { id: number }) {
     },
   });
 
+  const deleteNoteMutation = api.crm.deleteNote.useMutation({
+    onSuccess: () => void utils.crm.getContact.invalidate({ id }),
+  });
+
   if (contactQuery.isLoading) {
     return <div className="py-12 text-center text-gray-500">Loading...</div>;
   }
@@ -608,6 +620,28 @@ function ContactDetailContent({ id }: { id: number }) {
                 <span className="text-gray-400">{contact.phone}</span>
               )}
             </div>
+
+            {/* Community Tags (before sources) */}
+            {contactCommunityTags.length > 0 && (
+              <>
+                <div className="hidden h-4 w-px bg-white/10 sm:block" />
+                <div className="flex flex-wrap items-center gap-1.5">
+                  {contactCommunityTags.map((ct) => (
+                    <Badge
+                      key={ct.id}
+                      variant="outline"
+                      className="text-[10px]"
+                      style={{
+                        borderColor: ct.color ? `${ct.color}66` : undefined,
+                        color: ct.color ?? undefined,
+                      }}
+                    >
+                      {ct.parentName ? `${ct.parentName} > ` : ""}{ct.name}
+                    </Badge>
+                  ))}
+                </div>
+              </>
+            )}
 
             <div className="hidden h-4 w-px bg-white/10 sm:block" />
 
@@ -840,10 +874,22 @@ function ContactDetailContent({ id }: { id: number }) {
                       <span className="text-[10px] text-gray-500 uppercase">Recent Notes</span>
                       <div className="mt-2 space-y-2">
                         {noteActivities.slice(0, 10).map((item) => (
-                          <div key={item.key} className="rounded-lg bg-white/[0.03] px-3 py-2">
-                            <p className="text-sm text-gray-300 whitespace-pre-wrap">
-                              {String(item.data.description ?? "")}
-                            </p>
+                          <div key={item.key} className="group rounded-lg bg-white/[0.03] px-3 py-2">
+                            <div className="flex items-start justify-between gap-2">
+                              <p className="text-sm text-gray-300 whitespace-pre-wrap">
+                                {String(item.data.description ?? "")}
+                              </p>
+                              <button
+                                onClick={() => {
+                                  const noteId = Number(item.data.id);
+                                  if (noteId) deleteNoteMutation.mutate({ id: noteId });
+                                }}
+                                className="shrink-0 rounded p-1 text-gray-600 opacity-0 transition-opacity hover:bg-white/10 hover:text-red-400 group-hover:opacity-100"
+                                title="Delete note"
+                              >
+                                <Trash2 className="h-3 w-3" />
+                              </button>
+                            </div>
                             <span className="mt-1 block text-[11px] text-gray-600">
                               {formatDateTime(item.date)}
                             </span>
@@ -993,9 +1039,23 @@ function ContactDetailContent({ id }: { id: number }) {
                     )}
 
                     {(item.type === "note_added" || item.type === "status_changed" || item.type === "contact_created" || item.type === "voice_note_added") && (
-                      <p className="text-sm text-gray-300 whitespace-pre-wrap">
-                        {String(item.data.description ?? "")}
-                      </p>
+                      <div className="flex items-start justify-between gap-2">
+                        <p className="text-sm text-gray-300 whitespace-pre-wrap">
+                          {String(item.data.description ?? "")}
+                        </p>
+                        {item.type === "note_added" && (
+                          <button
+                            onClick={() => {
+                              const noteId = Number(item.data.id);
+                              if (noteId) deleteNoteMutation.mutate({ id: noteId });
+                            }}
+                            className="shrink-0 rounded p-1 text-gray-600 hover:bg-white/10 hover:text-red-400"
+                            title="Delete note"
+                          >
+                            <Trash2 className="h-3 w-3" />
+                          </button>
+                        )}
+                      </div>
                     )}
                   </div>
                 )}

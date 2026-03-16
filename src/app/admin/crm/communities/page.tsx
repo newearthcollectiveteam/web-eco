@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, Suspense } from "react";
+import { useState, useMemo, Suspense, lazy } from "react";
+import Link from "next/link";
 import { Card, CardContent } from "~/components/ui/card";
 import { Badge } from "~/components/ui/badge";
 import {
@@ -12,8 +13,29 @@ import {
   ChevronDown,
   MapPin,
   Users,
+  List,
+  GitBranch,
 } from "lucide-react";
 import { api } from "~/trpc/react";
+
+// Lazy-load the graph to avoid SSR issues with ReactFlow
+const CommunityGraph = lazy(() =>
+  import("~/components/admin/crm/community-graph").then((m) => ({ default: m.CommunityGraph }))
+);
+
+// ─── Depth Color Palette ────────────────────────────────────
+// Distinct hues per level — easy to scan at a glance
+const DEPTH_COLORS = [
+  "#FACF39", // Level 0 — gold (NEC brand)
+  "#38BDF8", // Level 1 — sky blue
+  "#A78BFA", // Level 2 — lavender
+  "#34D399", // Level 3 — mint
+  "#FB923C", // Level 4+ — tangerine
+];
+
+function getDepthColor(depth: number): string {
+  return DEPTH_COLORS[Math.min(depth, DEPTH_COLORS.length - 1)]!;
+}
 
 // ─── Types ──────────────────────────────────────────────────
 
@@ -41,16 +63,49 @@ interface TagModalProps {
 }
 
 function TagModal({ tag, parentId, allTags, onClose, onSuccess }: TagModalProps) {
+  // Collect all existing types from the tree
+  const existingTypes = useMemo(() => {
+    const types = new Set<string>();
+    const walk = (nodes: TagNode[]) => {
+      for (const n of nodes) {
+        types.add(n.type);
+        walk(n.children);
+      }
+    };
+    walk(allTags);
+    // Ensure defaults are always present
+    types.add("community");
+    types.add("location");
+    return [...types].sort();
+  }, [allTags]);
+
+  // Compute depth of this tag for default color
+  const computeDepth = (pId: number | null | undefined): number => {
+    if (!pId) return 0;
+    const findDepth = (nodes: TagNode[], targetId: number, d: number): number | null => {
+      for (const n of nodes) {
+        if (n.id === targetId) return d;
+        const found = findDepth(n.children, targetId, d + 1);
+        if (found !== null) return found;
+      }
+      return null;
+    };
+    return (findDepth(allTags, pId, 0) ?? 0) + 1;
+  };
+
+  const initialParent = tag?.parentId ?? parentId ?? null;
+  const initialDepth = tag ? computeDepth(tag.parentId) : computeDepth(initialParent);
+
   const [name, setName] = useState(tag?.name ?? "");
-  const [type, setType] = useState<"community" | "location">(
-    (tag?.type as "community" | "location") ?? "community"
-  );
+  const [type, setType] = useState(tag?.type ?? "community");
+  const [creatingType, setCreatingType] = useState(false);
+  const [newTypeName, setNewTypeName] = useState("");
   const [description, setDescription] = useState(tag?.description ?? "");
-  const [color, setColor] = useState(tag?.color ?? "#facf39");
-  const [selectedParentId, setSelectedParentId] = useState<number | null>(
-    tag?.parentId ?? parentId ?? null
-  );
+  const [color, setColor] = useState(tag?.color ?? getDepthColor(initialDepth));
+  const [selectedParentId, setSelectedParentId] = useState<number | null>(initialParent);
   const [error, setError] = useState("");
+  const [creatingParent, setCreatingParent] = useState(false);
+  const [newParentName, setNewParentName] = useState("");
 
   const createMutation = api.crm.createCommunityTag.useMutation({
     onSuccess: () => {
@@ -67,6 +122,8 @@ function TagModal({ tag, parentId, allTags, onClose, onSuccess }: TagModalProps)
     },
     onError: (err) => setError(err.message),
   });
+
+  const createParentMutation = api.crm.createCommunityTag.useMutation();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -123,7 +180,7 @@ function TagModal({ tag, parentId, allTags, onClose, onSuccess }: TagModalProps)
             className="text-lg font-bold text-white"
             style={{ fontFamily: "Airwaves, sans-serif" }}
           >
-            {tag ? "Edit" : "Add"} {type === "location" ? "Location" : "Community"}
+            {tag ? "Edit" : "Add"} {type.charAt(0).toUpperCase() + type.slice(1)}
           </h2>
           <button onClick={onClose} className="text-gray-400 hover:text-white">
             <X className="h-5 w-5" />
@@ -154,51 +211,209 @@ function TagModal({ tag, parentId, allTags, onClose, onSuccess }: TagModalProps)
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="mb-1 block text-xs text-gray-400">Type</label>
-              <select
-                value={type}
-                onChange={(e) => setType(e.target.value as "community" | "location")}
-                className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white focus:border-[#facf39]/50 focus:outline-none"
-              >
-                <option value="community">Community</option>
-                <option value="location">Location</option>
-              </select>
+              {creatingType ? (
+                <div className="flex gap-1.5">
+                  <input
+                    type="text"
+                    value={newTypeName}
+                    onChange={(e) => setNewTypeName(e.target.value)}
+                    placeholder="New type name..."
+                    autoFocus
+                    className="flex-1 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder-gray-500 focus:border-[#facf39]/50 focus:outline-none"
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        const t = newTypeName.trim().toLowerCase();
+                        if (t) {
+                          setType(t);
+                          setCreatingType(false);
+                          setNewTypeName("");
+                        }
+                      }
+                      if (e.key === "Escape") {
+                        setCreatingType(false);
+                        setNewTypeName("");
+                      }
+                    }}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const t = newTypeName.trim().toLowerCase();
+                      if (t) {
+                        setType(t);
+                        setCreatingType(false);
+                        setNewTypeName("");
+                      }
+                    }}
+                    disabled={!newTypeName.trim()}
+                    className="rounded-lg bg-[#facf39]/20 px-2.5 py-2 text-sm text-[#facf39] hover:bg-[#facf39]/30 disabled:opacity-30"
+                  >
+                    Set
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setCreatingType(false);
+                      setNewTypeName("");
+                    }}
+                    className="rounded-lg border border-white/10 px-2.5 py-2 text-sm text-gray-400 hover:text-white"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                </div>
+              ) : (
+                <div className="flex gap-1.5">
+                  <select
+                    value={type}
+                    onChange={(e) => setType(e.target.value)}
+                    className="flex-1 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white focus:border-[#facf39]/50 focus:outline-none"
+                  >
+                    {existingTypes.map((t) => (
+                      <option key={t} value={t}>
+                        {t.charAt(0).toUpperCase() + t.slice(1)}
+                      </option>
+                    ))}
+                  </select>
+                  <button
+                    type="button"
+                    onClick={() => setCreatingType(true)}
+                    title="Create new type"
+                    className="shrink-0 rounded-lg border border-white/10 bg-white/5 px-2.5 py-2 text-sm text-gray-400 hover:text-[#facf39]"
+                  >
+                    <Plus className="h-4 w-4" />
+                  </button>
+                </div>
+              )}
             </div>
             <div>
               <label className="mb-1 block text-xs text-gray-400">Color</label>
-              <div className="flex items-center gap-2">
-                <input
-                  type="color"
-                  value={color}
-                  onChange={(e) => setColor(e.target.value)}
-                  className="h-9 w-9 cursor-pointer rounded border border-white/10 bg-transparent"
-                />
-                <input
-                  type="text"
-                  value={color}
-                  onChange={(e) => setColor(e.target.value)}
-                  className="flex-1 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder-gray-500 focus:border-[#facf39]/50 focus:outline-none"
-                  placeholder="#facf39"
-                />
+              <div className="flex items-center gap-3">
+                <label
+                  className="relative flex h-12 w-12 shrink-0 cursor-pointer items-center justify-center rounded-xl border-2 transition-colors hover:border-white/30"
+                  style={{ backgroundColor: color, borderColor: `${color}88` }}
+                >
+                  <input
+                    type="color"
+                    value={color}
+                    onChange={(e) => setColor(e.target.value)}
+                    className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
+                  />
+                </label>
+                <div className="flex flex-1 flex-col gap-1.5">
+                  <input
+                    type="text"
+                    value={color}
+                    onChange={(e) => setColor(e.target.value)}
+                    className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder-gray-500 focus:border-[#facf39]/50 focus:outline-none"
+                    placeholder="#facf39"
+                  />
+                  {/* Golden gradation presets */}
+                  <div className="flex gap-1">
+                    {DEPTH_COLORS.map((c) => (
+                      <button
+                        key={c}
+                        type="button"
+                        onClick={() => setColor(c)}
+                        className="h-5 w-5 rounded-full border transition-transform hover:scale-125"
+                        style={{
+                          backgroundColor: c,
+                          borderColor: color === c ? "#fff" : `${c}88`,
+                          borderWidth: color === c ? "2px" : "1px",
+                        }}
+                        title={c}
+                      />
+                    ))}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
 
           <div>
             <label className="mb-1 block text-xs text-gray-400">Parent</label>
-            <select
-              value={selectedParentId ?? ""}
-              onChange={(e) =>
-                setSelectedParentId(e.target.value ? Number(e.target.value) : null)
-              }
-              className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white focus:border-[#facf39]/50 focus:outline-none"
-            >
-              <option value="">None (top level)</option>
-              {parentOptions.map((opt) => (
-                <option key={opt.id} value={opt.id}>
-                  {"  ".repeat(opt.depth)}{opt.name}
-                </option>
-              ))}
-            </select>
+            {creatingParent ? (
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={newParentName}
+                  onChange={(e) => setNewParentName(e.target.value)}
+                  placeholder="New parent name..."
+                  autoFocus
+                  className="flex-1 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder-gray-500 focus:border-[#facf39]/50 focus:outline-none"
+                  onKeyDown={(e) => {
+                    if (e.key === "Escape") {
+                      setCreatingParent(false);
+                      setNewParentName("");
+                    }
+                  }}
+                />
+                <button
+                  type="button"
+                  onClick={async () => {
+                    if (!newParentName.trim()) return;
+                    try {
+                      const result = await createParentMutation.mutateAsync({
+                        name: newParentName.trim(),
+                        type: "community",
+                      });
+                      if (result) {
+                        setSelectedParentId(result.id);
+                        onSuccess(); // Refresh the tags tree
+                      }
+                      setCreatingParent(false);
+                      setNewParentName("");
+                    } catch {
+                      setError("Failed to create parent");
+                    }
+                  }}
+                  disabled={!newParentName.trim() || createParentMutation.isPending}
+                  className="rounded-lg bg-[#facf39]/20 px-3 py-2 text-sm text-[#facf39] hover:bg-[#facf39]/30 disabled:opacity-30"
+                >
+                  {createParentMutation.isPending ? "..." : "Create"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setCreatingParent(false);
+                    setNewParentName("");
+                  }}
+                  className="rounded-lg border border-white/10 px-3 py-2 text-sm text-gray-400 hover:text-white"
+                >
+                  Cancel
+                </button>
+              </div>
+            ) : (
+              <div className="flex gap-2">
+                <select
+                  value={selectedParentId ?? ""}
+                  onChange={(e) => {
+                    const newParent = e.target.value ? Number(e.target.value) : null;
+                    setSelectedParentId(newParent);
+                    // Auto-update color to match new depth level
+                    if (!tag) {
+                      setColor(getDepthColor(computeDepth(newParent)));
+                    }
+                  }}
+                  className="flex-1 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white focus:border-[#facf39]/50 focus:outline-none"
+                >
+                  <option value="">None (top level)</option>
+                  {parentOptions.map((opt) => (
+                    <option key={opt.id} value={opt.id}>
+                      {"  ".repeat(opt.depth)}{opt.name}
+                    </option>
+                  ))}
+                </select>
+                <button
+                  type="button"
+                  onClick={() => setCreatingParent(true)}
+                  title="Create new parent"
+                  className="shrink-0 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-gray-400 hover:text-[#facf39]"
+                >
+                  <Plus className="h-4 w-4" />
+                </button>
+              </div>
+            )}
           </div>
 
           <div>
@@ -249,6 +464,8 @@ function TreeNode({ node, depth, allTags, onEdit, onAddChild, onDelete }: TreeNo
   const [expanded, setExpanded] = useState(true);
   const hasChildren = node.children.length > 0;
   const Icon = node.type === "location" ? MapPin : Users;
+  // Always use depth-based golden gradation on the tree view
+  const nodeColor = getDepthColor(depth);
 
   return (
     <div>
@@ -271,7 +488,7 @@ function TreeNode({ node, depth, allTags, onEdit, onAddChild, onDelete }: TreeNo
         {/* Icon */}
         <Icon
           className="h-4 w-4 shrink-0"
-          style={{ color: node.color ?? "#9ca3af" }}
+          style={{ color: nodeColor }}
         />
 
         {/* Name + badge */}
@@ -281,15 +498,23 @@ function TreeNode({ node, depth, allTags, onEdit, onAddChild, onDelete }: TreeNo
             variant="outline"
             className="shrink-0 text-[10px]"
             style={{
-              borderColor: node.color ? `${node.color}66` : undefined,
-              color: node.color ?? undefined,
+              borderColor: `${nodeColor}66`,
+              color: nodeColor,
             }}
           >
             {node.type}
           </Badge>
-          <span className="shrink-0 text-xs text-gray-500">
-            {node.contactCount} {node.contactCount === 1 ? "contact" : "contacts"}
-          </span>
+          {node.contactCount > 0 ? (
+            <Link
+              href={`/admin/crm/contacts?community=${node.id}`}
+              className="shrink-0 text-xs text-gray-500 hover:text-[#facf39] hover:underline"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {node.contactCount} {node.contactCount === 1 ? "contact" : "contacts"}
+            </Link>
+          ) : (
+            <span className="shrink-0 text-xs text-gray-500">0 contacts</span>
+          )}
         </div>
 
         {/* Actions */}
@@ -308,15 +533,13 @@ function TreeNode({ node, depth, allTags, onEdit, onAddChild, onDelete }: TreeNo
           >
             <Pencil className="h-3.5 w-3.5" />
           </button>
-          {node.contactCount === 0 && (
-            <button
-              onClick={() => onDelete(node)}
-              title="Delete"
-              className="rounded p-1 text-gray-500 hover:bg-white/10 hover:text-red-400"
-            >
-              <Trash2 className="h-3.5 w-3.5" />
-            </button>
-          )}
+          <button
+            onClick={() => onDelete(node)}
+            title={node.contactCount > 0 ? `Delete (${node.contactCount} contacts will be untagged)` : "Delete"}
+            className="rounded p-1 text-gray-500 hover:bg-white/10 hover:text-red-400"
+          >
+            <Trash2 className="h-3.5 w-3.5" />
+          </button>
         </div>
       </div>
 
@@ -343,6 +566,7 @@ function TreeNode({ node, depth, allTags, onEdit, onAddChild, onDelete }: TreeNo
 // ─── Communities Content ─────────────────────────────────────
 
 function CommunitiesContent() {
+  const [activeView, setActiveView] = useState<"tree" | "graph">("tree");
   const [modal, setModal] = useState<{
     tag?: TagNode;
     parentId?: number | null;
@@ -428,30 +652,77 @@ function CommunitiesContent() {
         </button>
       </div>
 
+      {/* View Tabs */}
+      <div className="flex items-center gap-1 rounded-lg border border-white/10 bg-white/5 p-1">
+        <button
+          onClick={() => setActiveView("tree")}
+          className={`inline-flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors ${
+            activeView === "tree"
+              ? "bg-white/10 text-white"
+              : "text-gray-400 hover:text-white"
+          }`}
+        >
+          <List className="h-4 w-4" />
+          Tree
+        </button>
+        <button
+          onClick={() => setActiveView("graph")}
+          className={`inline-flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors ${
+            activeView === "graph"
+              ? "bg-white/10 text-white"
+              : "text-gray-400 hover:text-white"
+          }`}
+        >
+          <GitBranch className="h-4 w-4" />
+          Graph
+        </button>
+      </div>
+
       {/* Tree View */}
-      <Card className="border-white/10 bg-white/5">
-        <CardContent className="p-2">
-          {tagsQuery.isLoading && (
-            <p className="py-12 text-center text-sm text-gray-500">Loading...</p>
+      {activeView === "tree" && (
+        <Card className="border-white/10 bg-white/5">
+          <CardContent className="p-2">
+            {tagsQuery.isLoading && (
+              <p className="py-12 text-center text-sm text-gray-500">Loading...</p>
+            )}
+            {!tagsQuery.isLoading && tags.length === 0 && (
+              <p className="py-12 text-center text-sm text-gray-500">
+                No community tags yet. Create one to get started.
+              </p>
+            )}
+            {tags.map((tag) => (
+              <TreeNode
+                key={tag.id}
+                node={tag}
+                depth={0}
+                allTags={tags}
+                onEdit={(t) => setModal({ tag: t })}
+                onAddChild={(parentId) => setModal({ parentId })}
+                onDelete={(t) => setDeleteConfirm(t)}
+              />
+            ))}
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Graph View */}
+      {activeView === "graph" && (
+        <Suspense
+          fallback={
+            <div className="flex h-[600px] items-center justify-center rounded-xl border border-white/10 bg-neutral-950">
+              <span className="text-sm text-gray-500">Loading graph...</span>
+            </div>
+          }
+        >
+          {tags.length > 0 ? (
+            <CommunityGraph tags={tags} onRefresh={() => void tagsQuery.refetch()} />
+          ) : (
+            <div className="flex h-[600px] items-center justify-center rounded-xl border border-white/10 bg-neutral-950">
+              <span className="text-sm text-gray-500">No community tags yet</span>
+            </div>
           )}
-          {!tagsQuery.isLoading && tags.length === 0 && (
-            <p className="py-12 text-center text-sm text-gray-500">
-              No community tags yet. Create one to get started.
-            </p>
-          )}
-          {tags.map((tag) => (
-            <TreeNode
-              key={tag.id}
-              node={tag}
-              depth={0}
-              allTags={tags}
-              onEdit={(t) => setModal({ tag: t })}
-              onAddChild={(parentId) => setModal({ parentId })}
-              onDelete={(t) => setDeleteConfirm(t)}
-            />
-          ))}
-        </CardContent>
-      </Card>
+        </Suspense>
+      )}
     </div>
   );
 }

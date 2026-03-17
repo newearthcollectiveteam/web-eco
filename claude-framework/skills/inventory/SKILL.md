@@ -12,26 +12,30 @@ Scan the codebase to detect drift between the actual routes/dependencies and the
 
 ## When to Use
 
-| Trigger | Action |
-|---------|--------|
-| After adding new routes or pages | Run `/inventory routes` |
-| After adding/removing npm packages | Run `/inventory tools` |
-| After changing env vars or integrations | Run `/inventory tools` |
+| Trigger                                 | Action                        |
+| --------------------------------------- | ----------------------------- |
+| After adding new routes or pages        | Run `/inventory routes`       |
+| After adding/removing npm packages      | Run `/inventory tools`        |
+| After changing env vars or integrations | Run `/inventory tools`        |
 | Periodic project check (weekly/monthly) | Run `/inventory` (full audit) |
-| Called from `/tidy` or `/validate` | Quick drift check only |
+| Called from `/tidy` or `/validate`      | Quick drift check only        |
 
 ## Modes
 
 ### Full Audit (default)
+
 Runs both route and tool audits. Use: `/inventory`
 
 ### Routes Only
+
 Audits ecosystem map against filesystem. Use: `/inventory routes`
 
 ### Tools Only
+
 Audits technology inventory against package.json, env vars, and imports. Use: `/inventory tools`
 
 ### Quick Check (called from other skills)
+
 Lightweight drift detection — counts only, no detailed report. Returns `[PASS]`, `[WARN]`, or `[INFO]` indicators.
 
 ## Steps
@@ -51,6 +55,7 @@ If neither exists, inform the user and offer to scaffold them. Skip to Step 5.
 ### Step 2 — Route Audit
 
 **2a. Discover actual routes:**
+
 ```bash
 find src/app -name "page.tsx" | sort
 ```
@@ -60,14 +65,15 @@ Read the ecosystem map file and extract all `path:` values from the route array.
 
 **2c. Compare:**
 
-| Check | How | Severity |
-|-------|-----|----------|
-| Route exists in filesystem but not in map | Compare file paths → route paths | `[WARN]` — missing from map |
-| Route in map but no filesystem match | Check if page.tsx exists for the path | `[WARN]` — ghost entry |
-| Status says "dev" but feature is working | Cross-ref with STATUS.md | `[INFO]` — stale status |
-| Redirect routes have no `redirectTo` | Check for `redirect()` calls in page files | `[INFO]` — undocumented redirect |
+| Check                                     | How                                        | Severity                         |
+| ----------------------------------------- | ------------------------------------------ | -------------------------------- |
+| Route exists in filesystem but not in map | Compare file paths → route paths           | `[WARN]` — missing from map      |
+| Route in map but no filesystem match      | Check if page.tsx exists for the path      | `[WARN]` — ghost entry           |
+| Status says "dev" but feature is working  | Cross-ref with STATUS.md                   | `[INFO]` — stale status          |
+| Redirect routes have no `redirectTo`      | Check for `redirect()` calls in page files | `[INFO]` — undocumented redirect |
 
 **2d. Check for new redirects:**
+
 ```bash
 # Page-level redirects
 grep -r "redirect(" src/app --include="*.tsx" -l
@@ -84,17 +90,19 @@ Read the tooling page and extract all service `name` values from the services ar
 **3b. Check package.json:**
 Read `package.json` and compare dependencies + devDependencies against documented tools.
 
-| Check | How | Severity |
-|-------|-----|----------|
-| Dependency not in inventory | New package in package.json | `[WARN]` — undocumented tool |
-| Inventory tool not in package.json | Service listed but no matching dep | `[INFO]` — may be external service (OK) or removed dep |
-| Version mismatch | Compare inventory `version` field to package.json | `[INFO]` — version drift |
-| Env var referenced but not documented | Grep for `process.env.` patterns | `[WARN]` — undocumented env var |
+| Check                                 | How                                               | Severity                                               |
+| ------------------------------------- | ------------------------------------------------- | ------------------------------------------------------ |
+| Dependency not in inventory           | New package in package.json                       | `[WARN]` — undocumented tool                           |
+| Inventory tool not in package.json    | Service listed but no matching dep                | `[INFO]` — may be external service (OK) or removed dep |
+| Version mismatch                      | Compare inventory `version` field to package.json | `[INFO]` — version drift                               |
+| Env var referenced but not documented | Grep for `process.env.` patterns                  | `[WARN]` — undocumented env var                        |
 
 **3c. Check for new env vars:**
+
 ```bash
 grep -roh "process\.env\.\w\+" src/ | sort -u
 ```
+
 Compare against documented `envVars` arrays in the inventory.
 
 ### Step 4 — Database Audit (if database page exists)
@@ -107,11 +115,11 @@ Read the Drizzle schema file (typically `src/server/db/schema.ts`) and extract a
 
 **4c. Compare:**
 
-| Check | How | Severity |
-|-------|-----|----------|
-| Table in schema but not in inventory | New table added | `[WARN]` — missing from DB page |
-| Table in inventory but not in schema | Table removed or renamed | `[WARN]` — ghost entry |
-| Column count mismatch | Count columns in schema vs documented count | `[INFO]` — stale column count |
+| Check                                | How                                         | Severity                        |
+| ------------------------------------ | ------------------------------------------- | ------------------------------- |
+| Table in schema but not in inventory | New table added                             | `[WARN]` — missing from DB page |
+| Table in inventory but not in schema | Table removed or renamed                    | `[WARN]` — ghost entry          |
+| Column count mismatch                | Count columns in schema vs documented count | `[INFO]` — stale column count   |
 
 ### Step 5 — Generate Report
 
@@ -146,12 +154,14 @@ Read the Drizzle schema file (typically `src/server/db/schema.ts`) and extract a
 ### Step 6 — Offer Fixes
 
 Use AskUserQuestion:
+
 - **"Fix all automatically"** — update inventory pages with new entries, correct versions/statuses
 - **"Fix one section at a time"** — walk through routes, then tools, then database
 - **"Just report, don't fix"** — output the report only
 - **"Update audit date only"** — just stamp the "Last audited" comment
 
 When fixing:
+
 - New routes: add to `ECOSYSTEM_ROUTES` with sensible defaults (status: "live", domain/access inferred from path)
 - New tools: add to `SERVICES` with name, version from package.json, category best-guess
 - New tables: add to appropriate `TABLE_GROUPS` domain
@@ -172,12 +182,12 @@ Only flag warnings and info — skip passes if everything is clean.
 
 ## Integration with Other Skills
 
-| Skill | Integration | What runs |
-|-------|-------------|-----------|
-| `/tidy` | Calls quick check | Route count + tool count + table count comparison |
-| `/validate` | Calls quick check | Same as tidy, included in standards report |
-| `/handoff` | Mentions drift | If routes or deps changed this session, note in summary |
-| `/push` | Optional gate | Warn if `package.json` changed but inventory wasn't updated |
+| Skill       | Integration       | What runs                                                   |
+| ----------- | ----------------- | ----------------------------------------------------------- |
+| `/tidy`     | Calls quick check | Route count + tool count + table count comparison           |
+| `/validate` | Calls quick check | Same as tidy, included in standards report                  |
+| `/handoff`  | Mentions drift    | If routes or deps changed this session, note in summary     |
+| `/push`     | Optional gate     | Warn if `package.json` changed but inventory wasn't updated |
 
 ## Scaffold Mode
 

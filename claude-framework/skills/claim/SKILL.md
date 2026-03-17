@@ -22,9 +22,11 @@ Claim a worktree assignment and set up worker session context.
    - If this is main worktree, inform user this is integrator role
 
 3. **Validate Worktree**
+
    ```bash
    git worktree list
    ```
+
    Confirm current directory is a valid worktree.
 
 4. **Read or Create Context**
@@ -73,11 +75,12 @@ Run `PORT=3001 npm run dev` to start dev server.
 ## Completion Protocol
 
 **CRITICAL**: Before marking work as done, workers MUST:
+
 1. Commit all changes to the worktree branch (`git add` + `git commit`)
 2. Verify the commit landed: `git log --oneline -1`
 3. Run `/handoff` to update status
 
-Workers that skip committing will leave their work as uncommitted changes that get lost when the integrator runs `/integrate` and cleans up worktrees. The integrator merges *commits*, not working tree state.
+Workers that skip committing will leave their work as uncommitted changes that get lost when the integrator runs `/integrate` and cleans up worktrees. The integrator merges _commits_, not working tree state.
 
 ## Edge Cases
 

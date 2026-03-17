@@ -3,14 +3,7 @@
 import { useState, Suspense } from "react";
 import { createClient } from "~/lib/supabase/client";
 import Image from "next/image";
-import {
-  Mail,
-  Lock,
-  ArrowRight,
-  Loader2,
-  Eye,
-  EyeOff,
-} from "lucide-react";
+import { Mail, Lock, ArrowRight, Loader2, Eye, EyeOff } from "lucide-react";
 import { api } from "~/trpc/react";
 
 type Mode = "signin" | "claim-form" | "claim-check" | "email-sent";
@@ -194,9 +187,8 @@ function LoginPageContent() {
                 Check Your Email
               </h1>
               <p className="mb-6 text-sm text-neutral-400">
-                We sent a link to{" "}
-                <span className="text-white">{email}</span>. Open it on this
-                device to continue.
+                We sent a link to <span className="text-white">{email}</span>.
+                Open it on this device to continue.
               </p>
               <button
                 onClick={() => {
@@ -453,7 +445,7 @@ function LoginPageContent() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-white"
+                  className="absolute top-1/2 right-3 -translate-y-1/2 text-neutral-400 hover:text-white"
                 >
                   {showPassword ? (
                     <EyeOff className="h-5 w-5" />

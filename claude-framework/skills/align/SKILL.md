@@ -73,6 +73,7 @@ Which would you like to add? (select multiple or 'all')
 Ask user which components to add:
 
 **Core Infrastructure:**
+
 ```
 Add tRPC + TanStack Query? [y/N]
   - Creates src/server/api/ structure
@@ -91,6 +92,7 @@ Add/Update Supabase Auth? [y/N]
 ```
 
 **Patterns & Utilities:**
+
 ```
 Add error handling pattern? [y/N]
   - Creates src/lib/errors.ts
@@ -106,6 +108,7 @@ Add environment validation? [y/N]
 ```
 
 **Documentation:**
+
 ```
 Add/Update project documentation? [y/N]
   - Runs /init-standards if docs missing
@@ -118,11 +121,11 @@ Before adding each component, check for conflicts:
 
 ```typescript
 // Example: Before adding tRPC
-if (existsSync('src/server/api/trpc.ts')) {
+if (existsSync("src/server/api/trpc.ts")) {
   // Ask: "tRPC setup exists. Overwrite, merge, or skip?"
 }
 
-if (packageJson.dependencies['@trpc/server']) {
+if (packageJson.dependencies["@trpc/server"]) {
   // Ask: "tRPC already installed (version X). Upgrade to Y?"
 }
 ```
@@ -132,6 +135,7 @@ if (packageJson.dependencies['@trpc/server']) {
 For each selected addition:
 
 **tRPC:**
+
 1. Install dependencies: `npm install @trpc/server @trpc/client @trpc/react-query @tanstack/react-query superjson`
 2. Copy from templates:
    - `~/.claude/templates/seed/src/server/api/trpc.ts`
@@ -144,6 +148,7 @@ For each selected addition:
 4. Create API route: `src/app/api/trpc/[trpc]/route.ts`
 
 **Drizzle:**
+
 1. Install: `npm install drizzle-orm postgres` + `npm install -D drizzle-kit`
 2. Copy templates:
    - `~/.claude/templates/seed/src/server/db/index.ts`
@@ -153,6 +158,7 @@ For each selected addition:
 4. Add db scripts to package.json
 
 **Supabase Auth:**
+
 1. Install: `npm install @supabase/ssr @supabase/supabase-js`
 2. Copy templates:
    - `~/.claude/templates/seed/src/lib/supabase/client.ts`
@@ -162,16 +168,19 @@ For each selected addition:
 4. Update .env.example with Supabase vars
 
 **Error Handling:**
+
 1. Copy `~/.claude/templates/seed/src/lib/errors.ts`
 2. No dependencies needed (uses existing zod, @trpc/server)
 
 **SEO Metadata:**
+
 1. Read existing layout.tsx
 2. Merge metadata object with template
 3. Add viewport export if missing
 4. Preserve existing customizations
 
 **Environment Validation:**
+
 1. Install: `npm install @t3-oss/env-nextjs zod`
 2. Copy `~/.claude/templates/seed/src/env.js`
 3. Update imports in files that use process.env
@@ -179,6 +188,7 @@ For each selected addition:
 ### 6. Update Dependencies
 
 After all additions, run:
+
 ```bash
 npm install
 ```
@@ -247,12 +257,12 @@ npm run dev        # Should start without errors
 
 ## Difference from Other Skills
 
-| Skill | Purpose |
-|-------|---------|
-| `/seed` | Create new project from scratch |
-| `/init-standards` | Add documentation files only |
-| `/align` | Add missing stack components to existing project |
-| `/validate` | Check if project follows standards (read-only) |
+| Skill             | Purpose                                          |
+| ----------------- | ------------------------------------------------ |
+| `/seed`           | Create new project from scratch                  |
+| `/init-standards` | Add documentation files only                     |
+| `/align`          | Add missing stack components to existing project |
+| `/validate`       | Check if project follows standards (read-only)   |
 
 ## Edge Cases
 

@@ -32,7 +32,9 @@ export const userProfiles = createTable("user_profile", {
   avatarUrl: text("avatar_url"),
   bio: text("bio"),
   phone: varchar("phone", { length: 50 }),
-  teamRoles: jsonb("team_roles").$type<string[]>().default(sql`'[]'::jsonb`),
+  teamRoles: jsonb("team_roles")
+    .$type<string[]>()
+    .default(sql`'[]'::jsonb`),
   role: varchar("role", { length: 50 }).default("member").notNull(),
   approvalStatus: varchar("approval_status", { length: 50 })
     .default("pending")
@@ -92,7 +94,9 @@ export const contacts = createTable(
     metadata: jsonb("metadata").default(sql`'{}'::jsonb`),
 
     // Who added this contact (team member tracking)
-    addedBy: text("added_by").references(() => userProfiles.id, { onDelete: "set null" }),
+    addedBy: text("added_by").references(() => userProfiles.id, {
+      onDelete: "set null",
+    }),
 
     // Referral tracking — who referred this contact
     referredByContactId: integer("referred_by_contact_id").references(
@@ -591,7 +595,9 @@ export const eventWaivers = createTable(
 
     // Agreement tracking
     agreedToTerms: boolean("agreed_to_terms").default(false).notNull(),
-    agreedToPhotoVideo: boolean("agreed_to_photo_video").default(false).notNull(),
+    agreedToPhotoVideo: boolean("agreed_to_photo_video")
+      .default(false)
+      .notNull(),
 
     // Submission metadata
     ipAddress: varchar("ip_address", { length: 45 }),
@@ -645,7 +651,9 @@ export const teamTasks = createTable(
     description: text("description"), // rich notes
     status: varchar("status", { length: 50 }).default("todo").notNull(), // todo, in_progress, done
     priority: varchar("priority", { length: 20 }).default("medium").notNull(), // low, medium, high, urgent
-    assignedTo: text("assigned_to").references(() => userProfiles.id, { onDelete: "set null" }),
+    assignedTo: text("assigned_to").references(() => userProfiles.id, {
+      onDelete: "set null",
+    }),
     createdBy: text("created_by")
       .notNull()
       .references(() => userProfiles.id, { onDelete: "set null" }),
@@ -674,7 +682,9 @@ export const taskStatuses = createTable("task_status", {
   id: serial("id").primaryKey(),
   name: varchar("name", { length: 100 }).notNull(), // Display name: "To Do", "In Progress"
   slug: varchar("slug", { length: 50 }).notNull().unique(), // Stored in tasks: "todo", "in_progress"
-  color: varchar("color", { length: 100 }).default("text-gray-400 border-gray-500/30"),
+  color: varchar("color", { length: 100 }).default(
+    "text-gray-400 border-gray-500/30"
+  ),
   icon: varchar("icon", { length: 50 }).default("circle"), // Lucide icon name
   sortOrder: integer("sort_order").default(0).notNull(),
   createdAt: timestamp("created_at", { withTimezone: true })
@@ -782,17 +792,20 @@ export const contactAssociations = createTable(
  * Enable type-safe eager loading with `with:` syntax
  */
 
-export const communityTagsRelations = relations(communityTags, ({ one, many }) => ({
-  parent: one(communityTags, {
-    fields: [communityTags.parentId],
-    references: [communityTags.id],
-    relationName: "communityTagHierarchy",
-  }),
-  children: many(communityTags, {
-    relationName: "communityTagHierarchy",
-  }),
-  contactTags: many(contactCommunityTags),
-}));
+export const communityTagsRelations = relations(
+  communityTags,
+  ({ one, many }) => ({
+    parent: one(communityTags, {
+      fields: [communityTags.parentId],
+      references: [communityTags.id],
+      relationName: "communityTagHierarchy",
+    }),
+    children: many(communityTags, {
+      relationName: "communityTagHierarchy",
+    }),
+    contactTags: many(contactCommunityTags),
+  })
+);
 
 export const contactCommunityTagsRelations = relations(
   contactCommunityTags,

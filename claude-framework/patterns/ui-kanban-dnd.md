@@ -44,12 +44,14 @@ Store status definitions in the database so users can rename, reorder, and creat
 ```typescript
 export const itemStatuses = createTable("item_status", {
   id: serial("id").primaryKey(),
-  name: varchar("name", { length: 100 }).notNull(),       // "To Do"
+  name: varchar("name", { length: 100 }).notNull(), // "To Do"
   slug: varchar("slug", { length: 50 }).notNull().unique(), // "todo"
-  color: varchar("color", { length: 100 }),                 // Tailwind classes
-  icon: varchar("icon", { length: 50 }),                    // Lucide icon name
+  color: varchar("color", { length: 100 }), // Tailwind classes
+  icon: varchar("icon", { length: 50 }), // Lucide icon name
   sortOrder: integer("sort_order").default(0).notNull(),
-  createdAt: timestamp("created_at", { withTimezone: true }).default(sql`CURRENT_TIMESTAMP`).notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
 });
 
 export const items = createTable("item", {
@@ -67,8 +69,14 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
 function KanbanCard({ item, onEdit }: { item: Item; onEdit: () => void }) {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
-    useSortable({ id: `item-${item.id}`, data: { type: "item", item } });
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: `item-${item.id}`, data: { type: "item", item } });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -80,7 +88,11 @@ function KanbanCard({ item, onEdit }: { item: Item; onEdit: () => void }) {
     <div ref={setNodeRef} style={style} className="rounded-lg border p-3">
       <div className="flex items-start gap-2">
         {/* Grip handle — only this element triggers drag */}
-        <button {...attributes} {...listeners} className="cursor-grab active:cursor-grabbing">
+        <button
+          {...attributes}
+          {...listeners}
+          className="cursor-grab active:cursor-grabbing"
+        >
           <GripVertical className="h-4 w-4" />
         </button>
         {/* Clicking card body opens edit — doesn't trigger drag */}
@@ -97,7 +109,10 @@ function KanbanCard({ item, onEdit }: { item: Item; onEdit: () => void }) {
 
 ```tsx
 import { useDroppable } from "@dnd-kit/core";
-import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
 
 function KanbanColumn({ statusSlug, items, onAddItem }: Props) {
   const { isOver, setNodeRef } = useDroppable({ id: `column-${statusSlug}` });
@@ -111,11 +126,15 @@ function KanbanColumn({ statusSlug, items, onAddItem }: Props) {
       <div className="flex items-center gap-2 px-4 py-3">
         <h3>{statusName}</h3>
         <span className="text-xs">{items.length}</span>
-        <button onClick={onAddItem}><Plus /></button>
+        <button onClick={onAddItem}>
+          <Plus />
+        </button>
       </div>
       <div className="space-y-2 overflow-y-auto px-3 pb-3">
         <SortableContext items={itemIds} strategy={verticalListSortingStrategy}>
-          {items.map((item) => <KanbanCard key={item.id} item={item} />)}
+          {items.map((item) => (
+            <KanbanCard key={item.id} item={item} />
+          ))}
         </SortableContext>
       </div>
     </div>
@@ -126,14 +145,24 @@ function KanbanColumn({ statusSlug, items, onAddItem }: Props) {
 ### 5. Board Orchestrator with DragOverlay
 
 ```tsx
-import { DndContext, DragOverlay, PointerSensor, TouchSensor, KeyboardSensor, useSensor, useSensors } from "@dnd-kit/core";
+import {
+  DndContext,
+  DragOverlay,
+  PointerSensor,
+  TouchSensor,
+  KeyboardSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
 
 function KanbanBoard({ items, statuses, onStatusChange }: Props) {
   const [activeItem, setActiveItem] = useState<Item | null>(null);
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
-    useSensor(TouchSensor, { activationConstraint: { delay: 200, tolerance: 5 } }),
+    useSensor(TouchSensor, {
+      activationConstraint: { delay: 200, tolerance: 5 },
+    }),
     useSensor(KeyboardSensor)
   );
 
@@ -152,7 +181,9 @@ function KanbanBoard({ items, statuses, onStatusChange }: Props) {
     if (overId.startsWith("column-")) {
       targetStatus = overId.replace("column-", "");
     } else if (overId.startsWith("item-")) {
-      const overItem = items.find((i) => i.id === Number(overId.replace("item-", "")));
+      const overItem = items.find(
+        (i) => i.id === Number(overId.replace("item-", ""))
+      );
       if (overItem) targetStatus = overItem.status;
     }
 
@@ -162,9 +193,19 @@ function KanbanBoard({ items, statuses, onStatusChange }: Props) {
   };
 
   return (
-    <DndContext sensors={sensors} onDragStart={(e) => setActiveItem(e.active.data.current?.item)} onDragEnd={handleDragEnd}>
+    <DndContext
+      sensors={sensors}
+      onDragStart={(e) => setActiveItem(e.active.data.current?.item)}
+      onDragEnd={handleDragEnd}
+    >
       <div className="flex gap-4">
-        {statuses.map((s) => <KanbanColumn key={s.id} statusSlug={s.slug} items={grouped[s.slug]} />)}
+        {statuses.map((s) => (
+          <KanbanColumn
+            key={s.id}
+            statusSlug={s.slug}
+            items={grouped[s.slug]}
+          />
+        ))}
       </div>
       <DragOverlay>
         {activeItem ? <CardOverlay item={activeItem} /> : null}
@@ -181,7 +222,9 @@ const updateMutation = api.items.update.useMutation({
   onMutate: async (variables) => {
     if (!variables.status) return;
     await utils.items.list.cancel();
-    const queryKey = { /* your filter params */ };
+    const queryKey = {
+      /* your filter params */
+    };
     const previousData = utils.items.list.getData(queryKey);
 
     // Optimistically move the card
@@ -190,7 +233,9 @@ const updateMutation = api.items.update.useMutation({
       return {
         ...old,
         items: old.items.map((item) =>
-          item.id === variables.id ? { ...item, status: variables.status! } : item
+          item.id === variables.id
+            ? { ...item, status: variables.status! }
+            : item
         ),
       };
     });
@@ -199,7 +244,12 @@ const updateMutation = api.items.update.useMutation({
   onError: (_err, _vars, context) => {
     // Rollback on error
     if (context?.previousData) {
-      utils.items.list.setData({ /* queryKey */ }, context.previousData);
+      utils.items.list.setData(
+        {
+          /* queryKey */
+        },
+        context.previousData
+      );
     }
   },
   onSettled: () => void utils.items.list.invalidate(),

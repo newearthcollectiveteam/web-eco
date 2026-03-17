@@ -33,36 +33,50 @@ export default function QRQuestionnairePage() {
       margin: 2,
       errorCorrectionLevel: "H", // high error correction for logo overlay
       color: { dark: "#000000", light: "#FFFFFF" },
-    }).then(() => {
-      const ctx = canvas.getContext("2d");
-      if (!ctx) return;
+    })
+      .then(() => {
+        const ctx = canvas.getContext("2d");
+        if (!ctx) return;
 
-      // Draw the NEC symbol in the center
-      const logo = new window.Image();
-      logo.onload = () => {
-        const logoSize = QR_SIZE * LOGO_RATIO;
-        const padding = 6;
-        const x = (QR_SIZE - logoSize) / 2;
-        const y = (QR_SIZE - logoSize) / 2;
+        // Draw the NEC symbol in the center
+        const logo = new window.Image();
+        logo.onload = () => {
+          const logoSize = QR_SIZE * LOGO_RATIO;
+          const padding = 6;
+          const x = (QR_SIZE - logoSize) / 2;
+          const y = (QR_SIZE - logoSize) / 2;
 
-        // White circle background behind logo
-        ctx.beginPath();
-        ctx.arc(QR_SIZE / 2, QR_SIZE / 2, logoSize / 2 + padding, 0, Math.PI * 2);
-        ctx.fillStyle = "#FFFFFF";
-        ctx.fill();
+          // White circle background behind logo
+          ctx.beginPath();
+          ctx.arc(
+            QR_SIZE / 2,
+            QR_SIZE / 2,
+            logoSize / 2 + padding,
+            0,
+            Math.PI * 2
+          );
+          ctx.fillStyle = "#FFFFFF";
+          ctx.fill();
 
-        // Gold border ring
-        ctx.beginPath();
-        ctx.arc(QR_SIZE / 2, QR_SIZE / 2, logoSize / 2 + padding, 0, Math.PI * 2);
-        ctx.strokeStyle = "#FACF39";
-        ctx.lineWidth = 2;
-        ctx.stroke();
+          // Gold border ring
+          ctx.beginPath();
+          ctx.arc(
+            QR_SIZE / 2,
+            QR_SIZE / 2,
+            logoSize / 2 + padding,
+            0,
+            Math.PI * 2
+          );
+          ctx.strokeStyle = "#FACF39";
+          ctx.lineWidth = 2;
+          ctx.stroke();
 
-        ctx.drawImage(logo, x, y, logoSize, logoSize);
-        setQrDataUrl(canvas.toDataURL("image/png"));
-      };
-      logo.src = "/brand/symbol.png";
-    }).catch(() => undefined);
+          ctx.drawImage(logo, x, y, logoSize, logoSize);
+          setQrDataUrl(canvas.toDataURL("image/png"));
+        };
+        logo.src = "/brand/symbol.png";
+      })
+      .catch(() => undefined);
   }, []);
 
   // Detect Web Share API file support once QR is ready
@@ -103,7 +117,12 @@ export default function QRQuestionnairePage() {
   return (
     <div className="min-h-screen bg-black">
       {/* Hidden canvas for QR generation */}
-      <canvas ref={canvasRef} width={QR_SIZE} height={QR_SIZE} className="invisible absolute -left-[9999px]" />
+      <canvas
+        ref={canvasRef}
+        width={QR_SIZE}
+        height={QR_SIZE}
+        className="invisible absolute -left-[9999px]"
+      />
 
       <section className="relative flex min-h-screen items-center justify-center overflow-hidden">
         {/* Flower of Life Shader Background — gold-amber tinted */}

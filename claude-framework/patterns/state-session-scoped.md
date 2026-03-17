@@ -6,6 +6,7 @@
 ## Problem
 
 Filter states (search, sort, view mode) reset when navigating between tabs, causing poor UX. Options:
+
 - **URL params**: Clutters URL, causes navigation issues
 - **localStorage**: Persists too long, stale across sessions
 - **Redux/Zustand**: Overkill for simple filter state
@@ -14,6 +15,7 @@ Filter states (search, sort, view mode) reset when navigating between tabs, caus
 ## Solution
 
 React Context + `useRef(new Map())` for state that:
+
 - Persists across tab navigation within a session
 - Resets on page refresh (intentional)
 - Has zero external dependencies

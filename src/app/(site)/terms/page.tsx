@@ -14,7 +14,7 @@ export default function TermsOfServicePage() {
   return (
     <div className="bg-black">
       {/* Header */}
-      <section className="border-b border-[#FACF39]/20 px-4 pb-12 pt-28">
+      <section className="border-b border-[#FACF39]/20 px-4 pt-28 pb-12">
         <div className="mx-auto max-w-3xl">
           <h1
             className="mb-4 text-4xl font-bold md:text-5xl"
@@ -42,9 +42,9 @@ export default function TermsOfServicePage() {
             (&ldquo;Terms&rdquo;) govern your access to and use of our website
             at{" "}
             <strong className="text-white">joinnewearthcollective.com</strong>,
-            our community platform, events, and related services
-            (collectively, the &ldquo;Services&rdquo;). By accessing or using
-            our Services, you agree to be bound by these Terms.
+            our community platform, events, and related services (collectively,
+            the &ldquo;Services&rdquo;). By accessing or using our Services, you
+            agree to be bound by these Terms.
           </p>
 
           {/* 1 */}
@@ -107,8 +107,8 @@ export default function TermsOfServicePage() {
                 .
               </li>
               <li>
-                Submission does not guarantee acceptance into any program, event,
-                or community offering.
+                Submission does not guarantee acceptance into any program,
+                event, or community offering.
               </li>
               <li>
                 We may use aggregated, anonymized questionnaire data to improve
@@ -173,7 +173,8 @@ export default function TermsOfServicePage() {
             </h2>
             <p className="mb-3">
               Impact Missions are organized volunteer experiences facilitated by
-              New Earth Collective in partnership with third-party organizations.
+              New Earth Collective in partnership with third-party
+              organizations.
             </p>
             <ul className="list-disc space-y-1 pl-6">
               <li>
@@ -246,9 +247,7 @@ export default function TermsOfServicePage() {
             <h2 className="mb-4 text-xl font-bold text-[#FACF39]">
               8. Limitation of Liability
             </h2>
-            <p className="mb-3">
-              To the maximum extent permitted by law:
-            </p>
+            <p className="mb-3">To the maximum extent permitted by law:</p>
             <ul className="list-disc space-y-1 pl-6">
               <li>
                 Our Services are provided &ldquo;as is&rdquo; and &ldquo;as

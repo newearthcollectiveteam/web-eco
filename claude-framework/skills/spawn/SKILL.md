@@ -33,12 +33,14 @@ Integrator skill to divide work into parallel tasks, create worktrees, and gener
 
 3. **Create Worktrees**
    For each approved task:
+
    ```bash
    git worktree add ../<project>-<name> -b feature/<name>
    ```
 
 4. **Create Context Files**
    For each worktree, create `.worktree-context`:
+
    ```markdown
    # Worktree Context
 
@@ -48,18 +50,22 @@ Integrator skill to divide work into parallel tasks, create worktrees, and gener
    **Port:** <port>
 
    ## Objective
+
    <detailed task description>
 
    ## Acceptance Criteria
+
    - [ ] <criterion 1>
    - [ ] <criterion 2>
    - [ ] All changes committed to branch
    - [ ] Tests passing
 
    ## Constraints
+
    <any constraints or dependencies>
 
    ## Integration Notes
+
    <notes for merge time>
 
    ## Session Log
@@ -162,6 +168,7 @@ Prompt to paste:
 ## Task Division Guidelines
 
 When dividing work:
+
 - Prefer tasks that touch different files/directories
 - Identify shared dependencies and assign clear ownership
 - Keep tasks roughly equal in scope

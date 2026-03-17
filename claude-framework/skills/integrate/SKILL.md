@@ -16,9 +16,11 @@ Orchestrate reintegration of completed worktree branches into main.
 ## Steps
 
 1. **Verify Integrator Role**
+
    ```bash
    git worktree list
    ```
+
    Confirm current directory is the main worktree. If not, abort with instructions.
 
 2. **Read Coordination State**
@@ -28,6 +30,7 @@ Orchestrate reintegration of completed worktree branches into main.
 
 3. **Pre-Integration Checks**
    For each ready integration:
+
    ```bash
    # Fetch the branch
    git fetch . ../project-<name>:feature/<name>
@@ -46,6 +49,7 @@ Orchestrate reintegration of completed worktree branches into main.
 
 5. **Execute Integrations** (with user confirmation)
    For each approved integration:
+
    ```bash
    git merge feature/<name> --no-ff -m "Merge feature/<name>: <description>"
    ```
@@ -106,6 +110,7 @@ All passing ✓
 When merge conflicts occur:
 
 1. **Show Conflict Details**
+
    ```bash
    git diff --name-only --diff-filter=U
    ```

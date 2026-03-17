@@ -41,7 +41,8 @@ export async function middleware(request: NextRequest) {
       return NextResponse.rewrite(request.nextUrl);
     }
     // /el-nido-chat → /apps/el-nido-chat, / → /apps
-    const appsPath = pathname === "/" || pathname === "" ? "/apps" : `/apps${pathname}`;
+    const appsPath =
+      pathname === "/" || pathname === "" ? "/apps" : `/apps${pathname}`;
     const url = request.nextUrl.clone();
     url.pathname = appsPath;
     return NextResponse.rewrite(url);

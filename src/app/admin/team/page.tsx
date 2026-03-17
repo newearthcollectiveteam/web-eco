@@ -38,7 +38,10 @@ function RoleBadge({ role }: { role: string }) {
   return (
     <span
       className="inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium text-[#FACF39]"
-      style={{ borderColor: "rgba(250, 207, 57, 0.3)", backgroundColor: "rgba(250, 207, 57, 0.08)" }}
+      style={{
+        borderColor: "rgba(250, 207, 57, 0.3)",
+        backgroundColor: "rgba(250, 207, 57, 0.08)",
+      }}
     >
       {ROLE_LABELS[role] ?? role}
     </span>
@@ -85,8 +88,18 @@ function RoleCheckboxGroup({
               }`}
             >
               {checked && (
-                <svg className="h-3 w-3 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                <svg
+                  className="h-3 w-3 text-black"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={3}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M5 13l4 4L19 7"
+                  />
                 </svg>
               )}
             </div>
@@ -102,7 +115,10 @@ function TableSkeleton() {
   return (
     <div className="space-y-3">
       {Array.from({ length: 5 }).map((_, i) => (
-        <div key={i} className="flex items-center gap-4 rounded-lg bg-white/5 p-4">
+        <div
+          key={i}
+          className="flex items-center gap-4 rounded-lg bg-white/5 p-4"
+        >
           <div className="h-4 w-40 animate-pulse rounded bg-white/10" />
           <div className="h-4 w-48 animate-pulse rounded bg-white/10" />
           <div className="h-4 w-24 animate-pulse rounded bg-white/10" />
@@ -134,7 +150,7 @@ function CreateMemberModal({ onClose }: { onClose: () => void }) {
       name,
       email,
       phone: phone || undefined,
-      teamRoles: roles as typeof ROLE_OPTIONS[number][],
+      teamRoles: roles as (typeof ROLE_OPTIONS)[number][],
     });
   };
 
@@ -154,12 +170,14 @@ function CreateMemberModal({ onClose }: { onClose: () => void }) {
       >
         <button
           onClick={onClose}
-          className="absolute right-4 top-4 text-neutral-400 hover:text-white"
+          className="absolute top-4 right-4 text-neutral-400 hover:text-white"
         >
           <X className="h-5 w-5" />
         </button>
 
-        <h2 className="mb-1 text-lg font-semibold text-white">Add Team Member</h2>
+        <h2 className="mb-1 text-lg font-semibold text-white">
+          Add Team Member
+        </h2>
         <p className="mb-6 text-sm text-neutral-400">
           They&apos;ll receive an invite to claim their account.
         </p>
@@ -274,7 +292,7 @@ function EditMemberModal({
       name,
       email,
       phone: phone || undefined,
-      teamRoles: roles as typeof ROLE_OPTIONS[number][],
+      teamRoles: roles as (typeof ROLE_OPTIONS)[number][],
     });
   };
 
@@ -294,7 +312,7 @@ function EditMemberModal({
       >
         <button
           onClick={onClose}
-          className="absolute right-4 top-4 text-neutral-400 hover:text-white"
+          className="absolute top-4 right-4 text-neutral-400 hover:text-white"
         >
           <X className="h-5 w-5" />
         </button>
@@ -409,7 +427,7 @@ function DeleteMemberModal({
       >
         <button
           onClick={onClose}
-          className="absolute right-4 top-4 text-neutral-400 hover:text-white"
+          className="absolute top-4 right-4 text-neutral-400 hover:text-white"
         >
           <X className="h-5 w-5" />
         </button>
@@ -501,7 +519,7 @@ export default function TeamPage() {
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex flex-1 gap-2 sm:max-w-md">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-500" />
+            <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-neutral-500" />
             <input
               type="text"
               value={search}
@@ -566,152 +584,152 @@ export default function TeamPage() {
         </div>
       ) : (
         <>
-        {/* Mobile Card List */}
-        <div className="space-y-3 md:hidden">
-          {data.members.map((m) => (
-            <div
-              key={m.id}
-              className="rounded-xl border p-4"
-              style={{ borderColor: "rgba(250, 207, 57, 0.1)" }}
-            >
-              <div className="flex items-start justify-between">
-                <h3 className="font-medium text-white">{m.fullName ?? "—"}</h3>
-                <div className="flex items-center gap-1">
-                  <button
-                    onClick={() =>
-                      setEditMember({
-                        id: m.id,
-                        fullName: m.fullName,
-                        email: m.email,
-                        phone: m.phone,
-                        teamRoles: m.teamRoles,
-                      })
-                    }
-                    className="rounded p-1.5 text-neutral-400 transition-colors hover:bg-white/10 hover:text-white"
-                  >
-                    <Pencil className="h-4 w-4" />
-                  </button>
-                  <button
-                    onClick={() =>
-                      setDeleteMember({
-                        id: m.id,
-                        fullName: m.fullName,
-                        email: m.email,
-                      })
-                    }
-                    className="rounded p-1.5 text-neutral-400 transition-colors hover:bg-red-500/10 hover:text-red-400"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </button>
-                </div>
-              </div>
-              <div className="mt-1 flex items-center gap-1.5 text-sm text-neutral-300">
-                <Mail className="h-3.5 w-3.5 text-neutral-500" />
-                <span className="truncate">{m.email}</span>
-              </div>
-              {m.phone && (
-                <div className="mt-0.5 flex items-center gap-1.5 text-sm text-neutral-300">
-                  <Phone className="h-3.5 w-3.5 text-neutral-500" />
-                  {m.phone}
-                </div>
-              )}
-              {(m.teamRoles)?.length ? (
-                <div className="mt-2 flex flex-wrap gap-1">
-                  {(m.teamRoles).map((r) => (
-                    <RoleBadge key={r} role={r} />
-                  ))}
-                </div>
-              ) : null}
-            </div>
-          ))}
-        </div>
-
-        {/* Desktop Table */}
-        <div
-          className="hidden overflow-x-auto rounded-xl border md:block"
-          style={{ borderColor: "rgba(250, 207, 57, 0.1)" }}
-        >
-          <table className="w-full text-left text-sm">
-            <thead>
-              <tr className="border-b border-white/5 text-xs uppercase tracking-wider text-neutral-500">
-                <th className="px-4 py-3 font-medium">Name</th>
-                <th className="px-4 py-3 font-medium">Email</th>
-                <th className="px-4 py-3 font-medium">Phone</th>
-                <th className="px-4 py-3 font-medium">Roles</th>
-                <th className="px-4 py-3 font-medium" />
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-white/5">
-              {data.members.map((m) => (
-                <tr
-                  key={m.id}
-                  className="transition-colors hover:bg-white/[0.02]"
-                >
-                  <td className="px-4 py-3 font-medium text-white">
+          {/* Mobile Card List */}
+          <div className="space-y-3 md:hidden">
+            {data.members.map((m) => (
+              <div
+                key={m.id}
+                className="rounded-xl border p-4"
+                style={{ borderColor: "rgba(250, 207, 57, 0.1)" }}
+              >
+                <div className="flex items-start justify-between">
+                  <h3 className="font-medium text-white">
                     {m.fullName ?? "—"}
-                  </td>
-                  <td className="px-4 py-3 text-neutral-300">
-                    <span className="inline-flex items-center gap-1.5">
-                      <Mail className="h-3.5 w-3.5 text-neutral-500" />
-                      {m.email}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3 text-neutral-300">
-                    {m.phone ? (
+                  </h3>
+                  <div className="flex items-center gap-1">
+                    <button
+                      onClick={() =>
+                        setEditMember({
+                          id: m.id,
+                          fullName: m.fullName,
+                          email: m.email,
+                          phone: m.phone,
+                          teamRoles: m.teamRoles,
+                        })
+                      }
+                      className="rounded p-1.5 text-neutral-400 transition-colors hover:bg-white/10 hover:text-white"
+                    >
+                      <Pencil className="h-4 w-4" />
+                    </button>
+                    <button
+                      onClick={() =>
+                        setDeleteMember({
+                          id: m.id,
+                          fullName: m.fullName,
+                          email: m.email,
+                        })
+                      }
+                      className="rounded p-1.5 text-neutral-400 transition-colors hover:bg-red-500/10 hover:text-red-400"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                  </div>
+                </div>
+                <div className="mt-1 flex items-center gap-1.5 text-sm text-neutral-300">
+                  <Mail className="h-3.5 w-3.5 text-neutral-500" />
+                  <span className="truncate">{m.email}</span>
+                </div>
+                {m.phone && (
+                  <div className="mt-0.5 flex items-center gap-1.5 text-sm text-neutral-300">
+                    <Phone className="h-3.5 w-3.5 text-neutral-500" />
+                    {m.phone}
+                  </div>
+                )}
+                {m.teamRoles?.length ? (
+                  <div className="mt-2 flex flex-wrap gap-1">
+                    {m.teamRoles.map((r) => (
+                      <RoleBadge key={r} role={r} />
+                    ))}
+                  </div>
+                ) : null}
+              </div>
+            ))}
+          </div>
+
+          {/* Desktop Table */}
+          <div
+            className="hidden overflow-x-auto rounded-xl border md:block"
+            style={{ borderColor: "rgba(250, 207, 57, 0.1)" }}
+          >
+            <table className="w-full text-left text-sm">
+              <thead>
+                <tr className="border-b border-white/5 text-xs tracking-wider text-neutral-500 uppercase">
+                  <th className="px-4 py-3 font-medium">Name</th>
+                  <th className="px-4 py-3 font-medium">Email</th>
+                  <th className="px-4 py-3 font-medium">Phone</th>
+                  <th className="px-4 py-3 font-medium">Roles</th>
+                  <th className="px-4 py-3 font-medium" />
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-white/5">
+                {data.members.map((m) => (
+                  <tr
+                    key={m.id}
+                    className="transition-colors hover:bg-white/[0.02]"
+                  >
+                    <td className="px-4 py-3 font-medium text-white">
+                      {m.fullName ?? "—"}
+                    </td>
+                    <td className="px-4 py-3 text-neutral-300">
                       <span className="inline-flex items-center gap-1.5">
-                        <Phone className="h-3.5 w-3.5 text-neutral-500" />
-                        {m.phone}
+                        <Mail className="h-3.5 w-3.5 text-neutral-500" />
+                        {m.email}
                       </span>
-                    ) : (
-                      <span className="text-neutral-600">—</span>
-                    )}
-                  </td>
-                  <td className="px-4 py-3">
-                    <div className="flex flex-wrap gap-1">
-                      {(m.teamRoles)?.length ? (
-                        (m.teamRoles).map((r) => (
-                          <RoleBadge key={r} role={r} />
-                        ))
+                    </td>
+                    <td className="px-4 py-3 text-neutral-300">
+                      {m.phone ? (
+                        <span className="inline-flex items-center gap-1.5">
+                          <Phone className="h-3.5 w-3.5 text-neutral-500" />
+                          {m.phone}
+                        </span>
                       ) : (
                         <span className="text-neutral-600">—</span>
                       )}
-                    </div>
-                  </td>
-                  <td className="px-4 py-3 text-right">
-                    <div className="flex items-center justify-end gap-1">
-                      <button
-                        onClick={() =>
-                          setEditMember({
-                            id: m.id,
-                            fullName: m.fullName,
-                            email: m.email,
-                            phone: m.phone,
-                            teamRoles: m.teamRoles,
-                          })
-                        }
-                        className="rounded p-1.5 text-neutral-400 transition-colors hover:bg-white/10 hover:text-white"
-                      >
-                        <Pencil className="h-4 w-4" />
-                      </button>
-                      <button
-                        onClick={() =>
-                          setDeleteMember({
-                            id: m.id,
-                            fullName: m.fullName,
-                            email: m.email,
-                          })
-                        }
-                        className="rounded p-1.5 text-neutral-400 transition-colors hover:bg-red-500/10 hover:text-red-400"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="flex flex-wrap gap-1">
+                        {m.teamRoles?.length ? (
+                          m.teamRoles.map((r) => <RoleBadge key={r} role={r} />)
+                        ) : (
+                          <span className="text-neutral-600">—</span>
+                        )}
+                      </div>
+                    </td>
+                    <td className="px-4 py-3 text-right">
+                      <div className="flex items-center justify-end gap-1">
+                        <button
+                          onClick={() =>
+                            setEditMember({
+                              id: m.id,
+                              fullName: m.fullName,
+                              email: m.email,
+                              phone: m.phone,
+                              teamRoles: m.teamRoles,
+                            })
+                          }
+                          className="rounded p-1.5 text-neutral-400 transition-colors hover:bg-white/10 hover:text-white"
+                        >
+                          <Pencil className="h-4 w-4" />
+                        </button>
+                        <button
+                          onClick={() =>
+                            setDeleteMember({
+                              id: m.id,
+                              fullName: m.fullName,
+                              email: m.email,
+                            })
+                          }
+                          className="rounded p-1.5 text-neutral-400 transition-colors hover:bg-red-500/10 hover:text-red-400"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </>
       )}
 

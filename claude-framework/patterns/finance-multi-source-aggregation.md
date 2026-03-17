@@ -1,15 +1,18 @@
 # Pattern: Multi-Source Financial Aggregation
 
 ## Problem
+
 Your app tracks revenue and expenses from multiple financial sources (payment processor like Stripe + bank account like Mercury). Each source uses different units (cents vs dollars), different APIs, and different data shapes. You need to combine them into unified views: dashboards, P&L reports, and tax-ready exports.
 
 ## When to Use
+
 - Apps with multiple revenue/expense sources (Stripe + bank, PayPal + accounting software, etc.)
 - Finance dashboards that need a unified view across providers
 - Tax/compliance reporting that combines manual and automated entries
 - Any system that aggregates financial data from disparate APIs
 
 ## When NOT to Use
+
 - Single payment provider with no bank integration
 - Simple revenue tracking (just Stripe, no aggregation needed)
 - When a dedicated accounting tool (QuickBooks, Xero) already handles aggregation
@@ -120,7 +123,7 @@ getYearlyProfitLoss: adminProcedure
 Combine manual DB expenses with auto-categorized bank transactions, grouped by IRS-aligned categories.
 
 ```typescript
-getYearlyExpenses: adminProcedure
+getYearlyExpenses: (adminProcedure
   .input(z.object({ year: z.number() }))
   .query(async ({ ctx, input }) => {
     const categoryTotals: Record<string, { name: string; total: number }> = {};
@@ -130,18 +133,27 @@ getYearlyExpenses: adminProcedure
     }));
 
     // 1. Manual expenses (already categorized in DB)
-    const manualExpenses = await ctx.db.select({
-      amount: expenses.amount,
-      date: expenses.date,
-      categoryName: expenseCategories.name,
-    }).from(expenses)
-      .leftJoin(expenseCategories, eq(expenses.categoryId, expenseCategories.id))
+    const manualExpenses = await ctx.db
+      .select({
+        amount: expenses.amount,
+        date: expenses.date,
+        categoryName: expenseCategories.name,
+      })
+      .from(expenses)
+      .leftJoin(
+        expenseCategories,
+        eq(expenses.categoryId, expenseCategories.id)
+      )
       .where(dateRange(input.year));
 
     for (const exp of manualExpenses) {
       const monthIdx = new Date(exp.date).getMonth();
       months[monthIdx]!.expenses += exp.amount;
-      accumulate(categoryTotals, exp.categoryName ?? "Uncategorized", exp.amount);
+      accumulate(
+        categoryTotals,
+        exp.categoryName ?? "Uncategorized",
+        exp.amount
+      );
     }
 
     // 2. Bank transactions (use learned + rule-based categorization)
@@ -162,19 +174,20 @@ getYearlyExpenses: adminProcedure
     return {
       months,
       total: months.reduce((sum, m) => sum + m.expenses, 0),
-      byCategory: Object.values(categoryTotals).sort((a, b) => b.total - a.total),
+      byCategory: Object.values(categoryTotals).sort(
+        (a, b) => b.total - a.total
+      ),
     };
   }),
-
-// Helper
-function accumulate(
-  totals: Record<string, { name: string; total: number }>,
-  name: string,
-  amount: number
-) {
-  if (!totals[name]) totals[name] = { name, total: 0 };
-  totals[name]!.total += amount;
-}
+  // Helper
+  function accumulate(
+    totals: Record<string, { name: string; total: number }>,
+    name: string,
+    amount: number
+  ) {
+    if (!totals[name]) totals[name] = { name, total: 0 };
+    totals[name]!.total += amount;
+  });
 ```
 
 ### Tax Deduction Export
@@ -201,6 +214,7 @@ getTaxDeductions: adminProcedure
 5. **Manual expenses + bank transactions = complete picture** — DB expenses cover things not in the bank (credit cards, cash), bank transactions cover automated outflows.
 
 ## Related Patterns
+
 - `api-bearer-token-integration.md` — The fetch wrapper for bank API calls
 - `api-smart-categorization.md` — The two-tier categorization engine for auto-classifying transactions
 - `api-external-linking.md` — Linking internal records to Stripe/bank transaction IDs

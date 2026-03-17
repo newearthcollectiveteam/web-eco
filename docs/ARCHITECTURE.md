@@ -8,16 +8,16 @@ Multi-domain Next.js 15 application serving the New Earth Collective community p
 
 ## Tech Stack
 
-| Layer | Technology |
-|-------|-----------|
-| Framework | Next.js 15, React 19, TypeScript (strict) |
-| Database | Supabase PostgreSQL via Drizzle ORM |
-| Auth | Supabase Auth with approval workflow |
-| API | tRPC + TanStack Query |
-| Email | Mailjet + Klaviyo for marketing flows |
-| Styling | Tailwind CSS v4, shadcn/ui components |
-| Visual Effects | GLSL shaders (sacred geometry) |
-| CI/CD | GitHub Actions → Vercel (auto-deploy) |
+| Layer          | Technology                                |
+| -------------- | ----------------------------------------- |
+| Framework      | Next.js 15, React 19, TypeScript (strict) |
+| Database       | Supabase PostgreSQL via Drizzle ORM       |
+| Auth           | Supabase Auth with approval workflow      |
+| API            | tRPC + TanStack Query                     |
+| Email          | Mailjet + Klaviyo for marketing flows     |
+| Styling        | Tailwind CSS v4, shadcn/ui components     |
+| Visual Effects | GLSL shaders (sacred geometry)            |
+| CI/CD          | GitHub Actions → Vercel (auto-deploy)     |
 
 ## Branching & Deployment
 
@@ -34,12 +34,14 @@ Branch protection: `main` requires PR + approval + CI. `dev` requires CI.
 ### Routes (106 pages)
 
 **Public Site** — Marketing and community pages
+
 - Homepage, About, Pathway, Values, Stewardship, Impact
 - Questionnaire with abandon reminders and community auto-tagging
 - Privacy, Terms, Unsubscribe
 - Landing page experiments (3 series x 8 color variants each)
 
 **Admin Dashboard** (`/admin/*`) — Protected, requires auth + approval
+
 - Overview with KPIs and recent activity
 - CRM: contacts, leads, communities (hierarchical taxonomy)
 - Team: roles, tasks (kanban), ideas board
@@ -49,6 +51,7 @@ Branch protection: `main` requires PR + approval + CI. `dev` requires CI.
 - Brand assets, shader gallery, playground demos, templates
 
 **API Routes** (10 endpoints)
+
 - `/api/trpc/[trpc]` — tRPC handler
 - `/api/waitlist`, `/api/questionnaire`, `/api/waiver` — Form submissions
 - `/api/track` — Analytics event tracking
@@ -58,18 +61,18 @@ Branch protection: `main` requires PR + approval + CI. `dev` requires CI.
 
 ### tRPC Routers (10)
 
-| Router | Purpose |
-|--------|---------|
-| `admin` | Admin dashboard data, KPIs |
-| `analytics` | Tracking and metrics |
-| `auth` | User management, approval workflow |
-| `crm` | Contacts, leads, activities, communities |
-| `ecosystem` | Ecosystem map data |
-| `gallery` | Photo galleries |
-| `ideas` | Ideas board CRUD with edit history |
-| `questionnaire` | Survey responses, community detection |
-| `tasks` | Kanban tasks with custom status categories |
-| `team` | Team roles and members |
+| Router          | Purpose                                    |
+| --------------- | ------------------------------------------ |
+| `admin`         | Admin dashboard data, KPIs                 |
+| `analytics`     | Tracking and metrics                       |
+| `auth`          | User management, approval workflow         |
+| `crm`           | Contacts, leads, activities, communities   |
+| `ecosystem`     | Ecosystem map data                         |
+| `gallery`       | Photo galleries                            |
+| `ideas`         | Ideas board CRUD with edit history         |
+| `questionnaire` | Survey responses, community detection      |
+| `tasks`         | Kanban tasks with custom status categories |
+| `team`          | Team roles and members                     |
 
 ### Database (13 tables via Drizzle ORM)
 
@@ -83,26 +86,31 @@ Schema: `src/server/db/schema.ts`
 ## Key Architectural Patterns
 
 ### CRM Data Flow
+
 ```
 Form submission → API route → Upsert contact → Create intake record → Log activity → Trigger Klaviyo
 ```
+
 - Email-based deduplication across all forms
 - Multi-source tracking (which forms a contact submitted)
 - GDPR-compliant consent tracking with unsubscribe tokens
 
 ### Multi-Domain Routing
+
 - Configured in `src/lib/domains.ts`
 - Middleware handles domain detection, auth, and redirects
 - `test.joinnewearthcollective.com` → 301 to `/admin`
 - `launch.joinnewearthcollective.com` → 301 to main domain
 
 ### User Tracking
+
 - Anonymous visitor tracking with session IDs
 - Identity resolution (anonymous → known user)
 - Email link click tracking with unique tokens
 - UTM parameter capture for attribution
 
 ### Admin Dashboard Shell
+
 - Layout at `src/app/admin/layout.tsx`
 - Collapsible sidebar with mobile sheet
 - Standalone pages (shader viewers, playground demos) bypass shell

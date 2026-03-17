@@ -35,14 +35,15 @@ Read ROADMAP.md and analyze:
 - **Count completed items** (lines matching `- [x]`)
 - **Calculate completion percentage**
 
-| Completion | Status | Action |
-|------------|--------|--------|
-| 100% | Fully complete | Suggest `/close-roadmap` to archive |
-| 75-99% | Nearly done | Note remaining items, suggest cleanup |
-| < 75% | Active | No action needed |
-| 0% (stale) | Stale | Suggest review — roadmap may be outdated |
+| Completion | Status         | Action                                   |
+| ---------- | -------------- | ---------------------------------------- |
+| 100%       | Fully complete | Suggest `/close-roadmap` to archive      |
+| 75-99%     | Nearly done    | Note remaining items, suggest cleanup    |
+| < 75%      | Active         | No action needed                         |
+| 0% (stale) | Stale          | Suggest review — roadmap may be outdated |
 
 Also check:
+
 - Are roadmap items reflected in TODO.md? (items should flow down)
 - Are there TODO.md items not in the roadmap? (scope creep or organic work)
 
@@ -56,11 +57,11 @@ wc -l TODO.md 2>/dev/null
 grep -c '\- \[x\]' TODO.md 2>/dev/null
 ```
 
-| Issue | Detection | Suggestion |
-|-------|-----------|------------|
-| Checked items lingering | `[x]` items present | Remove or archive completed items |
-| Over 100 lines | `wc -l > 100` | Prune completed items, move details to docs/ |
-| Empty sections | Section header with no items | Remove empty sections |
+| Issue                   | Detection                    | Suggestion                                   |
+| ----------------------- | ---------------------------- | -------------------------------------------- |
+| Checked items lingering | `[x]` items present          | Remove or archive completed items            |
+| Over 100 lines          | `wc -l > 100`                | Prune completed items, move details to docs/ |
+| Empty sections          | Section header with no items | Remove empty sections                        |
 
 ### 3. Check STATUS.md Drift
 
@@ -81,6 +82,7 @@ ls docs/archive/ 2>/dev/null
 ```
 
 Flag docs that may be archivable:
+
 - Files not modified in 30+ days (check git log)
 - Files that reference completed features or old sessions
 - Session notes or planning docs from past work
@@ -112,17 +114,18 @@ jq '.dependencies + .devDependencies | length' package.json 2>/dev/null
 
 Compare counts against the documented inventories:
 
-| Check | Detection | Severity |
-|-------|-----------|----------|
-| Route count mismatch | Actual page.tsx count ≠ ecosystem map count | `[WARN]` — suggest `/inventory routes` |
-| New deps not tracked | package.json deps > inventory entries | `[INFO]` — suggest `/inventory tools` |
-| Schema tables changed | pgTable count in schema.ts ≠ DB page count | `[WARN]` — suggest `/inventory` |
+| Check                 | Detection                                   | Severity                               |
+| --------------------- | ------------------------------------------- | -------------------------------------- |
+| Route count mismatch  | Actual page.tsx count ≠ ecosystem map count | `[WARN]` — suggest `/inventory routes` |
+| New deps not tracked  | package.json deps > inventory entries       | `[INFO]` — suggest `/inventory tools`  |
+| Schema tables changed | pgTable count in schema.ts ≠ DB page count  | `[WARN]` — suggest `/inventory`        |
 
 If no inventory pages exist, skip silently. This check is lightweight — for a full audit, suggest `/inventory`.
 
 ### 7. Cross-Reference Check
 
 Compare across files:
+
 - Items marked done in ROADMAP.md but still open in TODO.md
 - Items in TODO.md with file:line references that no longer exist
 - Features in STATUS.md marked "Working" that have open bugs in TODO.md
@@ -180,22 +183,24 @@ Run these fixes? (y/n)
 
 This skill is designed to be called from other skills:
 
-| Caller | What it runs | When |
-|--------|-------------|------|
-| `/handoff` | Roadmap check + TODO hygiene | At session end, after updates |
-| `/validate` | Full tidy check | During standards validation |
-| `/resume` | Roadmap status only | At session start, surface to user |
+| Caller      | What it runs                 | When                              |
+| ----------- | ---------------------------- | --------------------------------- |
+| `/handoff`  | Roadmap check + TODO hygiene | At session end, after updates     |
+| `/validate` | Full tidy check              | During standards validation       |
+| `/resume`   | Roadmap status only          | At session start, surface to user |
 
 When called from another skill, output is abbreviated (no full header, just findings).
 
 ## Standalone Usage
 
 **User:** `/tidy`
+
 - Run full hygiene check
 - Present findings
 - Offer to fix issues (with confirmation)
 
 **User:** `/tidy --fix`
+
 - Run full check AND auto-fix safe items:
   - Remove `[x]` items from TODO.md
   - Trim STATUS.md recent changes to last 5

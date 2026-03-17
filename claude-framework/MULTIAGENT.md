@@ -26,18 +26,20 @@ Lives in main worktree. All sessions read/update this file.
 ```markdown
 # Active Worktrees
 
-| Worktree | Branch | Port | Owner | Task | Status |
-|----------|--------|------|-------|------|--------|
-| main | main | 3000 | integrator | coordination | active |
-| ../project-auth | feature/auth | 3001 | worker-1 | Implement OAuth | active |
-| ../project-api | feature/api | 3002 | worker-2 | Add REST endpoints | active |
-| ../project-ui | feature/ui | 3003 | - | - | idle |
+| Worktree        | Branch       | Port | Owner      | Task               | Status |
+| --------------- | ------------ | ---- | ---------- | ------------------ | ------ |
+| main            | main         | 3000 | integrator | coordination       | active |
+| ../project-auth | feature/auth | 3001 | worker-1   | Implement OAuth    | active |
+| ../project-api  | feature/api  | 3002 | worker-2   | Add REST endpoints | active |
+| ../project-ui   | feature/ui   | 3003 | -          | -                  | idle   |
 
 ## Port Assignments
+
 - 3000: main (reserved for integrator)
 - 3001-3009: worker sessions
 
 ## Pending Integrations
+
 - [ ] feature/auth → main (blocked: needs tests)
 - [ ] feature/api → main (ready)
 ```
@@ -45,6 +47,7 @@ Lives in main worktree. All sessions read/update this file.
 ## Session Roles
 
 ### Integrator (main worktree)
+
 - Plans and divides work into discrete tasks
 - Assigns tasks to worktrees
 - Manages WORKTREES.md
@@ -53,6 +56,7 @@ Lives in main worktree. All sessions read/update this file.
 - Runs on port 3000
 
 ### Worker (feature worktrees)
+
 - Claims assigned worktree
 - Works on single focused task
 - Updates local .worktree-context
@@ -131,23 +135,28 @@ Lives in main worktree. All sessions read/update this file.
 **Port:** 3001
 
 ## Objective
+
 Add Google and GitHub OAuth authentication options.
 
 ## Acceptance Criteria
+
 - [ ] Google OAuth working
 - [ ] GitHub OAuth working
 - [ ] Session persistence
 - [ ] Tests passing
 
 ## Constraints
+
 - Use existing Supabase Auth
 - Don't modify user table schema
 - Keep backward compat with email/password
 
 ## Integration Notes
+
 Will need coordination with API team for token handling.
 
 ## Session Log
+
 - 2026-01-27 14:00: Started, set up OAuth providers
 - 2026-01-27 15:30: Google OAuth complete
 ```
@@ -155,6 +164,7 @@ Will need coordination with API team for token handling.
 ## Commands
 
 ### Integrator Commands
+
 ```bash
 # Create new worktree
 git worktree add ../project-<name> -b feature/<name>
@@ -174,6 +184,7 @@ git branch -d feature/<name>
 ```
 
 ### Worker Commands
+
 ```bash
 # Start dev server on assigned port
 PORT=3001 npm run dev

@@ -515,7 +515,11 @@ export async function POST(request: NextRequest) {
 
       if (communityHints.length > 0) {
         const allCommunityTags = await db
-          .select({ id: communityTags.id, name: communityTags.name, slug: communityTags.slug })
+          .select({
+            id: communityTags.id,
+            name: communityTags.name,
+            slug: communityTags.slug,
+          })
           .from(communityTags);
 
         const combinedText = communityHints.join(" ").toLowerCase();

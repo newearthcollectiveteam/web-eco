@@ -9,6 +9,7 @@ allowed-tools: Read, Bash, Glob
 Full session resumption: understand the project AND pick up where you left off. Companion to `/handoff`.
 
 This combines:
+
 - `/init-session` functionality (project context)
 - Session continuity (what happened last time)
 
@@ -27,6 +28,7 @@ pwd
 #### 1.2 Read CLAUDE.md
 
 Read the project's CLAUDE.md for:
+
 - Project overview/description
 - Tech stack and architecture
 - Quick commands
@@ -43,6 +45,7 @@ cat package.json | head -60
 ```
 
 Extract:
+
 - Framework (Next.js version, React version)
 - Key dependencies (tRPC, Drizzle, Supabase, etc.)
 - Available scripts
@@ -103,6 +106,7 @@ Note any open PRs — especially ones that touch the same area the developer is 
 #### 2.3 Worker-Specific
 
 If in a feature worktree:
+
 - Read `.worktree-context` for task assignment and progress
 - Read main's `WORKTREES.md` for coordination state
 - Check if other worktrees have pending integrations
@@ -110,6 +114,7 @@ If in a feature worktree:
 #### 2.4 Integrator-Specific
 
 If `WORKTREES.md` exists:
+
 - List active worktrees and their status
 - Show pending integrations
 - Note any workers waiting for review
@@ -242,13 +247,14 @@ Run `PORT=<port> npm run dev` to start dev server.
 
 ## Relationship to Other Skills
 
-| Skill | Purpose |
-|-------|---------|
+| Skill           | Purpose                                   |
+| --------------- | ----------------------------------------- |
 | `/init-session` | Just project context (architecture, docs) |
-| `/resume` | Project context + session continuity |
-| `/handoff` | Write session state for next resume |
+| `/resume`       | Project context + session continuity      |
+| `/handoff`      | Write session state for next resume       |
 
 **Workflow:**
+
 ```
 Session 1: Work → /handoff (saves state)
 Session 2: /resume (loads context + state) → Work → /handoff
@@ -257,6 +263,7 @@ Session 2: /resume (loads context + state) → Work → /handoff
 ## Compatibility with /handoff
 
 The `/handoff` skill writes:
+
 - STATUS.md recent changes table
 - TODO.md updates
 - .worktree-context session log (for workers)

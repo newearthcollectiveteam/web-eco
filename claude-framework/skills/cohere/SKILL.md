@@ -14,6 +14,7 @@ Deep analysis to verify that actual code matches the patterns documented in FRAM
 `/cohere` asks: "Does the code follow the right patterns?"
 
 This catches:
+
 - Framework pattern violations
 - Inconsistent coding styles
 - Missing best practices
@@ -80,6 +81,7 @@ export const exampleRouter = createTRPCRouter({
 ```
 
 **Checks:**
+
 - All inputs have Zod validation
 - Procedures use `protectedProcedure` or `publicProcedure` explicitly
 - Error handling uses `createError` factories
@@ -250,23 +252,24 @@ I found 10 issues across 3 categories. Would you like me to:
 
 ## Severity Levels
 
-| Level | Meaning | Action |
-|-------|---------|--------|
-| PASS | Follows framework pattern | None needed |
-| INFO | Minor deviation, acceptable | Consider aligning |
-| WARN | Pattern violation | Should fix |
-| FAIL | Critical violation | Must fix |
+| Level | Meaning                     | Action            |
+| ----- | --------------------------- | ----------------- |
+| PASS  | Follows framework pattern   | None needed       |
+| INFO  | Minor deviation, acceptable | Consider aligning |
+| WARN  | Pattern violation           | Should fix        |
+| FAIL  | Critical violation          | Must fix          |
 
 ## Relationship to Other Skills
 
-| Skill | Scope |
-|-------|-------|
-| `/validate` | Structure - do files exist? |
-| `/cohere` | Patterns - does code follow standards? |
-| `/align` | Action - add missing components |
-| `/sync-to-global` | Evolution - promote good patterns |
+| Skill             | Scope                                  |
+| ----------------- | -------------------------------------- |
+| `/validate`       | Structure - do files exist?            |
+| `/cohere`         | Patterns - does code follow standards? |
+| `/align`          | Action - add missing components        |
+| `/sync-to-global` | Evolution - promote good patterns      |
 
 **Workflow:**
+
 1. `/validate` - Check structure
 2. `/cohere` - Check patterns
 3. `/align` or manual fixes - Address issues
@@ -278,6 +281,7 @@ Optionally skip checks by adding to project's CLAUDE.md:
 
 ```markdown
 ## Cohere Overrides
+
 - Skip: naming-conventions (intentionally using snake_case for API)
 - Skip: env-validation (using different env solution)
 ```
@@ -285,11 +289,13 @@ Optionally skip checks by adding to project's CLAUDE.md:
 ## Examples
 
 **Quick check:**
+
 ```
 /cohere
 ```
 
 **Specific check:**
+
 ```
 /cohere error-handling
 /cohere imports
@@ -297,6 +303,7 @@ Optionally skip checks by adding to project's CLAUDE.md:
 ```
 
 **Auto-fix mode:**
+
 ```
 /cohere --fix
 ```

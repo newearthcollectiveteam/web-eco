@@ -72,7 +72,9 @@ function FormattingToolbar({
 
       if (line.startsWith(prefix)) {
         const newValue =
-          value.slice(0, lineStart) + line.slice(prefix.length) + value.slice(end);
+          value.slice(0, lineStart) +
+          line.slice(prefix.length) +
+          value.slice(end);
         onChange(newValue);
       } else {
         const newValue =
@@ -86,15 +88,64 @@ function FormattingToolbar({
 
   return (
     <div className="flex items-center gap-0.5 border-b border-white/5 px-2 py-1">
-      <button type="button" onClick={() => insertAtCursor("**", "**", "bold")} className="rounded p-1.5 text-neutral-500 hover:bg-white/5 hover:text-white" aria-label="Bold"><Bold className="h-3.5 w-3.5" /></button>
-      <button type="button" onClick={() => insertAtCursor("*", "*", "italic")} className="rounded p-1.5 text-neutral-500 hover:bg-white/5 hover:text-white" aria-label="Italic"><Italic className="h-3.5 w-3.5" /></button>
+      <button
+        type="button"
+        onClick={() => insertAtCursor("**", "**", "bold")}
+        className="rounded p-1.5 text-neutral-500 hover:bg-white/5 hover:text-white"
+        aria-label="Bold"
+      >
+        <Bold className="h-3.5 w-3.5" />
+      </button>
+      <button
+        type="button"
+        onClick={() => insertAtCursor("*", "*", "italic")}
+        className="rounded p-1.5 text-neutral-500 hover:bg-white/5 hover:text-white"
+        aria-label="Italic"
+      >
+        <Italic className="h-3.5 w-3.5" />
+      </button>
       <div className="mx-1 h-4 w-px bg-white/10" />
-      <button type="button" onClick={() => insertLine("## ")} className="rounded p-1.5 text-neutral-500 hover:bg-white/5 hover:text-white" aria-label="Heading"><Heading2 className="h-3.5 w-3.5" /></button>
-      <button type="button" onClick={() => insertLine("- ")} className="rounded p-1.5 text-neutral-500 hover:bg-white/5 hover:text-white" aria-label="Bullet list"><ListIcon className="h-3.5 w-3.5" /></button>
-      <button type="button" onClick={() => insertLine("1. ")} className="rounded p-1.5 text-neutral-500 hover:bg-white/5 hover:text-white" aria-label="Numbered list"><ListOrdered className="h-3.5 w-3.5" /></button>
-      <button type="button" onClick={() => insertLine("- [ ] ")} className="rounded p-1.5 text-neutral-500 hover:bg-white/5 hover:text-white" aria-label="Checklist"><CheckCircle2 className="h-3.5 w-3.5" /></button>
+      <button
+        type="button"
+        onClick={() => insertLine("## ")}
+        className="rounded p-1.5 text-neutral-500 hover:bg-white/5 hover:text-white"
+        aria-label="Heading"
+      >
+        <Heading2 className="h-3.5 w-3.5" />
+      </button>
+      <button
+        type="button"
+        onClick={() => insertLine("- ")}
+        className="rounded p-1.5 text-neutral-500 hover:bg-white/5 hover:text-white"
+        aria-label="Bullet list"
+      >
+        <ListIcon className="h-3.5 w-3.5" />
+      </button>
+      <button
+        type="button"
+        onClick={() => insertLine("1. ")}
+        className="rounded p-1.5 text-neutral-500 hover:bg-white/5 hover:text-white"
+        aria-label="Numbered list"
+      >
+        <ListOrdered className="h-3.5 w-3.5" />
+      </button>
+      <button
+        type="button"
+        onClick={() => insertLine("- [ ] ")}
+        className="rounded p-1.5 text-neutral-500 hover:bg-white/5 hover:text-white"
+        aria-label="Checklist"
+      >
+        <CheckCircle2 className="h-3.5 w-3.5" />
+      </button>
       <div className="mx-1 h-4 w-px bg-white/10" />
-      <button type="button" onClick={() => insertLine("---\n")} className="rounded p-1.5 text-neutral-500 hover:bg-white/5 hover:text-white" aria-label="Divider"><Minus className="h-3.5 w-3.5" /></button>
+      <button
+        type="button"
+        onClick={() => insertLine("---\n")}
+        className="rounded p-1.5 text-neutral-500 hover:bg-white/5 hover:text-white"
+        aria-label="Divider"
+      >
+        <Minus className="h-3.5 w-3.5" />
+      </button>
     </div>
   );
 }
@@ -108,15 +159,29 @@ function renderInline(text: string): React.ReactNode {
   while (remaining.length > 0) {
     const boldMatch = /\*\*(.+?)\*\*/.exec(remaining);
     if (boldMatch?.index !== undefined) {
-      if (boldMatch.index > 0) parts.push(<span key={key++}>{remaining.slice(0, boldMatch.index)}</span>);
-      parts.push(<strong key={key++} className="font-semibold text-white">{boldMatch[1]}</strong>);
+      if (boldMatch.index > 0)
+        parts.push(
+          <span key={key++}>{remaining.slice(0, boldMatch.index)}</span>
+        );
+      parts.push(
+        <strong key={key++} className="font-semibold text-white">
+          {boldMatch[1]}
+        </strong>
+      );
       remaining = remaining.slice(boldMatch.index + boldMatch[0].length);
       continue;
     }
     const italicMatch = /\*(.+?)\*/.exec(remaining);
     if (italicMatch?.index !== undefined) {
-      if (italicMatch.index > 0) parts.push(<span key={key++}>{remaining.slice(0, italicMatch.index)}</span>);
-      parts.push(<em key={key++} className="italic text-neutral-200">{italicMatch[1]}</em>);
+      if (italicMatch.index > 0)
+        parts.push(
+          <span key={key++}>{remaining.slice(0, italicMatch.index)}</span>
+        );
+      parts.push(
+        <em key={key++} className="text-neutral-200 italic">
+          {italicMatch[1]}
+        </em>
+      );
       remaining = remaining.slice(italicMatch.index + italicMatch[0].length);
       continue;
     }
@@ -131,13 +196,47 @@ function RichContent({ text }: { text: string }) {
   return (
     <div className="space-y-1 text-sm text-neutral-300">
       {lines.map((line, i) => {
-        if (line.startsWith("## ")) return <h3 key={i} className="mt-2 text-sm font-semibold text-white">{renderInline(line.slice(3))}</h3>;
-        if (line.startsWith("- [x] ")) return <div key={i} className="flex items-start gap-2"><CheckCircle2 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-green-400" /><span className="text-neutral-500 line-through">{renderInline(line.slice(6))}</span></div>;
-        if (line.startsWith("- [ ] ")) return <div key={i} className="flex items-start gap-2"><Circle className="mt-0.5 h-3.5 w-3.5 shrink-0 text-neutral-600" /><span>{renderInline(line.slice(6))}</span></div>;
-        if (line.startsWith("- ")) return <div key={i} className="flex items-start gap-2 pl-1"><span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-neutral-600" /><span>{renderInline(line.slice(2))}</span></div>;
+        if (line.startsWith("## "))
+          return (
+            <h3 key={i} className="mt-2 text-sm font-semibold text-white">
+              {renderInline(line.slice(3))}
+            </h3>
+          );
+        if (line.startsWith("- [x] "))
+          return (
+            <div key={i} className="flex items-start gap-2">
+              <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-green-400" />
+              <span className="text-neutral-500 line-through">
+                {renderInline(line.slice(6))}
+              </span>
+            </div>
+          );
+        if (line.startsWith("- [ ] "))
+          return (
+            <div key={i} className="flex items-start gap-2">
+              <Circle className="mt-0.5 h-3.5 w-3.5 shrink-0 text-neutral-600" />
+              <span>{renderInline(line.slice(6))}</span>
+            </div>
+          );
+        if (line.startsWith("- "))
+          return (
+            <div key={i} className="flex items-start gap-2 pl-1">
+              <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-neutral-600" />
+              <span>{renderInline(line.slice(2))}</span>
+            </div>
+          );
         const numMatch = /^(\d+)\.\s/.exec(line);
-        if (numMatch) return <div key={i} className="flex items-start gap-2 pl-1"><span className="shrink-0 text-xs text-neutral-500">{numMatch[1]}.</span><span>{renderInline(line.slice(numMatch[0].length))}</span></div>;
-        if (line.trim() === "---") return <hr key={i} className="my-2 border-white/10" />;
+        if (numMatch)
+          return (
+            <div key={i} className="flex items-start gap-2 pl-1">
+              <span className="shrink-0 text-xs text-neutral-500">
+                {numMatch[1]}.
+              </span>
+              <span>{renderInline(line.slice(numMatch[0].length))}</span>
+            </div>
+          );
+        if (line.trim() === "---")
+          return <hr key={i} className="my-2 border-white/10" />;
         if (!line.trim()) return <div key={i} className="h-2" />;
         return <p key={i}>{renderInline(line)}</p>;
       })}
@@ -249,7 +348,7 @@ function IdeaModal({
       >
         <button
           onClick={onClose}
-          className="absolute right-4 top-4 text-neutral-400 hover:text-white"
+          className="absolute top-4 right-4 text-neutral-400 hover:text-white"
           aria-label="Close"
         >
           <X className="h-5 w-5" />
@@ -413,7 +512,7 @@ function DeleteIdeaModal({
       >
         <button
           onClick={onClose}
-          className="absolute right-4 top-4 text-neutral-400 hover:text-white"
+          className="absolute top-4 right-4 text-neutral-400 hover:text-white"
           aria-label="Close"
         >
           <X className="h-5 w-5" />
@@ -469,12 +568,12 @@ function EditHistoryPanel({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
       <div
-        className="relative w-full max-w-lg max-h-[80vh] overflow-y-auto rounded-xl border bg-[#0a0a0a] p-6"
+        className="relative max-h-[80vh] w-full max-w-lg overflow-y-auto rounded-xl border bg-[#0a0a0a] p-6"
         style={{ borderColor: "rgba(250, 207, 57, 0.2)" }}
       >
         <button
           onClick={onClose}
-          className="absolute right-4 top-4 text-neutral-400 hover:text-white"
+          className="absolute top-4 right-4 text-neutral-400 hover:text-white"
           aria-label="Close"
         >
           <X className="h-5 w-5" />
@@ -542,7 +641,7 @@ function EditHistoryPanel({
                         Previous content:
                       </span>
                       <div className="mt-1 max-h-32 overflow-y-auto rounded bg-white/5 p-2 text-xs text-neutral-400">
-                        <pre className="whitespace-pre-wrap font-sans">
+                        <pre className="font-sans whitespace-pre-wrap">
                           {edit.previousContent || "(empty)"}
                         </pre>
                       </div>
@@ -581,19 +680,18 @@ function IdeaCard({
       <div className="p-4">
         {/* Header row */}
         <div className="flex items-start justify-between gap-3">
-          <div className="flex-1 min-w-0">
+          <div className="min-w-0 flex-1">
             <button
               onClick={() => hasContent && setExpanded(!expanded)}
               className="flex items-start gap-2 text-left"
               disabled={!hasContent}
             >
-              {hasContent && (
-                expanded ? (
+              {hasContent &&
+                (expanded ? (
                   <ChevronDown className="mt-0.5 h-4 w-4 shrink-0 text-neutral-500" />
                 ) : (
                   <ChevronRight className="mt-0.5 h-4 w-4 shrink-0 text-neutral-500" />
-                )
-              )}
+                ))}
               <h3 className="font-medium text-white">{idea.title}</h3>
             </button>
           </div>
@@ -642,13 +740,9 @@ function IdeaCard({
         {/* Footer: category + meta */}
         <div className="mt-3 flex flex-wrap items-center gap-2 pl-6 text-xs text-neutral-500">
           {idea.category && <CategoryBadge category={idea.category} />}
-          <span>
-            by {idea.creatorName ?? idea.creatorEmail ?? "Unknown"}
-          </span>
+          <span>by {idea.creatorName ?? idea.creatorEmail ?? "Unknown"}</span>
           <span>&middot;</span>
-          <span>
-            {new Date(idea.createdAt).toLocaleDateString()}
-          </span>
+          <span>{new Date(idea.createdAt).toLocaleDateString()}</span>
           {idea.updatedAt &&
             new Date(idea.updatedAt).getTime() !==
               new Date(idea.createdAt).getTime() && (
@@ -733,8 +827,8 @@ export default function IdeasPage() {
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex flex-1 flex-wrap gap-2 sm:max-w-2xl">
           {/* Search */}
-          <div className="relative flex-1 min-w-[200px]">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-500" />
+          <div className="relative min-w-[200px] flex-1">
+            <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-neutral-500" />
             <input
               type="text"
               value={search}

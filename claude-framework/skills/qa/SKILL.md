@@ -14,6 +14,7 @@ Generate comprehensive QA checklists for features, pages, or entire applications
 ### Step 1: Identify Scope
 
 Ask user or infer from context:
+
 - Specific feature name
 - File paths involved
 - User flows to test
@@ -21,6 +22,7 @@ Ask user or infer from context:
 ### Step 2: Analyze the Feature
 
 Read the relevant files to understand:
+
 - User roles involved (admin, client, public)
 - Data mutations (create, update, delete)
 - External integrations (Stripe, email, etc.)
@@ -31,24 +33,31 @@ Read the relevant files to understand:
 Create a structured checklist covering:
 
 #### 3.1 Happy Path
+
 Core user flows that must work.
 
 #### 3.2 Authentication & Authorization
+
 Role-based access, permission boundaries.
 
 #### 3.3 Edge Cases
+
 Empty states, maximum values, special characters.
 
 #### 3.4 Error Handling
+
 Network failures, validation errors, API errors.
 
 #### 3.5 Mobile Responsiveness
+
 Breakpoints, touch interactions, viewport sizes.
 
 #### 3.6 Performance
+
 Loading states, large data sets, caching.
 
 #### 3.7 Browser Compatibility
+
 Chrome, Safari, Firefox, mobile browsers.
 
 ## Output Format
@@ -72,11 +81,13 @@ Chrome, Safari, Firefox, mobile browsers.
 ## 1. Happy Path
 
 ### 1.1 [User Flow Name]
+
 - [ ] Step 1 description
 - [ ] Step 2 description
 - [ ] Expected result
 
 ### 1.2 [Another Flow]
+
 - [ ] ...
 
 ---
@@ -84,14 +95,17 @@ Chrome, Safari, Firefox, mobile browsers.
 ## 2. Authentication & Authorization
 
 ### 2.1 Admin Access
+
 - [ ] Admin can access [feature]
 - [ ] Admin can perform [action]
 
 ### 2.2 Client Access
+
 - [ ] Client can only access their own [data]
 - [ ] Client cannot access admin-only [feature]
 
 ### 2.3 Unauthenticated
+
 - [ ] Unauthenticated users redirected to login
 - [ ] Protected API returns 401
 
@@ -100,14 +114,17 @@ Chrome, Safari, Firefox, mobile browsers.
 ## 3. Edge Cases
 
 ### 3.1 Empty States
+
 - [ ] Empty list shows appropriate message
 - [ ] Clear filters button appears when filtering
 
 ### 3.2 Boundary Values
+
 - [ ] Maximum length inputs handled
 - [ ] Special characters escaped properly
 
 ### 3.3 Data Variations
+
 - [ ] Works with minimal data
 - [ ] Works with maximum data
 - [ ] Works with special characters
@@ -117,14 +134,17 @@ Chrome, Safari, Firefox, mobile browsers.
 ## 4. Error Handling
 
 ### 4.1 Network Errors
+
 - [ ] Offline state handled gracefully
 - [ ] Retry mechanism works
 
 ### 4.2 Validation Errors
+
 - [ ] Form validation shows inline errors
 - [ ] API validation errors displayed
 
 ### 4.3 Server Errors
+
 - [ ] 500 errors show user-friendly message
 - [ ] Errors don't expose sensitive info
 
@@ -160,9 +180,9 @@ Chrome, Safari, Firefox, mobile browsers.
 
 ## Test Accounts
 
-| Role | Email | Password |
-|------|-------|----------|
-| Admin | test-admin@example.com | [in 1Password] |
+| Role   | Email                   | Password       |
+| ------ | ----------------------- | -------------- |
+| Admin  | test-admin@example.com  | [in 1Password] |
 | Client | test-client@example.com | [in 1Password] |
 
 ---
@@ -176,6 +196,7 @@ Chrome, Safari, Firefox, mobile browsers.
 ### Step 4: Save Checklist
 
 Ask user where to save:
+
 - `docs/[feature]-qa.md` (recommended)
 - Output to console only
 - Custom path
@@ -183,7 +204,9 @@ Ask user where to save:
 ## Feature-Specific Templates
 
 ### Billing Feature
+
 Add sections for:
+
 - Payment flow testing
 - Subscription lifecycle
 - Invoice generation
@@ -191,7 +214,9 @@ Add sections for:
 - Stripe webhook events
 
 ### Authentication Feature
+
 Add sections for:
+
 - Login/logout flows
 - Password reset
 - Magic links
@@ -199,7 +224,9 @@ Add sections for:
 - Multi-device behavior
 
 ### CRUD Feature
+
 Add sections for:
+
 - Create with all fields
 - Create with minimal fields
 - Update single field

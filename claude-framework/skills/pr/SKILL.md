@@ -17,6 +17,7 @@ Push the current branch and open a pull request on GitHub. Automatically targets
 ## Arguments
 
 Optional:
+
 - `/pr` — auto-detect everything
 - `/pr hotfix` — target `main` instead of `dev`
 - `/pr "Title of the PR"` — use provided title
@@ -30,6 +31,7 @@ git branch --show-current
 ```
 
 **Guard rails:**
+
 - If on `main`: STOP. "You're on main. Create a feature branch first (`/checkout`)."
 - If on `dev`: STOP. "You're on dev. Create a feature branch first (`/checkout`)."
 
@@ -42,6 +44,7 @@ git status --short
 ### Phase 2: Determine Base Branch
 
 Default logic:
+
 - If branch starts with `fix/` and user said "hotfix": target `main`
 - Otherwise: target `dev`
 - If `dev` doesn't exist on remote: fall back to `main`
@@ -64,6 +67,7 @@ If no commits ahead of base: STOP. "No changes to create a PR for. Your branch i
 ### Phase 4: Generate PR Content
 
 **Title:** Derive from branch name and commit messages.
+
 - `feature/calendar-integration` → "Add calendar integration"
 - `fix/crm-search-crash` → "Fix CRM search crash"
 - Keep under 70 characters
@@ -109,6 +113,7 @@ Present the PR summary:
 ```
 
 Use AskUserQuestion:
+
 1. **Create PR** — push and open
 2. **Edit title** — change the title
 3. **Cancel** — abort
@@ -163,6 +168,7 @@ Run `/sync` to update your branch, then try `/pr` again.
 ### No GitHub CLI
 
 If `gh` is not installed:
+
 ```
 GitHub CLI (gh) not found. Install it:
   brew install gh
@@ -184,6 +190,7 @@ When the user seems new to git or development, explain these concepts naturally 
 - **Hotfix** = An urgent fix that goes directly to production (`main`) instead of through `dev`.
 
 When presenting the PR preview, use encouraging language:
+
 - "Your changes are ready to share with the team!"
 - "CI checks will run automatically — you don't need to do anything."
 - "Once approved, your code will be part of the project."
@@ -192,15 +199,16 @@ If the user's first PR, add: "After creating the PR, you'll get a link. The proj
 
 ## Relationship to Other Skills
 
-| Skill | Role |
-|-------|------|
-| `/checkout` | Create the branch |
-| `/handoff` | Save session state before PR |
-| `/pr` | Open the pull request |
-| `/review` | Review someone else's PR |
-| `/push` | Push without opening a PR (direct push flow) |
+| Skill       | Role                                         |
+| ----------- | -------------------------------------------- |
+| `/checkout` | Create the branch                            |
+| `/handoff`  | Save session state before PR                 |
+| `/pr`       | Open the pull request                        |
+| `/review`   | Review someone else's PR                     |
+| `/push`     | Push without opening a PR (direct push flow) |
 
 **Recommended flow:**
+
 ```
 /handoff    # Document what was done
 /pr         # Push and open PR

@@ -34,21 +34,25 @@ What would you like to sync to global?
 Based on selection:
 
 **For skills:**
+
 - Skill name
 - Description
 - What tools it needs
 - The workflow steps
 
 **For templates:**
+
 - Template name
 - File path in current project
 - What to generalize (remove project-specific content)
 
 **For documentation standards:**
+
 - What convention to add
 - Where it should go in CLAUDE.md or MULTIAGENT.md
 
 **For FRAMEWORK.md updates:**
+
 - Which section to update (Tech Stack, Code Conventions, API Patterns, etc.)
 - What to add, modify, or remove
 - Reason for the change (will be logged in Changelog)
@@ -106,29 +110,34 @@ ls ~/.claude/skills/<name> 2>/dev/null
 ```
 
 If exists:
+
 - Show diff between existing and proposed
 - Ask: "Overwrite, merge, or cancel?"
 
 ### 5. Execute Sync
 
 **For skills:**
+
 ```bash
 mkdir -p ~/.claude/skills/<name>
 # Write SKILL.md with content
 ```
 
 **For templates:**
+
 ```bash
 mkdir -p ~/.claude/templates
 # Write template file
 ```
 
 **For documentation:**
+
 - Read existing ~/.claude/CLAUDE.md
 - Add new section or update existing
 - Preserve all other content
 
 **For code patterns:**
+
 - Create pattern file in ~/.claude/patterns/<name>.md with:
   - Pattern name and description
   - Problem it solves
@@ -142,9 +151,11 @@ mkdir -p ~/.claude/templates
 If adding a new skill, update BOTH:
 
 **~/.claude/CLAUDE.md:**
+
 - Add to "Available Skills" section
 
 **~/.claude/FRAMEWORK.md:**
+
 - Add to "Skills Reference" section (the ASCII box table)
 - Format: `│  ├── /<skill-name>   <description padded to align>  │`
 - Place under the appropriate category (Session Management, Project Setup, Code Maintenance, Multi-Agent Workflow, Documentation)
@@ -162,10 +173,12 @@ If the sync involved updating FRAMEWORK.md (option 4 or adding a skill):
 
 ```markdown
 ### vX.Y.Z (YYYY-MM-DD)
+
 - <Description of change>
 ```
 
 4. Update the version in the header:
+
 ```markdown
 > **Version:** X.Y.Z
 > **Last Updated:** YYYY-MM-DD
@@ -271,6 +284,7 @@ The framework is automatically available in all projects via `/framework` comman
 ## Rollback
 
 If something goes wrong:
+
 ```bash
 # Skills and templates are in git-like structure
 # Can manually revert by editing files in ~/.claude/

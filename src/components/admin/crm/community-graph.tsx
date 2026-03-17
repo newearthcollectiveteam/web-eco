@@ -57,20 +57,41 @@ type TagNode = {
 };
 
 type PendingChange =
-  | { action: "reparent"; tagId: number; oldParentId: number | null; newParentId: number | null; tagName: string }
-  | { action: "create"; name: string; type: string; parentId: number | null; tempId: string }
-  | { action: "update"; tagId: number; field: string; oldValue: string; newValue: string; tagName: string }
+  | {
+      action: "reparent";
+      tagId: number;
+      oldParentId: number | null;
+      newParentId: number | null;
+      tagName: string;
+    }
+  | {
+      action: "create";
+      name: string;
+      type: string;
+      parentId: number | null;
+      tempId: string;
+    }
+  | {
+      action: "update";
+      tagId: number;
+      field: string;
+      oldValue: string;
+      newValue: string;
+      tagName: string;
+    }
   | { action: "delete"; tagId: number; tagName: string; contactCount: number }
-  | { action: "insert_above"; tempId: string; name: string; type: string; childTagId: number; childTagName: string; parentId: number | null };
+  | {
+      action: "insert_above";
+      tempId: string;
+      name: string;
+      type: string;
+      childTagId: number;
+      childTagName: string;
+      parentId: number | null;
+    };
 
 // Depth colors matching the tree view
-const DEPTH_COLORS = [
-  "#FACF39",
-  "#38BDF8",
-  "#A78BFA",
-  "#34D399",
-  "#FB923C",
-];
+const DEPTH_COLORS = ["#FACF39", "#38BDF8", "#A78BFA", "#34D399", "#FB923C"];
 
 function getDepthColor(depth: number): string {
   return DEPTH_COLORS[Math.min(depth, DEPTH_COLORS.length - 1)]!;
@@ -114,14 +135,20 @@ function CommunityNodeView({ data }: { data: CommunityNodeData }) {
     <div
       className={`group relative rounded-xl border-2 bg-neutral-900 px-4 py-3 shadow-lg transition-all hover:shadow-xl ${borderStyle}`}
       style={{
-        borderColor: data.isNew ? undefined : data.isDeleted ? undefined : data.isModified ? "#FB923C" : color,
+        borderColor: data.isNew
+          ? undefined
+          : data.isDeleted
+            ? undefined
+            : data.isModified
+              ? "#FB923C"
+              : color,
         minWidth: 160,
       }}
     >
       <Handle
         type="target"
         position={Position.Top}
-        className="!bg-white/30 !border-0 !w-3 !h-3 !-top-1.5"
+        className="!-top-1.5 !h-3 !w-3 !border-0 !bg-white/30"
         isConnectable={data.isEditing}
       />
 
@@ -156,7 +183,7 @@ function CommunityNodeView({ data }: { data: CommunityNodeData }) {
       {/* Edit mode action buttons — onMouseDown stop is critical to prevent React Flow drag */}
       {data.isEditing && !data.isDeleted && (
         <div
-          className="absolute -right-1 -top-1 flex gap-0.5 opacity-0 transition-opacity group-hover:opacity-100"
+          className="absolute -top-1 -right-1 flex gap-0.5 opacity-0 transition-opacity group-hover:opacity-100"
           onMouseDown={(e) => e.stopPropagation()}
         >
           <button
@@ -189,7 +216,11 @@ function CommunityNodeView({ data }: { data: CommunityNodeData }) {
               }
             }}
             className="rounded-full bg-neutral-800 p-1.5 text-gray-400 shadow-md hover:bg-neutral-700 hover:text-red-400"
-            title={data.contactCount > 0 ? `Delete (${data.contactCount} contacts will be untagged)` : "Delete"}
+            title={
+              data.contactCount > 0
+                ? `Delete (${data.contactCount} contacts will be untagged)`
+                : "Delete"
+            }
           >
             <Trash2 className="h-3 w-3" />
           </button>
@@ -199,7 +230,7 @@ function CommunityNodeView({ data }: { data: CommunityNodeData }) {
       <Handle
         type="source"
         position={Position.Bottom}
-        className="!bg-white/30 !border-0 !w-3 !h-3 !-bottom-1.5"
+        className="!-bottom-1.5 !h-3 !w-3 !border-0 !bg-white/30"
         isConnectable={data.isEditing}
       />
     </div>
@@ -232,7 +263,14 @@ function EditableEdge({
     targetPosition,
   });
 
-  const edgeData = data as { isEditing?: boolean; onInsertOnEdge?: (parentId: number, childId: number) => void; parentTagId?: number; childTagId?: number } | undefined;
+  const edgeData = data as
+    | {
+        isEditing?: boolean;
+        onInsertOnEdge?: (parentId: number, childId: number) => void;
+        parentTagId?: number;
+        childTagId?: number;
+      }
+    | undefined;
 
   return (
     <>
@@ -246,8 +284,15 @@ function EditableEdge({
               transform: `translate(-50%, -50%) translate(${labelX}px,${labelY}px)`,
             }}
             onClick={() => {
-              if (edgeData?.onInsertOnEdge && edgeData.parentTagId && edgeData.childTagId) {
-                edgeData.onInsertOnEdge(edgeData.parentTagId, edgeData.childTagId);
+              if (
+                edgeData?.onInsertOnEdge &&
+                edgeData.parentTagId &&
+                edgeData.childTagId
+              ) {
+                edgeData.onInsertOnEdge(
+                  edgeData.parentTagId,
+                  edgeData.childTagId
+                );
               }
             }}
             title="Insert node here"
@@ -278,7 +323,11 @@ function NodeEditModal({
   initialName: string;
   initialType: string;
   initialDescription: string;
-  onSave: (updates: { name?: string; type?: string; description?: string }) => void;
+  onSave: (updates: {
+    name?: string;
+    type?: string;
+    description?: string;
+  }) => void;
   onClose: () => void;
 }) {
   const [name, setName] = useState(initialName);
@@ -317,7 +366,9 @@ function NodeEditModal({
             </select>
           </div>
           <div>
-            <label className="mb-1 block text-xs text-gray-400">Description</label>
+            <label className="mb-1 block text-xs text-gray-400">
+              Description
+            </label>
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
@@ -335,10 +386,15 @@ function NodeEditModal({
             </button>
             <button
               onClick={() => {
-                const updates: { name?: string; type?: string; description?: string } = {};
+                const updates: {
+                  name?: string;
+                  type?: string;
+                  description?: string;
+                } = {};
                 if (name !== initialName) updates.name = name;
                 if (type !== initialType) updates.type = type;
-                if (description !== initialDescription) updates.description = description;
+                if (description !== initialDescription)
+                  updates.description = description;
                 onSave(updates);
               }}
               className="rounded-lg bg-[#facf39]/20 px-4 py-1.5 text-sm text-[#facf39] hover:bg-[#facf39]/30"
@@ -433,9 +489,9 @@ const V_GAP = 100;
 // ─── Virtual Node for preview tree ──────────────────────────
 
 type VNode = {
-  id: string;           // "tag-123" for real, "new-temp-1" for new
-  tagId: number;        // 0 for new nodes
-  tempId?: string;      // only for new nodes
+  id: string; // "tag-123" for real, "new-temp-1" for new
+  tagId: number; // 0 for new nodes
+  tempId?: string; // only for new nodes
   name: string;
   type: string;
   contactCount: number;
@@ -453,7 +509,15 @@ function buildVirtualTree(
     updatedNodes: Map<number, { name?: string; type?: string }>;
     deletedNodes: Set<number>;
     reparented: Map<number, number | null>;
-    insertAboveNodes: Map<string, { name: string; type: string; childTagId: number; parentId: number | null }>;
+    insertAboveNodes: Map<
+      string,
+      {
+        name: string;
+        type: string;
+        childTagId: number;
+        parentId: number | null;
+      }
+    >;
   }
 ): VNode[] {
   // Step 1: Flatten all real tags into a map of VNodes (no children yet)
@@ -475,7 +539,8 @@ function buildVirtualTree(
         name: updates?.name ?? n.name,
         type: updates?.type ?? n.type,
         contactCount: n.contactCount,
-        parentVId: effectiveParentId !== null ? `tag-${effectiveParentId}` : null,
+        parentVId:
+          effectiveParentId !== null ? `tag-${effectiveParentId}` : null,
         children: [],
         isNew: false,
         isModified: updates !== undefined || modifications.reparented.has(n.id),
@@ -490,7 +555,8 @@ function buildVirtualTree(
   for (const [tempId, insert] of modifications.insertAboveNodes) {
     const newVId = `new-${tempId}`;
     const childVId = `tag-${insert.childTagId}`;
-    const parentVId = insert.parentId !== null ? `tag-${insert.parentId}` : null;
+    const parentVId =
+      insert.parentId !== null ? `tag-${insert.parentId}` : null;
 
     // Create the new intermediate node
     vNodeMap.set(newVId, {
@@ -570,7 +636,15 @@ function layoutTree(
     updatedNodes: Map<number, { name?: string; type?: string }>;
     deletedNodes: Set<number>;
     reparented: Map<number, number | null>;
-    insertAboveNodes: Map<string, { name: string; type: string; childTagId: number; parentId: number | null }>;
+    insertAboveNodes: Map<
+      string,
+      {
+        name: string;
+        type: string;
+        childTagId: number;
+        parentId: number | null;
+      }
+    >;
   }
 ): { nodes: Node<CommunityNodeData>[]; edges: Edge[] } {
   const vRoots = buildVirtualTree(roots, modifications);
@@ -579,11 +653,20 @@ function layoutTree(
 
   function subtreeWidth(vn: VNode): number {
     if (vn.children.length === 0) return NODE_WIDTH;
-    const w = vn.children.reduce((sum, c) => sum + subtreeWidth(c) + H_GAP, -H_GAP);
+    const w = vn.children.reduce(
+      (sum, c) => sum + subtreeWidth(c) + H_GAP,
+      -H_GAP
+    );
     return Math.max(NODE_WIDTH, w);
   }
 
-  function positionNode(vn: VNode, x: number, y: number, depth: number, parentFlowId: string | null) {
+  function positionNode(
+    vn: VNode,
+    x: number,
+    y: number,
+    depth: number,
+    parentFlowId: string | null
+  ) {
     outNodes.push({
       id: vn.id,
       type: "community",
@@ -611,7 +694,11 @@ function layoutTree(
 
     // Edge from parent
     if (parentFlowId) {
-      const edgeColor = vn.isNew ? "#34D399" : vn.isModified ? "#FB923C" : getDepthColor(Math.max(0, depth - 1));
+      const edgeColor = vn.isNew
+        ? "#34D399"
+        : vn.isModified
+          ? "#FB923C"
+          : getDepthColor(Math.max(0, depth - 1));
       const isDashed = vn.isNew || vn.isModified;
 
       outEdges.push({
@@ -625,18 +712,25 @@ function layoutTree(
           strokeDasharray: isDashed ? "5 5" : undefined,
         },
         type: isEditing ? "editable" : "default",
-        data: isEditing ? {
-          isEditing: true,
-          onInsertOnEdge: handlers.onInsertOnEdge,
-          parentTagId: parentFlowId.startsWith("tag-") ? parseInt(parentFlowId.replace("tag-", ""), 10) : 0,
-          childTagId: vn.tagId,
-        } : undefined,
+        data: isEditing
+          ? {
+              isEditing: true,
+              onInsertOnEdge: handlers.onInsertOnEdge,
+              parentTagId: parentFlowId.startsWith("tag-")
+                ? parseInt(parentFlowId.replace("tag-", ""), 10)
+                : 0,
+              childTagId: vn.tagId,
+            }
+          : undefined,
       });
     }
 
     if (vn.children.length === 0) return;
 
-    const totalW = vn.children.reduce((sum, c) => sum + subtreeWidth(c) + H_GAP, -H_GAP);
+    const totalW = vn.children.reduce(
+      (sum, c) => sum + subtreeWidth(c) + H_GAP,
+      -H_GAP
+    );
     let childX = x + NODE_WIDTH / 2 - totalW / 2;
     const childY = y + V_GAP + NODE_HEIGHT;
 
@@ -690,12 +784,28 @@ export function CommunityGraph({ tags, onRefresh }: CommunityGraphProps) {
 
   // Pending changes (not yet committed to DB)
   const [pendingChanges, setPendingChanges] = useState<PendingChange[]>([]);
-  const [newNodes, setNewNodes] = useState<Map<string, { name: string; type: string; parentId: number }>>(new Map());
-  const [updatedNodes, setUpdatedNodes] = useState<Map<number, { name?: string; type?: string; description?: string }>>(new Map());
+  const [newNodes, setNewNodes] = useState<
+    Map<string, { name: string; type: string; parentId: number }>
+  >(new Map());
+  const [updatedNodes, setUpdatedNodes] = useState<
+    Map<number, { name?: string; type?: string; description?: string }>
+  >(new Map());
   const [deletedNodes, setDeletedNodes] = useState<Set<number>>(new Set());
-  const [reparented, setReparented] = useState<Map<number, number | null>>(new Map());
+  const [reparented, setReparented] = useState<Map<number, number | null>>(
+    new Map()
+  );
   // Insert-above: tempId → { name, type, childTagId (existing node that goes below), parentId (existing parent) }
-  const [insertAboveNodes, setInsertAboveNodes] = useState<Map<string, { name: string; type: string; childTagId: number; parentId: number | null }>>(new Map());
+  const [insertAboveNodes, setInsertAboveNodes] = useState<
+    Map<
+      string,
+      {
+        name: string;
+        type: string;
+        childTagId: number;
+        parentId: number | null;
+      }
+    >
+  >(new Map());
 
   const tagMap = useMemo(() => flattenTags(tags), [tags]);
   const tempIdCounter = useRef(0);
@@ -714,12 +824,23 @@ export function CommunityGraph({ tags, onRefresh }: CommunityGraphProps) {
     setAddChildModal(parentId);
   }, []);
 
-  const handleDelete = useCallback((tagId: number) => {
-    const tag = tagMap.get(tagId);
-    if (!tag) return;
-    setDeletedNodes((prev) => new Set(prev).add(tagId));
-    setPendingChanges((prev) => [...prev, { action: "delete", tagId, tagName: tag.name, contactCount: tag.contactCount }]);
-  }, [tagMap]);
+  const handleDelete = useCallback(
+    (tagId: number) => {
+      const tag = tagMap.get(tagId);
+      if (!tag) return;
+      setDeletedNodes((prev) => new Set(prev).add(tagId));
+      setPendingChanges((prev) => [
+        ...prev,
+        {
+          action: "delete",
+          tagId,
+          tagName: tag.name,
+          contactCount: tag.contactCount,
+        },
+      ]);
+    },
+    [tagMap]
+  );
 
   const handleDeleteNew = useCallback((tempId: string) => {
     setNewNodes((prev) => {
@@ -733,9 +854,15 @@ export function CommunityGraph({ tags, onRefresh }: CommunityGraphProps) {
       return next;
     });
     // Remove the matching pending change
-    setPendingChanges((prev) => prev.filter((c) =>
-      !((c.action === "create" && c.tempId === tempId) || (c.action === "insert_above" && c.tempId === tempId))
-    ));
+    setPendingChanges((prev) =>
+      prev.filter(
+        (c) =>
+          !(
+            (c.action === "create" && c.tempId === tempId) ||
+            (c.action === "insert_above" && c.tempId === tempId)
+          )
+      )
+    );
   }, []);
 
   const handleInsertAbove = useCallback((tagId: number) => {
@@ -743,99 +870,148 @@ export function CommunityGraph({ tags, onRefresh }: CommunityGraphProps) {
   }, []);
 
   // Insert on edge: parentId is the source, childId is the target
-  const [insertOnEdgeModal, setInsertOnEdgeModal] = useState<{ parentId: number; childId: number } | null>(null);
+  const [insertOnEdgeModal, setInsertOnEdgeModal] = useState<{
+    parentId: number;
+    childId: number;
+  } | null>(null);
   const [addRootModal, setAddRootModal] = useState(false);
 
-  const handleInsertOnEdge = useCallback((parentId: number, childId: number) => {
-    setInsertOnEdgeModal({ parentId, childId });
-  }, []);
+  const handleInsertOnEdge = useCallback(
+    (parentId: number, childId: number) => {
+      setInsertOnEdgeModal({ parentId, childId });
+    },
+    []
+  );
 
-  const handleInsertOnEdgeSave = useCallback((parentId: number, childId: number, name: string, type: string) => {
-    // This is the same as insert-above on the child node
-    const childTag = tagMap.get(childId);
-    if (!childTag) return;
+  const handleInsertOnEdgeSave = useCallback(
+    (parentId: number, childId: number, name: string, type: string) => {
+      // This is the same as insert-above on the child node
+      const childTag = tagMap.get(childId);
+      if (!childTag) return;
 
-    const tempId = `temp-${++tempIdCounter.current}`;
+      const tempId = `temp-${++tempIdCounter.current}`;
 
-    setInsertAboveNodes((prev) => {
-      const next = new Map(prev);
-      next.set(tempId, { name, type, childTagId: childId, parentId });
-      return next;
-    });
+      setInsertAboveNodes((prev) => {
+        const next = new Map(prev);
+        next.set(tempId, { name, type, childTagId: childId, parentId });
+        return next;
+      });
 
-    setPendingChanges((prev) => [
-      ...prev,
-      { action: "insert_above", tempId, name, type, childTagId: childId, childTagName: childTag.name, parentId },
-    ]);
-
-    setInsertOnEdgeModal(null);
-  }, [tagMap]);
-
-  const handleEditSave = useCallback((tagId: number, updates: { name?: string; type?: string; description?: string }) => {
-    if (Object.keys(updates).length === 0) {
-      setEditModal(null);
-      return;
-    }
-    const tag = tagMap.get(tagId);
-    if (!tag) return;
-
-    setUpdatedNodes((prev) => {
-      const next = new Map(prev);
-      next.set(tagId, { ...prev.get(tagId), ...updates });
-      return next;
-    });
-
-    for (const [field, value] of Object.entries(updates)) {
-      // eslint-disable-next-line @typescript-eslint/no-base-to-string
-      const oldValue = String((tag as unknown as Record<string, unknown>)[field] ?? "");
       setPendingChanges((prev) => [
         ...prev,
-        { action: "update", tagId, field, oldValue, newValue: String(value), tagName: tag.name },
+        {
+          action: "insert_above",
+          tempId,
+          name,
+          type,
+          childTagId: childId,
+          childTagName: childTag.name,
+          parentId,
+        },
       ]);
-    }
 
-    setEditModal(null);
-  }, [tagMap]);
+      setInsertOnEdgeModal(null);
+    },
+    [tagMap]
+  );
 
-  const handleAddChildSave = useCallback((parentId: number, name: string, type: string) => {
-    const tempId = `temp-${++tempIdCounter.current}`;
+  const handleEditSave = useCallback(
+    (
+      tagId: number,
+      updates: { name?: string; type?: string; description?: string }
+    ) => {
+      if (Object.keys(updates).length === 0) {
+        setEditModal(null);
+        return;
+      }
+      const tag = tagMap.get(tagId);
+      if (!tag) return;
 
-    setNewNodes((prev) => {
-      const next = new Map(prev);
-      next.set(tempId, { name, type, parentId });
-      return next;
-    });
+      setUpdatedNodes((prev) => {
+        const next = new Map(prev);
+        next.set(tagId, { ...prev.get(tagId), ...updates });
+        return next;
+      });
 
-    setPendingChanges((prev) => [
-      ...prev,
-      { action: "create", name, type, parentId, tempId },
-    ]);
+      for (const [field, value] of Object.entries(updates)) {
+        const rawValue = (tag as unknown as Record<string, unknown>)[field];
+        const oldValue = typeof rawValue === "string" ? rawValue : "";
+        setPendingChanges((prev) => [
+          ...prev,
+          {
+            action: "update",
+            tagId,
+            field,
+            oldValue,
+            newValue: String(value),
+            tagName: tag.name,
+          },
+        ]);
+      }
 
-    setAddChildModal(null);
-  }, []);
+      setEditModal(null);
+    },
+    [tagMap]
+  );
 
-  const handleInsertAboveSave = useCallback((childTagId: number, name: string, type: string) => {
-    const tempId = `temp-${++tempIdCounter.current}`;
-    const childTag = tagMap.get(childTagId);
-    if (!childTag) return;
+  const handleAddChildSave = useCallback(
+    (parentId: number, name: string, type: string) => {
+      const tempId = `temp-${++tempIdCounter.current}`;
 
-    // The new node takes the child's current parent, and the child becomes a child of the new node
-    setInsertAboveNodes((prev) => {
-      const next = new Map(prev);
-      next.set(tempId, { name, type, childTagId, parentId: childTag.parentId });
-      return next;
-    });
+      setNewNodes((prev) => {
+        const next = new Map(prev);
+        next.set(tempId, { name, type, parentId });
+        return next;
+      });
 
-    // Also reparent the child under the new node (tracked by tempId for now)
-    // We'll resolve this in the save step
+      setPendingChanges((prev) => [
+        ...prev,
+        { action: "create", name, type, parentId, tempId },
+      ]);
 
-    setPendingChanges((prev) => [
-      ...prev,
-      { action: "insert_above", tempId, name, type, childTagId, childTagName: childTag.name, parentId: childTag.parentId },
-    ]);
+      setAddChildModal(null);
+    },
+    []
+  );
 
-    setInsertAboveModal(null);
-  }, [tagMap]);
+  const handleInsertAboveSave = useCallback(
+    (childTagId: number, name: string, type: string) => {
+      const tempId = `temp-${++tempIdCounter.current}`;
+      const childTag = tagMap.get(childTagId);
+      if (!childTag) return;
+
+      // The new node takes the child's current parent, and the child becomes a child of the new node
+      setInsertAboveNodes((prev) => {
+        const next = new Map(prev);
+        next.set(tempId, {
+          name,
+          type,
+          childTagId,
+          parentId: childTag.parentId,
+        });
+        return next;
+      });
+
+      // Also reparent the child under the new node (tracked by tempId for now)
+      // We'll resolve this in the save step
+
+      setPendingChanges((prev) => [
+        ...prev,
+        {
+          action: "insert_above",
+          tempId,
+          name,
+          type,
+          childTagId,
+          childTagName: childTag.name,
+          parentId: childTag.parentId,
+        },
+      ]);
+
+      setInsertAboveModal(null);
+    },
+    [tagMap]
+  );
 
   const handleAddRoot = useCallback((name: string, type: string) => {
     const tempId = `temp-${++tempIdCounter.current}`;
@@ -856,51 +1032,54 @@ export function CommunityGraph({ tags, onRefresh }: CommunityGraphProps) {
   }, []);
 
   // Handle edge connection (reparent via drag)
-  const onConnect: OnConnect = useCallback((connection: Connection) => {
-    if (!connection.target || !connection.source) return;
+  const onConnect: OnConnect = useCallback(
+    (connection: Connection) => {
+      if (!connection.target || !connection.source) return;
 
-    const targetId = connection.target.startsWith("tag-")
-      ? parseInt(connection.target.replace("tag-", ""), 10)
-      : null;
-    const sourceId = connection.source.startsWith("tag-")
-      ? parseInt(connection.source.replace("tag-", ""), 10)
-      : null;
+      const targetId = connection.target.startsWith("tag-")
+        ? parseInt(connection.target.replace("tag-", ""), 10)
+        : null;
+      const sourceId = connection.source.startsWith("tag-")
+        ? parseInt(connection.source.replace("tag-", ""), 10)
+        : null;
 
-    if (targetId === null || sourceId === null) return;
+      if (targetId === null || sourceId === null) return;
 
-    const tag = tagMap.get(targetId);
-    if (!tag) return;
+      const tag = tagMap.get(targetId);
+      if (!tag) return;
 
-    // Prevent self-parenting or parenting to own descendant
-    const isDescendant = (parentId: number, childId: number): boolean => {
-      const parent = tagMap.get(parentId);
-      if (!parent) return false;
-      for (const child of parent.children) {
-        if (child.id === childId) return true;
-        if (isDescendant(child.id, childId)) return true;
-      }
-      return false;
-    };
+      // Prevent self-parenting or parenting to own descendant
+      const isDescendant = (parentId: number, childId: number): boolean => {
+        const parent = tagMap.get(parentId);
+        if (!parent) return false;
+        for (const child of parent.children) {
+          if (child.id === childId) return true;
+          if (isDescendant(child.id, childId)) return true;
+        }
+        return false;
+      };
 
-    if (sourceId === targetId || isDescendant(targetId, sourceId)) return;
+      if (sourceId === targetId || isDescendant(targetId, sourceId)) return;
 
-    setReparented((prev) => {
-      const next = new Map(prev);
-      next.set(targetId, sourceId);
-      return next;
-    });
+      setReparented((prev) => {
+        const next = new Map(prev);
+        next.set(targetId, sourceId);
+        return next;
+      });
 
-    setPendingChanges((prev) => [
-      ...prev,
-      {
-        action: "reparent",
-        tagId: targetId,
-        oldParentId: tag.parentId,
-        newParentId: sourceId,
-        tagName: tag.name,
-      },
-    ]);
-  }, [tagMap]);
+      setPendingChanges((prev) => [
+        ...prev,
+        {
+          action: "reparent",
+          tagId: targetId,
+          oldParentId: tag.parentId,
+          newParentId: sourceId,
+          tagName: tag.name,
+        },
+      ]);
+    },
+    [tagMap]
+  );
 
   // Discard all changes
   const handleDiscard = () => {
@@ -1026,15 +1205,34 @@ export function CommunityGraph({ tags, onRefresh }: CommunityGraphProps) {
   // Build layout
   const { nodes: layoutNodes, edges: layoutEdges } = useMemo(
     () =>
-      layoutTree(tags, isEditing, {
-        onEdit: handleEdit,
-        onAddChild: handleAddChild,
-        onDelete: handleDelete,
-        onDeleteNew: handleDeleteNew,
-        onInsertAbove: handleInsertAbove,
-        onInsertOnEdge: handleInsertOnEdge,
-      }, { newNodes, updatedNodes, deletedNodes, reparented, insertAboveNodes }),
-    [tags, isEditing, handleEdit, handleAddChild, handleDelete, handleDeleteNew, handleInsertAbove, handleInsertOnEdge, newNodes, updatedNodes, deletedNodes, reparented, insertAboveNodes]
+      layoutTree(
+        tags,
+        isEditing,
+        {
+          onEdit: handleEdit,
+          onAddChild: handleAddChild,
+          onDelete: handleDelete,
+          onDeleteNew: handleDeleteNew,
+          onInsertAbove: handleInsertAbove,
+          onInsertOnEdge: handleInsertOnEdge,
+        },
+        { newNodes, updatedNodes, deletedNodes, reparented, insertAboveNodes }
+      ),
+    [
+      tags,
+      isEditing,
+      handleEdit,
+      handleAddChild,
+      handleDelete,
+      handleDeleteNew,
+      handleInsertAbove,
+      handleInsertOnEdge,
+      newNodes,
+      updatedNodes,
+      deletedNodes,
+      reparented,
+      insertAboveNodes,
+    ]
   );
 
   const [nodes, setNodes, onNodesChange] = useNodesState(layoutNodes);
@@ -1047,8 +1245,10 @@ export function CommunityGraph({ tags, onRefresh }: CommunityGraphProps) {
   }, [layoutNodes, layoutEdges, setNodes, setEdges]);
 
   const editingTag = editModal !== null ? tagMap.get(editModal) : null;
-  const addChildParent = addChildModal !== null ? tagMap.get(addChildModal) : null;
-  const insertAboveTag = insertAboveModal !== null ? tagMap.get(insertAboveModal) : null;
+  const addChildParent =
+    addChildModal !== null ? tagMap.get(addChildModal) : null;
+  const insertAboveTag =
+    insertAboveModal !== null ? tagMap.get(insertAboveModal) : null;
 
   return (
     <div className="relative">
@@ -1068,7 +1268,9 @@ export function CommunityGraph({ tags, onRefresh }: CommunityGraphProps) {
       {addChildParent && (
         <AddChildModal
           parentName={addChildParent.name}
-          onSave={(name, type) => handleAddChildSave(addChildParent.id, name, type)}
+          onSave={(name, type) =>
+            handleAddChildSave(addChildParent.id, name, type)
+          }
           onClose={() => setAddChildModal(null)}
         />
       )}
@@ -1077,7 +1279,9 @@ export function CommunityGraph({ tags, onRefresh }: CommunityGraphProps) {
       {insertAboveTag && (
         <AddChildModal
           parentName={`above ${insertAboveTag.name}`}
-          onSave={(name, type) => handleInsertAboveSave(insertAboveTag.id, name, type)}
+          onSave={(name, type) =>
+            handleInsertAboveSave(insertAboveTag.id, name, type)
+          }
           onClose={() => setInsertAboveModal(null)}
         />
       )}
@@ -1095,7 +1299,14 @@ export function CommunityGraph({ tags, onRefresh }: CommunityGraphProps) {
       {insertOnEdgeModal && (
         <AddChildModal
           parentName={`between ${tagMap.get(insertOnEdgeModal.parentId)?.name ?? "?"} and ${tagMap.get(insertOnEdgeModal.childId)?.name ?? "?"}`}
-          onSave={(name, type) => handleInsertOnEdgeSave(insertOnEdgeModal.parentId, insertOnEdgeModal.childId, name, type)}
+          onSave={(name, type) =>
+            handleInsertOnEdgeSave(
+              insertOnEdgeModal.parentId,
+              insertOnEdgeModal.childId,
+              name,
+              type
+            )
+          }
           onClose={() => setInsertOnEdgeModal(null)}
         />
       )}
@@ -1124,14 +1335,12 @@ export function CommunityGraph({ tags, onRefresh }: CommunityGraphProps) {
           nodesConnectable={isEditing}
           selectionOnDrag={isEditing}
           selectNodesOnDrag={isEditing}
-          selectionMode={isEditing ? "partial" as never : undefined}
+          selectionMode={isEditing ? ("partial" as never) : undefined}
           multiSelectionKeyCode="Meta"
           proOptions={{ hideAttribution: true }}
         >
           <Background color="#ffffff08" gap={20} size={1} />
-          <Controls
-            className="!bg-neutral-900 !border-white/10 !rounded-lg !shadow-lg [&>button]:!bg-neutral-800 [&>button]:!border-white/10 [&>button]:!text-white [&>button:hover]:!bg-neutral-700"
-          />
+          <Controls className="!rounded-lg !border-white/10 !bg-neutral-900 !shadow-lg [&>button]:!border-white/10 [&>button]:!bg-neutral-800 [&>button]:!text-white [&>button:hover]:!bg-neutral-700" />
           <MiniMap
             nodeColor={(node) => {
               const data = node.data as CommunityNodeData;
@@ -1140,7 +1349,7 @@ export function CommunityGraph({ tags, onRefresh }: CommunityGraphProps) {
               if (data.isModified) return "#FB923C";
               return getDepthColor(data.depth);
             }}
-            className="!bg-neutral-900 !border-white/10 !rounded-lg"
+            className="!rounded-lg !border-white/10 !bg-neutral-900"
             maskColor="rgba(0,0,0,0.7)"
           />
 
@@ -1151,7 +1360,11 @@ export function CommunityGraph({ tags, onRefresh }: CommunityGraphProps) {
               className="rounded-lg border border-white/10 bg-neutral-900 p-2 text-gray-400 shadow-lg hover:bg-neutral-800 hover:text-white"
               title={isFullscreen ? "Exit fullscreen" : "Fullscreen"}
             >
-              {isFullscreen ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
+              {isFullscreen ? (
+                <Minimize2 className="h-4 w-4" />
+              ) : (
+                <Maximize2 className="h-4 w-4" />
+              )}
             </button>
             {!isEditing ? (
               <button
@@ -1206,7 +1419,9 @@ export function CommunityGraph({ tags, onRefresh }: CommunityGraphProps) {
           {isEditing && (
             <Panel position="top-left">
               <div className="rounded-lg border border-[#facf39]/20 bg-neutral-900/90 px-3 py-2 text-xs text-gray-400 shadow-lg">
-                <span className="text-[#facf39]">Edit mode</span> — hover for actions · drag edges to reparent · drag to box-select · Cmd+click multi-select
+                <span className="text-[#facf39]">Edit mode</span> — hover for
+                actions · drag edges to reparent · drag to box-select ·
+                Cmd+click multi-select
               </div>
             </Panel>
           )}
@@ -1218,28 +1433,38 @@ export function CommunityGraph({ tags, onRefresh }: CommunityGraphProps) {
         <div className="mt-3 rounded-lg border border-white/10 bg-white/5 p-3">
           <div className="mb-2 flex items-center gap-2 text-xs font-medium text-gray-400">
             <AlertTriangle className="h-3.5 w-3.5 text-amber-400" />
-            {pendingChanges.length} pending {pendingChanges.length === 1 ? "change" : "changes"} — not yet saved
+            {pendingChanges.length} pending{" "}
+            {pendingChanges.length === 1 ? "change" : "changes"} — not yet saved
           </div>
           <div className="space-y-1">
             {pendingChanges.map((change, i) => (
               <div key={i} className="flex items-center gap-2 text-xs">
                 {change.action === "reparent" && (
                   <>
-                    <span className="rounded bg-blue-900/40 px-1.5 py-0.5 text-blue-400">MOVE</span>
+                    <span className="rounded bg-blue-900/40 px-1.5 py-0.5 text-blue-400">
+                      MOVE
+                    </span>
                     <span className="text-gray-300">
-                      {change.tagName} → {tagMap.get(change.newParentId ?? 0)?.name ?? "root"}
+                      {change.tagName} →{" "}
+                      {tagMap.get(change.newParentId ?? 0)?.name ?? "root"}
                     </span>
                   </>
                 )}
                 {change.action === "create" && (
                   <>
-                    <span className="rounded bg-green-900/40 px-1.5 py-0.5 text-green-400">NEW</span>
-                    <span className="text-gray-300">{change.name} ({change.type})</span>
+                    <span className="rounded bg-green-900/40 px-1.5 py-0.5 text-green-400">
+                      NEW
+                    </span>
+                    <span className="text-gray-300">
+                      {change.name} ({change.type})
+                    </span>
                   </>
                 )}
                 {change.action === "update" && (
                   <>
-                    <span className="rounded bg-amber-900/40 px-1.5 py-0.5 text-amber-400">EDIT</span>
+                    <span className="rounded bg-amber-900/40 px-1.5 py-0.5 text-amber-400">
+                      EDIT
+                    </span>
                     <span className="text-gray-300">
                       {change.tagName}: {change.field} → {change.newValue}
                     </span>
@@ -1247,8 +1472,12 @@ export function CommunityGraph({ tags, onRefresh }: CommunityGraphProps) {
                 )}
                 {change.action === "delete" && (
                   <>
-                    <span className="rounded bg-red-900/40 px-1.5 py-0.5 text-red-400">DEL</span>
-                    <span className="text-gray-300 line-through">{change.tagName}</span>
+                    <span className="rounded bg-red-900/40 px-1.5 py-0.5 text-red-400">
+                      DEL
+                    </span>
+                    <span className="text-gray-300 line-through">
+                      {change.tagName}
+                    </span>
                     {change.contactCount > 0 && (
                       <span className="rounded bg-amber-900/40 px-1.5 py-0.5 text-amber-400">
                         {change.contactCount} contacts will be untagged
@@ -1258,7 +1487,9 @@ export function CommunityGraph({ tags, onRefresh }: CommunityGraphProps) {
                 )}
                 {change.action === "insert_above" && (
                   <>
-                    <span className="rounded bg-cyan-900/40 px-1.5 py-0.5 text-cyan-400">INSERT</span>
+                    <span className="rounded bg-cyan-900/40 px-1.5 py-0.5 text-cyan-400">
+                      INSERT
+                    </span>
                     <span className="text-gray-300">
                       {change.name} above {change.childTagName}
                     </span>

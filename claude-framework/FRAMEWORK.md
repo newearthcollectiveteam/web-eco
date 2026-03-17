@@ -85,6 +85,7 @@ When facing architectural decisions:
 ### When to Break Rules
 
 Rules exist to serve you, not constrain you. Break them when:
+
 - Project requirements genuinely differ
 - Performance demands it (with measurements)
 - Team consensus agrees on alternative
@@ -122,22 +123,22 @@ Rules exist to serve you, not constrain you. Break them when:
 
 ### Detailed Stack
 
-| Layer | Technology | Version | Purpose |
-|-------|------------|---------|---------|
-| **Framework** | Next.js | 15-16 | Full-stack React framework |
-| **Runtime** | React | 19 | UI library with Server Components |
-| **Language** | TypeScript | 5.x | Type safety |
-| **API** | tRPC | 11 | Type-safe RPC |
-| **State** | TanStack Query | 5.x | Server state management |
-| **Database** | PostgreSQL | - | Via Supabase |
-| **ORM** | Drizzle | 0.41+ | Type-safe database access |
-| **Auth** | Supabase Auth | - | Authentication & sessions |
-| **Styling** | Tailwind CSS | 4.x | Utility-first CSS |
-| **Components** | shadcn/ui | - | Accessible component library |
-| **Validation** | Zod | 3.x | Schema validation |
-| **Env** | @t3-oss/env-nextjs | - | Environment validation |
-| **Icons** | Lucide React | - | Icon library |
-| **Utilities** | clsx, tailwind-merge | - | Class composition |
+| Layer          | Technology           | Version | Purpose                           |
+| -------------- | -------------------- | ------- | --------------------------------- |
+| **Framework**  | Next.js              | 15-16   | Full-stack React framework        |
+| **Runtime**    | React                | 19      | UI library with Server Components |
+| **Language**   | TypeScript           | 5.x     | Type safety                       |
+| **API**        | tRPC                 | 11      | Type-safe RPC                     |
+| **State**      | TanStack Query       | 5.x     | Server state management           |
+| **Database**   | PostgreSQL           | -       | Via Supabase                      |
+| **ORM**        | Drizzle              | 0.41+   | Type-safe database access         |
+| **Auth**       | Supabase Auth        | -       | Authentication & sessions         |
+| **Styling**    | Tailwind CSS         | 4.x     | Utility-first CSS                 |
+| **Components** | shadcn/ui            | -       | Accessible component library      |
+| **Validation** | Zod                  | 3.x     | Schema validation                 |
+| **Env**        | @t3-oss/env-nextjs   | -       | Environment validation            |
+| **Icons**      | Lucide React         | -       | Icon library                      |
+| **Utilities**  | clsx, tailwind-merge | -       | Class composition                 |
 
 ### Stack Variations
 
@@ -309,6 +310,7 @@ project-root/
 ```
 
 **Usage:**
+
 ```typescript
 // ✅ Good - use path alias
 import { Button } from "~/components/ui/button";
@@ -340,13 +342,13 @@ import { Button } from "../../../components/ui/button";
 
 ### Optional Files
 
-| File | When to Use |
-|------|-------------|
-| `ROADMAP.md` | Phased development (larger projects) |
-| `WORKTREES.md` | Multi-agent coordination |
-| `FRAMEWORK.md` | Symlink to `~/.claude/FRAMEWORK.md` |
-| `docs/[feature].md` | Complex feature documentation |
-| `docs/archive/` | Superseded documentation |
+| File                | When to Use                          |
+| ------------------- | ------------------------------------ |
+| `ROADMAP.md`        | Phased development (larger projects) |
+| `WORKTREES.md`      | Multi-agent coordination             |
+| `FRAMEWORK.md`      | Symlink to `~/.claude/FRAMEWORK.md`  |
+| `docs/[feature].md` | Complex feature documentation        |
+| `docs/archive/`     | Superseded documentation             |
 
 ### TODO.md Structure
 
@@ -354,24 +356,30 @@ import { Button } from "../../../components/ui/button";
 # TODO
 
 ## Critical (blocks production)
+
 - [ ] Item blocking deployment `path/to/file.ts:LINE`
 
 ## Bugs (broken functionality)
+
 - [ ] Bug description `path/to/file.ts:LINE`
 
 ## Tech Debt (code quality)
+
 - [ ] Refactoring needed `path/to/file.ts:LINE`
 
 ## Enhancements (nice to have)
+
 - [ ] Feature idea `path/to/file.ts:LINE`
 ```
 
 **Rules:**
+
 - Include file:line references where applicable
 - Move completed items to bottom or delete
 - Keep under 100 lines (archive old items)
 
 **Multi-developer task assignment:**
+
 - Use `@name` tags to assign items: `- [ ] @alice Fix login redirect bug`
 - Untagged items are available for anyone to pick up
 - When claiming a task, add your `@name` tag
@@ -389,11 +397,11 @@ import { Button } from "../../../components/ui/button";
 
 ## Feature Status
 
-| Feature | Status | Notes |
-|---------|--------|-------|
-| Auth | Working | Email + OAuth |
+| Feature   | Status  | Notes          |
+| --------- | ------- | -------------- |
+| Auth      | Working | Email + OAuth  |
 | Dashboard | Partial | Missing charts |
-| API | Working | 12 endpoints |
+| API       | Working | 12 endpoints   |
 
 ## Known Limitations
 
@@ -402,13 +410,14 @@ import { Button } from "../../../components/ui/button";
 
 ## Recent Changes
 
-| Date | Description | Author |
-|------|-------------|--------|
+| Date       | Description     | Author |
+| ---------- | --------------- | ------ |
 | 2026-01-27 | Added feature X | @alice |
-| 2026-01-26 | Fixed bug Y | @bob |
+| 2026-01-26 | Fixed bug Y     | @bob   |
 ```
 
 **Multi-developer notes:**
+
 - "Last Updated By" shows who ran the last `/handoff`
 - Recent changes table includes author column
 - `/resume` uses "Last Updated By" to show if a different developer is continuing
@@ -419,45 +428,52 @@ import { Button } from "../../../components/ui/button";
 # Project Name
 
 ## Overview
+
 One paragraph describing what this project does.
 
 ## Quick Commands
+
 \`\`\`bash
-npm run dev              # Start dev server
-npm run build            # Build for production
-npm run db:push          # Push schema to database
+npm run dev # Start dev server
+npm run build # Build for production
+npm run db:push # Push schema to database
 \`\`\`
 
 ## Tech Stack
+
 - **Framework**: Next.js X
 - **Database**: Supabase PostgreSQL
 - **Auth**: Supabase Auth
 
 ## Key Paths
-| Path | Purpose |
-|------|---------|
-| src/app/ | Pages |
+
+| Path                    | Purpose         |
+| ----------------------- | --------------- |
+| src/app/                | Pages           |
 | src/server/db/schema.ts | Database schema |
 
 ## Project-Specific Notes
+
 <!-- Unique patterns, gotchas, important context -->
 
 ## Current Status
+
 See STATUS.md and TODO.md
 ```
 
 ### Inline Comment Conventions
 
-| Tag | Meaning | Priority |
-|-----|---------|----------|
-| `TODO:` | Work to be done | Normal |
-| `FIXME:` | Broken, needs fixing | High |
-| `HACK:` | Temporary workaround | Tech debt |
-| `NOTE:` | Important context | Info |
-| `OPTIMIZE:` | Performance improvement needed | Low |
-| `SECURITY:` | Security concern | High |
+| Tag         | Meaning                        | Priority  |
+| ----------- | ------------------------------ | --------- |
+| `TODO:`     | Work to be done                | Normal    |
+| `FIXME:`    | Broken, needs fixing           | High      |
+| `HACK:`     | Temporary workaround           | Tech debt |
+| `NOTE:`     | Important context              | Info      |
+| `OPTIMIZE:` | Performance improvement needed | Low       |
+| `SECURITY:` | Security concern               | High      |
 
 **Format:**
+
 ```typescript
 // TODO: Add pagination support
 // FIXME: Race condition when multiple users edit
@@ -471,22 +487,23 @@ Prevent documentation drift and maintain coherence across projects.
 
 #### Caps and Limits
 
-| Document | Rule | Enforcement |
-|----------|------|-------------|
-| STATUS.md Recent Changes | Max 10 entries | Older changes → `git log --oneline` |
-| TODO.md Categories | Only standard 4 | No custom categories |
-| CLAUDE.md Brand Exceptions | Max 10, grouped | Consolidate related exceptions |
-| Pattern files | Max 20 total | Use category prefixes, consolidate |
-| docs/ feature files | Archive when stable | 2 weeks post-completion |
+| Document                   | Rule                | Enforcement                         |
+| -------------------------- | ------------------- | ----------------------------------- |
+| STATUS.md Recent Changes   | Max 10 entries      | Older changes → `git log --oneline` |
+| TODO.md Categories         | Only standard 4     | No custom categories                |
+| CLAUDE.md Brand Exceptions | Max 10, grouped     | Consolidate related exceptions      |
+| Pattern files              | Max 20 total        | Use category prefixes, consolidate  |
+| docs/ feature files        | Archive when stable | 2 weeks post-completion             |
 
 #### STATUS.md Recent Changes Format
 
 ```markdown
 ## Recent Changes (last 10)
 
-| Date | Commit | Description |
-|------|--------|-------------|
+| Date   | Commit | Description   |
+| ------ | ------ | ------------- |
 | Feb 04 | abc123 | Latest change |
+
 ...
 | Jan 25 | def456 | Oldest shown |
 
@@ -507,27 +524,28 @@ docs/
 
 #### Archive Triggers
 
-| Content Type | Archive When |
-|--------------|--------------|
-| Design docs | Feature complete + 2 weeks stable |
-| Session notes | Older than 1 month |
-| Version docs | After major version bump |
+| Content Type  | Archive When                            |
+| ------------- | --------------------------------------- |
+| Design docs   | Feature complete + 2 weeks stable       |
+| Session notes | Older than 1 month                      |
+| Version docs  | After major version bump                |
 | QA checklists | After feature passes QA (keep template) |
 
 #### Single Source of Truth
 
-| Information | Canonical Location | Never Duplicate In |
-|-------------|-------------------|-------------------|
-| Feature status | STATUS.md | CLAUDE.md, README |
-| Work items | TODO.md | Inline comments (sync only) |
-| Brand colors | CLAUDE.md `## Brand Reference` | Component files |
-| Tech stack | CLAUDE.md | README (link instead) |
-| Patterns | FRAMEWORK.md or `~/.claude/patterns/` | Project CLAUDE.md |
-| Session state | STATUS.md Recent Changes | Separate session files |
+| Information    | Canonical Location                    | Never Duplicate In          |
+| -------------- | ------------------------------------- | --------------------------- |
+| Feature status | STATUS.md                             | CLAUDE.md, README           |
+| Work items     | TODO.md                               | Inline comments (sync only) |
+| Brand colors   | CLAUDE.md `## Brand Reference`        | Component files             |
+| Tech stack     | CLAUDE.md                             | README (link instead)       |
+| Patterns       | FRAMEWORK.md or `~/.claude/patterns/` | Project CLAUDE.md           |
+| Session state  | STATUS.md Recent Changes              | Separate session files      |
 
 #### Cross-Project Coherence Checks
 
 Add to `/validate` and `/tidy`:
+
 - [ ] TODO.md uses only standard 4 categories
 - [ ] STATUS.md Recent Changes ≤ 10 rows
 - [ ] docs/ files have clear purpose (no orphans)
@@ -575,20 +593,20 @@ const config = {
 
 ### Naming Conventions
 
-| Type | Convention | Example |
-|------|------------|---------|
-| Files (components) | PascalCase | `UserProfile.tsx` |
-| Files (utilities) | camelCase | `formatDate.ts` |
-| Files (routes) | kebab-case | `user-profile/page.tsx` |
-| Components | PascalCase | `UserProfile` |
-| Functions | camelCase | `getUserById` |
-| Hooks | camelCase with `use` | `useUserProfile` |
-| Constants | UPPER_SNAKE | `MAX_RETRY_COUNT` |
-| Types/Interfaces | PascalCase | `UserProfile` |
-| Enums | PascalCase | `UserStatus` |
-| Database tables | snake_case | `user_profile` |
-| Database columns | snake_case | `created_at` |
-| Environment vars | UPPER_SNAKE | `DATABASE_URL` |
+| Type               | Convention           | Example                 |
+| ------------------ | -------------------- | ----------------------- |
+| Files (components) | PascalCase           | `UserProfile.tsx`       |
+| Files (utilities)  | camelCase            | `formatDate.ts`         |
+| Files (routes)     | kebab-case           | `user-profile/page.tsx` |
+| Components         | PascalCase           | `UserProfile`           |
+| Functions          | camelCase            | `getUserById`           |
+| Hooks              | camelCase with `use` | `useUserProfile`        |
+| Constants          | UPPER_SNAKE          | `MAX_RETRY_COUNT`       |
+| Types/Interfaces   | PascalCase           | `UserProfile`           |
+| Enums              | PascalCase           | `UserStatus`            |
+| Database tables    | snake_case           | `user_profile`          |
+| Database columns   | snake_case           | `created_at`            |
+| Environment vars   | UPPER_SNAKE          | `DATABASE_URL`          |
 
 ### File Organization
 
@@ -694,7 +712,11 @@ export const createError = {
   validation: (message = "Validation failed") =>
     new AppError(message, ErrorCodes.VALIDATION_FAILED, 400),
   duplicate: (resource = "Resource") =>
-    new AppError(`${resource} already exists`, ErrorCodes.DUPLICATE_RESOURCE, 409),
+    new AppError(
+      `${resource} already exists`,
+      ErrorCodes.DUPLICATE_RESOURCE,
+      409
+    ),
   database: (message = "Database operation failed") =>
     new AppError(message, ErrorCodes.DATABASE_ERROR, 500),
   internal: (message = "Internal server error") =>
@@ -706,20 +728,45 @@ export const createError = {
 // ═══════════════════════════════════════════════════════════
 export function handleError(error: unknown): TRPCError {
   if (error instanceof ZodError) {
-    return new TRPCError({ code: "BAD_REQUEST", message: "Validation failed", cause: error });
+    return new TRPCError({
+      code: "BAD_REQUEST",
+      message: "Validation failed",
+      cause: error,
+    });
   }
   if (error instanceof AppError) {
-    return new TRPCError({ code: mapStatusToTRPC(error.statusCode), message: error.message, cause: error });
+    return new TRPCError({
+      code: mapStatusToTRPC(error.statusCode),
+      message: error.message,
+      cause: error,
+    });
   }
   if (error instanceof TRPCError) return error;
   console.error("Unhandled error:", error);
-  return new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "An unexpected error occurred", cause: error });
+  return new TRPCError({
+    code: "INTERNAL_SERVER_ERROR",
+    message: "An unexpected error occurred",
+    cause: error,
+  });
 }
 
 function mapStatusToTRPC(status: number) {
-  const map: Record<number, "BAD_REQUEST" | "UNAUTHORIZED" | "FORBIDDEN" | "NOT_FOUND" | "CONFLICT" | "TOO_MANY_REQUESTS" | "INTERNAL_SERVER_ERROR"> = {
-    400: "BAD_REQUEST", 401: "UNAUTHORIZED", 403: "FORBIDDEN",
-    404: "NOT_FOUND", 409: "CONFLICT", 429: "TOO_MANY_REQUESTS",
+  const map: Record<
+    number,
+    | "BAD_REQUEST"
+    | "UNAUTHORIZED"
+    | "FORBIDDEN"
+    | "NOT_FOUND"
+    | "CONFLICT"
+    | "TOO_MANY_REQUESTS"
+    | "INTERNAL_SERVER_ERROR"
+  > = {
+    400: "BAD_REQUEST",
+    401: "UNAUTHORIZED",
+    403: "FORBIDDEN",
+    404: "NOT_FOUND",
+    409: "CONFLICT",
+    429: "TOO_MANY_REQUESTS",
   };
   return map[status] ?? "INTERNAL_SERVER_ERROR";
 }
@@ -942,22 +989,20 @@ export const usersRouter = createTRPCRouter({
   // ─────────────────────────────────────────────────────────
   // PUBLIC: No auth required
   // ─────────────────────────────────────────────────────────
-  getById: publicProcedure
-    .input(userIdSchema)
-    .query(async ({ ctx, input }) => {
-      const user = await ctx.db.query.users.findFirst({
-        where: eq(users.id, input.id),
+  getById: publicProcedure.input(userIdSchema).query(async ({ ctx, input }) => {
+    const user = await ctx.db.query.users.findFirst({
+      where: eq(users.id, input.id),
+    });
+
+    if (!user) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "User not found",
       });
+    }
 
-      if (!user) {
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "User not found",
-        });
-      }
-
-      return user;
-    }),
+    return user;
+  }),
 
   // ─────────────────────────────────────────────────────────
   // PROTECTED: Requires authentication
@@ -987,10 +1032,12 @@ export const usersRouter = createTRPCRouter({
   // ADMIN: Requires admin role
   // ─────────────────────────────────────────────────────────
   list: adminProcedure
-    .input(z.object({
-      limit: z.number().min(1).max(100).default(20),
-      offset: z.number().min(0).default(0),
-    }))
+    .input(
+      z.object({
+        limit: z.number().min(1).max(100).default(20),
+        offset: z.number().min(0).default(0),
+      })
+    )
     .query(async ({ ctx, input }) => {
       return ctx.db.query.users.findMany({
         limit: input.limit,
@@ -1012,7 +1059,9 @@ import { db } from "~/server/db";
 // Context
 export const createTRPCContext = async () => {
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   return { db, user, supabase };
 };
@@ -1060,7 +1109,7 @@ export const createQueryClient = () =>
   new QueryClient({
     defaultOptions: {
       queries: {
-        staleTime: 30 * 1000,  // 30 seconds for most data
+        staleTime: 30 * 1000, // 30 seconds for most data
       },
     },
   });
@@ -1082,7 +1131,7 @@ const { data: adminData } = api.admin.getStats.useQuery(undefined, {
 
 // Dynamic inputs based on role
 const { data: resources } = api.resources.list.useQuery(
-  { ...(isAdmin ? {} : { isActive: true }) },  // Clients only see active
+  { ...(isAdmin ? {} : { isActive: true }) }, // Clients only see active
   { staleTime: 5 * 60 * 1000 }
 );
 ```
@@ -1184,12 +1233,12 @@ const updateItem = api.items.update.useMutation({
 
 ### When to Use What
 
-| Need | Solution | Install |
-|------|----------|---------|
-| Simple chat/streaming | Vercel AI SDK | `npm i ai @ai-sdk/anthropic` |
-| Multi-step agents | LangGraph | `pip install langgraph` |
-| Tool calling | AI SDK + tRPC | Built-in |
-| Cross-model routing | AI SDK multi-model | Built-in |
+| Need                  | Solution           | Install                      |
+| --------------------- | ------------------ | ---------------------------- |
+| Simple chat/streaming | Vercel AI SDK      | `npm i ai @ai-sdk/anthropic` |
+| Multi-step agents     | LangGraph          | `pip install langgraph`      |
+| Tool calling          | AI SDK + tRPC      | Built-in                     |
+| Cross-model routing   | AI SDK multi-model | Built-in                     |
 
 ### Vercel AI SDK (Recommended for Next.js)
 
@@ -1310,9 +1359,10 @@ import { generateText } from "ai";
 
 // Route based on task complexity
 async function smartGenerate(prompt: string, complexity: "simple" | "complex") {
-  const model = complexity === "simple"
-    ? anthropic("claude-haiku-4-5-20251001")  // Fast, cheap
-    : anthropic("claude-sonnet-4-5-20250929");  // Powerful
+  const model =
+    complexity === "simple"
+      ? anthropic("claude-haiku-4-5-20251001") // Fast, cheap
+      : anthropic("claude-sonnet-4-5-20250929"); // Powerful
 
   return generateText({ model, prompt });
 }
@@ -1467,7 +1517,9 @@ export async function middleware(request: NextRequest) {
 
   // Check auth for protected routes
   const supabase = createClient(request);
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   if (!user) {
     const loginUrl = new URL("/login", request.url);
@@ -1627,14 +1679,14 @@ Every interactive element must be accessible. Follow these patterns:
 
 #### Element-Specific Requirements
 
-| Element Type | Required Attributes | Example |
-|--------------|---------------------|---------|
-| Icon-only buttons | `aria-label` | `<button aria-label="Close menu">` |
-| Expandable elements | `aria-expanded` | `<button aria-expanded={open}>` |
-| Loading buttons | `aria-busy`, disable | `<button aria-busy={loading} disabled={loading}>` |
-| Form inputs | `id` + `<label htmlFor>` | See example below |
-| Error messages | `role="alert"` | `<p role="alert">{error}</p>` |
-| Dialogs | Focus trap, Escape closes | Use Radix/shadcn Dialog |
+| Element Type        | Required Attributes       | Example                                           |
+| ------------------- | ------------------------- | ------------------------------------------------- |
+| Icon-only buttons   | `aria-label`              | `<button aria-label="Close menu">`                |
+| Expandable elements | `aria-expanded`           | `<button aria-expanded={open}>`                   |
+| Loading buttons     | `aria-busy`, disable      | `<button aria-busy={loading} disabled={loading}>` |
+| Form inputs         | `id` + `<label htmlFor>`  | See example below                                 |
+| Error messages      | `role="alert"`            | `<p role="alert">{error}</p>`                     |
+| Dialogs             | Focus trap, Escape closes | Use Radix/shadcn Dialog                           |
 
 #### Keyboard Navigation
 
@@ -1745,7 +1797,9 @@ export const env = createEnv({
   server: {
     DATABASE_URL: z.string().url(),
     SUPABASE_SERVICE_ROLE_KEY: z.string().min(1),
-    NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
+    NODE_ENV: z
+      .enum(["development", "test", "production"])
+      .default("development"),
   },
   client: {
     NEXT_PUBLIC_SUPABASE_URL: z.string().url(),
@@ -1973,11 +2027,13 @@ main (production — protected, auto-deploys via Vercel)
 ```
 
 **Branch protection:**
+
 - `main`: Requires PR + approval + CI passing. No direct push. No force push.
 - `dev`: Requires CI passing. No force push.
 - Admin/owner can bypass in emergencies.
 
 **Flow:**
+
 1. `/checkout` — create feature branch from `dev`
 2. Work, commit, iterate
 3. `/pr` — push branch and open PR targeting `dev`
@@ -1986,6 +2042,7 @@ main (production — protected, auto-deploys via Vercel)
 6. `/release` — merge `dev` → `main` for production
 
 **GitHub Actions CI** runs on every PR:
+
 - Format check, lint, typecheck, production build
 - Configured in `.github/workflows/ci.yml`
 
@@ -2016,24 +2073,28 @@ gh pr create --base dev --title "Add login page"
 Two complementary guardrails protect live projects from broken pushes:
 
 **1. Pre-push git hook (automated)**
+
 - Runs typecheck, lint, build on every `git push`
 - Lives at `scripts/pre-push.sh`, installed via `scripts/install-hooks.sh`
 - Bypass with `git push --no-verify` (use sparingly)
 - Install: `bash scripts/install-hooks.sh` or automatic via `npm install` (prepare script)
 
 **2. `/push` skill (interactive, recommended)**
+
 - Phase 1: Quality gate (typecheck, lint, build)
 - Phase 2: Coherence (uncommitted changes, doc freshness, diff review)
 - Phase 3: Confirmation (explicit approval before pushing)
 - Phase 4: Push with result reporting
 
 **Recommended workflow (solo):**
+
 ```
 /handoff          # Save session state
 /push             # Quality gate + review + push
 ```
 
 **Recommended workflow (collaborative):**
+
 ```
 /handoff          # Save session state
 /pr               # Push + open pull request
@@ -2041,15 +2102,16 @@ Two complementary guardrails protect live projects from broken pushes:
 
 ### Collaboration Skills
 
-| Skill | Purpose | When |
-|-------|---------|------|
-| `/checkout` | Create/switch feature branch from dev | Starting work |
-| `/pr` | Push branch + open pull request | Done with feature |
-| `/review` | Review a PR with quality checks | PR needs review |
-| `/sync` | Pull latest upstream into current branch | Branch is behind |
-| `/release` | Merge dev → main for production | Ready to ship |
+| Skill       | Purpose                                  | When              |
+| ----------- | ---------------------------------------- | ----------------- |
+| `/checkout` | Create/switch feature branch from dev    | Starting work     |
+| `/pr`       | Push branch + open pull request          | Done with feature |
+| `/review`   | Review a PR with quality checks          | PR needs review   |
+| `/sync`     | Pull latest upstream into current branch | Branch is behind  |
+| `/release`  | Merge dev → main for production          | Ready to ship     |
 
 **Adding to a project:**
+
 1. Copy `scripts/pre-push.sh` and `scripts/install-hooks.sh` from a reference project
 2. Add `"prepare": "bash scripts/install-hooks.sh"` to package.json scripts
 3. Run `npm install` or `bash scripts/install-hooks.sh`
@@ -2102,16 +2164,16 @@ Two complementary guardrails protect live projects from broken pushes:
 
 ### Commands Quick Reference
 
-| When | Command | Purpose |
-|------|---------|---------|
-| Session start | `/resume` | Load project state |
-| During work | `/sync-todos` | Sync inline comments |
-| Quick check | `/snapshot` | Read-only status snapshot |
-| Session end | `/handoff` | Save session state |
-| Periodic cleanup | `/tidy` | Check project hygiene |
-| Roadmap complete | `/close-roadmap` | Archive and reconcile |
-| New project | `/init-standards` | Add doc standards |
-| Fresh scaffold | `/seed` | Create new project |
+| When             | Command           | Purpose                   |
+| ---------------- | ----------------- | ------------------------- |
+| Session start    | `/resume`         | Load project state        |
+| During work      | `/sync-todos`     | Sync inline comments      |
+| Quick check      | `/snapshot`       | Read-only status snapshot |
+| Session end      | `/handoff`        | Save session state        |
+| Periodic cleanup | `/tidy`           | Check project hygiene     |
+| Roadmap complete | `/close-roadmap`  | Archive and reconcile     |
+| New project      | `/init-standards` | Add doc standards         |
+| Fresh scaffold   | `/seed`           | Create new project        |
 
 ---
 
@@ -2123,12 +2185,12 @@ When executing plans that involve many files or multiple phases, context window 
 
 Before starting a large plan, estimate the context cost:
 
-| Operation | Approximate Token Cost |
-|-----------|----------------------|
-| Each file read | ~500-2000 tokens |
-| Each file write/edit | ~200-500 tokens |
-| Each tool call response | ~100-1000 tokens |
-| Working memory reserve | 30% of context window |
+| Operation               | Approximate Token Cost |
+| ----------------------- | ---------------------- |
+| Each file read          | ~500-2000 tokens       |
+| Each file write/edit    | ~200-500 tokens        |
+| Each tool call response | ~100-1000 tokens       |
+| Working memory reserve  | 30% of context window  |
 
 **Rule:** If estimated work exceeds 60% of the context window, segment the plan before starting.
 
@@ -2160,18 +2222,22 @@ When a plan is too large for a single session:
 5. Use TODO.md inline markers (e.g., `PHASE:2 - ...`) for cross-session tracking
 
 **Example plan structure:**
+
 ```markdown
 ## Phase 1: Database schema and migrations
+
 - Inputs: PRD requirements
 - Outputs: schema.ts updated, migrations applied
 - Success: `npm run db:push` succeeds
 
 ## Phase 2: API layer (tRPC routers)
+
 - Inputs: Phase 1 schema
 - Outputs: New routers with CRUD operations
 - Success: TypeScript compiles clean
 
 ## Phase 3: UI pages and components
+
 - Inputs: Phase 2 API endpoints
 - Outputs: Working pages with data fetching
 - Success: Pages render with real data
@@ -2188,13 +2254,13 @@ If a session crashes mid-plan:
 
 ### Anti-Patterns
 
-| Do NOT | Why | Do Instead |
-|--------|-----|------------|
-| Read large files (>500 lines) without targeting | Consumes context budget fast | Use targeted reads with offset/limit |
-| Hold all file contents in context simultaneously | Context fills up, no room for work | Read, act, move on |
-| Skip compaction warnings | Imminent context exhaustion | Run `/smart-compact` immediately |
-| Attempt "one more thing" at >70% context | Risks crash and lost progress | Compact first, then continue |
-| Start a 10+ step plan without segmentation | Will exceed context window | Break into phases of 3-5 steps |
+| Do NOT                                           | Why                                | Do Instead                           |
+| ------------------------------------------------ | ---------------------------------- | ------------------------------------ |
+| Read large files (>500 lines) without targeting  | Consumes context budget fast       | Use targeted reads with offset/limit |
+| Hold all file contents in context simultaneously | Context fills up, no room for work | Read, act, move on                   |
+| Skip compaction warnings                         | Imminent context exhaustion        | Run `/smart-compact` immediately     |
+| Attempt "one more thing" at >70% context         | Risks crash and lost progress      | Compact first, then continue         |
+| Start a 10+ step plan without segmentation       | Will exceed context window         | Break into phases of 3-5 steps       |
 
 ---
 
@@ -2276,13 +2342,14 @@ Workers run in separate directories with their own git branch but share the code
 
 ### Hybrid Options
 
-| Approach | When to Use | Pros | Cons |
-|----------|-------------|------|------|
-| **Single session** | Small tasks, < 2 hours | Simple, full context | Sequential |
-| **Multi-agent** | Large features, parallelizable | Faster, focused | Coordination overhead |
-| **Hybrid** | Mixed work | Flexible | Requires judgment |
+| Approach           | When to Use                    | Pros                 | Cons                  |
+| ------------------ | ------------------------------ | -------------------- | --------------------- |
+| **Single session** | Small tasks, < 2 hours         | Simple, full context | Sequential            |
+| **Multi-agent**    | Large features, parallelizable | Faster, focused      | Coordination overhead |
+| **Hybrid**         | Mixed work                     | Flexible             | Requires judgment     |
 
 **Hybrid Strategy:**
+
 1. Start with single session for planning
 2. Identify parallelizable chunks
 3. Spawn workers for independent work
@@ -2295,13 +2362,13 @@ Workers run in separate directories with their own git branch but share the code
 
 ### Development Tools
 
-| Tool | Purpose | Install |
-|------|---------|---------|
-| **Node.js** | Runtime | `nvm install 20` |
-| **pnpm** | Package manager | `npm i -g pnpm` |
-| **Turbopack** | Fast bundler | Built into Next.js |
-| **Drizzle Studio** | DB viewer | `npm run db:studio` |
-| **Supabase CLI** | Local dev | `brew install supabase/tap/supabase` |
+| Tool               | Purpose         | Install                              |
+| ------------------ | --------------- | ------------------------------------ |
+| **Node.js**        | Runtime         | `nvm install 20`                     |
+| **pnpm**           | Package manager | `npm i -g pnpm`                      |
+| **Turbopack**      | Fast bundler    | Built into Next.js                   |
+| **Drizzle Studio** | DB viewer       | `npm run db:studio`                  |
+| **Supabase CLI**   | Local dev       | `brew install supabase/tap/supabase` |
 
 ### VS Code Extensions
 
@@ -2410,14 +2477,14 @@ npm run test:e2e      # E2E tests
 
 All templates located in `~/.claude/templates/`:
 
-| Template | Purpose |
-|----------|---------|
-| `CLAUDE.md` | Project instructions template |
-| `STATUS.md` | Feature status template |
-| `TODO.md` | Work tracking template |
-| `ROADMAP.md` | Phased development template |
-| `WORKTREES.md` | Multi-agent coordination |
-| `worktree-context.md` | Worker task context |
+| Template              | Purpose                       |
+| --------------------- | ----------------------------- |
+| `CLAUDE.md`           | Project instructions template |
+| `STATUS.md`           | Feature status template       |
+| `TODO.md`             | Work tracking template        |
+| `ROADMAP.md`          | Phased development template   |
+| `WORKTREES.md`        | Multi-agent coordination      |
+| `worktree-context.md` | Worker task context           |
 
 ---
 
@@ -2427,39 +2494,40 @@ Optional reference patterns in `~/.claude/patterns/`. Pull from these when relev
 
 ### Pattern Categories
 
-| Prefix | Category | Description |
-|--------|----------|-------------|
-| `ui-` | UI components | Reusable component patterns |
-| `state-` | State management | React state patterns |
-| `api-` | API/backend | tRPC, external service patterns |
-| `routing-` | Navigation | Routing and middleware patterns |
-| `billing-` | Payments | Stripe, payment integration |
-| `auth-` | Authentication | Auth and role patterns |
-| `crm-` | CRM/contacts | Contact management patterns |
+| Prefix     | Category         | Description                     |
+| ---------- | ---------------- | ------------------------------- |
+| `ui-`      | UI components    | Reusable component patterns     |
+| `state-`   | State management | React state patterns            |
+| `api-`     | API/backend      | tRPC, external service patterns |
+| `routing-` | Navigation       | Routing and middleware patterns |
+| `billing-` | Payments         | Stripe, payment integration     |
+| `auth-`    | Authentication   | Auth and role patterns          |
+| `crm-`     | CRM/contacts     | Contact management patterns     |
 
 ### Available Patterns
 
-| Pattern | Use Case |
-|---------|----------|
-| `ui-action-menu.md` | Declarative admin action menus with variant support |
-| `ui-toast.md` | Sonner-based toast notifications for mutations |
-| `ui-kanban-dnd.md` | Drag-and-drop kanban board with @dnd-kit + optimistic updates |
-| `ui-admin-dashboard-shell.md` | Admin layout with sidebar, header, standalone page detection |
-| `ui-inline-editable.md` | Click-to-edit fields for inline renaming |
-| `ui-markdown-toolbar.md` | Markdown formatting toolbar for textareas with lightweight renderer |
-| `ui-icon-color-mapping.md` | Data-driven icon/color resolution from database strings |
-| `state-session-scoped.md` | Tab filter state that persists across navigation |
-| `state-dynamic-enums.md` | DB-stored enums with color, icon, and sort order (runtime categories) |
-| `api-external-linking.md` | Link internal records with external service IDs (Stripe) |
-| `api-bearer-token-integration.md` | Typed REST API wrapper with bearer token auth |
-| `api-smart-categorization.md` | Two-tier categorization: DB-learned history + regex rules |
-| `auth-role-hierarchy.md` | Multi-layer role enforcement: middleware → procedure → query scope |
-| `crm-pipeline-management.md` | Status-based pipeline with promotion/demotion, upsert dedup, activity timeline |
-| `finance-multi-source-aggregation.md` | Combine Stripe + bank data into unified P&L, dashboards, and tax reports |
-| `routing-multi-domain.md` | Multi-domain routing with rewrites, redirects, analytics, cookie merging |
-| `sharing-public-token.md` | Token-based public sharing with OG metadata and custom slugs |
+| Pattern                               | Use Case                                                                       |
+| ------------------------------------- | ------------------------------------------------------------------------------ |
+| `ui-action-menu.md`                   | Declarative admin action menus with variant support                            |
+| `ui-toast.md`                         | Sonner-based toast notifications for mutations                                 |
+| `ui-kanban-dnd.md`                    | Drag-and-drop kanban board with @dnd-kit + optimistic updates                  |
+| `ui-admin-dashboard-shell.md`         | Admin layout with sidebar, header, standalone page detection                   |
+| `ui-inline-editable.md`               | Click-to-edit fields for inline renaming                                       |
+| `ui-markdown-toolbar.md`              | Markdown formatting toolbar for textareas with lightweight renderer            |
+| `ui-icon-color-mapping.md`            | Data-driven icon/color resolution from database strings                        |
+| `state-session-scoped.md`             | Tab filter state that persists across navigation                               |
+| `state-dynamic-enums.md`              | DB-stored enums with color, icon, and sort order (runtime categories)          |
+| `api-external-linking.md`             | Link internal records with external service IDs (Stripe)                       |
+| `api-bearer-token-integration.md`     | Typed REST API wrapper with bearer token auth                                  |
+| `api-smart-categorization.md`         | Two-tier categorization: DB-learned history + regex rules                      |
+| `auth-role-hierarchy.md`              | Multi-layer role enforcement: middleware → procedure → query scope             |
+| `crm-pipeline-management.md`          | Status-based pipeline with promotion/demotion, upsert dedup, activity timeline |
+| `finance-multi-source-aggregation.md` | Combine Stripe + bank data into unified P&L, dashboards, and tax reports       |
+| `routing-multi-domain.md`             | Multi-domain routing with rewrites, redirects, analytics, cookie merging       |
+| `sharing-public-token.md`             | Token-based public sharing with OG metadata and custom slugs                   |
 
 **How to use:**
+
 1. Check if pattern applies to your use case
 2. Read the pattern file: `cat ~/.claude/patterns/<name>.md`
 3. Adapt to your project (patterns are starting points, not copy-paste)
@@ -2471,13 +2539,13 @@ Optional reference patterns in `~/.claude/patterns/`. Pull from these when relev
 
 ### Common Issues
 
-| Issue | Solution |
-|-------|----------|
-| "Module not found" | Check path alias in tsconfig.json |
-| tRPC type errors | Restart TS server, check router exports |
-| Supabase auth issues | Check cookies, verify env vars |
-| Drizzle migration fails | Run `db:push` instead of `db:migrate` for dev |
-| Build fails on Vercel | Check `SKIP_ENV_VALIDATION` or add all env vars |
+| Issue                   | Solution                                        |
+| ----------------------- | ----------------------------------------------- |
+| "Module not found"      | Check path alias in tsconfig.json               |
+| tRPC type errors        | Restart TS server, check router exports         |
+| Supabase auth issues    | Check cookies, verify env vars                  |
+| Drizzle migration fails | Run `db:push` instead of `db:migrate` for dev   |
+| Build fails on Vercel   | Check `SKIP_ENV_VALIDATION` or add all env vars |
 
 ### Debug Commands
 
@@ -2500,6 +2568,7 @@ rm -rf .next
 ## Changelog
 
 ### v1.20.0 (2026-03-17)
+
 - Added 6 collaboration skills: `/checkout`, `/pr`, `/review`, `/sync`, `/release`, `/sync-framework`
 - Added collaborative branching strategy to Git Workflow section (two-tier: dev → main)
 - Added GitHub Actions CI, PR templates, CODEOWNERS, branch protection documentation
@@ -2512,6 +2581,7 @@ rm -rf .next
 - Total skills: 33
 
 ### v1.19.0 (2026-03-16)
+
 - Added pattern: `ui-kanban-dnd.md` — drag-and-drop kanban board with @dnd-kit, optimistic updates, multi-view
 - Added pattern: `state-dynamic-enums.md` — DB-stored enums with color/icon/sortOrder for runtime categories
 - Added pattern: `ui-admin-dashboard-shell.md` — admin layout with sidebar context and standalone page detection
@@ -2523,26 +2593,31 @@ rm -rf .next
 - Total patterns: 17
 
 ### v1.18.0 (2026-02-11)
+
 - Added `/audit-sweep` skill — full quality sweep pipeline (parallel audits, prioritized fixes, commit)
 - Total skills: 25
 
 ### v1.17.0 (2026-02-11)
+
 - Added pattern: `auth-role-hierarchy.md` — multi-layer role enforcement (middleware → procedure → query scope)
 - Added pattern: `crm-pipeline-management.md` — status-based pipeline with promotion/demotion and multi-source enrichment
 - Added pattern: `finance-multi-source-aggregation.md` — combine payment processor + bank into unified P&L and tax reports
 - Total patterns: 12
 
 ### v1.16.0 (2026-02-11)
+
 - Updated LLM model IDs: Sonnet `claude-sonnet-4-5-20250929`, Haiku `claude-haiku-4-5-20251001`
 - Added pattern: `api-bearer-token-integration.md` — typed REST API wrapper with bearer token auth
 - Added pattern: `api-smart-categorization.md` — two-tier categorization engine (DB history + regex rules)
 - Total patterns: 9
 
 ### v1.15.0 (2026-02-09)
+
 - Added Long Plan Context Management section (context budget estimation, mandatory checkpoints, plan segmentation, recovery protocol, anti-patterns)
 - Prevents session crashes from large implementation plans exceeding the context window
 
 ### v1.14.0 (2026-02-04)
+
 - Added Documentation Anti-Bloat Rules section (STATUS.md caps, archive triggers, single source of truth)
 - Added Accessibility Requirements section with checklist and patterns
 - Enhanced API Patterns: Query configuration defaults, RBAC pattern, cache invalidation
@@ -2555,6 +2630,7 @@ rm -rf .next
 - Total skills: 24
 
 ### v1.13.0 (2026-02-03)
+
 - Refactored `/brand` from project-specific to abstract framework skill
 - `/brand` now supports 4 modes: init, extract, audit, whitelist
 - Brand config lives in project CLAUDE.md (`## Brand Reference`), skill defines the process
@@ -2562,22 +2638,26 @@ rm -rf .next
 - Total skills: 21
 
 ### v1.12.0 (2026-02-03)
+
 - Added `/brand` skill for Miracle Mind brand consistency auditing (gold/black theme)
 - Added staging template system (`StagingCard` component + `staging-templates.ts`)
 - Fixed `serial` → `integer` on FK columns across clientProjects, clientResources, clientUpdates, clientAgreements
 - Total skills: 21
 
 ### v1.11.1 (2026-02-03)
+
 - Added `/snapshot` skill for quick read-only session status (done, in progress, next)
 - Total skills: 20
 
 ### v1.11.0 (2026-02-03)
+
 - Added `/push` skill for pre-push quality gate, coherence check, and confirmed push
 - Added Push Protocol section to Git Workflow (pre-push hook + `/push` skill)
 - Added `scripts/pre-push.sh` and `scripts/install-hooks.sh` patterns
 - Total skills: 19
 
 ### v1.10.0 (2026-02-02)
+
 - Added `/tidy` skill for project hygiene checks (stale docs, completed roadmaps, TODO drift)
 - Added `/close-roadmap` skill for archiving completed roadmaps and reconciling docs
 - Integrated hygiene checks into `/handoff` (quick scan at session end)
@@ -2587,16 +2667,19 @@ rm -rf .next
 - Total skills: 18
 
 ### v1.9.0 (2026-02-01)
+
 - Added Patterns Library section for optional reference patterns
 - Added `multi-domain-routing` pattern (serve multiple domains from single codebase)
 - Patterns are stored in `~/.claude/patterns/` and pulled when needed
 
 ### v1.8.0 (2026-01-28)
+
 - Added `/init-session` skill for loading project context (architecture, docs, codebase orientation)
 - Enhanced `/resume` to include full project context, not just session state
 - `/resume` now combines init-session + session continuity
 
 ### v1.7.0 (2026-01-27)
+
 - Rewrote `/discover` as dynamic search agent (was static documentation)
 - `/discover` now: analyzes project, searches live sources, offers auto-install
 - Installed MCP servers: supabase, memory, stripe
@@ -2604,12 +2687,14 @@ rm -rf .next
 - All documentation cross-references updated
 
 ### v1.6.0 (2026-01-27)
+
 - Added LLM Integration Patterns section (Vercel AI SDK, tool calling, streaming)
 - Added Claude Dev Memory tools to /discover (persistent context across sessions)
 - Added Building LLM Apps category with Vercel AI SDK + LangGraph patterns
 - Framework now covers full AI app development lifecycle
 
 ### v1.5.0 (2026-01-27)
+
 - Added `/discover` skill for external skill & MCP server discovery
 - Added intuitive trigger system for skill invocation
 - Added external tool awareness (Stripe, Neo4j, Graphiti, SVG, etc.)
@@ -2617,12 +2702,14 @@ rm -rf .next
 - Total skills: 15
 
 ### v1.4.0 (2026-01-27)
+
 - Added `/cohere` skill for deep pattern coherence checking
 - Fixed critical gap: added tRPC API route handler to seed templates
 - Renamed "Code Maintenance" to "Code Quality" category
 - Total skills: 15
 
 ### v1.3.0 (2026-01-27)
+
 - Added `/align` skill for upgrading existing projects to unified stack
 - Enhanced `/seed` with full SEO metadata (OpenGraph, Twitter cards, viewport)
 - Added template placeholders: {{AUTHOR_NAME}}, {{BASE_URL}}
@@ -2630,16 +2717,19 @@ rm -rf .next
 - Total skills: 14
 
 ### v1.2.0 (2026-01-27)
+
 - Added structured error handling pattern (AppError, ErrorCodes, createError factories)
 - Synced from website-ecosystem project
 
 ### v1.1.0 (2026-01-27)
+
 - Added `/smart-compact` skill for interactive context preservation before /compact
 - Added `/validate` skill for double-checking project standards compliance
 - Enhanced `/sync-to-global` with auto-add to FRAMEWORK.md and interactive pattern questions
 - Total skills: 13
 
 ### v1.0.0 (2026-01-27)
+
 - Initial framework documentation
 - Unified tech stack definition
 - Documentation standards (CLAUDE.md, STATUS.md, TODO.md)
@@ -2672,6 +2762,7 @@ To update this framework:
 **Canonical Location:** `~/.claude/FRAMEWORK.md`
 
 **View from any project:**
+
 - Run `/framework`
 - Or: `cat ~/.claude/FRAMEWORK.md`
 - Or: Check `FRAMEWORK.md` symlink in project root

@@ -59,23 +59,27 @@ gh pr view <number> --json commits --jq '.commits[].messageHeadline'
 Read through the diff carefully and evaluate:
 
 #### 3.1 Code Quality
+
 - Are there TypeScript errors or `any` types?
 - Are imports using the `~/` path alias?
 - Is error handling appropriate?
 - Any security concerns (SQL injection, XSS, exposed secrets)?
 
 #### 3.2 Architecture
+
 - Do changes follow existing patterns in the codebase?
 - Are files in the right directories?
 - Is there unnecessary complexity?
 - Any code duplication that should be extracted?
 
 #### 3.3 Completeness
+
 - Does the PR description match what the code actually does?
 - Are there TODO comments that should be resolved?
 - Are STATUS.md / TODO.md updated if relevant?
 
 #### 3.4 Testing
+
 - If there are new routes/pages — can they be accessed?
 - If there are new API endpoints — are they properly typed?
 - Are there edge cases not handled?
@@ -83,6 +87,7 @@ Read through the diff carefully and evaluate:
 ### Phase 4: Run Local Checks (Optional)
 
 Use AskUserQuestion to ask:
+
 > Want me to check out this branch and run quality checks locally? (typecheck, lint, build)
 
 If yes:
@@ -147,17 +152,20 @@ Use AskUserQuestion:
 4. **Done** — no action, just wanted the review
 
 If "Approve and merge":
+
 ```bash
 gh pr review <number> --approve --body "Looks good! Reviewed with Claude Code."
 gh pr merge <number> --squash --delete-branch
 ```
 
 If "Request changes":
+
 ```bash
 gh pr review <number> --request-changes --body "<summary of issues>"
 ```
 
 If "Just approve":
+
 ```bash
 gh pr review <number> --approve --body "Looks good! Reviewed with Claude Code."
 ```
@@ -175,6 +183,7 @@ Note: "This is a draft PR — review is informational. The author will mark it r
 ### Large PR (>500 lines changed)
 
 Focus the review on:
+
 - New files (most likely to have issues)
 - Schema/database changes (highest risk)
 - API changes (breaking change potential)
@@ -193,6 +202,7 @@ When the reviewer seems new to code review, adjust the review output:
 - **Schema change** = A change to how the database stores data. These are higher risk because they affect all stored information.
 
 For beginner reviewers, simplify the verdict options:
+
 1. **Looks good — merge it** (approve + merge)
 2. **I have questions** (comment without verdict)
 3. **Something seems wrong** (request changes — explain what and why)
@@ -202,9 +212,9 @@ Add a beginner-friendly review tip: "If you're new to reviewing code, focus on t
 
 ## Relationship to Other Skills
 
-| Skill | Role |
-|-------|------|
-| `/pr` | Create a PR (author side) |
-| `/review` | Review a PR (reviewer side) |
-| `/release` | Merge dev → main after reviews pass |
-| `/cohere` | Deep pattern check (complementary to review) |
+| Skill      | Role                                         |
+| ---------- | -------------------------------------------- |
+| `/pr`      | Create a PR (author side)                    |
+| `/review`  | Review a PR (reviewer side)                  |
+| `/release` | Merge dev → main after reviews pass          |
+| `/cohere`  | Deep pattern check (complementary to review) |

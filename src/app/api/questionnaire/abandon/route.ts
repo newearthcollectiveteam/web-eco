@@ -25,21 +25,15 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const {
-      email,
-      name,
-      preferredName,
-      screenIndex,
-      referrer,
-      refSource,
-    } = body as {
-      email?: string;
-      name?: string;
-      preferredName?: string;
-      screenIndex?: number;
-      referrer?: string;
-      refSource?: string;
-    };
+    const { email, name, preferredName, screenIndex, referrer, refSource } =
+      body as {
+        email?: string;
+        name?: string;
+        preferredName?: string;
+        screenIndex?: number;
+        referrer?: string;
+        refSource?: string;
+      };
 
     if (!email || !emailRegex.test(email)) {
       return NextResponse.json(

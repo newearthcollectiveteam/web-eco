@@ -12,6 +12,7 @@ Scan the codebase for inline TODO/FIXME comments and synchronize them with TODO.
 
 1. **Scan Codebase**
    Search for inline comments:
+
    ```
    grep -rn "TODO:" src/
    grep -rn "FIXME:" src/

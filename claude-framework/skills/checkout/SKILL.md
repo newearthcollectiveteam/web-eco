@@ -17,6 +17,7 @@ Create a properly named feature branch from `dev`, or switch to an existing bran
 ## Arguments
 
 The user may provide:
+
 - A branch name: `/checkout calendar-integration`
 - A description: `/checkout add Google Calendar sync`
 - Nothing: `/checkout` (will ask what they're working on)
@@ -33,15 +34,16 @@ If the user provided a name or description, infer the branch name. If not, use A
 
 Classify the work and choose a prefix:
 
-| Type | Prefix | Example |
-|------|--------|---------|
-| New feature | `feature/` | `feature/calendar-integration` |
-| Bug fix | `fix/` | `fix/crm-search-crash` |
-| Refactor | `refactor/` | `refactor/api-error-handling` |
-| Documentation | `docs/` | `docs/api-reference` |
-| Chore / tech debt | `chore/` | `chore/remove-dead-deps` |
+| Type              | Prefix      | Example                        |
+| ----------------- | ----------- | ------------------------------ |
+| New feature       | `feature/`  | `feature/calendar-integration` |
+| Bug fix           | `fix/`      | `fix/crm-search-crash`         |
+| Refactor          | `refactor/` | `refactor/api-error-handling`  |
+| Documentation     | `docs/`     | `docs/api-reference`           |
+| Chore / tech debt | `chore/`    | `chore/remove-dead-deps`       |
 
 **Naming rules:**
+
 - Lowercase, kebab-case
 - Short but descriptive (3-5 words max)
 - No special characters except hyphens
@@ -99,6 +101,7 @@ Ready to work. When done:
 ### No `dev` branch exists
 
 Fall back to `main`:
+
 ```bash
 git checkout main
 git pull origin main
@@ -110,6 +113,7 @@ Note in output: "Branched from `main` (no `dev` branch found)."
 ### User wants to checkout an existing branch
 
 If the argument exactly matches an existing branch:
+
 ```bash
 git checkout <branch-name>
 git pull origin <branch-name> 2>/dev/null || true
@@ -131,20 +135,22 @@ When the user seems new to git or development, explain these concepts naturally 
 - **Kebab-case** = Words separated by hyphens, like `my-new-feature`.
 
 When asking the user what they're working on, keep the prompt casual:
+
 > "What are you going to work on? Just describe it in a few words and I'll set everything up."
 
 If the user seems confused at any point, offer to explain what's happening and why.
 
 ## Relationship to Other Skills
 
-| Skill | Role |
-|-------|------|
-| `/checkout` | Start work — create/switch branch |
-| `/handoff` | End work — save session state |
-| `/pr` | Ship work — open pull request |
-| `/sync` | Update branch with latest upstream |
+| Skill       | Role                               |
+| ----------- | ---------------------------------- |
+| `/checkout` | Start work — create/switch branch  |
+| `/handoff`  | End work — save session state      |
+| `/pr`       | Ship work — open pull request      |
+| `/sync`     | Update branch with latest upstream |
 
 **Typical flow:**
+
 ```
 /checkout feature/thing → work → /handoff → /pr
 ```

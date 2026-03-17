@@ -6,6 +6,7 @@
 ## Problem
 
 You need to link your internal records (proposals, orders, users) with external service IDs (Stripe payment intents, subscriptions, invoices) without:
+
 - Modifying the external service's data
 - Making N+1 queries to resolve relationships
 - Losing the relationship when external data changes
@@ -43,7 +44,8 @@ const session = await stripe.checkout.sessions.create({
 });
 
 // After successful payment (webhook handler)
-await db.update(proposals)
+await db
+  .update(proposals)
   .set({
     metadata: {
       ...proposal.metadata,
@@ -70,9 +72,9 @@ interface ProposalLink {
 // ═══════════════════════════════════════════════════════════
 // BUILD MAPS FROM YOUR DATA
 // ═══════════════════════════════════════════════════════════
-const piToProposal = new Map<string, ProposalLink>();   // Payment Intent → Proposal
-const subToProposal = new Map<string, ProposalLink>();  // Subscription → Proposal
-const invToProposal = new Map<string, ProposalLink>();  // Invoice → Proposal
+const piToProposal = new Map<string, ProposalLink>(); // Payment Intent → Proposal
+const subToProposal = new Map<string, ProposalLink>(); // Subscription → Proposal
+const invToProposal = new Map<string, ProposalLink>(); // Invoice → Proposal
 
 // Populate from proposals with metadata
 for (const p of proposals) {
@@ -126,6 +128,7 @@ const linkedSubscriptions = subscriptions.data
 ### Step 4: Handle Invoice Fallback Chain
 
 Invoices can be linked via:
+
 1. Direct invoice ID
 2. Parent subscription ID
 3. Payment intent ID
@@ -138,17 +141,19 @@ const linkedInvoices = invoices.data
 
     // Fall back to subscription link
     if (!link && inv.subscription) {
-      const subId = typeof inv.subscription === "string"
-        ? inv.subscription
-        : inv.subscription.id;
+      const subId =
+        typeof inv.subscription === "string"
+          ? inv.subscription
+          : inv.subscription.id;
       link = subToProposal.get(subId);
     }
 
     // Fall back to payment intent link
     if (!link && inv.payment_intent) {
-      const piId = typeof inv.payment_intent === "string"
-        ? inv.payment_intent
-        : inv.payment_intent.id;
+      const piId =
+        typeof inv.payment_intent === "string"
+          ? inv.payment_intent
+          : inv.payment_intent.id;
       link = piToProposal.get(piId);
     }
 
@@ -217,7 +222,8 @@ export async function handleCheckoutComplete(session: Stripe.Checkout.Session) {
   const proposalId = session.metadata?.proposalId;
   if (!proposalId) return;
 
-  await db.update(proposals)
+  await db
+    .update(proposals)
     .set({
       metadata: sql`jsonb_set(
         COALESCE(metadata, '{}'),

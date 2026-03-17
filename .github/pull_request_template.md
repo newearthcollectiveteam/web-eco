@@ -9,7 +9,7 @@
 - [ ] Enhancement to existing feature
 - [ ] Refactor / code quality
 - [ ] Documentation
-- [ ] Other: ___
+- [ ] Other: \_\_\_
 
 ## How to test
 

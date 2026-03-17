@@ -230,7 +230,7 @@ function OverviewContent() {
             <div className="flex flex-col gap-1 rounded-lg bg-white/5 px-3 py-2 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex items-center gap-2">
                 <span className="h-2 w-2 shrink-0 rounded-full bg-emerald-500" />
-                <span className="text-sm text-white break-all">
+                <span className="text-sm break-all text-white">
                   joinnewearthcollective.com
                 </span>
               </div>
@@ -241,7 +241,7 @@ function OverviewContent() {
             <div className="flex flex-col gap-1 rounded-lg bg-white/5 px-3 py-2 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex items-center gap-2">
                 <span className="h-2 w-2 shrink-0 rounded-full bg-gray-500" />
-                <span className="text-sm text-gray-400 break-all">
+                <span className="text-sm break-all text-gray-400">
                   test.joinnewearthcollective.com
                 </span>
               </div>
@@ -255,7 +255,7 @@ function OverviewContent() {
             <div className="flex flex-col gap-1 rounded-lg bg-white/5 px-3 py-2 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex items-center gap-2">
                 <span className="h-2 w-2 shrink-0 rounded-full bg-gray-500" />
-                <span className="text-sm text-gray-400 break-all">
+                <span className="text-sm break-all text-gray-400">
                   launch.joinnewearthcollective.com
                 </span>
               </div>

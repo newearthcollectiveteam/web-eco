@@ -28,7 +28,7 @@ import { Resend } from "resend";
 import { confirmationEmail } from "~/lib/email/templates";
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const resend = new Resend(process.env.RESEND_API_KEY);
+const getResend = () => new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(request: NextRequest) {
   let body: unknown;
@@ -572,7 +572,7 @@ export async function POST(request: NextRequest) {
 
     // Send confirmation email via Resend (non-blocking)
     const displayName = preferredName || name.split(" ")[0] || "there";
-    resend.emails
+    getResend().emails
       .send({
         from: "New Earth Collective <noreply@joinnewearthcollective.com>",
         to: email,

@@ -8,7 +8,7 @@ import { Resend } from "resend";
 import { reminderEmail } from "~/lib/email/templates";
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const resend = new Resend(process.env.RESEND_API_KEY);
+const getResend = () => new Resend(process.env.RESEND_API_KEY);
 
 /**
  * Saves partial questionnaire progress and sends a reminder email.
@@ -124,7 +124,7 @@ export async function POST(request: NextRequest) {
       preferredName || (name ? name.split(" ")[0] : null) || "there";
 
     // Send reminder email (non-blocking)
-    resend.emails
+    getResend().emails
       .send({
         from: "New Earth Collective <noreply@joinnewearthcollective.com>",
         to: email,

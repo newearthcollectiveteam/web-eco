@@ -439,9 +439,7 @@ function ContactModal({
               />
             </div>
             <div>
-              <label className="mb-1 block text-xs text-gray-400">
-                Email
-              </label>
+              <label className="mb-1 block text-xs text-gray-400">Email</label>
               <input
                 type="email"
                 value={email}

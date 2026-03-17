@@ -311,7 +311,7 @@ export const crmRouter = createTRPCRouter({
             eq(eventWaivers.contactId, input.id),
             contact.email
               ? eq(eventWaivers.signerEmail, contact.email)
-              : undefined,
+              : undefined
           ),
           orderBy: [desc(eventWaivers.signedAt)],
         }),

@@ -1,1 +1,1 @@
-npm run typecheck && npm run lint
+npx prettier --write --cache . && git update-index --again && npm run typecheck && npm run lint

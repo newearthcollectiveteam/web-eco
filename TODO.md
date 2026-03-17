@@ -25,12 +25,17 @@ _None documented_
 ## Admin Hub Refactor (multi-session)
 
 ### Session 1: Foundation (DONE)
+
 ### Session 3: CRM Refactor (DONE)
+
 ### Session 3b: CRM Community Overhaul (DONE)
+
 ### Session 4: Team + Finance (SCAFFOLDED)
+
 - [ ] Finance pages — build out with Mercury connection
 
 ### Session 5: CMS + Assets + Ecosystem + Tooling (SCAFFOLDED)
+
 - [ ] CMS Email Testing page
 - [ ] Build out CMS Gallery with real data
 - [ ] Build out Tooling pages with real data
@@ -38,15 +43,18 @@ _None documented_
 ## Enhancements (nice to have)
 
 ### Questionnaire
+
 - [ ] Voice memo as questionnaire response — allow audio answers in addition to text
 - [ ] Conditional branching in Klaviyo based on questionnaire completion
 - [ ] Questionnaire progress saving (draft mode)
 
 ### Public Site
+
 - [ ] Add contact submission form to /stewardship page
 - [ ] Scroll-triggered entrance animations for below-fold sections
 
 ### CRM System
+
 - [ ] Social media tagging on contacts — link/display social profiles directly on contact records
 - [ ] Contact syncing when someone joins the ecosystem — mutual contacts / shared connections feature
 - [ ] Bulk import/export contacts
@@ -56,14 +64,17 @@ _None documented_
 - [ ] Automated status progression
 
 ### Task Management
+
 - [ ] Google Calendar integration — sync tasks with due dates to a shared Google Calendar that team members can subscribe to
 
 ### Email & Notifications
+
 - [ ] Email open/click tracking integration with CRM
 - [ ] Admin notifications for new signups
 - [ ] SMS flow integration with Klaviyo
 
 ### Mobile App (Capacitor)
+
 - [ ] Capacitor project setup in `mobile/` directory — see `docs/CAPACITOR_MOBILE_PLAN.md`
 - [ ] Web app mods: native detection, safe areas, splash screen, offline banner
 - [ ] Push notifications: FCM setup, device token schema, tRPC router

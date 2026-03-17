@@ -54,7 +54,7 @@ function GalleryCarousel({ slug }: { slug: string }) {
 
   return (
     <div className="group relative">
-      <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-white/10 hover:scrollbar-thumb-white/20">
+      <div className="scrollbar-thin scrollbar-track-transparent scrollbar-thumb-white/10 hover:scrollbar-thumb-white/20 flex gap-3 overflow-x-auto pb-2">
         {gallery.images.map((img) => (
           <div
             key={img.id}

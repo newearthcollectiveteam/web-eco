@@ -26,7 +26,9 @@ export const adminRouter = createTRPCRouter({
         .select({ count: sql<number>`count(*)::int` })
         .from(questionnaireResponses),
       ctx.db.select({ count: sql<number>`count(*)::int` }).from(eventWaivers),
-      ctx.db.select({ count: sql<number>`count(*)::int` }).from(contactActivities),
+      ctx.db
+        .select({ count: sql<number>`count(*)::int` })
+        .from(contactActivities),
       ctx.db.select({ count: sql<number>`count(*)::int` }).from(contactSources),
       ctx.db.query.contacts.findMany({
         orderBy: [desc(contacts.createdAt)],

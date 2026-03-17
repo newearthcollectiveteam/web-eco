@@ -187,11 +187,21 @@ function QuestionnaireViewer({ response: r }: QuestionnaireViewerProps) {
         },
         {
           label: "AI Phone Call Opt-In",
-          value: r.aiPhoneCallOptIn === true ? "Yes" : r.aiPhoneCallOptIn === false ? "No" : null,
+          value:
+            r.aiPhoneCallOptIn === true
+              ? "Yes"
+              : r.aiPhoneCallOptIn === false
+                ? "No"
+                : null,
         },
         {
           label: "Marketing Opt-In",
-          value: r.marketingOptIn === true ? "Yes" : r.marketingOptIn === false ? "No" : null,
+          value:
+            r.marketingOptIn === true
+              ? "Yes"
+              : r.marketingOptIn === false
+                ? "No"
+                : null,
         },
       ],
     },
@@ -231,7 +241,7 @@ function QuestionnaireViewer({ response: r }: QuestionnaireViewerProps) {
                 {filledFields.map((f, j) => (
                   <div key={j}>
                     <dt className="text-xs text-gray-500">{f.label}</dt>
-                    <dd className="mt-0.5 text-sm text-gray-200 whitespace-pre-wrap">
+                    <dd className="mt-0.5 text-sm whitespace-pre-wrap text-gray-200">
                       {String(f.value)}
                     </dd>
                   </div>
@@ -249,14 +259,27 @@ function QuestionnaireViewer({ response: r }: QuestionnaireViewerProps) {
 
 interface CommunityTagsSectionProps {
   contactId: number;
-  communityTags: { id: number; name: string; slug: string; color: string | null; type: string; parentName?: string | null }[];
+  communityTags: {
+    id: number;
+    name: string;
+    slug: string;
+    color: string | null;
+    type: string;
+    parentName?: string | null;
+  }[];
   onUpdate: () => void;
 }
 
-function CommunityTagsSection({ contactId, communityTags, onUpdate }: CommunityTagsSectionProps) {
+function CommunityTagsSection({
+  contactId,
+  communityTags,
+  onUpdate,
+}: CommunityTagsSectionProps) {
   const [adding, setAdding] = useState(false);
   const [selectedTagId, setSelectedTagId] = useState<number | "">("");
-  const allTagsQuery = api.crm.getCommunityTagsFlat.useQuery(undefined, { enabled: adding });
+  const allTagsQuery = api.crm.getCommunityTagsFlat.useQuery(undefined, {
+    enabled: adding,
+  });
 
   const assignMutation = api.crm.assignContactCommunity.useMutation({
     onSuccess: () => {
@@ -271,22 +294,29 @@ function CommunityTagsSection({ contactId, communityTags, onUpdate }: CommunityT
   });
 
   const existingIds = new Set(communityTags.map((t) => t.id));
-  const availableTags = (allTagsQuery.data ?? []).filter((t) => !existingIds.has(t.id));
+  const availableTags = (allTagsQuery.data ?? []).filter(
+    (t) => !existingIds.has(t.id)
+  );
 
   return (
     <div className="flex items-center gap-2 border-t border-white/5 px-4 py-2.5 sm:px-5">
-      <span className="shrink-0 text-[10px] text-gray-500 uppercase">Communities</span>
+      <span className="shrink-0 text-[10px] text-gray-500 uppercase">
+        Communities
+      </span>
       <div className="flex flex-1 flex-wrap items-center gap-1.5">
         {communityTags.map((tag) => (
           <span
             key={tag.id}
             className="inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-xs"
             style={{
-              borderColor: tag.color ? `${tag.color}66` : "rgba(255,255,255,0.1)",
+              borderColor: tag.color
+                ? `${tag.color}66`
+                : "rgba(255,255,255,0.1)",
               color: tag.color ?? "#d1d5db",
             }}
           >
-            {tag.parentName ? `${tag.parentName} > ` : ""}{tag.name}
+            {tag.parentName ? `${tag.parentName} > ` : ""}
+            {tag.name}
             <button
               onClick={() =>
                 removeMutation.mutate({ contactId, communityTagId: tag.id })
@@ -304,7 +334,9 @@ function CommunityTagsSection({ contactId, communityTags, onUpdate }: CommunityT
           <div className="flex items-center gap-1.5">
             <select
               value={selectedTagId}
-              onChange={(e) => setSelectedTagId(e.target.value ? Number(e.target.value) : "")}
+              onChange={(e) =>
+                setSelectedTagId(e.target.value ? Number(e.target.value) : "")
+              }
               className="rounded border border-white/10 bg-white/5 px-2 py-0.5 text-xs text-white focus:border-[#facf39]/50 focus:outline-none"
               autoFocus
             >
@@ -312,7 +344,9 @@ function CommunityTagsSection({ contactId, communityTags, onUpdate }: CommunityT
               {availableTags
                 .filter((t) => t.type === "community")
                 .map((t) => (
-                  <option key={t.id} value={t.id}>{t.name}</option>
+                  <option key={t.id} value={t.id}>
+                    {t.name}
+                  </option>
                 ))}
               {availableTags.some((t) => t.type === "location") && (
                 <option disabled>── Locations ──</option>
@@ -320,13 +354,18 @@ function CommunityTagsSection({ contactId, communityTags, onUpdate }: CommunityT
               {availableTags
                 .filter((t) => t.type === "location")
                 .map((t) => (
-                  <option key={t.id} value={t.id}>{t.name}</option>
+                  <option key={t.id} value={t.id}>
+                    {t.name}
+                  </option>
                 ))}
             </select>
             <button
               onClick={() => {
                 if (selectedTagId) {
-                  assignMutation.mutate({ contactId, communityTagId: Number(selectedTagId) });
+                  assignMutation.mutate({
+                    contactId,
+                    communityTagId: Number(selectedTagId),
+                  });
                 }
               }}
               disabled={!selectedTagId || assignMutation.isPending}
@@ -372,14 +411,46 @@ interface SocialMediaSectionProps {
 function SocialMediaSection({ socialMedia }: SocialMediaSectionProps) {
   const links: { label: string; value: string; prefix?: string }[] = [];
 
-  if (socialMedia.website) links.push({ label: "Website", value: socialMedia.website });
-  if (socialMedia.instagram) links.push({ label: "Instagram", value: socialMedia.instagram, prefix: "https://instagram.com/" });
-  if (socialMedia.twitter) links.push({ label: "X/Twitter", value: socialMedia.twitter, prefix: "https://x.com/" });
-  if (socialMedia.linkedin) links.push({ label: "LinkedIn", value: socialMedia.linkedin, prefix: "https://linkedin.com/in/" });
-  if (socialMedia.tiktok) links.push({ label: "TikTok", value: socialMedia.tiktok, prefix: "https://tiktok.com/@" });
-  if (socialMedia.youtube) links.push({ label: "YouTube", value: socialMedia.youtube, prefix: "https://youtube.com/@" });
-  if (socialMedia.facebook) links.push({ label: "Facebook", value: socialMedia.facebook, prefix: "https://facebook.com/" });
-  if (socialMedia.otherSocial) links.push({ label: "Other", value: socialMedia.otherSocial });
+  if (socialMedia.website)
+    links.push({ label: "Website", value: socialMedia.website });
+  if (socialMedia.instagram)
+    links.push({
+      label: "Instagram",
+      value: socialMedia.instagram,
+      prefix: "https://instagram.com/",
+    });
+  if (socialMedia.twitter)
+    links.push({
+      label: "X/Twitter",
+      value: socialMedia.twitter,
+      prefix: "https://x.com/",
+    });
+  if (socialMedia.linkedin)
+    links.push({
+      label: "LinkedIn",
+      value: socialMedia.linkedin,
+      prefix: "https://linkedin.com/in/",
+    });
+  if (socialMedia.tiktok)
+    links.push({
+      label: "TikTok",
+      value: socialMedia.tiktok,
+      prefix: "https://tiktok.com/@",
+    });
+  if (socialMedia.youtube)
+    links.push({
+      label: "YouTube",
+      value: socialMedia.youtube,
+      prefix: "https://youtube.com/@",
+    });
+  if (socialMedia.facebook)
+    links.push({
+      label: "Facebook",
+      value: socialMedia.facebook,
+      prefix: "https://facebook.com/",
+    });
+  if (socialMedia.otherSocial)
+    links.push({ label: "Other", value: socialMedia.otherSocial });
 
   if (links.length === 0) return null;
 
@@ -387,7 +458,9 @@ function SocialMediaSection({ socialMedia }: SocialMediaSectionProps) {
     if (link.value.startsWith("http")) return link.value;
     if (link.prefix) {
       // Strip @ prefix if present for handles
-      const handle = link.value.startsWith("@") ? link.value.slice(1) : link.value;
+      const handle = link.value.startsWith("@")
+        ? link.value.slice(1)
+        : link.value;
       return `${link.prefix}${handle}`;
     }
     return link.value.startsWith("http") ? link.value : `https://${link.value}`;
@@ -465,7 +538,9 @@ function ContactDetailContent({ id }: { id: number }) {
   }
 
   if (!contactQuery.data) {
-    return <div className="py-12 text-center text-gray-500">Contact not found</div>;
+    return (
+      <div className="py-12 text-center text-gray-500">Contact not found</div>
+    );
   }
 
   const {
@@ -553,7 +628,9 @@ function ContactDetailContent({ id }: { id: number }) {
     });
   }
 
-  timeline.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  timeline.sort(
+    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+  );
 
   const contactTags = contact.tags ?? [];
 
@@ -585,12 +662,15 @@ function ContactDetailContent({ id }: { id: number }) {
               <div className="flex items-center gap-3">
                 <h1
                   className="truncate text-xl font-bold text-white sm:text-2xl"
-                  style={{ fontFamily: "Airwaves, sans-serif", letterSpacing: "0.05em" }}
+                  style={{
+                    fontFamily: "Airwaves, sans-serif",
+                    letterSpacing: "0.05em",
+                  }}
                 >
                   {contact.name ?? "Unknown"}
                 </h1>
                 <span
-                  className={`shrink-0 inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium ${STATUS_COLORS[contact.status] ?? ""}`}
+                  className={`inline-flex shrink-0 rounded-full px-2.5 py-0.5 text-xs font-medium ${STATUS_COLORS[contact.status] ?? ""}`}
                 >
                   {STATUS_LABELS[contact.status] ?? contact.status}
                 </span>
@@ -599,7 +679,10 @@ function ContactDetailContent({ id }: { id: number }) {
             <select
               value={contact.status}
               onChange={(e) =>
-                updateMutation.mutate({ id: contact.id, status: e.target.value })
+                updateMutation.mutate({
+                  id: contact.id,
+                  status: e.target.value,
+                })
               }
               className="hidden shrink-0 rounded-lg border border-white/10 bg-white/5 px-2.5 py-1.5 text-xs text-white focus:border-[#facf39]/50 focus:outline-none sm:block"
             >
@@ -636,7 +719,8 @@ function ContactDetailContent({ id }: { id: number }) {
                         color: ct.color ?? undefined,
                       }}
                     >
-                      {ct.parentName ? `${ct.parentName} > ` : ""}{ct.name}
+                      {ct.parentName ? `${ct.parentName} > ` : ""}
+                      {ct.name}
                     </Badge>
                   ))}
                 </div>
@@ -690,7 +774,8 @@ function ContactDetailContent({ id }: { id: number }) {
                   )}
                   {referralCount > 0 && (
                     <span className="inline-flex rounded-full border border-[#facf39]/30 bg-[#facf39]/10 px-2.5 py-0.5 text-xs text-[#facf39]">
-                      Referred {referralCount} {referralCount === 1 ? "person" : "people"}
+                      Referred {referralCount}{" "}
+                      {referralCount === 1 ? "person" : "people"}
                     </span>
                   )}
                 </div>
@@ -709,7 +794,11 @@ function ContactDetailContent({ id }: { id: number }) {
                       className="inline-flex items-center gap-1 rounded-full bg-[#facf39]/10 px-2.5 py-0.5 text-xs text-[#facf39]"
                     >
                       {tag}
-                      <button onClick={() => setEditTags(editTags.filter((t) => t !== tag))}>
+                      <button
+                        onClick={() =>
+                          setEditTags(editTags.filter((t) => t !== tag))
+                        }
+                      >
                         <X className="h-3 w-3" />
                       </button>
                     </span>
@@ -722,7 +811,8 @@ function ContactDetailContent({ id }: { id: number }) {
                       if (e.key === "Enter") {
                         e.preventDefault();
                         const t = tagInput.trim().toLowerCase();
-                        if (t && !editTags.includes(t)) setEditTags([...editTags, t]);
+                        if (t && !editTags.includes(t))
+                          setEditTags([...editTags, t]);
                         setTagInput("");
                       }
                     }}
@@ -745,16 +835,18 @@ function ContactDetailContent({ id }: { id: number }) {
                 </>
               ) : (
                 <>
-                  {contactTags.length > 0
-                    ? contactTags.map((tag) => (
-                        <span
-                          key={tag}
-                          className="rounded-full bg-white/10 px-2.5 py-0.5 text-xs text-gray-300"
-                        >
-                          {tag}
-                        </span>
-                      ))
-                    : <span className="text-xs text-gray-600">No tags</span>}
+                  {contactTags.length > 0 ? (
+                    contactTags.map((tag) => (
+                      <span
+                        key={tag}
+                        className="rounded-full bg-white/10 px-2.5 py-0.5 text-xs text-gray-300"
+                      >
+                        {tag}
+                      </span>
+                    ))
+                  ) : (
+                    <span className="text-xs text-gray-600">No tags</span>
+                  )}
                   <button
                     onClick={startEditTags}
                     className="ml-1 rounded p-0.5 text-gray-500 hover:text-white"
@@ -787,7 +879,10 @@ function ContactDetailContent({ id }: { id: number }) {
             <select
               value={contact.status}
               onChange={(e) =>
-                updateMutation.mutate({ id: contact.id, status: e.target.value })
+                updateMutation.mutate({
+                  id: contact.id,
+                  status: e.target.value,
+                })
               }
               className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white focus:border-[#facf39]/50 focus:outline-none"
             >
@@ -858,8 +953,10 @@ function ContactDetailContent({ id }: { id: number }) {
                 {/* Pinned notes */}
                 {contact.notes && (
                   <div className="border-t border-white/5 pt-3">
-                    <span className="text-[10px] text-gray-500 uppercase">Pinned notes</span>
-                    <p className="mt-1 text-sm text-gray-400 whitespace-pre-wrap">
+                    <span className="text-[10px] text-gray-500 uppercase">
+                      Pinned notes
+                    </span>
+                    <p className="mt-1 text-sm whitespace-pre-wrap text-gray-400">
                       {contact.notes}
                     </p>
                   </div>
@@ -867,24 +964,32 @@ function ContactDetailContent({ id }: { id: number }) {
 
                 {/* Recent note activities */}
                 {(() => {
-                  const noteActivities = timeline.filter((t) => t.type === "note_added");
+                  const noteActivities = timeline.filter(
+                    (t) => t.type === "note_added"
+                  );
                   if (noteActivities.length === 0) return null;
                   return (
                     <div className="border-t border-white/5 pt-3">
-                      <span className="text-[10px] text-gray-500 uppercase">Recent Notes</span>
+                      <span className="text-[10px] text-gray-500 uppercase">
+                        Recent Notes
+                      </span>
                       <div className="mt-2 space-y-2">
                         {noteActivities.slice(0, 10).map((item) => (
-                          <div key={item.key} className="group rounded-lg bg-white/[0.03] px-3 py-2">
+                          <div
+                            key={item.key}
+                            className="group rounded-lg bg-white/[0.03] px-3 py-2"
+                          >
                             <div className="flex items-start justify-between gap-2">
-                              <p className="text-sm text-gray-300 whitespace-pre-wrap">
+                              <p className="text-sm whitespace-pre-wrap text-gray-300">
                                 {String(item.data.description ?? "")}
                               </p>
                               <button
                                 onClick={() => {
                                   const noteId = Number(item.data.id);
-                                  if (noteId) deleteNoteMutation.mutate({ id: noteId });
+                                  if (noteId)
+                                    deleteNoteMutation.mutate({ id: noteId });
                                 }}
-                                className="shrink-0 rounded p-1 text-gray-600 opacity-0 transition-opacity hover:bg-white/10 hover:text-red-400 group-hover:opacity-100"
+                                className="shrink-0 rounded p-1 text-gray-600 opacity-0 transition-opacity group-hover:opacity-100 hover:bg-white/10 hover:text-red-400"
                                 title="Delete note"
                               >
                                 <Trash2 className="h-3 w-3" />
@@ -930,13 +1035,19 @@ function ContactDetailContent({ id }: { id: number }) {
             const isExpanded = expandedItems.has(item.key);
             const Icon = SOURCE_ICONS[item.type] ?? MessageSquare;
             const badgeColor =
-              SOURCE_BADGE_COLORS[item.type] ?? "border-gray-500/40 text-gray-400";
+              SOURCE_BADGE_COLORS[item.type] ??
+              "border-gray-500/40 text-gray-400";
             const label =
               SOURCE_LABELS[item.type] ??
-              item.type.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+              item.type
+                .replace(/_/g, " ")
+                .replace(/\b\w/g, (c) => c.toUpperCase());
 
             const previewText =
-              item.type === "note_added" || item.type === "status_changed" || item.type === "contact_created" || item.type === "voice_note_added"
+              item.type === "note_added" ||
+              item.type === "status_changed" ||
+              item.type === "contact_created" ||
+              item.type === "voice_note_added"
                 ? String(item.data.description ?? "")
                 : item.type === "event_waiver"
                   ? String(item.data.eventName ?? "")
@@ -950,7 +1061,10 @@ function ContactDetailContent({ id }: { id: number }) {
                 >
                   <div className="flex min-w-0 items-center gap-2.5">
                     <Icon className="h-3.5 w-3.5 shrink-0 text-gray-500" />
-                    <Badge variant="outline" className={`shrink-0 text-[10px] ${badgeColor}`}>
+                    <Badge
+                      variant="outline"
+                      className={`shrink-0 text-[10px] ${badgeColor}`}
+                    >
                       {label}
                     </Badge>
                     {previewText && (
@@ -981,28 +1095,42 @@ function ContactDetailContent({ id }: { id: number }) {
                       <div className="space-y-1.5 text-sm">
                         <div>
                           <span className="text-gray-500">Name:</span>{" "}
-                          <span className="text-gray-200">{String(item.data.name ?? "")}</span>
+                          <span className="text-gray-200">
+                            {String(item.data.name ?? "")}
+                          </span>
                         </div>
                         <div>
                           <span className="text-gray-500">Email:</span>{" "}
-                          <span className="text-gray-200">{String(item.data.email ?? "")}</span>
-                        </div>
-                        {typeof item.data.phone === "string" && item.data.phone && (
-                          <div>
-                            <span className="text-gray-500">Phone:</span>{" "}
-                            <span className="text-gray-200">{String(item.data.phone)}</span>
-                          </div>
-                        )}
-                        {typeof item.data.message === "string" && item.data.message && (
-                          <div>
-                            <span className="text-gray-500">Message:</span>
-                            <p className="mt-1 text-gray-200 whitespace-pre-wrap">{String(item.data.message)}</p>
-                          </div>
-                        )}
-                        <div>
-                          <span className="text-gray-500">Willing to fill questionnaire:</span>{" "}
                           <span className="text-gray-200">
-                            {item.data.willingToFillQuestionnaire ? "Yes" : "No"}
+                            {String(item.data.email ?? "")}
+                          </span>
+                        </div>
+                        {typeof item.data.phone === "string" &&
+                          item.data.phone && (
+                            <div>
+                              <span className="text-gray-500">Phone:</span>{" "}
+                              <span className="text-gray-200">
+                                {String(item.data.phone)}
+                              </span>
+                            </div>
+                          )}
+                        {typeof item.data.message === "string" &&
+                          item.data.message && (
+                            <div>
+                              <span className="text-gray-500">Message:</span>
+                              <p className="mt-1 whitespace-pre-wrap text-gray-200">
+                                {String(item.data.message)}
+                              </p>
+                            </div>
+                          )}
+                        <div>
+                          <span className="text-gray-500">
+                            Willing to fill questionnaire:
+                          </span>{" "}
+                          <span className="text-gray-200">
+                            {item.data.willingToFillQuestionnaire
+                              ? "Yes"
+                              : "No"}
                           </span>
                         </div>
                       </div>
@@ -1011,43 +1139,90 @@ function ContactDetailContent({ id }: { id: number }) {
                     {item.type === "event_waiver" && (
                       <div className="space-y-2 text-sm">
                         <div className="grid grid-cols-1 gap-1.5 sm:grid-cols-2">
-                          <div><span className="text-gray-500">Event:</span> <span className="text-gray-200">{String(item.data.eventName ?? "")}</span></div>
-                          <div><span className="text-gray-500">Date:</span> <span className="text-gray-200">{String(item.data.eventDate ?? "")}</span></div>
-                          <div><span className="text-gray-500">Location:</span> <span className="text-gray-200">{String(item.data.eventLocation ?? "")}</span></div>
-                          <div><span className="text-gray-500">Signer:</span> <span className="text-gray-200">{String(item.data.signerName ?? "")}</span></div>
+                          <div>
+                            <span className="text-gray-500">Event:</span>{" "}
+                            <span className="text-gray-200">
+                              {String(item.data.eventName ?? "")}
+                            </span>
+                          </div>
+                          <div>
+                            <span className="text-gray-500">Date:</span>{" "}
+                            <span className="text-gray-200">
+                              {String(item.data.eventDate ?? "")}
+                            </span>
+                          </div>
+                          <div>
+                            <span className="text-gray-500">Location:</span>{" "}
+                            <span className="text-gray-200">
+                              {String(item.data.eventLocation ?? "")}
+                            </span>
+                          </div>
+                          <div>
+                            <span className="text-gray-500">Signer:</span>{" "}
+                            <span className="text-gray-200">
+                              {String(item.data.signerName ?? "")}
+                            </span>
+                          </div>
                         </div>
                         <div className="flex gap-4 text-xs">
                           <span className="text-gray-500">
-                            Terms: <span className={item.data.agreedToTerms ? "text-green-400" : "text-red-400"}>
-                              {item.data.agreedToTerms ? "Agreed" : "Not Agreed"}
+                            Terms:{" "}
+                            <span
+                              className={
+                                item.data.agreedToTerms
+                                  ? "text-green-400"
+                                  : "text-red-400"
+                              }
+                            >
+                              {item.data.agreedToTerms
+                                ? "Agreed"
+                                : "Not Agreed"}
                             </span>
                           </span>
                           <span className="text-gray-500">
-                            Photo/Video: <span className={item.data.agreedToPhotoVideo ? "text-green-400" : "text-red-400"}>
-                              {item.data.agreedToPhotoVideo ? "Agreed" : "Not Agreed"}
+                            Photo/Video:{" "}
+                            <span
+                              className={
+                                item.data.agreedToPhotoVideo
+                                  ? "text-green-400"
+                                  : "text-red-400"
+                              }
+                            >
+                              {item.data.agreedToPhotoVideo
+                                ? "Agreed"
+                                : "Not Agreed"}
                             </span>
                           </span>
                         </div>
-                        {typeof item.data.signatureData === "string" && item.data.signatureData && (
-                          <div>
-                            <span className="text-gray-500">Signature:</span>
-                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img src={String(item.data.signatureData)} alt="Signature" className="mt-1 h-14 rounded border border-white/10 bg-white/5" />
-                          </div>
-                        )}
+                        {typeof item.data.signatureData === "string" &&
+                          item.data.signatureData && (
+                            <div>
+                              <span className="text-gray-500">Signature:</span>
+                              {/* eslint-disable-next-line @next/next/no-img-element */}
+                              <img
+                                src={String(item.data.signatureData)}
+                                alt="Signature"
+                                className="mt-1 h-14 rounded border border-white/10 bg-white/5"
+                              />
+                            </div>
+                          )}
                       </div>
                     )}
 
-                    {(item.type === "note_added" || item.type === "status_changed" || item.type === "contact_created" || item.type === "voice_note_added") && (
+                    {(item.type === "note_added" ||
+                      item.type === "status_changed" ||
+                      item.type === "contact_created" ||
+                      item.type === "voice_note_added") && (
                       <div className="flex items-start justify-between gap-2">
-                        <p className="text-sm text-gray-300 whitespace-pre-wrap">
+                        <p className="text-sm whitespace-pre-wrap text-gray-300">
                           {String(item.data.description ?? "")}
                         </p>
                         {item.type === "note_added" && (
                           <button
                             onClick={() => {
                               const noteId = Number(item.data.id);
-                              if (noteId) deleteNoteMutation.mutate({ id: noteId });
+                              if (noteId)
+                                deleteNoteMutation.mutate({ id: noteId });
                             }}
                             className="shrink-0 rounded p-1 text-gray-600 hover:bg-white/10 hover:text-red-400"
                             title="Delete note"
@@ -1113,7 +1288,9 @@ export default function ContactDetailPage({
   const contactId = parseInt(id, 10);
 
   if (isNaN(contactId)) {
-    return <div className="py-12 text-center text-gray-500">Invalid contact ID</div>;
+    return (
+      <div className="py-12 text-center text-gray-500">Invalid contact ID</div>
+    );
   }
 
   return (

@@ -91,7 +91,10 @@ function CRMDashboardContent() {
           <div>
             <h1
               className="text-2xl font-bold text-white"
-              style={{ fontFamily: "Airwaves, sans-serif", letterSpacing: "0.05em" }}
+              style={{
+                fontFamily: "Airwaves, sans-serif",
+                letterSpacing: "0.05em",
+              }}
             >
               CRM Dashboard
             </h1>
@@ -109,7 +112,9 @@ function CRMDashboardContent() {
           disabled={loading}
           className="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/5 px-3 py-1.5 text-sm text-white transition-colors hover:bg-white/10"
         >
-          <RefreshCw className={`h-3.5 w-3.5 ${loading ? "animate-spin" : ""}`} />
+          <RefreshCw
+            className={`h-3.5 w-3.5 ${loading ? "animate-spin" : ""}`}
+          />
           Refresh
         </button>
       </div>
@@ -117,27 +122,33 @@ function CRMDashboardContent() {
       {/* Pipeline Stats */}
       {stats && (
         <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-          {(["lead", "qualified", "customer", "inactive"] as const).map((status) => {
-            const Icon = PIPELINE_ICONS[status] ?? Users;
-            const count = (stats as Record<string, number>)[status] ?? 0;
-            return (
-              <Card key={status} className="border-white/10 bg-white/5">
-                <CardContent className="p-5">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm text-gray-400">
-                        {STATUS_LABELS[status]}
-                      </p>
-                      <p className="mt-1 text-3xl font-bold text-white">{count}</p>
+          {(["lead", "qualified", "customer", "inactive"] as const).map(
+            (status) => {
+              const Icon = PIPELINE_ICONS[status] ?? Users;
+              const count = (stats as Record<string, number>)[status] ?? 0;
+              return (
+                <Card key={status} className="border-white/10 bg-white/5">
+                  <CardContent className="p-5">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm text-gray-400">
+                          {STATUS_LABELS[status]}
+                        </p>
+                        <p className="mt-1 text-3xl font-bold text-white">
+                          {count}
+                        </p>
+                      </div>
+                      <div
+                        className={`rounded-xl p-3 ${STATUS_COLORS[status]}`}
+                      >
+                        <Icon className="h-5 w-5" />
+                      </div>
                     </div>
-                    <div className={`rounded-xl p-3 ${STATUS_COLORS[status]}`}>
-                      <Icon className="h-5 w-5" />
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            );
-          })}
+                  </CardContent>
+                </Card>
+              );
+            }
+          )}
         </div>
       )}
 
@@ -173,8 +184,13 @@ function CRMDashboardContent() {
                     ? ((count / stats.total) * 100).toFixed(0)
                     : "0";
                   return (
-                    <div key={status} className="flex items-center gap-2 text-xs text-gray-400">
-                      <div className={`h-2.5 w-2.5 rounded-full ${PIPELINE_COLORS[status]}`} />
+                    <div
+                      key={status}
+                      className="flex items-center gap-2 text-xs text-gray-400"
+                    >
+                      <div
+                        className={`h-2.5 w-2.5 rounded-full ${PIPELINE_COLORS[status]}`}
+                      />
                       {STATUS_LABELS[status]} {pct}%
                     </div>
                   );
@@ -293,7 +309,9 @@ function CRMDashboardContent() {
                   className="flex items-center justify-between px-5 py-3 hover:bg-white/5"
                 >
                   <div className="min-w-0">
-                    <p className="truncate font-medium text-white">{c.name ?? "—"}</p>
+                    <p className="truncate font-medium text-white">
+                      {c.name ?? "—"}
+                    </p>
                     <p className="truncate text-xs text-gray-500">{c.email}</p>
                   </div>
                   <div className="flex shrink-0 items-center gap-2">

@@ -3,7 +3,14 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Calendar, MapPin, Play, Quote, Sparkles } from "lucide-react";
+import {
+  ArrowRight,
+  Calendar,
+  MapPin,
+  Play,
+  Quote,
+  Sparkles,
+} from "lucide-react";
 import { Button } from "~/components/ui/button";
 import {
   type CarouselApi,
@@ -143,7 +150,7 @@ const faqItems = [
     answer:
       "Our events blend immersive workshops, authentic relating, breathwork, sound healing, music, art, and community building. They are containers for deep connection, personal transformation, and collaborative visioning — not just festivals, but catalysts for lasting change.",
   },
-{
+  {
     question: "How do I get involved?",
     answer:
       "Start by filling out our questionnaire — it helps us understand your gifts and how you'd like to contribute. From there, you'll be connected with community members, invited to events, and plugged into collaboration opportunities.",
@@ -211,7 +218,10 @@ function LazyVideo({ src, poster }: { src: string; poster: string }) {
           poster={poster}
           className="max-h-[70vh] w-auto rounded-lg"
           onPlay={() => {
-            if (currentPlayingVideo && currentPlayingVideo !== videoRef.current) {
+            if (
+              currentPlayingVideo &&
+              currentPlayingVideo !== videoRef.current
+            ) {
               currentPlayingVideo.pause();
             }
             currentPlayingVideo = videoRef.current;
@@ -483,12 +493,12 @@ export function HomePage() {
                 alt="Envision Festival El Nido Stage schedule — New Earth Collective speaking Friday Feb 27 at 6:30 PM"
                 width={1080}
                 height={1350}
-                className="w-full h-auto"
+                className="h-auto w-full"
                 priority
               />
             </div>
             {/* Details */}
-            <div className="p-8 sm:p-10 text-center">
+            <div className="p-8 text-center sm:p-10">
               <Sparkles className="mx-auto mb-4 h-8 w-8 text-[#FACF39]" />
               <h3
                 className="mb-2 text-3xl font-bold text-[#FACF39] sm:text-4xl"
@@ -497,7 +507,9 @@ export function HomePage() {
                 We&apos;re Speaking at Envision
               </h3>
               <p className="mb-6 text-lg leading-relaxed text-white/80">
-                New Earth Collective is taking the stage at Envision Festival in Costa Rica. Join us as we share our vision for conscious community, collective sovereignty, and the new paradigm.
+                New Earth Collective is taking the stage at Envision Festival in
+                Costa Rica. Join us as we share our vision for conscious
+                community, collective sovereignty, and the new paradigm.
               </p>
               <div className="mb-8 flex flex-col items-center gap-3 text-sm text-white/60 sm:flex-row sm:justify-center sm:gap-6">
                 <span className="flex items-center gap-2">
@@ -609,8 +621,7 @@ export function HomePage() {
             </span>
           </h2>
           <p className="mb-12 text-center text-lg text-white/80">
-            Hear from attendees of our first event:{" "}
-            <br className="sm:hidden" />
+            Hear from attendees of our first event: <br className="sm:hidden" />
             The Emergence
           </p>
 

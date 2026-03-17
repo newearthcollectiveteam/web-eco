@@ -60,8 +60,8 @@ const ACTIVITY_LABELS: Record<string, string> = {
 
 const PAGE_SIZE = 25;
 
-function isPlaceholderEmail(email: string) {
-  return email.endsWith("@placeholder.local");
+function isPlaceholderEmail(email: string | null) {
+  return email?.endsWith("@placeholder.local") ?? false;
 }
 
 // ─── Quick Note Modal ──────────────────────────────────────────
@@ -143,7 +143,9 @@ function QuickVoiceMemoModal({
   onClose: () => void;
   onSuccess: () => void;
 }) {
-  const [state, setState] = useState<"idle" | "recording" | "uploading">("idle");
+  const [state, setState] = useState<"idle" | "recording" | "uploading">(
+    "idle"
+  );
   const [elapsed, setElapsed] = useState(0);
   const [error, setError] = useState("");
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -211,9 +213,15 @@ function QuickVoiceMemoModal({
     setState("uploading");
   };
 
-  const uploadRecording = async (blob: Blob, mimeType: string, durationSecs: number) => {
+  const uploadRecording = async (
+    blob: Blob,
+    mimeType: string,
+    durationSecs: number
+  ) => {
     const supabase = createClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
     if (!user) return;
 
     const ext = mimeType.includes("mp4") ? "mp4" : "webm";
@@ -229,7 +237,9 @@ function QuickVoiceMemoModal({
       return;
     }
 
-    const { data: urlData } = supabase.storage.from("voice-notes").getPublicUrl(path);
+    const { data: urlData } = supabase.storage
+      .from("voice-notes")
+      .getPublicUrl(path);
 
     saveMutation.mutate({
       contactId,
@@ -241,7 +251,8 @@ function QuickVoiceMemoModal({
     });
   };
 
-  const formatDuration = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
+  const formatDuration = (s: number) =>
+    `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
@@ -267,7 +278,7 @@ function QuickVoiceMemoModal({
             <>
               <div className="flex items-center gap-3">
                 <span className="h-3 w-3 animate-pulse rounded-full bg-red-500" />
-                <span className="text-2xl font-medium tabular-nums text-red-400">
+                <span className="text-2xl font-medium text-red-400 tabular-nums">
                   {formatDuration(elapsed)}
                 </span>
               </div>
@@ -311,7 +322,12 @@ interface ContactModalProps {
   onSuccess: () => void;
 }
 
-function ContactModal({ mode, contact, onClose, onSuccess }: ContactModalProps) {
+function ContactModal({
+  mode,
+  contact,
+  onClose,
+  onSuccess,
+}: ContactModalProps) {
   const [name, setName] = useState(contact?.name ?? "");
   const [email, setEmail] = useState(contact?.email ?? "");
   const [phone, setPhone] = useState(contact?.phone ?? "");
@@ -345,7 +361,7 @@ function ContactModal({ mode, contact, onClose, onSuccess }: ContactModalProps) 
     if (mode === "create") {
       createMutation.mutate({
         name,
-        email,
+        email: email || undefined,
         phone: phone || undefined,
         status,
         source,
@@ -356,7 +372,7 @@ function ContactModal({ mode, contact, onClose, onSuccess }: ContactModalProps) 
       updateMutation.mutate({
         id: contact.id,
         name,
-        email,
+        email: email || undefined,
         phone: phone || null,
         status,
         tags,
@@ -423,14 +439,11 @@ function ContactModal({ mode, contact, onClose, onSuccess }: ContactModalProps) 
               />
             </div>
             <div>
-              <label className="mb-1 block text-xs text-gray-400">
-                Email <span className="text-red-400">*</span>
-              </label>
+              <label className="mb-1 block text-xs text-gray-400">Email</label>
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                required
                 className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder-gray-500 focus:border-[#facf39]/50 focus:outline-none"
                 placeholder="email@example.com"
               />
@@ -612,7 +625,10 @@ function BulkActionsBar({
           <select
             onChange={(e) => {
               if (e.target.value) {
-                bulkStatusMutation.mutate({ contactIds: selectedIds, status: e.target.value });
+                bulkStatusMutation.mutate({
+                  contactIds: selectedIds,
+                  status: e.target.value,
+                });
               }
             }}
             className="rounded border border-white/10 bg-white/5 px-2 py-1 text-xs text-white focus:border-[#facf39]/50 focus:outline-none"
@@ -620,10 +636,15 @@ function BulkActionsBar({
           >
             <option value="">Set status...</option>
             {STATUS_OPTIONS.map((s) => (
-              <option key={s} value={s}>{STATUS_LABELS[s]}</option>
+              <option key={s} value={s}>
+                {STATUS_LABELS[s]}
+              </option>
             ))}
           </select>
-          <button onClick={() => setShowStatusSelect(false)} className="text-xs text-gray-400 hover:text-white">
+          <button
+            onClick={() => setShowStatusSelect(false)}
+            className="text-xs text-gray-400 hover:text-white"
+          >
             Cancel
           </button>
         </div>
@@ -641,7 +662,10 @@ function BulkActionsBar({
           <select
             onChange={(e) => {
               if (e.target.value) {
-                bulkAssignMutation.mutate({ contactIds: selectedIds, communityTagId: Number(e.target.value) });
+                bulkAssignMutation.mutate({
+                  contactIds: selectedIds,
+                  communityTagId: Number(e.target.value),
+                });
               }
             }}
             className="rounded border border-white/10 bg-white/5 px-2 py-1 text-xs text-white focus:border-[#facf39]/50 focus:outline-none"
@@ -649,10 +673,15 @@ function BulkActionsBar({
           >
             <option value="">Assign community...</option>
             {(communityTagsQuery.data ?? []).map((t) => (
-              <option key={t.id} value={t.id}>{t.name}</option>
+              <option key={t.id} value={t.id}>
+                {t.name}
+              </option>
             ))}
           </select>
-          <button onClick={() => setShowCommunitySelect(false)} className="text-xs text-gray-400 hover:text-white">
+          <button
+            onClick={() => setShowCommunitySelect(false)}
+            className="text-xs text-gray-400 hover:text-white"
+          >
             Cancel
           </button>
         </div>
@@ -679,9 +708,10 @@ function BulkActionsBar({
 
 function ContactsContent() {
   // Read community filter from URL if present (drill-down from communities page)
-  const initialCommunity = typeof window !== "undefined"
-    ? new URLSearchParams(window.location.search).get("community")
-    : null;
+  const initialCommunity =
+    typeof window !== "undefined"
+      ? new URLSearchParams(window.location.search).get("community")
+      : null;
 
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
@@ -697,8 +727,14 @@ function ContactsContent() {
   } | null>(null);
   const [showImport, setShowImport] = useState(false);
   const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
-  const [quickNote, setQuickNote] = useState<{ id: number; name: string } | null>(null);
-  const [quickVoice, setQuickVoice] = useState<{ id: number; name: string } | null>(null);
+  const [quickNote, setQuickNote] = useState<{
+    id: number;
+    name: string;
+  } | null>(null);
+  const [quickVoice, setQuickVoice] = useState<{
+    id: number;
+    name: string;
+  } | null>(null);
 
   const contactsQuery = api.crm.getContacts.useQuery({
     search: search || undefined,
@@ -781,7 +817,10 @@ function ContactsContent() {
         <div>
           <h1
             className="text-2xl font-bold text-white"
-            style={{ fontFamily: "Airwaves, sans-serif", letterSpacing: "0.05em" }}
+            style={{
+              fontFamily: "Airwaves, sans-serif",
+              letterSpacing: "0.05em",
+            }}
           >
             Contacts
           </h1>
@@ -807,8 +846,8 @@ function ContactsContent() {
 
       {/* Filters */}
       <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
-        <div className="relative flex-1 min-w-[200px]">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
+        <div className="relative min-w-[200px] flex-1">
+          <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-500" />
           <input
             type="text"
             value={search}
@@ -817,7 +856,7 @@ function ContactsContent() {
               setPage(0);
             }}
             placeholder="Search by name or email..."
-            className="w-full rounded-lg border border-white/10 bg-white/5 py-2 pl-10 pr-3 text-sm text-white placeholder-gray-500 focus:border-[#facf39]/50 focus:outline-none"
+            className="w-full rounded-lg border border-white/10 bg-white/5 py-2 pr-3 pl-10 text-sm text-white placeholder-gray-500 focus:border-[#facf39]/50 focus:outline-none"
           />
         </div>
         <div className="flex flex-wrap gap-2">
@@ -854,7 +893,9 @@ function ContactsContent() {
           <select
             value={communityFilter ?? ""}
             onChange={(e) => {
-              setCommunityFilter(e.target.value ? Number(e.target.value) : undefined);
+              setCommunityFilter(
+                e.target.value ? Number(e.target.value) : undefined
+              );
               setPage(0);
             }}
             className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white focus:border-[#facf39]/50 focus:outline-none"
@@ -916,7 +957,10 @@ function ContactsContent() {
                   <th className="w-10 px-3 py-3">
                     <input
                       type="checkbox"
-                      checked={contacts.length > 0 && selectedIds.size === contacts.length}
+                      checked={
+                        contacts.length > 0 &&
+                        selectedIds.size === contacts.length
+                      }
                       onChange={toggleSelectAll}
                       className="rounded border-white/20 bg-white/5"
                     />
@@ -933,8 +977,13 @@ function ContactsContent() {
               <tbody className="divide-y divide-white/5">
                 {contacts.length === 0 && (
                   <tr>
-                    <td colSpan={8} className="px-5 py-12 text-center text-sm text-gray-500">
-                      {contactsQuery.isLoading ? "Loading..." : "No contacts found"}
+                    <td
+                      colSpan={8}
+                      className="px-5 py-12 text-center text-sm text-gray-500"
+                    >
+                      {contactsQuery.isLoading
+                        ? "Loading..."
+                        : "No contacts found"}
                     </td>
                   </tr>
                 )}
@@ -964,7 +1013,9 @@ function ContactsContent() {
                         <div className="text-xs text-gray-500">{c.phone}</div>
                       )}
                       {isPlaceholderEmail(c.email) && !c.phone && (
-                        <span className="text-xs text-gray-600">Phone import</span>
+                        <span className="text-xs text-gray-600">
+                          Phone import
+                        </span>
                       )}
                     </td>
                     {/* Communities BEFORE sources */}
@@ -976,11 +1027,14 @@ function ContactsContent() {
                             variant="outline"
                             className="text-[10px]"
                             style={{
-                              borderColor: ct.color ? `${ct.color}66` : undefined,
+                              borderColor: ct.color
+                                ? `${ct.color}66`
+                                : undefined,
                               color: ct.color ?? undefined,
                             }}
                           >
-                            {ct.parentName ? `${ct.parentName} > ` : ""}{ct.name}
+                            {ct.parentName ? `${ct.parentName} > ` : ""}
+                            {ct.name}
                           </Badge>
                         ))}
                         {(!c.communityTags || c.communityTags.length === 0) && (
@@ -1012,27 +1066,40 @@ function ContactsContent() {
                       {c.lastActivity ? (
                         <div>
                           <span className="text-xs text-gray-400">
-                            {ACTIVITY_LABELS[c.lastActivity.type] ?? c.lastActivity.type.replace(/_/g, " ")}
+                            {ACTIVITY_LABELS[c.lastActivity.type] ??
+                              c.lastActivity.type.replace(/_/g, " ")}
                           </span>
                           <div className="text-[11px] text-gray-600">
                             {formatDate(c.lastActivity.date)}
                           </div>
                         </div>
                       ) : (
-                        <span className="text-xs text-gray-600">{formatDate(c.lastContactDate)}</span>
+                        <span className="text-xs text-gray-600">
+                          {formatDate(c.lastContactDate)}
+                        </span>
                       )}
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex items-center justify-end gap-1">
                         <button
-                          onClick={() => setQuickNote({ id: c.id, name: c.name ?? "Contact" })}
+                          onClick={() =>
+                            setQuickNote({
+                              id: c.id,
+                              name: c.name ?? "Contact",
+                            })
+                          }
                           title="Quick note"
                           className="rounded p-1.5 text-gray-500 hover:bg-white/10 hover:text-[#facf39]"
                         >
                           <MessageSquare className="h-3.5 w-3.5" />
                         </button>
                         <button
-                          onClick={() => setQuickVoice({ id: c.id, name: c.name ?? "Contact" })}
+                          onClick={() =>
+                            setQuickVoice({
+                              id: c.id,
+                              name: c.name ?? "Contact",
+                            })
+                          }
                           title="Quick voice memo"
                           className="rounded p-1.5 text-gray-500 hover:bg-white/10 hover:text-red-400"
                         >
@@ -1090,7 +1157,9 @@ function ContactsContent() {
           <p className="py-12 text-center text-sm text-gray-500">Loading...</p>
         )}
         {!contactsQuery.isLoading && contacts.length === 0 && (
-          <p className="py-12 text-center text-sm text-gray-500">No contacts found</p>
+          <p className="py-12 text-center text-sm text-gray-500">
+            No contacts found
+          </p>
         )}
         {contacts.map((c) => (
           <Card key={c.id} className="border-white/10 bg-white/5">
@@ -1111,9 +1180,7 @@ function ContactsContent() {
               {!isPlaceholderEmail(c.email) && (
                 <p className="mt-1 truncate text-sm text-gray-400">{c.email}</p>
               )}
-              {c.phone && (
-                <p className="text-xs text-gray-500">{c.phone}</p>
-              )}
+              {c.phone && <p className="text-xs text-gray-500">{c.phone}</p>}
               {/* Community tags first, then sources */}
               <div className="mt-2 flex flex-wrap gap-1">
                 {c.communityTags?.map((ct) => (
@@ -1126,7 +1193,8 @@ function ContactsContent() {
                       color: ct.color ?? undefined,
                     }}
                   >
-                    {ct.parentName ? `${ct.parentName} > ` : ""}{ct.name}
+                    {ct.parentName ? `${ct.parentName} > ` : ""}
+                    {ct.name}
                   </Badge>
                 ))}
                 {c.submissionSources.map((src) => (
@@ -1142,20 +1210,28 @@ function ContactsContent() {
               <div className="mt-2 flex items-center justify-between text-xs text-gray-500">
                 <div className="flex items-center gap-2">
                   {c.lastActivity ? (
-                    <span>{ACTIVITY_LABELS[c.lastActivity.type] ?? c.lastActivity.type} · {formatDate(c.lastActivity.date)}</span>
+                    <span>
+                      {ACTIVITY_LABELS[c.lastActivity.type] ??
+                        c.lastActivity.type}{" "}
+                      · {formatDate(c.lastActivity.date)}
+                    </span>
                   ) : (
                     <span>{formatDate(c.lastContactDate)}</span>
                   )}
                 </div>
                 <div className="flex items-center gap-1">
                   <button
-                    onClick={() => setQuickNote({ id: c.id, name: c.name ?? "Contact" })}
+                    onClick={() =>
+                      setQuickNote({ id: c.id, name: c.name ?? "Contact" })
+                    }
                     className="min-h-[44px] min-w-[44px] rounded-lg p-2 text-gray-400 hover:text-[#facf39]"
                   >
                     <MessageSquare className="h-4 w-4" />
                   </button>
                   <button
-                    onClick={() => setQuickVoice({ id: c.id, name: c.name ?? "Contact" })}
+                    onClick={() =>
+                      setQuickVoice({ id: c.id, name: c.name ?? "Contact" })
+                    }
                     className="min-h-[44px] min-w-[44px] rounded-lg p-2 text-gray-400 hover:text-red-400"
                   >
                     <Mic className="h-4 w-4" />
@@ -1177,7 +1253,8 @@ function ContactsContent() {
         {totalPages > 1 && (
           <div className="flex items-center justify-between py-2">
             <p className="text-xs text-gray-500">
-              {page * PAGE_SIZE + 1}–{Math.min((page + 1) * PAGE_SIZE, total)} of {total}
+              {page * PAGE_SIZE + 1}–{Math.min((page + 1) * PAGE_SIZE, total)}{" "}
+              of {total}
             </p>
             <div className="flex items-center gap-1">
               <button

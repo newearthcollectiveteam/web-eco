@@ -1,7 +1,15 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { X, Upload, Smartphone, FileSpreadsheet, FileText, Check, AlertCircle } from "lucide-react";
+import {
+  X,
+  Upload,
+  Smartphone,
+  FileSpreadsheet,
+  FileText,
+  Check,
+  AlertCircle,
+} from "lucide-react";
 import { api } from "~/trpc/react";
 
 interface ContactEntry {
@@ -21,12 +29,19 @@ function hasContactPicker(): boolean {
   return "contacts" in navigator && "ContactsManager" in window;
 }
 
-export function PhoneImportModal({ onClose, onSuccess }: PhoneImportModalProps) {
+export function PhoneImportModal({
+  onClose,
+  onSuccess,
+}: PhoneImportModalProps) {
   const [step, setStep] = useState<"choose" | "review" | "results">("choose");
   const [entries, setEntries] = useState<ContactEntry[]>([]);
   const [tags, setTags] = useState<string[]>([]);
   const [tagInput, setTagInput] = useState("");
-  const [results, setResults] = useState<{ created: number; skipped: number; errors: string[] } | null>(null);
+  const [results, setResults] = useState<{
+    created: number;
+    skipped: number;
+    errors: string[];
+  } | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
 
   const bulkMutation = api.crm.bulkCreateContacts.useMutation({
@@ -45,7 +60,9 @@ export function PhoneImportModal({ onClose, onSuccess }: PhoneImportModalProps) 
           select: (
             props: string[],
             opts: { multiple: boolean }
-          ) => Promise<Array<{ name?: string[]; email?: string[]; tel?: string[] }>>;
+          ) => Promise<
+            Array<{ name?: string[]; email?: string[]; tel?: string[] }>
+          >;
         };
       };
 
@@ -106,10 +123,23 @@ export function PhoneImportModal({ onClose, onSuccess }: PhoneImportModalProps) 
     const lines = text.split("\n").filter((l) => l.trim());
     if (lines.length < 2) return [];
 
-    const header = lines[0]!.toLowerCase().split(",").map((h) => h.trim().replace(/"/g, ""));
-    const nameIdx = header.findIndex((h) => h === "name" || h === "full name" || h === "full_name");
-    const emailIdx = header.findIndex((h) => h === "email" || h === "e-mail" || h === "email address");
-    const phoneIdx = header.findIndex((h) => h === "phone" || h === "tel" || h === "telephone" || h === "phone number");
+    const header = lines[0]!
+      .toLowerCase()
+      .split(",")
+      .map((h) => h.trim().replace(/"/g, ""));
+    const nameIdx = header.findIndex(
+      (h) => h === "name" || h === "full name" || h === "full_name"
+    );
+    const emailIdx = header.findIndex(
+      (h) => h === "email" || h === "e-mail" || h === "email address"
+    );
+    const phoneIdx = header.findIndex(
+      (h) =>
+        h === "phone" ||
+        h === "tel" ||
+        h === "telephone" ||
+        h === "phone number"
+    );
 
     if (nameIdx === -1) return [];
 
@@ -138,7 +168,9 @@ export function PhoneImportModal({ onClose, onSuccess }: PhoneImportModalProps) 
     const reader = new FileReader();
     reader.onload = (evt) => {
       const text = evt.target?.result as string;
-      const isVCard = file.name.toLowerCase().endsWith(".vcf") || text.includes("BEGIN:VCARD");
+      const isVCard =
+        file.name.toLowerCase().endsWith(".vcf") ||
+        text.includes("BEGIN:VCARD");
       const parsed = isVCard ? parseVCard(text) : parseCSV(text);
 
       if (parsed.length > 0) {
@@ -169,7 +201,9 @@ export function PhoneImportModal({ onClose, onSuccess }: PhoneImportModalProps) 
   };
 
   const toggleOne = (idx: number) => {
-    setEntries(entries.map((e, i) => (i === idx ? { ...e, selected: !e.selected } : e)));
+    setEntries(
+      entries.map((e, i) => (i === idx ? { ...e, selected: !e.selected } : e))
+    );
   };
 
   const selectedCount = entries.filter((e) => e.selected).length;
@@ -234,8 +268,9 @@ export function PhoneImportModal({ onClose, onSuccess }: PhoneImportModalProps) 
                 <div className="flex items-start gap-2 rounded-lg border border-white/5 bg-white/[0.02] px-3 py-2.5">
                   <FileText className="mt-0.5 h-4 w-4 shrink-0 text-gray-500" />
                   <p className="text-xs text-gray-500">
-                    <span className="font-medium text-gray-400">iOS tip:</span> Open
-                    Contacts app → select contacts → Share → export as vCard → upload here.
+                    <span className="font-medium text-gray-400">iOS tip:</span>{" "}
+                    Open Contacts app → select contacts → Share → export as
+                    vCard → upload here.
                   </p>
                 </div>
               )}
@@ -272,10 +307,10 @@ export function PhoneImportModal({ onClose, onSuccess }: PhoneImportModalProps) 
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b border-white/10 text-left text-xs text-gray-500 uppercase">
-                      <th className="px-3 py-2 w-8"></th>
+                      <th className="w-8 px-3 py-2"></th>
                       <th className="px-3 py-2">Name</th>
-                      <th className="px-3 py-2 hidden sm:table-cell">Email</th>
-                      <th className="px-3 py-2 hidden sm:table-cell">Phone</th>
+                      <th className="hidden px-3 py-2 sm:table-cell">Email</th>
+                      <th className="hidden px-3 py-2 sm:table-cell">Phone</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-white/5">
@@ -293,10 +328,10 @@ export function PhoneImportModal({ onClose, onSuccess }: PhoneImportModalProps) 
                           />
                         </td>
                         <td className="px-3 py-2 text-white">{entry.name}</td>
-                        <td className="px-3 py-2 text-gray-400 hidden sm:table-cell">
+                        <td className="hidden px-3 py-2 text-gray-400 sm:table-cell">
                           {entry.email ?? "—"}
                         </td>
-                        <td className="px-3 py-2 text-gray-400 hidden sm:table-cell">
+                        <td className="hidden px-3 py-2 text-gray-400 sm:table-cell">
                           {entry.phone ?? "—"}
                         </td>
                       </tr>
@@ -317,7 +352,9 @@ export function PhoneImportModal({ onClose, onSuccess }: PhoneImportModalProps) 
                       className="inline-flex items-center gap-1 rounded-full bg-[#facf39]/10 px-2.5 py-0.5 text-xs text-[#facf39]"
                     >
                       {tag}
-                      <button onClick={() => setTags(tags.filter((t) => t !== tag))}>
+                      <button
+                        onClick={() => setTags(tags.filter((t) => t !== tag))}
+                      >
                         <X className="h-3 w-3" />
                       </button>
                     </span>
@@ -373,7 +410,9 @@ export function PhoneImportModal({ onClose, onSuccess }: PhoneImportModalProps) 
                 <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-green-900/50">
                   <Check className="h-6 w-6 text-green-400" />
                 </div>
-                <p className="text-lg font-medium text-white">Import Complete</p>
+                <p className="text-lg font-medium text-white">
+                  Import Complete
+                </p>
                 <div className="mt-3 flex justify-center gap-6 text-sm">
                   <div>
                     <span className="text-2xl font-bold text-green-400">
@@ -394,7 +433,8 @@ export function PhoneImportModal({ onClose, onSuccess }: PhoneImportModalProps) 
                 <div className="rounded-lg border border-red-900/50 bg-red-900/20 p-4">
                   <div className="mb-2 flex items-center gap-2 text-sm text-red-400">
                     <AlertCircle className="h-4 w-4" />
-                    {results.errors.length} error{results.errors.length !== 1 ? "s" : ""}
+                    {results.errors.length} error
+                    {results.errors.length !== 1 ? "s" : ""}
                   </div>
                   <ul className="space-y-1 text-xs text-red-300">
                     {results.errors.slice(0, 5).map((err, i) => (

@@ -83,7 +83,9 @@ export function mapFormToPayload(
 
   const receiveText = data.receiveFromCommunity
     .map((id) => seekLabels[id] ?? id)
-    .concat(data.receiveFromCommunityOther ? [data.receiveFromCommunityOther] : [])
+    .concat(
+      data.receiveFromCommunityOther ? [data.receiveFromCommunityOther] : []
+    )
     .join(", ");
 
   const intentionText = joinWithOther(

@@ -36,7 +36,9 @@ export async function POST(req: Request) {
               event.delta.type === "text_delta"
             ) {
               controller.enqueue(
-                encoder.encode(`data: ${JSON.stringify({ text: event.delta.text })}\n\n`)
+                encoder.encode(
+                  `data: ${JSON.stringify({ text: event.delta.text })}\n\n`
+                )
               );
             }
           }

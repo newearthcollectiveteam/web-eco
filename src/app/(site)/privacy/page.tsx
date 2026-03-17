@@ -14,7 +14,7 @@ export default function PrivacyPolicyPage() {
   return (
     <div className="bg-black">
       {/* Header */}
-      <section className="border-b border-[#FACF39]/20 px-4 pb-12 pt-28">
+      <section className="border-b border-[#FACF39]/20 px-4 pt-28 pb-12">
         <div className="mx-auto max-w-3xl">
           <h1
             className="mb-4 text-4xl font-bold md:text-5xl"
@@ -63,14 +63,15 @@ export default function PrivacyPolicyPage() {
               </li>
               <li>
                 <strong className="text-white">Questionnaire Responses:</strong>{" "}
-                Answers you submit through our community questionnaire, including
-                personal interests, skills, location, and any other information
-                you choose to share.
+                Answers you submit through our community questionnaire,
+                including personal interests, skills, location, and any other
+                information you choose to share.
               </li>
               <li>
                 <strong className="text-white">Event Registration:</strong>{" "}
-                Name, contact information, emergency contacts, dietary needs, and
-                liability waiver acknowledgments when you register for events.
+                Name, contact information, emergency contacts, dietary needs,
+                and liability waiver acknowledgments when you register for
+                events.
               </li>
               <li>
                 <strong className="text-white">Communications:</strong> Messages
@@ -111,11 +112,12 @@ export default function PrivacyPolicyPage() {
               </li>
               <li>To register you for events and manage event logistics.</li>
               <li>
-                To send transactional emails (confirmations, updates, approvals).
+                To send transactional emails (confirmations, updates,
+                approvals).
               </li>
               <li>
-                To send marketing emails about events and community updates, only
-                with your explicit consent.
+                To send marketing emails about events and community updates,
+                only with your explicit consent.
               </li>
               <li>To improve our website, services, and community programs.</li>
               <li>
@@ -166,7 +168,9 @@ export default function PrivacyPolicyPage() {
               including:
             </p>
             <ul className="list-disc space-y-1 pl-6">
-              <li>Encrypted connections (HTTPS/TLS) for all data in transit.</li>
+              <li>
+                Encrypted connections (HTTPS/TLS) for all data in transit.
+              </li>
               <li>Row-level security policies on our database.</li>
               <li>
                 Authentication via Supabase Auth with approval-based access
@@ -179,7 +183,8 @@ export default function PrivacyPolicyPage() {
             </ul>
             <p className="mt-3">
               No method of transmission or storage is 100% secure. While we
-              strive to protect your data, we cannot guarantee absolute security.
+              strive to protect your data, we cannot guarantee absolute
+              security.
             </p>
           </div>
 

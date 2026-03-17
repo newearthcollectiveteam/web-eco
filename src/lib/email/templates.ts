@@ -1,5 +1,4 @@
-const LOGO_URL =
-  "https://joinnewearthcollective.com/email-assets/logo.png";
+const LOGO_URL = "https://joinnewearthcollective.com/email-assets/logo.png";
 
 /** Wraps email body content in a polished, cross-client compatible layout */
 function emailLayout(body: string): string {
@@ -65,10 +64,7 @@ export function confirmationEmail(displayName: string): string {
 }
 
 /** Reminder email for abandoned questionnaire — includes resume link with referral preserved */
-export function reminderEmail(
-  displayName: string,
-  resumeUrl: string
-): string {
+export function reminderEmail(displayName: string, resumeUrl: string): string {
   return emailLayout(`
     <h2 style="margin:0 0 16px;font-size:22px;font-weight:700;color:#1a1a1a;">Hey ${displayName}, you're almost there!</h2>
     <p style="margin:0 0 14px;">We noticed you started the Community Alignment Questionnaire but didn't get a chance to finish. No worries — your spot is saved.</p>

@@ -9,9 +9,7 @@ export const ideasRouter = createTRPCRouter({
       z.object({
         search: z.string().optional(),
         category: z.string().optional(),
-        sort: z
-          .enum(["newest", "updated", "alphabetical"])
-          .default("newest"),
+        sort: z.enum(["newest", "updated", "alphabetical"]).default("newest"),
         limit: z.number().min(1).max(100).default(50),
         offset: z.number().min(0).default(0),
       })
@@ -25,10 +23,7 @@ export const ideasRouter = createTRPCRouter({
       if (input.search) {
         const term = `%${input.search}%`;
         conditions.push(
-          or(
-            ilike(teamIdeas.title, term),
-            ilike(teamIdeas.content, term)
-          )!
+          or(ilike(teamIdeas.title, term), ilike(teamIdeas.content, term))!
         );
       }
 

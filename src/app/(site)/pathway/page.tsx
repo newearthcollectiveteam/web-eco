@@ -105,7 +105,7 @@ function useTimelineObserver() {
           }
         });
       },
-      { threshold: 0.2 },
+      { threshold: 0.2 }
     );
 
     refs.current.forEach((el) => observer.observe(el));
@@ -116,7 +116,7 @@ function useTimelineObserver() {
     (id: string) => (el: HTMLElement | null) => {
       if (el) refs.current.set(id, el);
     },
-    [],
+    []
   );
 
   return { visiblePhases, reducedMotion, setRef };
@@ -192,7 +192,7 @@ export default function PathwayPage() {
   return (
     <div className="bg-black">
       {/* Hero Section */}
-      <section className="relative overflow-hidden pb-16 pt-32">
+      <section className="relative overflow-hidden pt-32 pb-16">
         <div className="absolute inset-0 opacity-15">
           <iframe
             src="/admin/shaders/flower-of-life/embed"
@@ -228,7 +228,7 @@ export default function PathwayPage() {
         <div className="mx-auto max-w-4xl px-4 sm:px-6">
           <div className="relative">
             {/* Vertical golden line */}
-            <div className="absolute bottom-0 left-[1.0625rem] top-0 w-px bg-gradient-to-b from-[#FACF39]/60 via-[#FACF39]/30 to-transparent sm:left-[1.4375rem]" />
+            <div className="absolute top-0 bottom-0 left-[1.0625rem] w-px bg-gradient-to-b from-[#FACF39]/60 via-[#FACF39]/30 to-transparent sm:left-[1.4375rem]" />
 
             {/* Phase cards */}
             <div className="space-y-16 sm:space-y-24">
@@ -267,9 +267,7 @@ export default function PathwayPage() {
                         boxShadow: isVisible
                           ? "0 0 20px rgba(250, 207, 57, 0.3)"
                           : "none",
-                        transition: reducedMotion
-                          ? "none"
-                          : "all 0.5s ease",
+                        transition: reducedMotion ? "none" : "all 0.5s ease",
                       }}
                     >
                       <Icon
@@ -343,29 +341,26 @@ export default function PathwayPage() {
                         })()
                       ) : (
                         <div className="mb-6 max-w-xl space-y-3 text-base leading-relaxed text-white/60">
-                          {phase.description
-                            .split("\n\n")
-                            .map((block, bi) => {
-                              const blocks =
-                                phase.description.split("\n\n");
-                              const isMissionTruth =
-                                phase.id === "mission" &&
-                                ((bi >= 1 && bi <= 3) ||
-                                  bi === blocks.length - 1);
-                              const isTruth = isMissionTruth;
-                              return (
-                                <p
-                                  key={bi}
-                                  className={
-                                    isTruth
-                                      ? "border-l-2 border-[#FACF39]/40 pl-4 font-medium text-white/80 italic"
-                                      : ""
-                                  }
-                                >
-                                  {block}
-                                </p>
-                              );
-                            })}
+                          {phase.description.split("\n\n").map((block, bi) => {
+                            const blocks = phase.description.split("\n\n");
+                            const isMissionTruth =
+                              phase.id === "mission" &&
+                              ((bi >= 1 && bi <= 3) ||
+                                bi === blocks.length - 1);
+                            const isTruth = isMissionTruth;
+                            return (
+                              <p
+                                key={bi}
+                                className={
+                                  isTruth
+                                    ? "border-l-2 border-[#FACF39]/40 pl-4 font-medium text-white/80 italic"
+                                    : ""
+                                }
+                              >
+                                {block}
+                              </p>
+                            );
+                          })}
                         </div>
                       )}
 

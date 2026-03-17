@@ -1,178 +1,166 @@
-# CRM and Intake Forms Architecture
+# Architecture Overview
 
-## Design Principles for Scalable Multi-Form CRM
+**Last Updated:** 2026-03-17
 
-### Core Pattern
+## System Overview
 
-Every intake form follows this pattern:
+Multi-domain Next.js 15 application serving the New Earth Collective community platform. Single codebase powers public-facing pages, admin dashboard, CRM, event management, and internal tools.
 
-1. **Dedicated Intake Table** - Each form type gets its own table with form-specific fields
-2. **Linked to Master CRM** - Foreign key to `contacts.id` with proper constraints
-3. **Activity Logging** - Each submission creates an activity record
-4. **Source Attribution** - Track which form/page generated the submission
-5. **Processing Status** - Track whether the form has been processed into CRM
+## Tech Stack
 
-### Master CRM Tables
+| Layer          | Technology                                |
+| -------------- | ----------------------------------------- |
+| Framework      | Next.js 15, React 19, TypeScript (strict) |
+| Database       | Supabase PostgreSQL via Drizzle ORM       |
+| Auth           | Supabase Auth with approval workflow      |
+| API            | tRPC + TanStack Query                     |
+| Email          | Mailjet + Klaviyo for marketing flows     |
+| Styling        | Tailwind CSS v4, shadcn/ui components     |
+| Visual Effects | GLSL shaders (sacred geometry)            |
+| CI/CD          | GitHub Actions → Vercel (auto-deploy)     |
 
-#### `contacts` - Master contact database
-
-- Stores deduplicated contacts from ALL sources
-- Uses `firstSource` to track initial acquisition channel
-- Uses JSONB `metadata` only for truly dynamic/unpredictable fields
-- Commonly needed fields get their own columns (not buried in metadata)
-
-#### `contactActivities` - Interaction history
-
-- Every form submission creates an activity record
-- Tracks the complete timeline of contact interactions
-- Uses `source` to identify which form/page
-- Stores form-specific data in `metadata` that doesn't need to be queried frequently
-
-#### `contactSources` - Multi-source tracking (NEW)
-
-- Tracks ALL sources a contact has interacted with
-- Solves the problem of contacts coming from multiple forms
-- Enables reporting: "How many contacts came from BOTH waitlist AND event registration?"
-
-### Intake Form Tables
-
-Each intake form gets its own table following this template:
-
-```typescript
-export const [formName]Intake = createTable("[form_name]_intake", {
-  // Identity
-  id: serial("id").primaryKey(),
-
-  // Foreign key to master CRM (with constraint)
-  contactId: integer("contact_id")
-    .notNull()
-    .references(() => contacts.id, { onDelete: "cascade" }),
-
-  // Common fields (present in ALL intake tables)
-  source: varchar("source", { length: 100 }).notNull(),
-  processed: boolean("processed").default(false).notNull(),
-
-  // Form-specific fields (unique to this form)
-  // ... add your custom fields here
-
-  // Timestamps
-  createdAt: timestamp("created_at", { withTimezone: true })
-    .default(sql`CURRENT_TIMESTAMP`)
-    .notNull(),
-});
-```
-
-### Data Flow for Form Submissions
-
-1. **Receive form data** via API endpoint
-2. **Create or update contact** in master CRM
-   - If email exists: update with new data, update `lastContactDate`
-   - If new: create with `firstSource` set to current form
-3. **Create intake record** in form-specific table
-   - Store all form data in dedicated columns
-   - Link to contact via `contactId`
-   - Mark as `processed: true`
-4. **Log activity** in `contactActivities`
-   - Record the interaction type
-   - Store form-specific metadata
-5. **Track source** in `contactSources` (if not already tracked)
-6. **Trigger integrations** (Klaviyo, email, etc.) - non-blocking
-
-### Benefits of This Approach
-
-✅ **Referential Integrity** - Foreign keys prevent orphaned records
-✅ **Query Performance** - Specific columns are indexed and fast to query
-✅ **Multi-Source Tracking** - Full history of which forms each contact submitted
-✅ **Scalability** - Easy pattern to replicate for new forms
-✅ **Data Isolation** - Each form's specific data is cleanly separated
-✅ **Reporting** - Can join across tables to answer complex questions
-✅ **Audit Trail** - Complete history via activities table
-
-### Example: Adding a New "Event Registration" Form
-
-1. Create the table:
-
-```typescript
-export const eventRegistrationIntake = createTable(
-  "event_registration_intake",
-  {
-    id: serial("id").primaryKey(),
-    contactId: integer("contact_id")
-      .notNull()
-      .references(() => contacts.id, { onDelete: "cascade" }),
-
-    // Common fields
-    source: varchar("source", { length: 100 }).notNull(),
-    processed: boolean("processed").default(false).notNull(),
-
-    // Event-specific fields
-    eventId: integer("event_id").notNull(),
-    ticketType: varchar("ticket_type", { length: 50 }),
-    dietaryRestrictions: text("dietary_restrictions"),
-    emergencyContact: varchar("emergency_contact", { length: 255 }),
-    attendeeCount: integer("attendee_count").default(1),
-
-    createdAt: timestamp("created_at", { withTimezone: true })
-      .default(sql`CURRENT_TIMESTAMP`)
-      .notNull(),
-  }
-);
-```
-
-2. Create the API endpoint following the same pattern as `/api/waitlist`
-3. Migration automatically handles the new table
-4. Queries work immediately with proper joins
-
-### Schema Relationship Diagram
+## Branching & Deployment
 
 ```
-contacts (Master CRM)
-    ↑ (contactId FK)
-    ├── waitlistIntake
-    ├── eventRegistrationIntake
-    ├── volunteerSignupIntake
-    ├── contactActivities
-    └── contactSources
-
-Each intake table → Creates activity → Updates contact
+main (production) ← Vercel auto-deploys to live domain
+ └── dev (integration) ← Vercel preview deployment
+      └── feature/* (developer branches) ← Vercel PR previews
 ```
 
-### Querying Examples
+Branch protection: `main` requires PR + approval + CI. `dev` requires CI.
 
-```typescript
-// Find all contacts who submitted waitlist AND event registration
-const multiFormContacts = await db
-  .select()
-  .from(contacts)
-  .innerJoin(waitlistIntake, eq(contacts.id, waitlistIntake.contactId))
-  .innerJoin(
-    eventRegistrationIntake,
-    eq(contacts.id, eventRegistrationIntake.contactId)
-  );
+## Application Structure
 
-// Find all activities for a contact
-const timeline = await db
-  .select()
-  .from(contactActivities)
-  .where(eq(contactActivities.contactId, contactId))
-  .orderBy(contactActivities.createdAt);
+### Routes (106 pages)
 
-// Find all contacts from specific source
-const waitlistContacts = await db
-  .select()
-  .from(contacts)
-  .innerJoin(waitlistIntake, eq(contacts.id, waitlistIntake.contactId))
-  .where(eq(waitlistIntake.source, "community-landing"));
+**Public Site** — Marketing and community pages
+
+- Homepage, About, Pathway, Values, Stewardship, Impact
+- Questionnaire with abandon reminders and community auto-tagging
+- Privacy, Terms, Unsubscribe
+- Landing page experiments (3 series x 8 color variants each)
+
+**Admin Dashboard** (`/admin/*`) — Protected, requires auth + approval
+
+- Overview with KPIs and recent activity
+- CRM: contacts, leads, communities (hierarchical taxonomy)
+- Team: roles, tasks (kanban), ideas board
+- Finance: revenue, expenses, tax, yearly (scaffolded)
+- CMS: gallery, email testing (scaffolded)
+- Ecosystem map, form builder, tooling/database
+- Brand assets, shader gallery, playground demos, templates
+
+**API Routes** (10 endpoints)
+
+- `/api/trpc/[trpc]` — tRPC handler
+- `/api/waitlist`, `/api/questionnaire`, `/api/waiver` — Form submissions
+- `/api/track` — Analytics event tracking
+- `/api/unsubscribe` — Email unsubscribe
+- `/api/chat/el-nido` — AI chat experiment
+- `/api/email-preview`, `/api/location-search` — Utilities
+
+### tRPC Routers (10)
+
+| Router          | Purpose                                    |
+| --------------- | ------------------------------------------ |
+| `admin`         | Admin dashboard data, KPIs                 |
+| `analytics`     | Tracking and metrics                       |
+| `auth`          | User management, approval workflow         |
+| `crm`           | Contacts, leads, activities, communities   |
+| `ecosystem`     | Ecosystem map data                         |
+| `gallery`       | Photo galleries                            |
+| `ideas`         | Ideas board CRUD with edit history         |
+| `questionnaire` | Survey responses, community detection      |
+| `tasks`         | Kanban tasks with custom status categories |
+| `team`          | Team roles and members                     |
+
+### Database (13 tables via Drizzle ORM)
+
+**CRM & Contacts:** `user_profile`, `waitlist_intake`, `questionnaire_response`, `community_tag`
+**Content:** `gallery`, `gallery_image`, `voice_note`
+**Tracking:** `session`, `event`, `email_link`, `email_link_click`, `user_identity_map`
+**Task Management:** `task_status`
+
+Schema: `src/server/db/schema.ts`
+
+## Key Architectural Patterns
+
+### CRM Data Flow
+
+```
+Form submission → API route → Upsert contact → Create intake record → Log activity → Trigger Klaviyo
 ```
 
-### Migration Strategy
+- Email-based deduplication across all forms
+- Multi-source tracking (which forms a contact submitted)
+- GDPR-compliant consent tracking with unsubscribe tokens
 
-To improve the existing structure without breaking changes:
+### Multi-Domain Routing
 
-1. Add foreign key constraints to existing tables
-2. Add `contactSources` table for multi-source tracking
-3. Backfill `contactSources` from existing data
-4. Update API endpoints to use new pattern
-5. Add indexes for common query patterns
+- Configured in `src/lib/domains.ts`
+- Middleware handles domain detection, auth, and redirects
+- `test.joinnewearthcollective.com` → 301 to `/admin`
+- `launch.joinnewearthcollective.com` → 301 to main domain
 
-This can be done incrementally without downtime.
+### User Tracking
+
+- Anonymous visitor tracking with session IDs
+- Identity resolution (anonymous → known user)
+- Email link click tracking with unique tokens
+- UTM parameter capture for attribution
+
+### Admin Dashboard Shell
+
+- Layout at `src/app/admin/layout.tsx`
+- Collapsible sidebar with mobile sheet
+- Standalone pages (shader viewers, playground demos) bypass shell
+- Gallery listing pages get the shell
+
+## Directory Map
+
+```
+src/
+├── app/                    # Next.js App Router
+│   ├── (site)/             # Public pages (grouped route)
+│   ├── admin/              # Protected admin area
+│   ├── api/                # API routes
+│   └── auth/               # Auth callback routes
+├── components/
+│   ├── admin/              # Dashboard shell, sidebar, nav
+│   ├── pages/              # Page-specific components
+│   ├── questionnaire/      # Survey form components
+│   ├── shaders/            # GLSL shader renderers
+│   ├── playground/         # Visual effect demos
+│   └── ui/                 # shadcn/ui + custom components
+├── lib/
+│   ├── auth/               # Supabase auth utilities
+│   ├── consent/            # GDPR consent tracking
+│   ├── crm/                # CRM service layer
+│   ├── email/              # Email sending utilities
+│   ├── klaviyo/            # Marketing email integration
+│   ├── tracking/           # Analytics utilities
+│   └── domains.ts          # Multi-domain configuration
+├── server/
+│   ├── api/routers/        # tRPC routers (10)
+│   └── db/schema.ts        # Database schema (13 tables)
+└── middleware.ts            # Auth & routing middleware
+
+claude-framework/           # Dev framework distribution (33 skills, 18 patterns)
+scripts/                    # Dev scripts, migrations, setup
+shaders/                    # GLSL shader source files
+supabase-scripts/           # Database setup SQL (11 scripts)
+docs/                       # Feature documentation
+```
+
+## Developer Workflow
+
+See `CONTRIBUTING.md` for full setup. See `docs/GIT_WORKFLOW_GUIDE.md` for branching/PR guide.
+
+```
+/checkout feature/thing  → Create branch from dev
+... work ...
+/handoff                 → Save session state
+/pr                      → Open pull request
+/review 42               → Review someone's PR
+/release                 → Ship dev → main
+```

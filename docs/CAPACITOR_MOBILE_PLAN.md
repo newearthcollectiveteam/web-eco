@@ -23,6 +23,7 @@ mobile/
 ```
 
 **capacitor.config.ts** — Key settings:
+
 - `server.url`: `https://joinnewearthcollective.com/admin`
 - `server.allowNavigation`: `['joinnewearthcollective.com', '*.supabase.co']`
 - `ios.appendUserAgent` / `android.appendUserAgent`: `NEC-Native/1.0` (for native detection)
@@ -63,11 +64,12 @@ These changes are harmless on the web (no-ops or zero-value CSS) but enable nati
 **Safe area handling** — CSS `env(safe-area-inset-*)` values are `0px` in browsers but provide correct insets in native WebViews when `viewport-fit=cover` is set. No conditional logic needed.
 
 **Native detection:**
+
 ```typescript
 // src/lib/native.ts
 export function isNativeApp(): boolean {
-  if (typeof window === 'undefined') return false;
-  return navigator.userAgent.includes('NEC-Native');
+  if (typeof window === "undefined") return false;
+  return navigator.userAgent.includes("NEC-Native");
 }
 ```
 
@@ -80,6 +82,7 @@ export function isNativeApp(): boolean {
 | `src/server/api/routers/push-notifications.ts` | tRPC router for token registration |
 
 **Schema addition** — `deviceTokens` table:
+
 - `id`, `userId` (references userProfiles), `token` (unique), `platform` (ios/android), timestamps
 
 **Backend** — Firebase Cloud Messaging (FCM) as unified provider for both iOS (via APNs) and Android.
@@ -93,6 +96,7 @@ export function isNativeApp(): boolean {
 | `assetlinks.json` | Android: same routing for app links |
 
 **Vercel config** — Vercel strips the `.well-known` directory by default. Add to `vercel.json`:
+
 ```json
 {
   "rewrites": [
@@ -116,6 +120,7 @@ export function isNativeApp(): boolean {
 **Splash screen**: #000 background, gold NEC symbol centered, #FACF39 spinner. Auto-hidden after WebView loads.
 
 **Apple Developer Account Setup** (prerequisite):
+
 1. Enroll at [developer.apple.com](https://developer.apple.com/programs/) — $99/year
 2. Create App ID: `com.newearthcollective.admin`
 3. Enable capabilities: Push Notifications, Associated Domains
@@ -123,12 +128,14 @@ export function isNativeApp(): boolean {
 5. Create provisioning profiles (development + distribution)
 
 **iOS config** (Xcode):
+
 - Bundle ID: `com.newearthcollective.admin`
 - Minimum: iOS 16.0
 - Capabilities: Push Notifications, Associated Domains
 - Privacy manifest for network access
 
 **Android config** (Android Studio):
+
 - Package: `com.newearthcollective.admin`
 - `google-services.json` for FCM
 - Intent filters for deep links
@@ -137,13 +144,13 @@ export function isNativeApp(): boolean {
 
 ## What Needs vs Doesn't Need App Store Updates
 
-| App Store Update Needed | Web Deploy Only |
-|------------------------|-----------------|
-| New Capacitor plugin | Any UI/page changes |
-| Config changes (URL, plugins) | tRPC API changes |
-| Native code (Swift/Kotlin) | Bug fixes, features |
-| Icon/splash changes | Auth flow changes |
-| Deep link config | Database schema changes |
+| App Store Update Needed       | Web Deploy Only         |
+| ----------------------------- | ----------------------- |
+| New Capacitor plugin          | Any UI/page changes     |
+| Config changes (URL, plugins) | tRPC API changes        |
+| Native code (Swift/Kotlin)    | Bug fixes, features     |
+| Icon/splash changes           | Auth flow changes       |
+| Deep link config              | Database schema changes |
 
 ## Verification
 

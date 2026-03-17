@@ -13,10 +13,10 @@ export const metadata: Metadata = {
   description: "Micro-apps from the New Earth Collective",
 };
 
-export default function AppsLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="bg-[#0a0a0a] text-white">
-      {children}
-    </div>
-  );
+export default function AppsLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return <div className="bg-[#0a0a0a] text-white">{children}</div>;
 }

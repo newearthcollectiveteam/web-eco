@@ -422,7 +422,8 @@ export const EL_NIDO_FAQ_PROMPTS = {
     },
     {
       label: "I just arrived as a volunteer",
-      prompt: "I just arrived as a volunteer. How do I check in and get my wristband?",
+      prompt:
+        "I just arrived as a volunteer. How do I check in and get my wristband?",
     },
   ],
   /** Prompts shown below as "general festival" */
@@ -433,7 +434,8 @@ export const EL_NIDO_FAQ_PROMPTS = {
     },
     {
       label: "What stages does Envision have?",
-      prompt: "What are all the stages at Envision and what kind of content does each have?",
+      prompt:
+        "What are all the stages at Envision and what kind of content does each have?",
     },
     {
       label: "How do I get around?",

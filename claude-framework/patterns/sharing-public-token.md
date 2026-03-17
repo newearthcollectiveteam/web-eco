@@ -119,10 +119,9 @@ export default async function SharedPage({ params }) {
 ### 5. Middleware — Bypass Auth
 
 ```typescript
-const needsAuth = !pathname.startsWith('/s/') && (
-  pathname.startsWith('/admin') ||
-  pathname.startsWith('/portal')
-);
+const needsAuth =
+  !pathname.startsWith("/s/") &&
+  (pathname.startsWith("/admin") || pathname.startsWith("/portal"));
 ```
 
 ### 6. UI — Share Controls

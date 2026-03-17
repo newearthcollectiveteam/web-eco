@@ -105,7 +105,7 @@ export default function ElNidoChatPage() {
       });
       if (activeThreadId === id) setActiveThreadId(null);
     },
-    [activeThreadId],
+    [activeThreadId]
   );
 
   const sendMessage = useCallback(
@@ -145,7 +145,7 @@ export default function ElNidoChatPage() {
             messages: [...t.messages, userMsg, assistantMsg],
             updatedAt: Date.now(),
           };
-        }),
+        })
       );
 
       setInput("");
@@ -158,10 +158,9 @@ export default function ElNidoChatPage() {
       try {
         // Get current messages for API (before adding the empty assistant)
         const currentThread = threads.find((t) => t.id === tid);
-        const apiMessages = [
-          ...(currentThread?.messages ?? []),
-          userMsg,
-        ].map((m) => ({ role: m.role, content: m.content }));
+        const apiMessages = [...(currentThread?.messages ?? []), userMsg].map(
+          (m) => ({ role: m.role, content: m.content })
+        );
 
         const res = await fetch("/api/chat/el-nido", {
           method: "POST",
@@ -208,7 +207,7 @@ export default function ElNidoChatPage() {
                       msgs[msgs.length - 1] = { ...last, content: acc };
                     }
                     return { ...t, messages: msgs, updatedAt: Date.now() };
-                  }),
+                  })
                 );
               }
             } catch {
@@ -229,7 +228,7 @@ export default function ElNidoChatPage() {
                 msgs[msgs.length - 1] = { ...last, content: errorText };
               }
               return { ...t, messages: msgs };
-            }),
+            })
           );
         }
       } finally {
@@ -237,7 +236,7 @@ export default function ElNidoChatPage() {
         abortRef.current = null;
       }
     },
-    [activeThreadId, isStreaming, threads],
+    [activeThreadId, isStreaming, threads]
   );
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -409,7 +408,7 @@ export default function ElNidoChatPage() {
         </div>
 
         {/* Input */}
-        <div className="shrink-0 border-t border-white/10 px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3">
+        <div className="shrink-0 border-t border-white/10 px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
           <form
             onSubmit={handleSubmit}
             className="mx-auto flex max-w-3xl items-end gap-2"
@@ -440,7 +439,10 @@ export default function ElNidoChatPage() {
               className="opacity-50"
             />
             <span className="text-[10px] text-gray-500">
-              Powered by <span className="font-medium text-gray-400">New Earth Collective</span>
+              Powered by{" "}
+              <span className="font-medium text-gray-400">
+                New Earth Collective
+              </span>
             </span>
           </div>
         </div>
@@ -464,7 +466,10 @@ function WelcomeScreen({
           </div>
           <h2
             className="mb-1 text-lg font-bold text-white sm:text-2xl"
-            style={{ fontFamily: "Airwaves, sans-serif", letterSpacing: "0.05em" }}
+            style={{
+              fontFamily: "Airwaves, sans-serif",
+              letterSpacing: "0.05em",
+            }}
           >
             El Nido Chat
           </h2>
@@ -475,7 +480,7 @@ function WelcomeScreen({
 
         {/* Stage-specific prompts */}
         <div className="mb-4">
-          <p className="mb-2 text-[10px] font-medium uppercase tracking-wider text-gray-500 sm:text-xs">
+          <p className="mb-2 text-[10px] font-medium tracking-wider text-gray-500 uppercase sm:text-xs">
             El Nido Stage
           </p>
           <div className="grid grid-cols-2 gap-2">
@@ -493,7 +498,7 @@ function WelcomeScreen({
 
         {/* General festival prompts */}
         <div>
-          <p className="mb-2 text-[10px] font-medium uppercase tracking-wider text-gray-500 sm:text-xs">
+          <p className="mb-2 text-[10px] font-medium tracking-wider text-gray-500 uppercase sm:text-xs">
             General Festival
           </p>
           <div className="grid grid-cols-2 gap-2">
@@ -525,22 +530,28 @@ function FormattedMessage({ content }: { content: string }) {
 
     if (line.startsWith("### ")) {
       elements.push(
-        <p key={i} className="mb-1 mt-3 text-sm font-semibold text-white first:mt-0">
+        <p
+          key={i}
+          className="mt-3 mb-1 text-sm font-semibold text-white first:mt-0"
+        >
           {line.slice(4)}
-        </p>,
+        </p>
       );
     } else if (line.startsWith("## ")) {
       elements.push(
-        <p key={i} className="mb-1 mt-3 text-sm font-bold text-white first:mt-0">
+        <p
+          key={i}
+          className="mt-3 mb-1 text-sm font-bold text-white first:mt-0"
+        >
           {line.slice(3)}
-        </p>,
+        </p>
       );
     } else if (line.startsWith("- ") || line.startsWith("* ")) {
       elements.push(
         <p key={i} className="ml-3 text-sm">
           <span className="mr-1.5 text-[#facf39]">&bull;</span>
           <InlineFormat text={line.slice(2)} />
-        </p>,
+        </p>
       );
     } else if (line.trim() === "") {
       elements.push(<div key={i} className="h-2" />);
@@ -548,7 +559,7 @@ function FormattedMessage({ content }: { content: string }) {
       elements.push(
         <p key={i} className="text-sm">
           <InlineFormat text={line} />
-        </p>,
+        </p>
       );
     }
   }

@@ -5,6 +5,7 @@
 ## Problem It Solves
 
 You have one codebase but need to serve:
+
 - Multiple brands (whitelabel)
 - Multiple environments with different features (staging vs production)
 - Subdomains with different functionality (app.example.com vs docs.example.com)
@@ -410,7 +411,9 @@ Auto-redirect old routes to prevent 404s:
 ```typescript
 const deprecatedRoutes = ["/old-landing", "/v1/signup", "/beta"];
 if (deprecatedRoutes.some((r) => pathname.startsWith(r))) {
-  return NextResponse.redirect(new URL("/", request.nextUrl.origin), { status: 301 });
+  return NextResponse.redirect(new URL("/", request.nextUrl.origin), {
+    status: 301,
+  });
 }
 ```
 
@@ -442,7 +445,10 @@ Allow specific routes within protected areas to be public:
 ```typescript
 const PUBLIC_EMBED_ROUTES = ["/admin/widgets/embed"];
 
-if (pathname.startsWith("/admin") && !PUBLIC_EMBED_ROUTES.some((r) => pathname.startsWith(r))) {
+if (
+  pathname.startsWith("/admin") &&
+  !PUBLIC_EMBED_ROUTES.some((r) => pathname.startsWith(r))
+) {
   if (!user) return NextResponse.redirect(loginUrl);
 }
 ```
@@ -450,6 +456,7 @@ if (pathname.startsWith("/admin") && !PUBLIC_EMBED_ROUTES.some((r) => pathname.s
 ## Source
 
 Extracted from: `web-eco` (New Earth Collective)
+
 - Multi-subdomain site serving different experiences (main, launch, test, apps)
 - Domain-specific navigation and theming
 - Non-blocking analytics tracking on all routes

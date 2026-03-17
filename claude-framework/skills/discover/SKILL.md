@@ -11,6 +11,7 @@ Dynamically search for, evaluate, and install external skills and MCP servers ba
 ## How It Works
 
 When invoked, this skill:
+
 1. **Analyzes current project** - Reads package.json, CLAUDE.md, code patterns
 2. **Checks installed MCPs** - Runs `claude mcp list`
 3. **Searches live sources** - MCP Registry, GitHub, npm
@@ -43,6 +44,7 @@ cat CLAUDE.md 2>/dev/null
 ```
 
 Build a profile:
+
 - Framework (Next.js, React, etc.)
 - Database (Supabase, Postgres, etc.)
 - Auth method
@@ -52,6 +54,7 @@ Build a profile:
 ### 2. Search Live Sources
 
 **If user has specific need:**
+
 ```
 WebSearch: "MCP server {user_need} Claude 2026"
 WebFetch: https://registry.modelcontextprotocol.io/
@@ -59,6 +62,7 @@ WebFetch: https://github.com/punkpeye/awesome-mcp-servers
 ```
 
 **Extract from results:**
+
 - Tool name
 - Purpose
 - Install command
@@ -116,6 +120,7 @@ claude mcp list
 ```
 
 If failed:
+
 - Check requirements (Python version, Node, etc.)
 - Look for missing dependencies
 - Suggest manual setup steps
@@ -124,19 +129,20 @@ If failed:
 
 **Trigger phrases → Search focus:**
 
-| User says | Search for |
-|-----------|------------|
-| "PDF", "Word", "Excel" | Document processing MCP |
-| "Stripe", "payments", "billing" | Payment integration MCP |
-| "graph", "relationships", "knowledge" | Graph database MCP |
-| "remember", "context", "memory" | Persistent memory MCP |
-| "images", "SVG", "icons" | Image generation MCP |
-| "test", "E2E", "Playwright" | Testing tools |
-| "GPT", "Gemini", "multi-model" | LLM bridge MCP |
+| User says                             | Search for              |
+| ------------------------------------- | ----------------------- |
+| "PDF", "Word", "Excel"                | Document processing MCP |
+| "Stripe", "payments", "billing"       | Payment integration MCP |
+| "graph", "relationships", "knowledge" | Graph database MCP      |
+| "remember", "context", "memory"       | Persistent memory MCP   |
+| "images", "SVG", "icons"              | Image generation MCP    |
+| "test", "E2E", "Playwright"           | Testing tools           |
+| "GPT", "Gemini", "multi-model"        | LLM bridge MCP          |
 
 ## Live Resources
 
 When searching, query these:
+
 - **MCP Registry**: https://registry.modelcontextprotocol.io/
 - **Awesome MCP Servers**: https://github.com/punkpeye/awesome-mcp-servers
 - **Awesome Claude Skills**: https://github.com/VoltAgent/awesome-claude-skills
@@ -148,16 +154,19 @@ When searching, query these:
 ### MCP Servers
 
 **HTTP-based (easiest):**
+
 ```bash
 claude mcp add --transport http <name> <url>
 ```
 
 **NPX-based:**
+
 ```bash
 claude mcp add <name> -- npx -y <package-name>
 ```
 
 **Python-based (more complex):**
+
 ```bash
 git clone <repo>
 cd <repo>
@@ -170,6 +179,7 @@ claude mcp add-json "<name>" '{"command":"python","args":["-m","<module>.server"
 ### Skills (Claude Code)
 
 **From GitHub:**
+
 ```bash
 # Clone to personal skills
 git clone <repo> ~/.claude/skills/<name>
@@ -179,6 +189,7 @@ git clone <repo> .claude/skills/<name>
 ```
 
 **Manual creation:**
+
 ```bash
 mkdir -p ~/.claude/skills/<name>
 # Create SKILL.md with frontmatter:
@@ -191,6 +202,7 @@ mkdir -p ~/.claude/skills/<name>
 
 **Official Anthropic skills:**
 Already built-in, just invoke by name:
+
 - `anthropics/pdf`, `anthropics/docx`, `anthropics/xlsx`
 - `anthropics/webapp-testing`, `anthropics/mcp-builder`
 
@@ -235,11 +247,13 @@ Claude: ✅ Stripe MCP installed. Will authenticate on first use.
 ## Maintenance
 
 **Check for updates:**
+
 ```bash
 /discover --update
 ```
 
 **Remove unused:**
+
 ```bash
 claude mcp remove <name>
 ```

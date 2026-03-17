@@ -22,7 +22,10 @@ export default function AppsPage() {
       <div className="mb-10 text-center sm:mb-14">
         <h1
           className="mb-2 text-3xl font-bold tracking-wide text-white sm:text-4xl"
-          style={{ fontFamily: "Airwaves, sans-serif", letterSpacing: "0.05em" }}
+          style={{
+            fontFamily: "Airwaves, sans-serif",
+            letterSpacing: "0.05em",
+          }}
         >
           NEC Apps
         </h1>

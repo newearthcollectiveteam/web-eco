@@ -61,9 +61,12 @@ function EditableField({
         onBlur={save}
         onKeyDown={(e) => {
           if (e.key === "Enter") save();
-          if (e.key === "Escape") { setDraft(value); setEditing(false); }
+          if (e.key === "Escape") {
+            setDraft(value);
+            setEditing(false);
+          }
         }}
-        className="rounded border border-primary/30 bg-transparent px-1 py-0.5 text-sm focus:border-primary focus:outline-none"
+        className="border-primary/30 focus:border-primary rounded border bg-transparent px-1 py-0.5 text-sm focus:outline-none"
       />
     );
   }

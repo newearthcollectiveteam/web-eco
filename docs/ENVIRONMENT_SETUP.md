@@ -16,25 +16,28 @@ Then fill in the values below.
 
 These connect you to the shared database and auth system.
 
-| Variable | Where to get it | Shared or personal? |
-|---|---|---|
-| `NEXT_PUBLIC_SUPABASE_URL` | Supabase Dashboard → Settings → API → Project URL | Shared (same for everyone) |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase Dashboard → Settings → API → anon/public key | Shared (same for everyone) |
-| `SUPABASE_SERVICE_ROLE_KEY` | Supabase Dashboard → Settings → API → service_role key | Shared (same for everyone) |
-| `DATABASE_URL` | Supabase Dashboard → Settings → Database → Connection string (Transaction mode) | Shared (same for everyone) |
+| Variable                        | Where to get it                                                                 | Shared or personal?        |
+| ------------------------------- | ------------------------------------------------------------------------------- | -------------------------- |
+| `NEXT_PUBLIC_SUPABASE_URL`      | Supabase Dashboard → Settings → API → Project URL                               | Shared (same for everyone) |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase Dashboard → Settings → API → anon/public key                           | Shared (same for everyone) |
+| `SUPABASE_SERVICE_ROLE_KEY`     | Supabase Dashboard → Settings → API → service_role key                          | Shared (same for everyone) |
+| `DATABASE_URL`                  | Supabase Dashboard → Settings → Database → Connection string (Transaction mode) | Shared (same for everyone) |
 
 **Getting access:**
+
 1. Ask the project lead to invite you to the Supabase project
 2. Go to [app.supabase.com](https://app.supabase.com)
 3. Accept the invitation
 4. Navigate to the project → Settings → API
 
 **DATABASE_URL format:**
+
 ```
 postgresql://postgres.[PROJECT-REF]:[PASSWORD]@aws-0-us-east-1.pooler.supabase.com:6543/postgres
 ```
 
 **Important:** If the password contains special characters, URL-encode them:
+
 - `!` → `%21`
 - `*` → `%2A`
 - `@` → `%40`
@@ -42,6 +45,7 @@ postgresql://postgres.[PROJECT-REF]:[PASSWORD]@aws-0-us-east-1.pooler.supabase.c
 ### Important: Shared Database
 
 Everyone connects to the **same** Supabase project. This means:
+
 - Your test data is visible to others
 - Don't delete data you didn't create
 - Coordinate before running schema migrations (`npm run db:push`)
@@ -53,12 +57,12 @@ Everyone connects to the **same** Supabase project. This means:
 
 For testing email features locally. Skip if you're not working on email.
 
-| Variable | Where to get it | Shared or personal? |
-|---|---|---|
-| `MAILJET_API_KEY` | Ask project lead | Shared |
-| `MAILJET_SECRET_KEY` | Ask project lead | Shared |
-| `MAILJET_FROM_EMAIL` | Use default | Shared |
-| `MAILJET_FROM_NAME` | Use default | Shared |
+| Variable             | Where to get it  | Shared or personal? |
+| -------------------- | ---------------- | ------------------- |
+| `MAILJET_API_KEY`    | Ask project lead | Shared              |
+| `MAILJET_SECRET_KEY` | Ask project lead | Shared              |
+| `MAILJET_FROM_EMAIL` | Use default      | Shared              |
+| `MAILJET_FROM_NAME`  | Use default      | Shared              |
 
 **Without email configured:** Form submissions will still work, but confirmation emails won't send. You'll see errors in the console — that's fine for most development.
 
@@ -66,30 +70,30 @@ For testing email features locally. Skip if you're not working on email.
 
 For testing marketing email flows. Most developers can skip this.
 
-| Variable | Where to get it | Shared or personal? |
-|---|---|---|
-| `KLAVIYO_API_KEY` | Ask project lead | Shared (has sending quota) |
-| `KLAVIYO_PUBLIC_KEY` | Ask project lead | Shared |
-| `KLAVIYO_METRIC_ID` | Ask project lead | Shared |
+| Variable             | Where to get it  | Shared or personal?        |
+| -------------------- | ---------------- | -------------------------- |
+| `KLAVIYO_API_KEY`    | Ask project lead | Shared (has sending quota) |
+| `KLAVIYO_PUBLIC_KEY` | Ask project lead | Shared                     |
+| `KLAVIYO_METRIC_ID`  | Ask project lead | Shared                     |
 
 **Without Klaviyo:** Everything works except marketing automation triggers.
 
 ### Anthropic (AI Features)
 
-| Variable | Where to get it | Shared or personal? |
-|---|---|---|
+| Variable            | Where to get it                                        | Shared or personal?                    |
+| ------------------- | ------------------------------------------------------ | -------------------------------------- |
 | `ANTHROPIC_API_KEY` | [console.anthropic.com](https://console.anthropic.com) | **Personal** (each dev uses their own) |
 
 **Without Anthropic:** AI-powered features won't work, but the rest of the app is unaffected.
 
 ### Analytics & Tracking
 
-| Variable | Purpose | Default |
-|---|---|---|
-| `IP_HASH_SALT` | Privacy-safe IP hashing | Generate any random string |
-| `NEXT_PUBLIC_COOKIE_DOMAIN` | Cross-subdomain tracking | Use `localhost` for local dev |
-| `NEXT_PUBLIC_BASE_URL` | Email template links | `http://localhost:3000` |
-| `NEXT_PUBLIC_EMAIL_ASSET_BASE_URL` | Email image URLs | `http://localhost:3000` |
+| Variable                           | Purpose                  | Default                       |
+| ---------------------------------- | ------------------------ | ----------------------------- |
+| `IP_HASH_SALT`                     | Privacy-safe IP hashing  | Generate any random string    |
+| `NEXT_PUBLIC_COOKIE_DOMAIN`        | Cross-subdomain tracking | Use `localhost` for local dev |
+| `NEXT_PUBLIC_BASE_URL`             | Email template links     | `http://localhost:3000`       |
+| `NEXT_PUBLIC_EMAIL_ASSET_BASE_URL` | Email image URLs         | `http://localhost:3000`       |
 
 ## Verifying Your Setup
 

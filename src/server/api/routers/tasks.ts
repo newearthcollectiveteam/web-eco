@@ -17,7 +17,11 @@ export const tasksRouter = createTRPCRouter({
     .input(
       z.object({
         name: z.string().min(1).max(100),
-        slug: z.string().min(1).max(50).regex(/^[a-z0-9_]+$/),
+        slug: z
+          .string()
+          .min(1)
+          .max(50)
+          .regex(/^[a-z0-9_]+$/),
         color: z.string().optional(),
         icon: z.string().optional(),
       })
@@ -25,7 +29,9 @@ export const tasksRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       // Get max sort order
       const [maxOrder] = await ctx.db
-        .select({ max: sql<number>`coalesce(max(${taskStatuses.sortOrder}), -1)` })
+        .select({
+          max: sql<number>`coalesce(max(${taskStatuses.sortOrder}), -1)`,
+        })
         .from(taskStatuses);
 
       const [status] = await ctx.db
@@ -216,7 +222,8 @@ export const tasksRouter = createTRPCRouter({
       const data: Record<string, unknown> = {};
 
       if (updates.title !== undefined) data.title = updates.title;
-      if (updates.description !== undefined) data.description = updates.description;
+      if (updates.description !== undefined)
+        data.description = updates.description;
       if (updates.status !== undefined) {
         data.status = updates.status;
         // Check if this is the last status (likely "done"-equivalent)
@@ -232,7 +239,8 @@ export const tasksRouter = createTRPCRouter({
         }
       }
       if (updates.priority !== undefined) data.priority = updates.priority;
-      if (updates.assignedTo !== undefined) data.assignedTo = updates.assignedTo;
+      if (updates.assignedTo !== undefined)
+        data.assignedTo = updates.assignedTo;
       if (updates.startDate !== undefined) {
         data.startDate = updates.startDate ? new Date(updates.startDate) : null;
       }
@@ -258,7 +266,11 @@ export const tasksRouter = createTRPCRouter({
 
   getTeamMembers: protectedProcedure.query(async ({ ctx }) => {
     const members = await ctx.db
-      .select({ id: userProfiles.id, fullName: userProfiles.fullName, email: userProfiles.email })
+      .select({
+        id: userProfiles.id,
+        fullName: userProfiles.fullName,
+        email: userProfiles.email,
+      })
       .from(userProfiles);
     return members.map((m) => ({ id: m.id, name: m.fullName ?? m.email }));
   }),

@@ -28,7 +28,7 @@ export default function ImpactPage() {
   return (
     <div className="bg-black">
       {/* Hero Section */}
-      <section className="relative overflow-hidden pb-16 pt-32">
+      <section className="relative overflow-hidden pt-32 pb-16">
         {/* Flower of Life Shader Background */}
         <div className="absolute inset-0 opacity-15">
           <iframe
@@ -139,7 +139,7 @@ export default function ImpactPage() {
             </h2>
           </div>
 
-          <div className="space-y-4 max-w-2xl text-base leading-relaxed text-white/60">
+          <div className="max-w-2xl space-y-4 text-base leading-relaxed text-white/60">
             <p>
               Impact Missions are organized volunteer experiences where the New
               Earth Collective community comes together to serve. We partner

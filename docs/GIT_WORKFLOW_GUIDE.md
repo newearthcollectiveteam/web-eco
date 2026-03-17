@@ -27,12 +27,14 @@ Vercel deploys to production
 ## Your Two Branches
 
 ### `main` = Production
+
 - This is what's live on your real domain
 - **Nobody pushes directly to main** (protected)
 - Code only gets here through a PR from `dev`
 - Vercel auto-deploys this to production
 
 ### `dev` = Staging / Integration
+
 - This is where new work lands first
 - Your dev's PRs merge into `dev`
 - Vercel gives `dev` its own preview URL so you can see changes live
@@ -43,12 +45,14 @@ Vercel deploys to production
 Think of it like a proposal. Your dev is saying: "Here are changes I'd like to add. Please look them over."
 
 **What you see when reviewing a PR:**
+
 - A title and description of what changed
 - A diff showing every line added (green) or removed (red)
 - Whether the automated checks passed or failed
 - A place to leave comments on specific lines of code
 
 **What you can do:**
+
 - **Approve** — looks good, merge it
 - **Request changes** — leave comments about what to fix
 - **Comment** — just leave feedback without approving or rejecting
@@ -171,6 +175,7 @@ git push origin dev
 On GitHub: go to the repo → click **"Compare"** → set base `main`, compare `dev`.
 
 Or locally:
+
 ```bash
 git diff main..dev --stat
 ```
@@ -191,10 +196,10 @@ git push
 
 ## Quick Reference
 
-| Action | How |
-|---|---|
-| See open PRs | github.com/newearthcollectiveteam/web-eco/pulls |
-| See CI results | Click "Checks" tab on any PR |
-| See preview deployment | Look for Vercel bot comment on PR |
-| Merge dev → main | Create PR with base:main, compare:dev |
-| Check what's different | GitHub Compare or `git diff main..dev --stat` |
+| Action                 | How                                             |
+| ---------------------- | ----------------------------------------------- |
+| See open PRs           | github.com/newearthcollectiveteam/web-eco/pulls |
+| See CI results         | Click "Checks" tab on any PR                    |
+| See preview deployment | Look for Vercel bot comment on PR               |
+| Merge dev → main       | Create PR with base:main, compare:dev           |
+| Check what's different | GitHub Compare or `git diff main..dev --stat`   |

@@ -44,10 +44,10 @@ git fetch origin
 
 If the user specified a branch, use that. Otherwise, auto-detect:
 
-| Current branch | Sync with |
-|---|---|
-| `dev` | `origin/main` (pull production changes) |
-| `main` | `origin/main` (just pull) |
+| Current branch             | Sync with                                    |
+| -------------------------- | -------------------------------------------- |
+| `dev`                      | `origin/main` (pull production changes)      |
+| `main`                     | `origin/main` (just pull)                    |
 | `feature/*`, `fix/*`, etc. | `origin/dev` (get latest integration branch) |
 
 ```bash
@@ -105,11 +105,13 @@ List the conflicting files:
 Then for each conflicting file, read it and show the conflict markers with context. Help the user understand what changed on each side.
 
 Use AskUserQuestion:
+
 1. **Help me resolve** — walk through each conflict
 2. **Abort merge** — `git merge --abort` and return to previous state
 3. **I'll handle it** — leave conflicts for manual resolution
 
 If "Help me resolve":
+
 - For each conflicting file, read the conflict sections
 - Explain what each side changed
 - Suggest the resolution (usually keep both, or pick the newer version)
@@ -140,6 +142,7 @@ This is normal for feature branches. The merge handles it. Just note both counts
 ### Sync dev with main (after a release)
 
 When on `dev` and syncing with `main`:
+
 ```bash
 git checkout dev
 git pull origin dev
@@ -165,6 +168,7 @@ When the user seems new to git, explain these concepts naturally:
 - **Fetch** = Checking what's new on GitHub without changing your local code yet.
 
 When merge conflicts happen, be reassuring:
+
 - "This is completely normal when multiple people work on the same project."
 - "I can help you resolve this — we just need to decide which changes to keep."
 - "Your code is safe — nothing is lost during a conflict."
@@ -173,9 +177,9 @@ If the user seems overwhelmed by a conflict, offer: "Want me to look at the conf
 
 ## Relationship to Other Skills
 
-| Skill | Role |
-|-------|------|
-| `/checkout` | Create branch (often followed by /sync) |
-| `/sync` | Keep branch up to date |
-| `/pr` | Open PR (may need /sync first if behind) |
-| `/release` | Merge dev → main (uses sync internally) |
+| Skill       | Role                                     |
+| ----------- | ---------------------------------------- |
+| `/checkout` | Create branch (often followed by /sync)  |
+| `/sync`     | Keep branch up to date                   |
+| `/pr`       | Open PR (may need /sync first if behind) |
+| `/release`  | Merge dev → main (uses sync internally)  |

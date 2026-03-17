@@ -164,7 +164,9 @@ export default function ThankYouPage() {
                   )}
                 </Button>
                 <p className="text-xs text-white/40">
-                  {canShare ? "save to photos or share directly" : "or screenshot to share"}
+                  {canShare
+                    ? "save to photos or share directly"
+                    : "or screenshot to share"}
                 </p>
               </div>
               {displayName && (

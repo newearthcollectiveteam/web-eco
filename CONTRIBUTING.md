@@ -45,6 +45,7 @@ cp .env.example .env
 Fill in the values in `.env`. See `docs/ENVIRONMENT_SETUP.md` for a detailed walkthrough of every variable.
 
 **Quick version:** Ask the project lead for:
+
 - **Supabase URL and anon key**
 - **Database connection string**
 - **Service role key**
@@ -58,6 +59,7 @@ We use Claude Code with a unified development framework. To get the same setup:
 ```
 
 This installs:
+
 - Development framework and standards
 - 27 custom skills (code quality, session management, etc.)
 - 18 reusable patterns
@@ -94,6 +96,7 @@ git checkout -b feature/your-feature-name
 ### Branch naming
 
 Use descriptive prefixes:
+
 - `feature/` — new functionality (e.g., `feature/calendar-integration`)
 - `fix/` — bug fixes (e.g., `fix/crm-search-crash`)
 - `refactor/` — code improvements (e.g., `refactor/api-error-handling`)
@@ -117,6 +120,7 @@ The project lead will merge your PR into `dev`. Periodically, `dev` gets merged 
 ### Before committing
 
 The pre-commit hook runs automatically:
+
 - Prettier formatting
 - ESLint checks
 - TypeScript type checking
@@ -140,14 +144,14 @@ npm run quality-check   # Runs format, lint, typecheck, and build
 
 ### File organization
 
-| What you're building | Where it goes |
-|---|---|
-| New page | `src/app/<route>/page.tsx` |
-| Admin page | `src/app/admin/<route>/page.tsx` |
-| API route | `src/app/api/<route>/route.ts` |
-| tRPC router | `src/server/api/routers/<name>.ts` |
-| Reusable component | `src/components/<name>.tsx` |
-| Admin component | `src/components/admin/<name>.tsx` |
+| What you're building    | Where it goes                            |
+| ----------------------- | ---------------------------------------- |
+| New page                | `src/app/<route>/page.tsx`               |
+| Admin page              | `src/app/admin/<route>/page.tsx`         |
+| API route               | `src/app/api/<route>/route.ts`           |
+| tRPC router             | `src/server/api/routers/<name>.ts`       |
+| Reusable component      | `src/components/<name>.tsx`              |
+| Admin component         | `src/components/admin/<name>.tsx`        |
 | Page-specific component | `src/components/pages/<page>/<name>.tsx` |
 
 ## Working with the Team
@@ -167,6 +171,7 @@ Check `TODO.md` for available work. Add your `@name` to items you're working on 
 ### Don't step on toes
 
 Before starting a new feature:
+
 1. Check if there's an open PR or branch touching the same area
 2. Let the team know what you're working on (Slack, GitHub issue, etc.)
 3. Run `/sync` to make sure you have the latest code

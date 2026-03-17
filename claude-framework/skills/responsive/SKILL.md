@@ -21,6 +21,7 @@ Audit a page, component, or route for mobile responsiveness issues. Checks layou
 ### Step 1: Identify Scope
 
 Ask user or infer from context:
+
 - Specific file path to audit
 - Entire route/page
 - Specific component
@@ -193,6 +194,7 @@ Present findings in this format:
 ```
 
 **Severity Guide**:
+
 - **Critical**: Layout breaks, content overflows viewport, elements unreachable
 - **Warning**: Degraded UX — tiny touch targets, cramped spacing, poor scaling
 - **Info**: Could be better — missing responsive variants, hardcoded values
@@ -209,11 +211,13 @@ After presenting the report, ask:
 ### Step 5: Apply Fixes (if requested)
 
 For each fix:
+
 1. Read the file
 2. Apply the minimal fix (prefer adding responsive prefixes over restructuring)
 3. Note the change
 
 **Common fix patterns**:
+
 - `grid-cols-3` → `grid-cols-1 sm:grid-cols-2 lg:grid-cols-3`
 - `text-6xl` → `text-3xl sm:text-4xl lg:text-6xl`
 - `w-[500px]` → `w-full max-w-[500px]`
@@ -236,6 +240,7 @@ Projects can customize in CLAUDE.md:
 
 ```markdown
 ## Responsive Audit Config
+
 - Min touch target: 44px (default) or 48px
 - Skip files: [glob patterns to exclude]
 - Breakpoint strategy: mobile-first (default) or desktop-first

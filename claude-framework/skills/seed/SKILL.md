@@ -11,6 +11,7 @@ Interactively scaffold a new project based on the unified tech stack (Next.js, t
 ## Overview
 
 Creates a brand-agnostic, fully-configured project with:
+
 - Next.js 16 + React 19 + TypeScript
 - tRPC 11 + TanStack Query
 - Drizzle ORM + Supabase (PostgreSQL)
@@ -26,6 +27,7 @@ Creates a brand-agnostic, fully-configured project with:
 Ask the user for project details:
 
 **Required:**
+
 ```
 Project name? (e.g., "my-awesome-app")
 Project description? (one sentence)
@@ -34,12 +36,14 @@ Target directory? (default: ../<project-name>)
 ```
 
 **SEO/Metadata (optional but recommended):**
+
 ```
 Production URL? (e.g., "https://myapp.com" - for OpenGraph/SEO, can set later)
 Twitter handle? (e.g., "@myhandle" - optional, for Twitter cards)
 ```
 
 **Tech Options:**
+
 ```
 Include GLSL shader support? [y/N]
 Include multi-domain routing? [y/N]
@@ -48,6 +52,7 @@ Include example database schema? [Y/n]
 ```
 
 **Auth Options:**
+
 ```
 Auth type?
   1. Email/password only (default)
@@ -57,6 +62,7 @@ Auth type?
 ```
 
 **UI Options:**
+
 ```
 Include full shadcn/ui component library? [Y/n]
 Include example pages (landing, dashboard, settings)? [Y/n]
@@ -64,6 +70,7 @@ Dark mode support? [Y/n]
 ```
 
 **Documentation:**
+
 ```
 Create ROADMAP.md for phased development? [y/N]
 ```
@@ -145,17 +152,20 @@ ls -la "$(dirname <target>)"
 ### 4. Generate Core Files
 
 **package.json:**
+
 - Name and description from user input
 - All standard dependencies
 - Standard scripts (dev, build, db:push, db:studio, typecheck)
 
 **CLAUDE.md:**
+
 - Project-specific instructions
 - Quick commands
 - Key paths
 - Generated based on selected options
 
 **.env.example:**
+
 ```bash
 # Database
 DATABASE_URL="postgresql://..."
@@ -171,6 +181,7 @@ NODE_ENV="development"
 ```
 
 **README.md:**
+
 ```markdown
 # <Project Name>
 
@@ -200,16 +211,19 @@ NODE_ENV="development"
 ### 5. Conditional Features
 
 **If multi-domain enabled:**
+
 - Add `src/lib/domains.ts` with domain configuration template
 - Add domain detection to middleware
 - Add example domain configs (localhost variants for dev)
 
 **If shaders enabled:**
+
 - Add `shaders/` directory with example GLSL files
 - Add `src/components/shaders/shadertoy-renderer.tsx`
 - Add WebGL types to tsconfig
 
 **If OAuth enabled:**
+
 - Add OAuth provider configuration
 - Add callback route handlers
 - Update .env.example with OAuth secrets
@@ -284,6 +298,7 @@ npm run typecheck  # Type check without building
 ## Source Templates
 
 Templates are stored in `~/.claude/templates/seed/` and include:
+
 - Configuration files (package.json, tsconfig, etc.)
 - Server code (tRPC, Drizzle schema)
 - Client code (providers, utilities)
@@ -293,17 +308,18 @@ Templates are stored in `~/.claude/templates/seed/` and include:
 
 Replace these when scaffolding:
 
-| Placeholder | Source | Used In |
-|-------------|--------|---------|
-| `{{PROJECT_NAME}}` | User input (required) | package.json, layout.tsx, docs |
+| Placeholder               | Source                | Used In                        |
+| ------------------------- | --------------------- | ------------------------------ |
+| `{{PROJECT_NAME}}`        | User input (required) | package.json, layout.tsx, docs |
 | `{{PROJECT_DESCRIPTION}}` | User input (required) | package.json, layout.tsx, docs |
-| `{{AUTHOR_NAME}}` | User input (required) | layout.tsx metadata |
-| `{{BASE_URL}}` | User input or default | layout.tsx OpenGraph/SEO |
-| `{{DATE}}` | Auto-generated | STATUS.md |
+| `{{AUTHOR_NAME}}`         | User input (required) | layout.tsx metadata            |
+| `{{BASE_URL}}`            | User input or default | layout.tsx OpenGraph/SEO       |
+| `{{DATE}}`                | Auto-generated        | STATUS.md                      |
 
 ## SEO Out of the Box
 
 The scaffold includes production-ready metadata:
+
 - OpenGraph tags (Facebook, LinkedIn sharing)
 - Twitter cards (summary_large_image)
 - Robots directives

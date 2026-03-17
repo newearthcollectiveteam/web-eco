@@ -20,7 +20,9 @@ import { api } from "~/trpc/react";
 
 // Lazy-load the graph to avoid SSR issues with ReactFlow
 const CommunityGraph = lazy(() =>
-  import("~/components/admin/crm/community-graph").then((m) => ({ default: m.CommunityGraph }))
+  import("~/components/admin/crm/community-graph").then((m) => ({
+    default: m.CommunityGraph,
+  }))
 );
 
 // ─── Depth Color Palette ────────────────────────────────────
@@ -62,7 +64,13 @@ interface TagModalProps {
   onSuccess: () => void;
 }
 
-function TagModal({ tag, parentId, allTags, onClose, onSuccess }: TagModalProps) {
+function TagModal({
+  tag,
+  parentId,
+  allTags,
+  onClose,
+  onSuccess,
+}: TagModalProps) {
   // Collect all existing types from the tree
   const existingTypes = useMemo(() => {
     const types = new Set<string>();
@@ -82,7 +90,11 @@ function TagModal({ tag, parentId, allTags, onClose, onSuccess }: TagModalProps)
   // Compute depth of this tag for default color
   const computeDepth = (pId: number | null | undefined): number => {
     if (!pId) return 0;
-    const findDepth = (nodes: TagNode[], targetId: number, d: number): number | null => {
+    const findDepth = (
+      nodes: TagNode[],
+      targetId: number,
+      d: number
+    ): number | null => {
       for (const n of nodes) {
         if (n.id === targetId) return d;
         const found = findDepth(n.children, targetId, d + 1);
@@ -94,7 +106,9 @@ function TagModal({ tag, parentId, allTags, onClose, onSuccess }: TagModalProps)
   };
 
   const initialParent = tag?.parentId ?? parentId ?? null;
-  const initialDepth = tag ? computeDepth(tag.parentId) : computeDepth(initialParent);
+  const initialDepth = tag
+    ? computeDepth(tag.parentId)
+    : computeDepth(initialParent);
 
   const [name, setName] = useState(tag?.name ?? "");
   const [type, setType] = useState(tag?.type ?? "community");
@@ -102,7 +116,9 @@ function TagModal({ tag, parentId, allTags, onClose, onSuccess }: TagModalProps)
   const [newTypeName, setNewTypeName] = useState("");
   const [description, setDescription] = useState(tag?.description ?? "");
   const [color, setColor] = useState(tag?.color ?? getDepthColor(initialDepth));
-  const [selectedParentId, setSelectedParentId] = useState<number | null>(initialParent);
+  const [selectedParentId, setSelectedParentId] = useState<number | null>(
+    initialParent
+  );
   const [error, setError] = useState("");
   const [creatingParent, setCreatingParent] = useState(false);
   const [newParentName, setNewParentName] = useState("");
@@ -157,7 +173,10 @@ function TagModal({ tag, parentId, allTags, onClose, onSuccess }: TagModalProps)
   const pending = createMutation.isPending || updateMutation.isPending;
 
   // Flatten tags for parent select (exclude self and descendants)
-  const flattenForSelect = (nodes: TagNode[], exclude?: number): { id: number; name: string; depth: number }[] => {
+  const flattenForSelect = (
+    nodes: TagNode[],
+    exclude?: number
+  ): { id: number; name: string; depth: number }[] => {
     const result: { id: number; name: string; depth: number }[] = [];
     const walk = (items: TagNode[], depth: number) => {
       for (const item of items) {
@@ -180,7 +199,8 @@ function TagModal({ tag, parentId, allTags, onClose, onSuccess }: TagModalProps)
             className="text-lg font-bold text-white"
             style={{ fontFamily: "Airwaves, sans-serif" }}
           >
-            {tag ? "Edit" : "Add"} {type.charAt(0).toUpperCase() + type.slice(1)}
+            {tag ? "Edit" : "Add"}{" "}
+            {type.charAt(0).toUpperCase() + type.slice(1)}
           </h2>
           <button onClick={onClose} className="text-gray-400 hover:text-white">
             <X className="h-5 w-5" />
@@ -367,7 +387,9 @@ function TagModal({ tag, parentId, allTags, onClose, onSuccess }: TagModalProps)
                       setError("Failed to create parent");
                     }
                   }}
-                  disabled={!newParentName.trim() || createParentMutation.isPending}
+                  disabled={
+                    !newParentName.trim() || createParentMutation.isPending
+                  }
                   className="rounded-lg bg-[#facf39]/20 px-3 py-2 text-sm text-[#facf39] hover:bg-[#facf39]/30 disabled:opacity-30"
                 >
                   {createParentMutation.isPending ? "..." : "Create"}
@@ -388,7 +410,9 @@ function TagModal({ tag, parentId, allTags, onClose, onSuccess }: TagModalProps)
                 <select
                   value={selectedParentId ?? ""}
                   onChange={(e) => {
-                    const newParent = e.target.value ? Number(e.target.value) : null;
+                    const newParent = e.target.value
+                      ? Number(e.target.value)
+                      : null;
                     setSelectedParentId(newParent);
                     // Auto-update color to match new depth level
                     if (!tag) {
@@ -400,7 +424,8 @@ function TagModal({ tag, parentId, allTags, onClose, onSuccess }: TagModalProps)
                   <option value="">None (top level)</option>
                   {parentOptions.map((opt) => (
                     <option key={opt.id} value={opt.id}>
-                      {"  ".repeat(opt.depth)}{opt.name}
+                      {"  ".repeat(opt.depth)}
+                      {opt.name}
                     </option>
                   ))}
                 </select>
@@ -417,7 +442,9 @@ function TagModal({ tag, parentId, allTags, onClose, onSuccess }: TagModalProps)
           </div>
 
           <div>
-            <label className="mb-1 block text-xs text-gray-400">Description</label>
+            <label className="mb-1 block text-xs text-gray-400">
+              Description
+            </label>
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
@@ -460,7 +487,14 @@ interface TreeNodeProps {
   onDelete: (tag: TagNode) => void;
 }
 
-function TreeNode({ node, depth, allTags, onEdit, onAddChild, onDelete }: TreeNodeProps) {
+function TreeNode({
+  node,
+  depth,
+  allTags,
+  onEdit,
+  onAddChild,
+  onDelete,
+}: TreeNodeProps) {
   const [expanded, setExpanded] = useState(true);
   const hasChildren = node.children.length > 0;
   const Icon = node.type === "location" ? MapPin : Users;
@@ -486,14 +520,13 @@ function TreeNode({ node, depth, allTags, onEdit, onAddChild, onDelete }: TreeNo
         </button>
 
         {/* Icon */}
-        <Icon
-          className="h-4 w-4 shrink-0"
-          style={{ color: nodeColor }}
-        />
+        <Icon className="h-4 w-4 shrink-0" style={{ color: nodeColor }} />
 
         {/* Name + badge */}
         <div className="flex min-w-0 flex-1 items-center gap-2">
-          <span className="truncate text-sm font-medium text-white">{node.name}</span>
+          <span className="truncate text-sm font-medium text-white">
+            {node.name}
+          </span>
           <Badge
             variant="outline"
             className="shrink-0 text-[10px]"
@@ -510,7 +543,8 @@ function TreeNode({ node, depth, allTags, onEdit, onAddChild, onDelete }: TreeNo
               className="shrink-0 text-xs text-gray-500 hover:text-[#facf39] hover:underline"
               onClick={(e) => e.stopPropagation()}
             >
-              {node.contactCount} {node.contactCount === 1 ? "contact" : "contacts"}
+              {node.contactCount}{" "}
+              {node.contactCount === 1 ? "contact" : "contacts"}
             </Link>
           ) : (
             <span className="shrink-0 text-xs text-gray-500">0 contacts</span>
@@ -535,7 +569,11 @@ function TreeNode({ node, depth, allTags, onEdit, onAddChild, onDelete }: TreeNo
           </button>
           <button
             onClick={() => onDelete(node)}
-            title={node.contactCount > 0 ? `Delete (${node.contactCount} contacts will be untagged)` : "Delete"}
+            title={
+              node.contactCount > 0
+                ? `Delete (${node.contactCount} contacts will be untagged)`
+                : "Delete"
+            }
             className="rounded p-1 text-gray-500 hover:bg-white/10 hover:text-red-400"
           >
             <Trash2 className="h-3.5 w-3.5" />
@@ -607,7 +645,9 @@ function CommunitiesContent() {
       {deleteConfirm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
           <div className="w-full max-w-sm rounded-2xl border border-white/10 bg-neutral-900 p-6 shadow-2xl">
-            <h3 className="text-sm font-medium text-white">Delete &quot;{deleteConfirm.name}&quot;?</h3>
+            <h3 className="text-sm font-medium text-white">
+              Delete &quot;{deleteConfirm.name}&quot;?
+            </h3>
             <p className="mt-2 text-xs text-gray-400">
               This will remove the tag. Any child tags will become top-level.
             </p>
@@ -635,7 +675,10 @@ function CommunitiesContent() {
         <div>
           <h1
             className="text-2xl font-bold text-white"
-            style={{ fontFamily: "Airwaves, sans-serif", letterSpacing: "0.05em" }}
+            style={{
+              fontFamily: "Airwaves, sans-serif",
+              letterSpacing: "0.05em",
+            }}
           >
             Communities
           </h1>
@@ -683,7 +726,9 @@ function CommunitiesContent() {
         <Card className="border-white/10 bg-white/5">
           <CardContent className="p-2">
             {tagsQuery.isLoading && (
-              <p className="py-12 text-center text-sm text-gray-500">Loading...</p>
+              <p className="py-12 text-center text-sm text-gray-500">
+                Loading...
+              </p>
             )}
             {!tagsQuery.isLoading && tags.length === 0 && (
               <p className="py-12 text-center text-sm text-gray-500">
@@ -715,10 +760,15 @@ function CommunitiesContent() {
           }
         >
           {tags.length > 0 ? (
-            <CommunityGraph tags={tags} onRefresh={() => void tagsQuery.refetch()} />
+            <CommunityGraph
+              tags={tags}
+              onRefresh={() => void tagsQuery.refetch()}
+            />
           ) : (
             <div className="flex h-[600px] items-center justify-center rounded-xl border border-white/10 bg-neutral-950">
-              <span className="text-sm text-gray-500">No community tags yet</span>
+              <span className="text-sm text-gray-500">
+                No community tags yet
+              </span>
             </div>
           )}
         </Suspense>

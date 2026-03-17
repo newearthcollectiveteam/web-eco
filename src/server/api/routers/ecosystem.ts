@@ -47,18 +47,13 @@ function scanAppDir(dir: string, basePath = ""): ScannedRoute[] {
     const segment = entry.name;
     if (segment.startsWith("(") && segment.endsWith(")")) {
       // Route group — don't add to path
-      routes.push(
-        ...scanAppDir(path.join(dir, entry.name), basePath)
-      );
+      routes.push(...scanAppDir(path.join(dir, entry.name), basePath));
       continue;
     }
 
     // Dynamic segments: [slug] -> [slug]
     routes.push(
-      ...scanAppDir(
-        path.join(dir, entry.name),
-        `${basePath}/${segment}`
-      )
+      ...scanAppDir(path.join(dir, entry.name), `${basePath}/${segment}`)
     );
   }
 

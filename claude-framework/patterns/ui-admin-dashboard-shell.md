@@ -43,8 +43,13 @@ function isStandalonePage(pathname: string): boolean {
   if (STANDALONE_PREFIXES.some((p) => pathname.startsWith(p))) return true;
 
   // Gallery index gets shell, but individual items don't
-  if (pathname.startsWith("/admin/shaders/") && pathname !== "/admin/shaders") return true;
-  if (pathname.startsWith("/admin/playground/") && pathname !== "/admin/playground") return true;
+  if (pathname.startsWith("/admin/shaders/") && pathname !== "/admin/shaders")
+    return true;
+  if (
+    pathname.startsWith("/admin/playground/") &&
+    pathname !== "/admin/playground"
+  )
+    return true;
 
   return false;
 }
@@ -54,7 +59,9 @@ function DashboardContent({ children }: { children: ReactNode }) {
   const { isCollapsed, closeMobile } = useAdminSidebar();
 
   // Close mobile sidebar on navigation
-  useEffect(() => { closeMobile(); }, [pathname, closeMobile]);
+  useEffect(() => {
+    closeMobile();
+  }, [pathname, closeMobile]);
 
   if (isStandalonePage(pathname)) {
     return <div className="min-h-screen">{children}</div>;
@@ -64,7 +71,9 @@ function DashboardContent({ children }: { children: ReactNode }) {
     <div className="min-h-screen">
       <AdminSidebar />
       <AdminHeader />
-      <main style={{ marginLeft: isCollapsed ? COLLAPSED_WIDTH : SIDEBAR_WIDTH }}>
+      <main
+        style={{ marginLeft: isCollapsed ? COLLAPSED_WIDTH : SIDEBAR_WIDTH }}
+      >
         {children}
       </main>
     </div>
@@ -88,13 +97,15 @@ export function AdminSidebarProvider({ children }: { children: ReactNode }) {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
 
   return (
-    <AdminSidebarContext.Provider value={{
-      isCollapsed,
-      toggleCollapse: () => setIsCollapsed((c) => !c),
-      isMobileOpen,
-      openMobile: () => setIsMobileOpen(true),
-      closeMobile: useCallback(() => setIsMobileOpen(false), []),
-    }}>
+    <AdminSidebarContext.Provider
+      value={{
+        isCollapsed,
+        toggleCollapse: () => setIsCollapsed((c) => !c),
+        isMobileOpen,
+        openMobile: () => setIsMobileOpen(true),
+        closeMobile: useCallback(() => setIsMobileOpen(false), []),
+      }}
+    >
       {children}
     </AdminSidebarContext.Provider>
   );

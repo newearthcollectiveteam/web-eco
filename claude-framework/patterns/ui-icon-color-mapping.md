@@ -23,7 +23,15 @@ You store visual metadata (icon names, color classes) in the database so users c
 ### Icon Map
 
 ```tsx
-import { Circle, Clock, CheckCircle2, AlertCircle, Eye, Star, Zap } from "lucide-react";
+import {
+  Circle,
+  Clock,
+  CheckCircle2,
+  AlertCircle,
+  Eye,
+  Star,
+  Zap,
+} from "lucide-react";
 
 const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
   circle: Circle,
@@ -43,7 +51,11 @@ function getIcon(name: string) {
 ### Usage
 
 ```tsx
-function StatusBadge({ status }: { status: { icon: string; color: string; name: string } }) {
+function StatusBadge({
+  status,
+}: {
+  status: { icon: string; color: string; name: string };
+}) {
   const Icon = getIcon(status.icon);
   return (
     <div className={`flex items-center gap-2 ${status.color}`}>

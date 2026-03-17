@@ -28,13 +28,17 @@ You hardcode enums like `["todo", "in_progress", "done"]` in TypeScript and data
 ```typescript
 export const itemStatuses = createTable("item_status", {
   id: serial("id").primaryKey(),
-  name: varchar("name", { length: 100 }).notNull(),       // Display: "In Review"
+  name: varchar("name", { length: 100 }).notNull(), // Display: "In Review"
   slug: varchar("slug", { length: 50 }).notNull().unique(), // FK reference: "in_review"
-  color: varchar("color", { length: 100 }),                 // "text-blue-400 border-blue-500/30"
-  icon: varchar("icon", { length: 50 }),                    // "eye" (Lucide icon name)
+  color: varchar("color", { length: 100 }), // "text-blue-400 border-blue-500/30"
+  icon: varchar("icon", { length: 50 }), // "eye" (Lucide icon name)
   sortOrder: integer("sort_order").default(0).notNull(),
-  createdAt: timestamp("created_at", { withTimezone: true }).default(sql`CURRENT_TIMESTAMP`).notNull(),
-  updatedAt: timestamp("updated_at", { withTimezone: true }).default(sql`CURRENT_TIMESTAMP`).$onUpdate(() => new Date()),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .$onUpdate(() => new Date()),
 });
 ```
 
@@ -107,8 +111,12 @@ const statuses = useMemo(() => statusesQuery.data ?? [], [statusesQuery.data]);
 
 <select>
   <option value="">All Statuses</option>
-  {statuses.map((s) => <option key={s.id} value={s.slug}>{s.name}</option>)}
-</select>
+  {statuses.map((s) => (
+    <option key={s.id} value={s.slug}>
+      {s.name}
+    </option>
+  ))}
+</select>;
 ```
 
 ### Seed Data

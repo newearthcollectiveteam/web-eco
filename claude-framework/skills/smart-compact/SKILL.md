@@ -11,6 +11,7 @@ Interactively capture essential context before using `/compact` or starting a ne
 ## Purpose
 
 Claude's `/compact` command summarizes conversation history but may lose nuanced context. This skill:
+
 - Prompts you to identify what matters most
 - Captures current task state and progress
 - Records key decisions and their reasoning
@@ -34,6 +35,7 @@ The output is optimized to be pasted at the start of a new conversation or fed t
 Ask: **"What are you currently working on? Briefly describe the active task and its status."**
 
 Capture:
+
 - Task description
 - Current progress (percentage or phase)
 - Immediate next step
@@ -43,6 +45,7 @@ Capture:
 Ask: **"What important decisions were made this session? Include the 'why' for each."**
 
 Capture:
+
 - Architecture choices
 - Approach selections
 - Trade-offs accepted
@@ -53,6 +56,7 @@ Capture:
 Ask: **"What context would be painful to lose? (Files, patterns, gotchas, or things that took time to figure out)"**
 
 Capture:
+
 - Key file paths and their roles
 - Non-obvious patterns or conventions
 - Discovered gotchas or edge cases
@@ -63,6 +67,7 @@ Capture:
 Ask: **"What's left to do? Include any blockers or dependencies."**
 
 Capture:
+
 - Remaining tasks (prioritized)
 - Known blockers
 - Dependencies on external factors
@@ -73,6 +78,7 @@ Capture:
 Ask: **"Any preferences or patterns I should remember? (Code style, communication, workflow)"**
 
 Capture:
+
 - Code style preferences
 - Communication preferences
 - Workflow patterns
@@ -83,6 +89,7 @@ Capture:
 Before asking questions, gather available context:
 
 1. **Check git state**
+
    ```bash
    git status --short
    git diff --stat
@@ -108,39 +115,48 @@ Generate a compact, structured summary optimized for conversation continuation:
 # Context Snapshot - [DATE]
 
 ## Active Task
+
 **Working on:** [task description]
 **Status:** [progress/phase]
 **Next step:** [immediate action]
 
 ## Key Decisions
+
 - [Decision 1]: [reasoning]
 - [Decision 2]: [reasoning]
 
 ## Critical Files
+
 - `[path]` - [role/purpose]
 - `[path]` - [role/purpose]
 
 ## Important Context
+
 - [Gotcha or insight 1]
 - [Gotcha or insight 2]
 
 ## Pending Work
+
 1. [High priority item]
 2. [Next item]
+
 - Blocked: [any blockers]
 - Deferred: [explicitly deferred items]
 
 ## Preferences
+
 - [Preference 1]
 - [Preference 2]
 
 ---
-*Feed this to /compact or paste at conversation start.*
+
+_Feed this to /compact or paste at conversation start._
 ```
 
 ## Usage Examples
 
 ### Before Compaction
+
 ```
 User: /smart-compact
 Claude: [gathers git state, asks questions interactively]
@@ -150,6 +166,7 @@ User: [pastes Context Snapshot]
 ```
 
 ### Before New Session
+
 ```
 User: /smart-compact
 Claude: [generates Context Snapshot]
@@ -158,6 +175,7 @@ User: [pastes snapshot as first message]
 ```
 
 ### Quick Capture (Minimal Interaction)
+
 If user is in a hurry, they can provide all context in one message:
 
 ```

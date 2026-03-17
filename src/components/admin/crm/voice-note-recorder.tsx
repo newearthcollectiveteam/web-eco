@@ -33,7 +33,11 @@ function formatDuration(seconds: number): string {
   return `${m}:${s.toString().padStart(2, "0")}`;
 }
 
-export function VoiceNoteRecorder({ contactId, notes, onUpdate }: VoiceNoteRecorderProps) {
+export function VoiceNoteRecorder({
+  contactId,
+  notes,
+  onUpdate,
+}: VoiceNoteRecorderProps) {
   const [state, setState] = useState<RecorderState>("idle");
   const [recorderError, setRecorderError] = useState<RecorderError>(null);
   const [elapsed, setElapsed] = useState(0);
@@ -74,7 +78,9 @@ export function VoiceNoteRecorder({ contactId, notes, onUpdate }: VoiceNoteRecor
       const currentTime = audio.currentTime;
       const totalDuration = knownDurationRef.current;
       setPlaybackTime(currentTime);
-      setPlaybackProgress(totalDuration > 0 ? Math.min(currentTime / totalDuration, 1) : 0);
+      setPlaybackProgress(
+        totalDuration > 0 ? Math.min(currentTime / totalDuration, 1) : 0
+      );
       rafRef.current = requestAnimationFrame(updateProgress);
     }
   }, []);
@@ -149,9 +155,15 @@ export function VoiceNoteRecorder({ contactId, notes, onUpdate }: VoiceNoteRecor
   };
 
   // ─── Upload ──────────────────────────────────────
-  const uploadRecording = async (blob: Blob, mimeType: string, durationSecs: number) => {
+  const uploadRecording = async (
+    blob: Blob,
+    mimeType: string,
+    durationSecs: number
+  ) => {
     const supabase = createClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
     if (!user) return;
 
     const ext = mimeType.includes("mp4") ? "mp4" : "webm";
@@ -234,7 +246,8 @@ export function VoiceNoteRecorder({ contactId, notes, onUpdate }: VoiceNoteRecor
 
   // Seek on progress bar click — use knownDurationRef (webm reports Infinity for duration)
   const handleSeek = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!audioRef.current || !playingId || knownDurationRef.current <= 0) return;
+    if (!audioRef.current || !playingId || knownDurationRef.current <= 0)
+      return;
     const rect = e.currentTarget.getBoundingClientRect();
     const pct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
     const seekTo = pct * knownDurationRef.current;
@@ -272,7 +285,7 @@ export function VoiceNoteRecorder({ contactId, notes, onUpdate }: VoiceNoteRecor
             </button>
             <div className="flex items-center gap-2">
               <span className="h-3 w-3 animate-pulse rounded-full bg-red-500" />
-              <span className="text-base font-medium tabular-nums text-red-400">
+              <span className="text-base font-medium text-red-400 tabular-nums">
                 {formatDuration(elapsed)}
               </span>
             </div>
@@ -289,7 +302,8 @@ export function VoiceNoteRecorder({ contactId, notes, onUpdate }: VoiceNoteRecor
 
       {recorderError === "mic_denied" && (
         <p className="text-xs text-red-400">
-          Microphone access denied. Please allow microphone access in your browser settings.
+          Microphone access denied. Please allow microphone access in your
+          browser settings.
         </p>
       )}
 
@@ -331,13 +345,15 @@ export function VoiceNoteRecorder({ contactId, notes, onUpdate }: VoiceNoteRecor
                         className={`h-full rounded-full ${
                           isPlaying ? "bg-[#facf39]" : "bg-white/20"
                         }`}
-                        style={{ width: `${isPlaying ? playbackProgress * 100 : 0}%` }}
+                        style={{
+                          width: `${isPlaying ? playbackProgress * 100 : 0}%`,
+                        }}
                       />
                     </div>
 
                     {/* Info row */}
                     <div className="mt-1 flex items-center gap-2">
-                      <span className="text-[10px] tabular-nums text-gray-400">
+                      <span className="text-[10px] text-gray-400 tabular-nums">
                         {isPlaying ? formatDuration(playbackTime) : "0:00"}
                         {" / "}
                         {formatDuration(duration)}

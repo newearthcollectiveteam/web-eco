@@ -259,7 +259,7 @@ export const crmRouter = createTRPCRouter({
           ctx.db.query.eventWaivers.findMany({
             where: or(
               eq(eventWaivers.contactId, input.id),
-              eq(eventWaivers.signerEmail, contact.email)
+              contact.email ? eq(eventWaivers.signerEmail, contact.email) : undefined
             ),
             orderBy: [desc(eventWaivers.signedAt)],
           }),
@@ -646,7 +646,7 @@ export const crmRouter = createTRPCRouter({
     .input(
       z.object({
         name: z.string().min(1),
-        email: z.string().email(),
+        email: z.string().email().optional(),
         phone: z.string().optional(),
         status: z.string().default("lead"),
         source: z.string().default("manual"),
@@ -655,23 +655,25 @@ export const crmRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      // Check for duplicate email
-      const existing = await ctx.db.query.contacts.findFirst({
-        where: eq(contacts.email, input.email),
-      });
-
-      if (existing) {
-        throw new TRPCError({
-          code: "CONFLICT",
-          message: "A contact with this email already exists",
+      // Check for duplicate email (only if email provided)
+      if (input.email) {
+        const existing = await ctx.db.query.contacts.findFirst({
+          where: eq(contacts.email, input.email),
         });
+
+        if (existing) {
+          throw new TRPCError({
+            code: "CONFLICT",
+            message: "A contact with this email already exists",
+          });
+        }
       }
 
       const [newContact] = await ctx.db
         .insert(contacts)
         .values({
           name: input.name,
-          email: input.email,
+          email: input.email ?? null,
           phone: input.phone ?? null,
           status: input.status,
           firstSource: input.source,

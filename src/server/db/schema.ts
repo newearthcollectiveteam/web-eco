@@ -60,7 +60,7 @@ export const contacts = createTable(
   "contact",
   {
     id: serial("id").primaryKey(),
-    email: varchar("email", { length: 255 }).notNull().unique(),
+    email: varchar("email", { length: 255 }).unique(),
     name: varchar("name", { length: 255 }),
     phone: varchar("phone", { length: 50 }),
 

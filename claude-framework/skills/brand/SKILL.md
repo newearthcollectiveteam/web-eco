@@ -11,7 +11,7 @@ Manage brand consistency across any project. Reads brand guidelines from the pro
 
 ## How It Works
 
-Brand configuration lives in the project's `CLAUDE.md` under a `## Brand Reference` section. This skill defines the *process* — the project defines the *values*.
+Brand configuration lives in the project's `CLAUDE.md` under a `## Brand Reference` section. This skill defines the _process_ — the project defines the _values_.
 
 ```
 CLAUDE.md
@@ -43,6 +43,7 @@ Set up brand guidelines from scratch.
 ### Step I-1 — Gather Brand Info
 
 Use AskUserQuestion to collect:
+
 1. **Primary color(s)** — hex values and usage (accent, bg, text)
 2. **Secondary/neutral colors** — approved grays, backgrounds
 3. **Typography** — font families for titles, body, code
@@ -58,17 +59,17 @@ Create a `## Brand Reference` section with the collected info, using this struct
 
 ### Palette
 
-| Token | Value | Usage |
-|-------|-------|-------|
+| Token   | Value     | Usage                 |
+| ------- | --------- | --------------------- |
 | Primary | `#XXXXXX` | Accents, icons, hover |
-| ... | ... | ... |
+| ...     | ...       | ...                   |
 
 ### Typography
 
-| Element | Font | Weight | Extra |
-|---------|------|--------|-------|
-| Page titles | Font Name | bold | optional notes |
-| Body text | Font Name | normal | — |
+| Element     | Font      | Weight | Extra          |
+| ----------- | --------- | ------ | -------------- |
+| Page titles | Font Name | bold   | optional notes |
+| Body text   | Font Name | normal | —              |
 
 ### Off-brand Patterns
 
@@ -89,6 +90,7 @@ Create a `## Brand Reference` section with the collected info, using this struct
 ### Step I-3 — Apply
 
 Use AskUserQuestion: "Add this Brand Reference to your project's CLAUDE.md?"
+
 - If yes, append the section to the project CLAUDE.md
 - If no, output the section for manual addition
 
@@ -101,6 +103,7 @@ Scan existing code to discover brand patterns and propose a reference.
 ### Step E-1 — Scan for Colors
 
 Use Grep to find:
+
 - Hex colors in `style=` attributes: `#[0-9a-fA-F]{3,8}`
 - Tailwind color classes: `(text|bg|border|ring|fill|stroke)-([\w]+-[\d]+|white|black|\[#[\w]+\])`
 - CSS variable definitions: `--[\w-]+:\s*#`
@@ -111,6 +114,7 @@ Tally frequency of each color/class across the codebase.
 ### Step E-2 — Scan for Typography
 
 Use Grep to find:
+
 - `fontFamily` in style attributes and CSS
 - `font-*` Tailwind classes
 - `@font-face` declarations
@@ -119,6 +123,7 @@ Use Grep to find:
 ### Step E-3 — Propose Reference
 
 Present findings as a draft Brand Reference:
+
 - Most-used colors → proposed palette
 - Typography patterns → proposed font rules
 - Outlier colors (used 1-2 times) → potential off-brand patterns
@@ -138,6 +143,7 @@ Check code against the existing `## Brand Reference` in CLAUDE.md.
 ### Step A-1 — Load Brand Reference
 
 Read the project's `CLAUDE.md` and parse the `## Brand Reference` section:
+
 - Extract approved palette (colors, hex values, rgba patterns)
 - Extract typography rules (font families, weights)
 - Extract off-brand patterns to flag
@@ -157,6 +163,7 @@ Exclude: (skip directories from Brand Reference)
 ```
 
 For each match, check against:
+
 - Approved palette → **SKIP** (on-brand)
 - Whitelisted exceptions → **SKIP** (intentional deviation)
 - Otherwise → **FLAG** with file:line
@@ -166,6 +173,7 @@ For each match, check against:
 Use Grep for inline hex colors in `style=` attributes within audit scope.
 
 Check each against the approved palette. Flag any that are not:
+
 - In the approved palette
 - Standard grays (#000, #111, #222, #333, #444, #555, #666, #777, #888, #999, #aaa, #bbb, #ccc, #ddd, #eee, #fff and their full 6-digit equivalents)
 - In the exceptions list
@@ -211,6 +219,7 @@ Present findings:
 ### Step A-7 — Offer Fixes
 
 Use AskUserQuestion:
+
 - "Fix all issues automatically?"
 - "Fix one section at a time?"
 - "Just report, don't fix"
@@ -227,6 +236,7 @@ Add exceptions for intentional brand deviations.
 ### Step W-1 — Identify Items to Whitelist
 
 Either:
+
 - Accept items from a preceding Audit (flagged but intentional)
 - Ask user what patterns/files to whitelist via AskUserQuestion
 
@@ -243,6 +253,7 @@ Append new entries to the `### Exceptions` subsection under `## Brand Reference`
 ```
 
 Each exception should include:
+
 - Path glob or pattern
 - Brief reason why it's intentional
 
@@ -250,15 +261,15 @@ Each exception should include:
 
 ## When to Use
 
-| Situation | Mode |
-|-----------|------|
-| New project, no brand defined | Init |
-| Existing project, want to codify patterns | Extract |
-| Before committing UI changes | Audit |
-| After branding a new section | Audit |
-| Periodic brand coherence check | Audit |
-| Found intentional deviations during audit | Whitelist |
-| Extending to new clients/domains | Audit + Whitelist |
+| Situation                                 | Mode              |
+| ----------------------------------------- | ----------------- |
+| New project, no brand defined             | Init              |
+| Existing project, want to codify patterns | Extract           |
+| Before committing UI changes              | Audit             |
+| After branding a new section              | Audit             |
+| Periodic brand coherence check            | Audit             |
+| Found intentional deviations during audit | Whitelist         |
+| Extending to new clients/domains          | Audit + Whitelist |
 
 ## Integration with Other Skills
 

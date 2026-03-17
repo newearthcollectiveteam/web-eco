@@ -91,7 +91,10 @@ export default function EcosystemPage() {
   const filteredRoutes = useMemo(() => {
     if (!scannedRoutes) return [];
     return scannedRoutes.filter((route) => {
-      if (searchQuery && !route.path.toLowerCase().includes(searchQuery.toLowerCase())) {
+      if (
+        searchQuery &&
+        !route.path.toLowerCase().includes(searchQuery.toLowerCase())
+      ) {
         return false;
       }
       if (accessFilter !== "all" && route.access !== accessFilter) {
@@ -180,7 +183,7 @@ export default function EcosystemPage() {
       {/* Filters */}
       <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
         <div className="relative min-w-[200px] flex-1">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-500" />
+          <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-neutral-500" />
           <input
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -215,10 +218,7 @@ export default function EcosystemPage() {
       {isLoading && (
         <div className="space-y-3">
           {[1, 2, 3].map((i) => (
-            <div
-              key={i}
-              className="h-12 animate-pulse rounded-lg bg-white/5"
-            />
+            <div key={i} className="h-12 animate-pulse rounded-lg bg-white/5" />
           ))}
         </div>
       )}
@@ -255,13 +255,16 @@ export default function EcosystemPage() {
                   style={{ borderColor: "rgba(250, 207, 57, 0.1)" }}
                 >
                   {/* Mobile: stacked card layout */}
-                  <div className="divide-y sm:hidden" style={{ borderColor: "rgba(250, 207, 57, 0.05)" }}>
+                  <div
+                    className="divide-y sm:hidden"
+                    style={{ borderColor: "rgba(250, 207, 57, 0.05)" }}
+                  >
                     {routes.map((route) => (
                       <div
                         key={`${route.type}-${route.path}`}
                         className="px-4 py-2.5 hover:bg-white/5"
                       >
-                        <code className="text-xs text-neutral-300 break-all">
+                        <code className="text-xs break-all text-neutral-300">
                           {route.path}
                         </code>
                         <div className="mt-1.5 flex items-center gap-2">
@@ -271,8 +274,12 @@ export default function EcosystemPage() {
                           <span
                             className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] ${ACCESS_COLORS[route.access]}`}
                           >
-                            {route.access === "public" && <Globe className="h-2.5 w-2.5" />}
-                            {route.access === "admin" && <Shield className="h-2.5 w-2.5" />}
+                            {route.access === "public" && (
+                              <Globe className="h-2.5 w-2.5" />
+                            )}
+                            {route.access === "admin" && (
+                              <Shield className="h-2.5 w-2.5" />
+                            )}
                             {route.access}
                           </span>
                         </div>
@@ -284,7 +291,7 @@ export default function EcosystemPage() {
                   <table className="hidden w-full text-sm sm:table">
                     <thead>
                       <tr
-                        className="border-b text-left text-xs uppercase tracking-wider text-neutral-500"
+                        className="border-b text-left text-xs tracking-wider text-neutral-500 uppercase"
                         style={{
                           borderColor: "rgba(250, 207, 57, 0.1)",
                         }}

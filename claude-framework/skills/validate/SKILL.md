@@ -29,6 +29,7 @@ ls -la CLAUDE.md STATUS.md TODO.md 2>/dev/null
 ```
 
 For each file:
+
 - Present: Note as passing
 - Missing: Note as suggestion (not error)
 
@@ -44,6 +45,7 @@ If TODO.md exists, read it and check for semantic sections:
 ```
 
 **Flexible matching:**
+
 - Section headers don't need to be exact
 - "## Critical" or "## Critical (blocks production)" both work
 - "## Bugs" or "## Broken" or "## Fixes Needed" all count
@@ -63,12 +65,12 @@ wc -l STATUS.md
 
 Read CLAUDE.md and look for key sections:
 
-| Section | Look For | Required? |
-|---------|----------|-----------|
-| Overview | `## Overview` or project description at top | Helpful |
-| Quick Commands | `## Quick Commands` or code block with npm/yarn | Helpful |
-| Tech Stack | `## Tech Stack` or `## Architecture` | Helpful |
-| Key Paths | `## Key Paths` or table with paths | Helpful |
+| Section        | Look For                                        | Required? |
+| -------------- | ----------------------------------------------- | --------- |
+| Overview       | `## Overview` or project description at top     | Helpful   |
+| Quick Commands | `## Quick Commands` or code block with npm/yarn | Helpful   |
+| Tech Stack     | `## Tech Stack` or `## Architecture`            | Helpful   |
+| Key Paths      | `## Key Paths` or table with paths              | Helpful   |
 
 **Note:** Exact headers aren't required. Look for the intent/content.
 
@@ -82,6 +84,7 @@ grep -rn "TODO:" src/ --include="*.ts" --include="*.tsx" 2>/dev/null | head -20
 ```
 
 Cross-reference with TODO.md:
+
 - Inline TODOs not in TODO.md: Suggest running `/sync-todos`
 - Items in TODO.md with file:line refs that don't exist: Note as potentially stale
 
@@ -89,13 +92,13 @@ Cross-reference with TODO.md:
 
 If CLAUDE.md contains a `## Brand Reference` section, validate its structure:
 
-| Subsection | Look For | Required? |
-|------------|----------|-----------|
-| Palette | `### Palette` with color table | If brand exists |
-| Typography | `### Typography` with font table | If brand exists |
-| Off-brand Patterns | `### Off-brand Patterns` with list | Helpful |
-| Exceptions | `### Exceptions` with list | Helpful |
-| Scan Scope | `### Scan Scope` with include/skip | Helpful |
+| Subsection         | Look For                           | Required?       |
+| ------------------ | ---------------------------------- | --------------- |
+| Palette            | `### Palette` with color table     | If brand exists |
+| Typography         | `### Typography` with font table   | If brand exists |
+| Off-brand Patterns | `### Off-brand Patterns` with list | Helpful         |
+| Exceptions         | `### Exceptions` with list         | Helpful         |
+| Scan Scope         | `### Scan Scope` with include/skip | Helpful         |
 
 If `## Brand Reference` is incomplete (missing subsections), suggest running `/brand init` to fill in gaps.
 
@@ -152,11 +155,11 @@ Your project works fine without them - use what helps you.
 
 ## Status Indicators
 
-| Indicator | Meaning |
-|-----------|---------|
-| `[PASS]` | Meets standard |
-| `[WARN]` | Suggestion for improvement |
-| `[INFO]` | Informational note |
+| Indicator | Meaning                    |
+| --------- | -------------------------- |
+| `[PASS]`  | Meets standard             |
+| `[WARN]`  | Suggestion for improvement |
+| `[INFO]`  | Informational note         |
 
 **No `[FAIL]` status** - this is a double-check, not enforcement.
 
@@ -175,6 +178,7 @@ If the user says "this project is intentionally minimal" or similar, acknowledge
 **User:** "run /validate"
 
 **Claude:**
+
 1. Runs through checks
 2. Reports findings with pass/warn
 3. Offers helpful suggestions
@@ -183,6 +187,7 @@ If the user says "this project is intentionally minimal" or similar, acknowledge
 **User:** "run /validate --deep"
 
 **Claude:**
+
 1. Runs all checks including inline TODO scan
 2. Cross-references inline TODOs with TODO.md
 3. Reports potential stale items

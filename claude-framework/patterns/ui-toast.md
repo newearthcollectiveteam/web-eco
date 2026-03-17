@@ -7,6 +7,7 @@
 ## Problem
 
 Users need immediate feedback when:
+
 - Mutations succeed or fail
 - Actions complete in the background
 - Errors occur

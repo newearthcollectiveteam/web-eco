@@ -73,6 +73,7 @@ ls claude-framework/FRAMEWORK.md 2>/dev/null
 ```
 
 If present, compare versions:
+
 ```bash
 grep 'Version:' ~/.claude/FRAMEWORK.md | head -1
 grep 'Version:' claude-framework/FRAMEWORK.md | head -1
@@ -122,6 +123,7 @@ Present a summary using this format:
 ```
 
 Then use AskUserQuestion with these options:
+
 1. **Push now** - proceed to Phase 4
 2. **Run /handoff first** - update docs before pushing (user should run /handoff, then /push again)
 3. **Cancel** - abort, no push
@@ -137,6 +139,7 @@ git push origin HEAD
 ```
 
 **On success:**
+
 ```
 Push complete.
   Branch: <branch> -> <remote>/<branch>
@@ -144,6 +147,7 @@ Push complete.
 ```
 
 **On failure (rejected):**
+
 ```
 Push rejected. Remote has new commits.
   Run: git pull --rebase origin <branch>
@@ -152,14 +156,15 @@ Push rejected. Remote has new commits.
 
 ## Relationship to Other Skills
 
-| Skill | Role |
-|-------|------|
-| `/handoff` | Update STATUS.md/TODO.md before pushing |
-| `/push` | Quality gate + review + confirmed push |
-| `/validate` | Structural checks (complementary) |
-| `/cohere` | Pattern checks (complementary, heavier) |
+| Skill       | Role                                    |
+| ----------- | --------------------------------------- |
+| `/handoff`  | Update STATUS.md/TODO.md before pushing |
+| `/push`     | Quality gate + review + confirmed push  |
+| `/validate` | Structural checks (complementary)       |
+| `/cohere`   | Pattern checks (complementary, heavier) |
 
 **Recommended session end flow:**
+
 ```
 /handoff    # Save session state
 /push       # Quality gate + push

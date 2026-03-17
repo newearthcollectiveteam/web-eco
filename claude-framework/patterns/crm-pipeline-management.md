@@ -1,15 +1,18 @@
 # Pattern: CRM Pipeline Management
 
 ## Problem
+
 You need to track contacts from multiple inbound sources (forms, referrals, imports) through a sales pipeline, with the ability to promote contacts to full clients and demote them back — keeping all systems in sync.
 
 ## When to Use
+
 - B2B apps that manage leads, prospects, and clients
 - Apps with multiple inbound contact sources (forms, waitlists, referrals)
 - Any system needing a status-based workflow with promotion/demotion
 - When CRM records need to stay in sync with portal/client records
 
 ## When NOT to Use
+
 - B2C apps with self-serve signup (no sales pipeline needed)
 - Simple contact forms with no lifecycle management
 - Apps where all users have equal status
@@ -34,14 +37,23 @@ export const masterCrm = pgTable("master_crm", {
   email: text("email").notNull().unique(),
   company: text("company"),
   phone: text("phone"),
-  source: text("source", { enum: ["contact_form", "waitlist", "referral", "manual"] }).notNull(),
-  status: text("status", { enum: ["lead", "prospect", "client", "inactive", "churned"] })
-    .notNull().default("lead"),
+  source: text("source", {
+    enum: ["contact_form", "waitlist", "referral", "manual"],
+  }).notNull(),
+  status: text("status", {
+    enum: ["lead", "prospect", "client", "inactive", "churned"],
+  })
+    .notNull()
+    .default("lead"),
   accountManagerId: uuid("account_manager_id").references(() => users.id),
   lastContactAt: timestamp("last_contact_at", { withTimezone: true }),
   notes: text("notes"),
-  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
-  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true })
+    .notNull()
+    .defaultNow(),
 });
 ```
 
@@ -235,8 +247,13 @@ For community/B2C CRMs where contacts come from many forms, use a service layer 
 
 ```typescript
 export async function upsertContact(params: {
-  email: string; name?: string; phone?: string; source: string;
-  status?: string; tags?: string[]; metadata?: Record<string, unknown>;
+  email: string;
+  name?: string;
+  phone?: string;
+  source: string;
+  status?: string;
+  tags?: string[];
+  metadata?: Record<string, unknown>;
 }): Promise<{ contact: Contact; isNew: boolean }> {
   const existing = await db.query.contacts.findFirst({
     where: eq(contacts.email, params.email),
@@ -244,28 +261,43 @@ export async function upsertContact(params: {
 
   if (existing) {
     // Merge — don't overwrite existing data with nulls
-    const updated = await db.update(contacts).set({
-      name: params.name || existing.name,
-      phone: params.phone || existing.phone,
-      metadata: params.metadata
-        ? { ...(existing.metadata as object), ...params.metadata }
-        : existing.metadata,
-      lastContactDate: new Date(),
-    }).where(eq(contacts.id, existing.id)).returning();
+    const updated = await db
+      .update(contacts)
+      .set({
+        name: params.name || existing.name,
+        phone: params.phone || existing.phone,
+        metadata: params.metadata
+          ? { ...(existing.metadata as object), ...params.metadata }
+          : existing.metadata,
+        lastContactDate: new Date(),
+      })
+      .where(eq(contacts.id, existing.id))
+      .returning();
 
-    await addActivity({ contactId: existing.id, type: "form_submission", source: params.source });
+    await addActivity({
+      contactId: existing.id,
+      type: "form_submission",
+      source: params.source,
+    });
     return { contact: updated[0]!, isNew: false };
   }
 
-  const [newContact] = await db.insert(contacts).values({
-    email: params.email,
-    name: params.name ?? null,
-    firstSource: params.source,
-    status: params.status ?? "lead",
-    tags: params.tags ?? [],
-  }).returning();
+  const [newContact] = await db
+    .insert(contacts)
+    .values({
+      email: params.email,
+      name: params.name ?? null,
+      firstSource: params.source,
+      status: params.status ?? "lead",
+      tags: params.tags ?? [],
+    })
+    .returning();
 
-  await addActivity({ contactId: newContact!.id, type: "form_submission", source: params.source });
+  await addActivity({
+    contactId: newContact!.id,
+    type: "form_submission",
+    source: params.source,
+  });
   return { contact: newContact!, isNew: true };
 }
 ```
@@ -275,14 +307,24 @@ export async function upsertContact(params: {
 Track every form a contact interacted with (not just the first):
 
 ```typescript
-export const contactSources = createTable("contact_source", {
-  id: serial("id").primaryKey(),
-  contactId: integer("contact_id").notNull().references(() => contacts.id, { onDelete: "cascade" }),
-  source: varchar("source", { length: 100 }).notNull(),
-  firstInteraction: timestamp("first_interaction").default(sql`CURRENT_TIMESTAMP`).notNull(),
-  lastInteraction: timestamp("last_interaction").default(sql`CURRENT_TIMESTAMP`).notNull(),
-  interactionCount: integer("interaction_count").default(1).notNull(),
-}, (t) => [unique("unique_contact_source").on(t.contactId, t.source)]);
+export const contactSources = createTable(
+  "contact_source",
+  {
+    id: serial("id").primaryKey(),
+    contactId: integer("contact_id")
+      .notNull()
+      .references(() => contacts.id, { onDelete: "cascade" }),
+    source: varchar("source", { length: 100 }).notNull(),
+    firstInteraction: timestamp("first_interaction")
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    lastInteraction: timestamp("last_interaction")
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    interactionCount: integer("interaction_count").default(1).notNull(),
+  },
+  (t) => [unique("unique_contact_source").on(t.contactId, t.source)]
+);
 ```
 
 ### GDPR-Compliant Consent Tracking
@@ -303,16 +345,21 @@ Every contact interaction creates a record:
 ```typescript
 export const contactActivities = createTable("contact_activity", {
   id: serial("id").primaryKey(),
-  contactId: integer("contact_id").notNull().references(() => contacts.id, { onDelete: "cascade" }),
+  contactId: integer("contact_id")
+    .notNull()
+    .references(() => contacts.id, { onDelete: "cascade" }),
   activityType: varchar("activity_type", { length: 50 }).notNull(), // form_submission, note_added, email_sent, status_changed
   source: varchar("source", { length: 100 }),
   description: text("description"),
   metadata: jsonb("metadata").default(sql`'{}'::jsonb`),
-  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`).notNull(),
+  createdAt: timestamp("created_at")
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
 });
 ```
 
 ## Related Patterns
+
 - `auth-role-hierarchy.md` — Role-based access for CRM (admins only)
 - `api-external-linking.md` — Linking CRM records to external service IDs
 - `state-dynamic-enums.md` — Dynamic status columns for pipeline customization

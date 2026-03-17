@@ -6,6 +6,7 @@
 ## Problem
 
 Admin interfaces need contextual action menus (edit, delete, archive) that:
+
 - Support different action types (default, danger)
 - Handle disabled states
 - Close on click outside

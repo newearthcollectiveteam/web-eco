@@ -1,15 +1,18 @@
 # Pattern: Multi-Layer Role Hierarchy
 
 ## Problem
+
 Your app needs more than simple "logged in vs not" access control. You need role-based access enforced at multiple layers — middleware (routing), API procedures (data access), and query scoping (data visibility) — with support for broad roles and granular sub-roles.
 
 ## When to Use
+
 - B2B SaaS with admin and client roles
 - Multi-tenant apps where users should only see their own data
 - Apps where some users manage others (account managers, team leads)
 - Any app that outgrows a single `isAdmin` boolean
 
 ## When NOT to Use
+
 - Simple apps with just "public" and "logged in" access
 - Apps where all authenticated users have equal access
 - Purely public-facing sites
@@ -34,7 +37,9 @@ Fast, URL-based checks before any page or API route runs. No DB queries here —
 const ADMIN_EMAILS = ["admin@company.com"];
 
 if (pathname.startsWith("/admin")) {
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   if (!user) {
     return NextResponse.redirect(new URL("/login", request.url));
@@ -77,7 +82,10 @@ const adminMiddleware = t.middleware(async ({ ctx, next }) => {
   });
 
   if (!profile || profile.role !== "admin") {
-    throw new TRPCError({ code: "FORBIDDEN", message: "Admin access required" });
+    throw new TRPCError({
+      code: "FORBIDDEN",
+      message: "Admin access required",
+    });
   }
 
   // Pass profile downstream — avoids redundant DB lookups
@@ -126,7 +134,9 @@ When broad roles aren't enough, add a `companyRoles` array for feature-level per
 // Schema
 export const users = pgTable("users", {
   id: uuid("id").primaryKey().defaultRandom(),
-  role: text("role", { enum: ["admin", "client"] }).notNull().default("client"),
+  role: text("role", { enum: ["admin", "client"] })
+    .notNull()
+    .default("client"),
   companyRoles: text("company_roles").array().default([]),
   // "account_manager", "billing_admin", "viewer", etc.
 });
@@ -147,5 +157,6 @@ if (profile.companyRoles?.includes("account_manager")) {
 5. **Sub-roles are additive** — Base role (`admin`/`client`) for broad access, `companyRoles` array for feature-level permissions.
 
 ## Related Patterns
+
 - Framework: Authentication Patterns (Supabase Auth setup)
 - Framework: API Patterns (tRPC procedure types)

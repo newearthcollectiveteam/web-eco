@@ -18,7 +18,7 @@ export default function AboutPage() {
   return (
     <div className="bg-black">
       {/* Hero */}
-      <section className="relative overflow-hidden pb-8 pt-32">
+      <section className="relative overflow-hidden pt-32 pb-8">
         <div className="absolute inset-0 opacity-15">
           <iframe
             src="/admin/shaders/flower-of-life/embed"
@@ -54,9 +54,7 @@ export default function AboutPage() {
               way to live — more connected, more real, more alive.
             </p>
 
-            <p>
-              We felt it too.
-            </p>
+            <p>We felt it too.</p>
 
             <p>
               We started as strangers who kept finding each other at festivals,
@@ -104,9 +102,7 @@ export default function AboutPage() {
               This isn&apos;t a movement you watch. It&apos;s one you walk into.
             </p>
 
-            <p className="text-white/90">
-              The fire is lit. Come sit with us.
-            </p>
+            <p className="text-white/90">The fire is lit. Come sit with us.</p>
 
             <div className="pt-4">
               <Link

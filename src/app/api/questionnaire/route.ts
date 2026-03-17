@@ -28,7 +28,7 @@ import { Resend } from "resend";
 import { confirmationEmail } from "~/lib/email/templates";
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const resend = new Resend(process.env.RESEND_API_KEY);
+const getResend = () => new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(request: NextRequest) {
   let body: unknown;
@@ -515,7 +515,11 @@ export async function POST(request: NextRequest) {
 
       if (communityHints.length > 0) {
         const allCommunityTags = await db
-          .select({ id: communityTags.id, name: communityTags.name, slug: communityTags.slug })
+          .select({
+            id: communityTags.id,
+            name: communityTags.name,
+            slug: communityTags.slug,
+          })
           .from(communityTags);
 
         const combinedText = communityHints.join(" ").toLowerCase();
@@ -568,8 +572,8 @@ export async function POST(request: NextRequest) {
 
     // Send confirmation email via Resend (non-blocking)
     const displayName = preferredName || name.split(" ")[0] || "there";
-    resend.emails
-      .send({
+    getResend()
+      .emails.send({
         from: "New Earth Collective <noreply@joinnewearthcollective.com>",
         to: email,
         subject: "Welcome to the Collective",

@@ -96,7 +96,10 @@ function LeadsContent() {
       <div>
         <h1
           className="text-2xl font-bold text-white"
-          style={{ fontFamily: "Airwaves, sans-serif", letterSpacing: "0.05em" }}
+          style={{
+            fontFamily: "Airwaves, sans-serif",
+            letterSpacing: "0.05em",
+          }}
         >
           Leads & Submissions
         </h1>
@@ -107,8 +110,8 @@ function LeadsContent() {
 
       {/* Filters Row */}
       <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
-        <div className="relative flex-1 min-w-[200px]">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
+        <div className="relative min-w-[200px] flex-1">
+          <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-500" />
           <input
             type="text"
             placeholder="Search by name or email..."
@@ -117,7 +120,7 @@ function LeadsContent() {
               setSearchQuery(e.target.value);
               setPage(0);
             }}
-            className="w-full rounded-lg border border-white/10 bg-white/5 py-2 pl-9 pr-3 text-sm text-white placeholder:text-gray-500 focus:border-[#facf39]/40 focus:outline-none"
+            className="w-full rounded-lg border border-white/10 bg-white/5 py-2 pr-3 pl-9 text-sm text-white placeholder:text-gray-500 focus:border-[#facf39]/40 focus:outline-none"
           />
         </div>
 
@@ -140,7 +143,9 @@ function LeadsContent() {
           <select
             value={communityFilter ?? ""}
             onChange={(e) => {
-              setCommunityFilter(e.target.value ? Number(e.target.value) : undefined);
+              setCommunityFilter(
+                e.target.value ? Number(e.target.value) : undefined
+              );
               setPage(0);
             }}
             className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white focus:border-[#facf39]/40 focus:outline-none"
@@ -205,35 +210,52 @@ function LeadsContent() {
               <tbody className="divide-y divide-white/5">
                 {leadsQuery.isLoading && (
                   <tr>
-                    <td colSpan={8} className="px-5 py-12 text-center text-sm text-gray-500">
+                    <td
+                      colSpan={8}
+                      className="px-5 py-12 text-center text-sm text-gray-500"
+                    >
                       Loading...
                     </td>
                   </tr>
                 )}
                 {!leadsQuery.isLoading && leads.length === 0 && (
                   <tr>
-                    <td colSpan={8} className="px-5 py-12 text-center text-sm text-gray-500">
+                    <td
+                      colSpan={8}
+                      className="px-5 py-12 text-center text-sm text-gray-500"
+                    >
                       No submissions found
                     </td>
                   </tr>
                 )}
                 {leads.map((lead) => {
                   const key = `${lead.source}-${lead.id}`;
-                  const Icon = lead.source === "event_waiver" ? FileSignature : ClipboardList;
-                  const badgeColor = SOURCE_BADGE_COLORS[lead.source] ?? "border-gray-500/40 text-gray-400";
+                  const Icon =
+                    lead.source === "event_waiver"
+                      ? FileSignature
+                      : ClipboardList;
+                  const badgeColor =
+                    SOURCE_BADGE_COLORS[lead.source] ??
+                    "border-gray-500/40 text-gray-400";
 
                   return (
                     <tr key={key} className="hover:bg-white/5">
                       <td className="px-5 py-3">
                         <div className="flex items-center gap-2">
                           <Icon className="h-3.5 w-3.5 shrink-0 text-gray-500" />
-                          <span className="font-medium text-white">{lead.name}</span>
+                          <span className="font-medium text-white">
+                            {lead.name}
+                          </span>
                         </div>
                       </td>
                       <td className="px-5 py-3">
-                        <div className="text-sm text-gray-400">{lead.email}</div>
+                        <div className="text-sm text-gray-400">
+                          {lead.email}
+                        </div>
                         {lead.phone && (
-                          <div className="text-xs text-gray-500">{lead.phone}</div>
+                          <div className="text-xs text-gray-500">
+                            {lead.phone}
+                          </div>
                         )}
                       </td>
                       {/* Communities BEFORE source */}
@@ -245,11 +267,14 @@ function LeadsContent() {
                               variant="outline"
                               className="text-[10px]"
                               style={{
-                                borderColor: ct.color ? `${ct.color}66` : undefined,
+                                borderColor: ct.color
+                                  ? `${ct.color}66`
+                                  : undefined,
                                 color: ct.color ?? undefined,
                               }}
                             >
-                              {ct.parentName ? `${ct.parentName} > ` : ""}{ct.name}
+                              {ct.parentName ? `${ct.parentName} > ` : ""}
+                              {ct.name}
                             </Badge>
                           ))}
                           {lead.communityTags.length === 0 && (
@@ -258,7 +283,10 @@ function LeadsContent() {
                         </div>
                       </td>
                       <td className="px-5 py-3">
-                        <Badge variant="outline" className={`text-[10px] ${badgeColor}`}>
+                        <Badge
+                          variant="outline"
+                          className={`text-[10px] ${badgeColor}`}
+                        >
                           {lead.source.replace(/_/g, " ")}
                         </Badge>
                       </td>
@@ -301,7 +329,8 @@ function LeadsContent() {
           {totalPages > 1 && (
             <div className="flex items-center justify-between border-t border-white/10 px-5 py-3">
               <span className="text-xs text-gray-500">
-                Showing {page * PAGE_SIZE + 1}–{Math.min((page + 1) * PAGE_SIZE, total)} of {total}
+                Showing {page * PAGE_SIZE + 1}–
+                {Math.min((page + 1) * PAGE_SIZE, total)} of {total}
               </span>
               <div className="flex items-center gap-1">
                 <button
@@ -315,7 +344,9 @@ function LeadsContent() {
                   {page + 1} / {totalPages}
                 </span>
                 <button
-                  onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
+                  onClick={() =>
+                    setPage((p) => Math.min(totalPages - 1, p + 1))
+                  }
                   disabled={page >= totalPages - 1}
                   className="rounded p-1.5 text-gray-400 hover:bg-white/10 hover:text-white disabled:opacity-30"
                 >
@@ -333,11 +364,15 @@ function LeadsContent() {
           <p className="py-12 text-center text-sm text-gray-500">Loading...</p>
         )}
         {!leadsQuery.isLoading && leads.length === 0 && (
-          <p className="py-12 text-center text-sm text-gray-500">No submissions found</p>
+          <p className="py-12 text-center text-sm text-gray-500">
+            No submissions found
+          </p>
         )}
         {leads.map((lead) => {
           const key = `${lead.source}-${lead.id}`;
-          const badgeColor = SOURCE_BADGE_COLORS[lead.source] ?? "border-gray-500/40 text-gray-400";
+          const badgeColor =
+            SOURCE_BADGE_COLORS[lead.source] ??
+            "border-gray-500/40 text-gray-400";
 
           return (
             <Card key={key} className="border-white/10 bg-white/5">
@@ -350,7 +385,9 @@ function LeadsContent() {
                     {STATUS_LABELS[lead.status] ?? lead.status}
                   </span>
                 </div>
-                <p className="mt-1 truncate text-sm text-gray-400">{lead.email}</p>
+                <p className="mt-1 truncate text-sm text-gray-400">
+                  {lead.email}
+                </p>
                 {/* Community tags first */}
                 <div className="mt-2 flex flex-wrap gap-1">
                   {lead.communityTags.map((ct) => (
@@ -363,15 +400,21 @@ function LeadsContent() {
                         color: ct.color ?? undefined,
                       }}
                     >
-                      {ct.parentName ? `${ct.parentName} > ` : ""}{ct.name}
+                      {ct.parentName ? `${ct.parentName} > ` : ""}
+                      {ct.name}
                     </Badge>
                   ))}
-                  <Badge variant="outline" className={`text-[10px] ${badgeColor}`}>
+                  <Badge
+                    variant="outline"
+                    className={`text-[10px] ${badgeColor}`}
+                  >
                     {lead.source.replace(/_/g, " ")}
                   </Badge>
                 </div>
                 {lead.preview && (
-                  <p className="mt-2 truncate text-xs text-gray-500">{lead.preview}</p>
+                  <p className="mt-2 truncate text-xs text-gray-500">
+                    {lead.preview}
+                  </p>
                 )}
                 <div className="mt-2 flex items-center justify-between text-xs text-gray-500">
                   <span>{formatDate(lead.date)}</span>
@@ -394,7 +437,8 @@ function LeadsContent() {
         {totalPages > 1 && (
           <div className="flex items-center justify-between py-2">
             <span className="text-xs text-gray-500">
-              {page * PAGE_SIZE + 1}–{Math.min((page + 1) * PAGE_SIZE, total)} of {total}
+              {page * PAGE_SIZE + 1}–{Math.min((page + 1) * PAGE_SIZE, total)}{" "}
+              of {total}
             </span>
             <div className="flex items-center gap-1">
               <button

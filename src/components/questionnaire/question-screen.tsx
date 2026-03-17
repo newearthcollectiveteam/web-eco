@@ -84,7 +84,10 @@ export function QuestionScreen({
       <div>
         <h1
           className="text-2xl font-bold text-white sm:text-3xl"
-          style={{ fontFamily: "Airwaves, sans-serif", letterSpacing: "0.03em" }}
+          style={{
+            fontFamily: "Airwaves, sans-serif",
+            letterSpacing: "0.03em",
+          }}
         >
           {screen.title}
         </h1>
@@ -97,7 +100,10 @@ export function QuestionScreen({
       {screen.type === "text" && (
         <div className="space-y-4">
           <div className="space-y-2">
-            <label className="text-sm text-white/70" style={{ fontFamily: "Bourton, sans-serif" }}>
+            <label
+              className="text-sm text-white/70"
+              style={{ fontFamily: "Bourton, sans-serif" }}
+            >
               Full Name *
             </label>
             <Input
@@ -109,7 +115,10 @@ export function QuestionScreen({
             />
           </div>
           <div className="space-y-2">
-            <label className="text-sm text-white/70" style={{ fontFamily: "Bourton, sans-serif" }}>
+            <label
+              className="text-sm text-white/70"
+              style={{ fontFamily: "Bourton, sans-serif" }}
+            >
               Preferred Name
             </label>
             <Input
@@ -126,7 +135,10 @@ export function QuestionScreen({
       {screen.type === "text-pills" && (
         <div className="space-y-5">
           <div className="space-y-2">
-            <label className="text-sm text-white/70" style={{ fontFamily: "Bourton, sans-serif" }}>
+            <label
+              className="text-sm text-white/70"
+              style={{ fontFamily: "Bourton, sans-serif" }}
+            >
               Email *
             </label>
             <Input
@@ -139,7 +151,10 @@ export function QuestionScreen({
             />
           </div>
           <div className="space-y-2">
-            <label className="text-sm text-white/70" style={{ fontFamily: "Bourton, sans-serif" }}>
+            <label
+              className="text-sm text-white/70"
+              style={{ fontFamily: "Bourton, sans-serif" }}
+            >
               Phone
             </label>
             <Input
@@ -151,7 +166,10 @@ export function QuestionScreen({
             />
           </div>
           <div className="space-y-2">
-            <label className="text-sm text-white/70" style={{ fontFamily: "Bourton, sans-serif" }}>
+            <label
+              className="text-sm text-white/70"
+              style={{ fontFamily: "Bourton, sans-serif" }}
+            >
               Preferred contact method
             </label>
             <div className="flex flex-wrap gap-2">
@@ -160,7 +178,9 @@ export function QuestionScreen({
                   key={opt.id}
                   label={opt.label}
                   selected={data.preferredContactMethods.includes(opt.id)}
-                  onToggle={() => toggleArray("preferredContactMethods", opt.id)}
+                  onToggle={() =>
+                    toggleArray("preferredContactMethods", opt.id)
+                  }
                 />
               ))}
             </div>
@@ -172,7 +192,10 @@ export function QuestionScreen({
       {screen.type === "autocomplete" && (
         <div className="space-y-4">
           <div className="space-y-2">
-            <label className="text-sm text-white/70" style={{ fontFamily: "Bourton, sans-serif" }}>
+            <label
+              className="text-sm text-white/70"
+              style={{ fontFamily: "Bourton, sans-serif" }}
+            >
               Current city/region *
             </label>
             <LocationAutocomplete
@@ -205,7 +228,10 @@ export function QuestionScreen({
           </button>
           {data.isNomadic && (
             <div className="space-y-2">
-              <label className="text-sm text-white/70" style={{ fontFamily: "Bourton, sans-serif" }}>
+              <label
+                className="text-sm text-white/70"
+                style={{ fontFamily: "Bourton, sans-serif" }}
+              >
                 Where do you spend most time?
               </label>
               <Input
@@ -223,7 +249,10 @@ export function QuestionScreen({
       {screen.type === "birth-info" && (
         <div className="space-y-4">
           <div className="relative z-30 space-y-2">
-            <label className="text-sm text-white/70" style={{ fontFamily: "Bourton, sans-serif" }}>
+            <label
+              className="text-sm text-white/70"
+              style={{ fontFamily: "Bourton, sans-serif" }}
+            >
               Birth Date *
             </label>
             <DateTimePicker
@@ -241,7 +270,10 @@ export function QuestionScreen({
             />
           </div>
           <div className="relative z-20 space-y-2">
-            <label className="text-sm text-white/70" style={{ fontFamily: "Bourton, sans-serif" }}>
+            <label
+              className="text-sm text-white/70"
+              style={{ fontFamily: "Bourton, sans-serif" }}
+            >
               Birth Time {!data.unknownBirthTime && "*"}
             </label>
             <BirthTimePicker
@@ -275,7 +307,10 @@ export function QuestionScreen({
             I don't know my exact birth time
           </button>
           <div className="relative z-10 space-y-2">
-            <label className="text-sm text-white/70" style={{ fontFamily: "Bourton, sans-serif" }}>
+            <label
+              className="text-sm text-white/70"
+              style={{ fontFamily: "Bourton, sans-serif" }}
+            >
               Birth Location *
             </label>
             <LocationAutocomplete
@@ -290,38 +325,45 @@ export function QuestionScreen({
       )}
 
       {/* LONG-TEXT: open-ended textarea with word count */}
-      {screen.type === "long-text" && (() => {
-        const text = (data[screen.field as keyof FormData] as string) || "";
-        const wordCount = text.trim() ? text.trim().split(/\s+/).length : 0;
-        const minWords = screen.minWords ?? 0;
-        const isMet = wordCount >= minWords;
-        return (
-          <div className="space-y-3">
-            <textarea
-              className={`${inputClass} min-h-[160px] w-full rounded-md px-3 py-2.5 resize-y`}
-              placeholder="In your own words..."
-              value={text}
-              onChange={(e) =>
-                update(screen.field as keyof FormData, e.target.value as never)
-              }
-              autoFocus
-            />
-            {minWords > 0 && (
-              <p className={`text-xs ${isMet ? "text-green-400/80" : "text-white/40"}`}>
-                {wordCount} / {minWords} words{" "}
-                {isMet ? "— looking great" : "minimum"}
-              </p>
-            )}
-          </div>
-        );
-      })()}
+      {screen.type === "long-text" &&
+        (() => {
+          const text = (data[screen.field as keyof FormData] as string) || "";
+          const wordCount = text.trim() ? text.trim().split(/\s+/).length : 0;
+          const minWords = screen.minWords ?? 0;
+          const isMet = wordCount >= minWords;
+          return (
+            <div className="space-y-3">
+              <textarea
+                className={`${inputClass} min-h-[160px] w-full resize-y rounded-md px-3 py-2.5`}
+                placeholder="In your own words..."
+                value={text}
+                onChange={(e) =>
+                  update(
+                    screen.field as keyof FormData,
+                    e.target.value as never
+                  )
+                }
+                autoFocus
+              />
+              {minWords > 0 && (
+                <p
+                  className={`text-xs ${isMet ? "text-green-400/80" : "text-white/40"}`}
+                >
+                  {wordCount} / {minWords} words{" "}
+                  {isMet ? "— looking great" : "minimum"}
+                </p>
+              )}
+            </div>
+          );
+        })()}
 
       {/* MULTI-SELECT */}
       {screen.type === "multi-select" && (
         <div className="space-y-3">
           {screen.minSelect && screen.maxSelect && (
             <p className="text-xs text-white/40">
-              {(data[screen.field as keyof FormData] as string[]).length} selected
+              {(data[screen.field as keyof FormData] as string[]).length}{" "}
+              selected
               {screen.maxSelect && ` (max ${screen.maxSelect})`}
             </p>
           )}
@@ -337,7 +379,9 @@ export function QuestionScreen({
                   onToggle={() =>
                     toggleArray(screen.field as keyof FormData, opt.id)
                   }
-                  disabled={!selected && isAtMax(screen.field as keyof FormData)}
+                  disabled={
+                    !selected && isAtMax(screen.field as keyof FormData)
+                  }
                 />
               );
             })}
@@ -346,9 +390,15 @@ export function QuestionScreen({
             <>
               <SelectionPill
                 label="Other"
-                selected={showOther || !!(data[screen.otherField as keyof FormData] as string)}
+                selected={
+                  showOther ||
+                  !!(data[screen.otherField as keyof FormData] as string)
+                }
                 onToggle={() => {
-                  if (showOther || (data[screen.otherField as keyof FormData] as string)) {
+                  if (
+                    showOther ||
+                    (data[screen.otherField as keyof FormData] as string)
+                  ) {
                     setShowOther(false);
                     update(screen.otherField as keyof FormData, "" as never);
                   } else {
@@ -356,13 +406,19 @@ export function QuestionScreen({
                   }
                 }}
               />
-              {(showOther || !!(data[screen.otherField as keyof FormData] as string)) && (
+              {(showOther ||
+                !!(data[screen.otherField as keyof FormData] as string)) && (
                 <Input
                   className={inputClass}
                   placeholder={screen.otherPlaceholder || "Please specify..."}
-                  value={(data[screen.otherField as keyof FormData] as string) || ""}
+                  value={
+                    (data[screen.otherField as keyof FormData] as string) || ""
+                  }
                   onChange={(e) =>
-                    update(screen.otherField as keyof FormData, e.target.value as never)
+                    update(
+                      screen.otherField as keyof FormData,
+                      e.target.value as never
+                    )
                   }
                   autoFocus
                 />
@@ -371,7 +427,10 @@ export function QuestionScreen({
           )}
           {screen.id === "your-role" && (
             <div className="mt-2 space-y-2 border-t border-white/10 pt-4">
-              <label className="text-sm text-white/70" style={{ fontFamily: "Bourton, sans-serif" }}>
+              <label
+                className="text-sm text-white/70"
+                style={{ fontFamily: "Bourton, sans-serif" }}
+              >
                 Primary Role / Calling
               </label>
               <Input
@@ -386,95 +445,130 @@ export function QuestionScreen({
       )}
 
       {/* SINGLE-SELECT */}
-      {screen.type === "single-select" && (() => {
-        const isLockedReferral = screen.id === "found-us" && !!referrer;
-        return (
-          <div className="space-y-3">
-            {isLockedReferral && (
-              <div className="rounded-lg border border-[#FACF39]/30 bg-[#FACF39]/10 px-4 py-2.5 text-sm text-[#FACF39]">
-                Recommended by {referrer}
-              </div>
-            )}
-            <div className="grid grid-cols-1 gap-2">
-              {screen.options?.map((opt) => {
-                const selected = (data[screen.field as keyof FormData] as string) === opt.id;
-                return (
-                  <SelectionPill
-                    key={opt.id}
-                    label={opt.label}
-                    selected={selected}
-                    onToggle={() => {
-                      if (isLockedReferral) return;
-                      update(screen.field as keyof FormData, opt.id as never);
-                      // Auto-advance if no detail input needed for this option
-                      const needsDetail =
-                        screen.detailOptions?.[opt.id] || opt.id === "other";
-                      if (!needsDetail && onAutoAdvance) {
-                        setTimeout(onAutoAdvance, 400);
-                      }
-                    }}
-                    disabled={isLockedReferral}
-                  />
-                );
-              })}
-            </div>
-            {screen.detailOptions &&
-              screen.detailField &&
-              screen.detailOptions[data[screen.field as keyof FormData] as string] &&
-              !isLockedReferral && (
-                <Input
-                  className={inputClass}
-                  placeholder={screen.detailOptions[data[screen.field as keyof FormData] as string]}
-                  value={(data[screen.detailField as keyof FormData] as string) || ""}
-                  onChange={(e) =>
-                    update(screen.detailField as keyof FormData, e.target.value as never)
-                  }
-                  autoFocus
-                />
+      {screen.type === "single-select" &&
+        (() => {
+          const isLockedReferral = screen.id === "found-us" && !!referrer;
+          return (
+            <div className="space-y-3">
+              {isLockedReferral && (
+                <div className="rounded-lg border border-[#FACF39]/30 bg-[#FACF39]/10 px-4 py-2.5 text-sm text-[#FACF39]">
+                  Recommended by {referrer}
+                </div>
               )}
-            {screen.hasOther && !isLockedReferral && (
-              <>
-                <SelectionPill
-                  label="Other"
-                  selected={
-                    (data[screen.field as keyof FormData] as string) === "other" || showOther
-                  }
-                  onToggle={() => {
-                    const isCurrentlyOther =
-                      (data[screen.field as keyof FormData] as string) === "other" || showOther;
-                    if (isCurrentlyOther) {
-                      update(screen.field as keyof FormData, "" as never);
-                      update(screen.otherField as keyof FormData, "" as never);
-                      setShowOther(false);
-                    } else {
-                      update(screen.field as keyof FormData, "other" as never);
-                      setShowOther(true);
-                    }
-                  }}
-                />
-                {((data[screen.field as keyof FormData] as string) === "other" || showOther) && (
+              <div className="grid grid-cols-1 gap-2">
+                {screen.options?.map((opt) => {
+                  const selected =
+                    (data[screen.field as keyof FormData] as string) === opt.id;
+                  return (
+                    <SelectionPill
+                      key={opt.id}
+                      label={opt.label}
+                      selected={selected}
+                      onToggle={() => {
+                        if (isLockedReferral) return;
+                        update(screen.field as keyof FormData, opt.id as never);
+                        // Auto-advance if no detail input needed for this option
+                        const needsDetail =
+                          screen.detailOptions?.[opt.id] || opt.id === "other";
+                        if (!needsDetail && onAutoAdvance) {
+                          setTimeout(onAutoAdvance, 400);
+                        }
+                      }}
+                      disabled={isLockedReferral}
+                    />
+                  );
+                })}
+              </div>
+              {screen.detailOptions &&
+                screen.detailField &&
+                screen.detailOptions[
+                  data[screen.field as keyof FormData] as string
+                ] &&
+                !isLockedReferral && (
                   <Input
                     className={inputClass}
-                    placeholder={screen.otherPlaceholder || "Please specify..."}
-                    value={(data[screen.otherField as keyof FormData] as string) || ""}
+                    placeholder={
+                      screen.detailOptions[
+                        data[screen.field as keyof FormData] as string
+                      ]
+                    }
+                    value={
+                      (data[screen.detailField as keyof FormData] as string) ||
+                      ""
+                    }
                     onChange={(e) =>
-                      update(screen.otherField as keyof FormData, e.target.value as never)
+                      update(
+                        screen.detailField as keyof FormData,
+                        e.target.value as never
+                      )
                     }
                     autoFocus
                   />
                 )}
-              </>
-            )}
-          </div>
-        );
-      })()}
+              {screen.hasOther && !isLockedReferral && (
+                <>
+                  <SelectionPill
+                    label="Other"
+                    selected={
+                      (data[screen.field as keyof FormData] as string) ===
+                        "other" || showOther
+                    }
+                    onToggle={() => {
+                      const isCurrentlyOther =
+                        (data[screen.field as keyof FormData] as string) ===
+                          "other" || showOther;
+                      if (isCurrentlyOther) {
+                        update(screen.field as keyof FormData, "" as never);
+                        update(
+                          screen.otherField as keyof FormData,
+                          "" as never
+                        );
+                        setShowOther(false);
+                      } else {
+                        update(
+                          screen.field as keyof FormData,
+                          "other" as never
+                        );
+                        setShowOther(true);
+                      }
+                    }}
+                  />
+                  {((data[screen.field as keyof FormData] as string) ===
+                    "other" ||
+                    showOther) && (
+                    <Input
+                      className={inputClass}
+                      placeholder={
+                        screen.otherPlaceholder || "Please specify..."
+                      }
+                      value={
+                        (data[screen.otherField as keyof FormData] as string) ||
+                        ""
+                      }
+                      onChange={(e) =>
+                        update(
+                          screen.otherField as keyof FormData,
+                          e.target.value as never
+                        )
+                      }
+                      autoFocus
+                    />
+                  )}
+                </>
+              )}
+            </div>
+          );
+        })()}
 
       {/* GIVE & RECEIVE (merged screen) */}
       {screen.type === "give-receive" && (
         <div className="space-y-6">
           {/* Give */}
           <div className="space-y-2">
-            <label className="text-sm text-[#FACF39]/80" style={{ fontFamily: "Bourton, sans-serif" }}>
+            <label
+              className="text-sm text-[#FACF39]/80"
+              style={{ fontFamily: "Bourton, sans-serif" }}
+            >
               What do you bring? (pick up to 5)
             </label>
             <p className="text-xs text-white/40">
@@ -521,7 +615,10 @@ export function QuestionScreen({
 
           {/* Receive */}
           <div className="space-y-2">
-            <label className="text-sm text-[#FACF39]/80" style={{ fontFamily: "Bourton, sans-serif" }}>
+            <label
+              className="text-sm text-[#FACF39]/80"
+              style={{ fontFamily: "Bourton, sans-serif" }}
+            >
               What are you looking for? (pick up to 5)
             </label>
             <p className="text-xs text-white/40">
@@ -536,7 +633,9 @@ export function QuestionScreen({
                     label={opt.label}
                     selected={selected}
                     onToggle={() => toggleArray("receiveFromCommunity", opt.id)}
-                    disabled={!selected && data.receiveFromCommunity.length >= 5}
+                    disabled={
+                      !selected && data.receiveFromCommunity.length >= 5
+                    }
                   />
                 );
               })}
@@ -558,7 +657,9 @@ export function QuestionScreen({
                 className={inputClass}
                 placeholder="What else are you looking for?"
                 value={data.receiveFromCommunityOther}
-                onChange={(e) => update("receiveFromCommunityOther", e.target.value)}
+                onChange={(e) =>
+                  update("receiveFromCommunityOther", e.target.value)
+                }
                 autoFocus
               />
             )}
@@ -571,7 +672,10 @@ export function QuestionScreen({
         <div className="space-y-6">
           {/* Profile visibility */}
           <div className="space-y-2">
-            <label className="text-sm text-white/70" style={{ fontFamily: "Bourton, sans-serif" }}>
+            <label
+              className="text-sm text-white/70"
+              style={{ fontFamily: "Bourton, sans-serif" }}
+            >
               Profile visibility
             </label>
             <div className="grid grid-cols-1 gap-2">
@@ -588,7 +692,10 @@ export function QuestionScreen({
 
           {/* Communication prefs */}
           <div className="space-y-2">
-            <label className="text-sm text-white/70" style={{ fontFamily: "Bourton, sans-serif" }}>
+            <label
+              className="text-sm text-white/70"
+              style={{ fontFamily: "Bourton, sans-serif" }}
+            >
               Communication preferences
             </label>
             <div className="grid grid-cols-1 gap-2">
@@ -607,12 +714,16 @@ export function QuestionScreen({
 
           {/* AI Phone Call — phrased as a question */}
           <div className="space-y-3">
-            <label className="text-sm text-white/70" style={{ fontFamily: "Bourton, sans-serif" }}>
+            <label
+              className="text-sm text-white/70"
+              style={{ fontFamily: "Bourton, sans-serif" }}
+            >
               Would you like to receive a brief AI-powered phone call?
             </label>
-            <p className="text-xs text-white/40 leading-relaxed">
+            <p className="text-xs leading-relaxed text-white/40">
               This helps us learn more about your story, your gifts, and what
-              you're looking for — so we can connect you with the right people faster.
+              you're looking for — so we can connect you with the right people
+              faster.
             </p>
             <div className="flex gap-3">
               <SelectionPill
@@ -632,7 +743,7 @@ export function QuestionScreen({
           <div>
             <button
               type="button"
-              className={`flex w-full min-h-[44px] items-center gap-3 rounded-xl border px-4 py-3 text-left text-sm transition-all active:scale-[0.97] ${
+              className={`flex min-h-[44px] w-full items-center gap-3 rounded-xl border px-4 py-3 text-left text-sm transition-all active:scale-[0.97] ${
                 data.marketingOptIn
                   ? "border-[#FACF39] bg-[#FACF39]/15 text-white"
                   : "border-white/15 bg-white/5 text-white/70"
@@ -648,7 +759,9 @@ export function QuestionScreen({
               >
                 {data.marketingOptIn && "✓"}
               </span>
-              <span>Keep me in the loop with updates, events, and opportunities</span>
+              <span>
+                Keep me in the loop with updates, events, and opportunities
+              </span>
             </button>
           </div>
         </div>
@@ -668,7 +781,9 @@ function ReviewScreen({ data }: { data: FormData }) {
     if (typeof ids === "string") {
       return scr.options.find((o) => o.id === ids)?.label ?? ids;
     }
-    return ids.map((id) => scr.options!.find((o) => o.id === id)?.label ?? id).join(", ");
+    return ids
+      .map((id) => scr.options!.find((o) => o.id === id)?.label ?? id)
+      .join(", ");
   };
 
   /** Append "Other" free-text to a label string if present */
@@ -689,15 +804,33 @@ function ReviewScreen({ data }: { data: FormData }) {
     { label: "Name", value: data.preferredName || data.fullName },
     { label: "Email", value: data.email },
     { label: "Phone", value: data.phone },
-    { label: "Location", value: data.currentLocation + (data.isNomadic ? " (nomadic)" : "") },
-    { label: "Roles", value: withOther(labelFor("your-role", data.identityRoles), data.identityRolesOther) },
+    {
+      label: "Location",
+      value: data.currentLocation + (data.isNomadic ? " (nomadic)" : ""),
+    },
+    {
+      label: "Roles",
+      value: withOther(
+        labelFor("your-role", data.identityRoles),
+        data.identityRolesOther
+      ),
+    },
     { label: "New Earth", value: data.newEarthMeaning },
-    { label: "Intention", value: withOther(labelFor("intention", data.primaryIntention), data.primaryIntentionOther) },
+    {
+      label: "Intention",
+      value: withOther(
+        labelFor("intention", data.primaryIntention),
+        data.primaryIntentionOther
+      ),
+    },
     { label: "You Bring", value: giftLabels },
     { label: "You Seek", value: seekLabels },
     { label: "Found Us", value: labelFor("found-us", data.howFoundUs) },
     { label: "Engage", value: labelFor("engage", data.engagementStyles) },
-    { label: "Visibility", value: labelFor("preferences", data.profileVisibility) },
+    {
+      label: "Visibility",
+      value: labelFor("preferences", data.profileVisibility),
+    },
   ];
 
   return (
@@ -715,7 +848,9 @@ function ReviewScreen({ data }: { data: FormData }) {
             >
               {r.label}
             </span>
-            <span className="text-sm text-white/80 leading-snug">{r.value}</span>
+            <span className="text-sm leading-snug text-white/80">
+              {r.value}
+            </span>
           </div>
         ))}
     </div>

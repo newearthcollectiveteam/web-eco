@@ -9,6 +9,7 @@ allowed-tools: Read, Bash, Glob
 Load project context to understand the codebase. This is the "what is this project?" step, separate from "where did we leave off?" (which is `/resume`).
 
 Use this when:
+
 - Starting fresh on a project you haven't seen before
 - Need to re-orient after a long break
 - Want full context without session history
@@ -26,6 +27,7 @@ pwd
 ### 2. Read CLAUDE.md
 
 Read the project's CLAUDE.md for:
+
 - Project overview/description
 - Tech stack and architecture
 - Quick commands
@@ -42,6 +44,7 @@ cat package.json | head -60
 ```
 
 Extract:
+
 - Framework (Next.js version, React version)
 - Key dependencies (tRPC, Drizzle, Supabase, etc.)
 - Available scripts (dev, build, test, db:push, etc.)
@@ -55,6 +58,7 @@ ls -la app/ 2>/dev/null  # Some projects use app/ directly
 ```
 
 Note key directories:
+
 - Where pages/routes live
 - Where API/server code lives
 - Where components live
@@ -73,6 +77,7 @@ Note available documentation files for deeper dives.
 ### 6. Check Database Schema (if applicable)
 
 If Drizzle/Prisma detected:
+
 ```bash
 # Find schema file
 ls -la src/server/db/schema.ts prisma/schema.prisma drizzle/schema.ts 2>/dev/null
@@ -82,7 +87,7 @@ Optionally read schema to understand data model.
 
 ### 7. Present Context Summary
 
-```
+````
 ## Project Context
 
 **Project:** <name>
@@ -103,24 +108,28 @@ Optionally read schema to understand data model.
 npm run dev      # Start dev server
 npm run build    # Production build
 npm run db:push  # Push schema changes
-```
+````
 
 ### Key Paths
-| Path | Purpose |
-|------|---------|
-| src/app/ | Pages/routes |
-| src/server/api/ | tRPC routers |
+
+| Path                    | Purpose         |
+| ----------------------- | --------------- |
+| src/app/                | Pages/routes    |
+| src/server/api/         | tRPC routers    |
 | src/server/db/schema.ts | Database schema |
-| src/components/ | UI components |
+| src/components/         | UI components   |
 
 ### Available Docs
+
 - README.md
 - STATUS.md
 - TODO.md
 - docs/feature-x.md
 
 ### Ready to Work
+
 Project context loaded. Run `/resume` to also see session history, or start working.
+
 ```
 
 ## When to Use
@@ -138,3 +147,4 @@ Project context loaded. Run `/resume` to also see session history, or start work
 - `/resume` = `/init-session` + "Where did we leave off?"
 
 The `/resume` skill calls init-session logic internally, then adds session continuity on top.
+```

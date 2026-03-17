@@ -9,6 +9,7 @@ Common issues and how to fix them. If you hit something not listed here, ask the
 **Symptom:** Errors during dependency installation.
 
 **Fix:**
+
 ```bash
 # Make sure you're on Node 20 (not 24)
 node --version
@@ -25,6 +26,7 @@ npm install
 **Symptom:** App crashes on startup with missing environment variable errors.
 
 **Fix:**
+
 ```bash
 # Create .env from the template
 cp .env.example .env
@@ -37,11 +39,13 @@ cp .env.example .env
 **Symptom:** `ECONNREFUSED` or `connection terminated` errors.
 
 **Possible causes:**
+
 1. **Wrong DATABASE_URL** — Make sure you're using the pooler URL (contains `pooler.supabase.com`), not the direct host
 2. **Password encoding** — If your password contains special characters (`!`, `*`, etc.), they need to be URL-encoded (e.g., `!` becomes `%21`)
 3. **Project paused** — Free Supabase projects pause after inactivity. Go to your Supabase dashboard and unpause it
 
 **Fix:** Check your `.env` DATABASE_URL matches this format:
+
 ```
 postgresql://postgres.[PROJECT-REF]:[PASSWORD]@aws-0-us-east-1.pooler.supabase.com:6543/postgres
 ```
@@ -63,6 +67,7 @@ postgresql://postgres.[PROJECT-REF]:[PASSWORD]@aws-0-us-east-1.pooler.supabase.c
 **Symptom:** TypeScript type errors.
 
 **Fix:**
+
 ```bash
 # See the full error list
 npm run typecheck
@@ -80,6 +85,7 @@ npm run typecheck
 **What's happening:** The hook runs typecheck + lint automatically to prevent broken code from being committed.
 
 **Fix:**
+
 ```bash
 # See what's wrong
 npm run quality-check
@@ -96,6 +102,7 @@ npm run lint:fix
 **Symptom:** Files keep changing format, or format check fails.
 
 **Fix:**
+
 ```bash
 # Format everything
 npm run format
@@ -112,6 +119,7 @@ npm run format
 **What this means:** Other people have added code since you last synced.
 
 **Fix:**
+
 ```bash
 # If using Claude Code:
 /sync
@@ -127,6 +135,7 @@ git pull origin dev
 **What this means:** You and someone else changed the same lines of code. Git needs you to decide which version to keep.
 
 **Fix:**
+
 ```bash
 # If using Claude Code:
 /sync
@@ -147,6 +156,7 @@ git pull origin dev
 **Why:** Someone else pushed changes since your last pull.
 
 **Fix:**
+
 ```bash
 git pull origin dev
 # Resolve any conflicts if needed
@@ -158,6 +168,7 @@ git push origin HEAD
 **Symptom:** Push fails with "permission denied" or code goes to wrong repo.
 
 **Fix:**
+
 ```bash
 # Check which account is active
 gh auth status
@@ -179,6 +190,7 @@ gh auth setup-git
 **Symptom:** `npm run dev` says port 3000 is taken.
 
 **Fix:**
+
 ```bash
 # Use a different port
 PORT=3001 npm run dev
@@ -190,6 +202,7 @@ lsof -ti:3000 | xargs kill -9
 ### Page loads but looks broken
 
 **Possible causes:**
+
 1. **Missing env vars** — Check browser console for errors about Supabase or API keys
 2. **Database not seeded** — Some pages need data to display. Check `supabase-scripts/` for setup SQL
 3. **Cache issue** — Try hard refresh (Cmd+Shift+R on Mac)
@@ -197,6 +210,7 @@ lsof -ti:3000 | xargs kill -9
 ### Admin pages show "Unauthorized"
 
 **Fix:**
+
 1. Make sure you're logged in at `/login`
 2. Your account needs to be approved. Check with the project lead or run the approval SQL:
    ```sql

@@ -32,7 +32,8 @@ function useSwipe(onSwipeLeft: () => void, onSwipeRight: () => void) {
       if (Math.abs(dx) < 60 || Math.abs(dy) > Math.abs(dx) * 0.7 || dt > 500)
         return;
 
-      if (dx < 0) onSwipeLeft(); // swipe left = forward
+      if (dx < 0)
+        onSwipeLeft(); // swipe left = forward
       else onSwipeRight(); // swipe right = back
     },
     [onSwipeLeft, onSwipeRight]
@@ -152,9 +153,7 @@ function QuestionnaireFlow() {
         }
       }
 
-      return Object.keys(updates).length > 0
-        ? { ...prev, ...updates }
-        : prev;
+      return Object.keys(updates).length > 0 ? { ...prev, ...updates } : prev;
     });
   }, [searchParams]);
 
@@ -191,7 +190,9 @@ function QuestionnaireFlow() {
           data.birthLocation.trim().length > 0
         );
       case "your-role":
-        return data.identityRoles.length > 0 || data.primaryRole.trim().length > 0;
+        return (
+          data.identityRoles.length > 0 || data.primaryRole.trim().length > 0
+        );
       case "new-earth": {
         const words = data.newEarthMeaning.trim().split(/\s+/).filter(Boolean);
         return words.length >= 10;
@@ -199,7 +200,9 @@ function QuestionnaireFlow() {
       case "intention":
         return data.primaryIntention.length > 0;
       case "give-receive":
-        return data.uniqueGift.length >= 1 && data.receiveFromCommunity.length >= 1;
+        return (
+          data.uniqueGift.length >= 1 && data.receiveFromCommunity.length >= 1
+        );
       case "found-us":
         return data.howFoundUs.length > 0;
       case "engage":
@@ -217,7 +220,10 @@ function QuestionnaireFlow() {
   const goForward = () => {
     if (!validate()) {
       if (screen.id === "new-earth") {
-        const wc = data.newEarthMeaning.trim().split(/\s+/).filter(Boolean).length;
+        const wc = data.newEarthMeaning
+          .trim()
+          .split(/\s+/)
+          .filter(Boolean).length;
         setError(`Please write at least 10 words (currently ${wc}).`);
       } else {
         setError("Please complete this step before continuing.");
@@ -247,17 +253,14 @@ function QuestionnaireFlow() {
   );
 
   // Enter key advances on text-input screens
-  const handleKeyDown = useCallback(
-    (e: React.KeyboardEvent) => {
-      if (e.key !== "Enter") return;
-      const tag = (e.target as HTMLElement).tagName;
-      // Only trigger on input fields (not textareas or buttons)
-      if (tag !== "INPUT") return;
-      e.preventDefault();
-      goForwardRef.current();
-    },
-    []
-  );
+  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
+    if (e.key !== "Enter") return;
+    const tag = (e.target as HTMLElement).tagName;
+    // Only trigger on input fields (not textareas or buttons)
+    if (tag !== "INPUT") return;
+    e.preventDefault();
+    goForwardRef.current();
+  }, []);
 
   const handleSubmit = async () => {
     if (submittingRef.current) return;
@@ -334,7 +337,9 @@ function QuestionnaireFlow() {
       <ProgressBar current={idx} total={totalScreens} />
 
       {/* Screen content — natural page scroll, no inner scroll container */}
-      <div className={`mx-auto max-w-lg px-4 pt-14 ${isLast ? "pb-44" : "pb-28"}`}>
+      <div
+        className={`mx-auto max-w-lg px-4 pt-14 ${isLast ? "pb-44" : "pb-28"}`}
+      >
         <div key={animKey} data-q-dir="fade">
           <QuestionScreen
             screen={screen}
@@ -349,7 +354,7 @@ function QuestionnaireFlow() {
 
       {/* Error */}
       {error && (
-        <div className="fixed bottom-20 left-0 right-0 z-40 text-center pointer-events-none">
+        <div className="pointer-events-none fixed right-0 bottom-20 left-0 z-40 text-center">
           <span className="pointer-events-auto inline-block rounded-lg bg-red-900/80 px-4 py-2 text-sm text-red-200">
             {error}
           </span>
@@ -358,7 +363,7 @@ function QuestionnaireFlow() {
 
       {/* Bottom nav */}
       <div
-        className="fixed bottom-0 left-0 right-0 z-50 border-t border-white/10 bg-black/95"
+        className="fixed right-0 bottom-0 left-0 z-50 border-t border-white/10 bg-black/95"
         style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
       >
         <div className="mx-auto max-w-lg px-4 py-3">
@@ -370,7 +375,10 @@ function QuestionnaireFlow() {
                 onClick={handleSubmit}
                 disabled={status === "submitting"}
                 className="min-h-[48px] w-full rounded-xl bg-gradient-to-r from-[#f3a51c] via-[#f6c43f] to-[#f6e45b] px-6 py-3 text-base font-bold text-black transition-shadow hover:shadow-lg hover:shadow-[#f6c43f]/30 disabled:opacity-50"
-                style={{ fontFamily: "Bourton, sans-serif", touchAction: "manipulation" }}
+                style={{
+                  fontFamily: "Bourton, sans-serif",
+                  touchAction: "manipulation",
+                }}
               >
                 {status === "submitting" ? "Submitting..." : "Submit"}
               </button>
@@ -403,7 +411,10 @@ function QuestionnaireFlow() {
                 type="button"
                 onClick={goForward}
                 className="min-h-[44px] rounded-xl bg-gradient-to-r from-[#f3a51c] via-[#f6c43f] to-[#f6e45b] px-6 py-2 text-sm font-bold text-black transition-shadow hover:shadow-lg hover:shadow-[#f6c43f]/30"
-                style={{ fontFamily: "Bourton, sans-serif", touchAction: "manipulation" }}
+                style={{
+                  fontFamily: "Bourton, sans-serif",
+                  touchAction: "manipulation",
+                }}
               >
                 Continue
               </button>

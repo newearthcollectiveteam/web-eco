@@ -33,26 +33,30 @@ ls STATUS.md TODO.md CLAUDE.md 2>/dev/null
 ```
 
 Read existing documentation:
+
 - README.md
-- docs/*.md (if exists)
+- docs/\*.md (if exists)
 - Any ROADMAP.md, CURRENT_STATE.md, etc.
 - Inline TODOs: `grep -rn "TODO:\|FIXME:\|HACK:" src/`
 
 ### 2. Extract Project Context
 
 From package.json and code, identify:
+
 - Project name and description
 - Tech stack (Next.js version, database, auth, etc.)
 - Key dependencies
 - Scripts available
 
 From existing docs, extract:
+
 - Current feature status
 - Known issues or limitations
 - Planned work or roadmap
 - Project-specific patterns
 
 From code structure:
+
 - Key directories and their purposes
 - Database schema location
 - API routes or tRPC routers
@@ -61,15 +65,18 @@ From code structure:
 ### 3. Check for Existing Standards
 
 If STATUS.md, TODO.md, or CLAUDE.md exist:
+
 - Show current content
 - Ask: "Merge with new content or skip?"
 
 ### 4. Ask Interactive Questions
 
 **Required:**
+
 - Confirm extracted project name and description
 
 **Optional:**
+
 - "Would you like to create a ROADMAP.md for phased development?"
 - "Should I consolidate existing docs into the standard format?"
 - "Archive old docs to docs/archive/?"
@@ -77,37 +84,46 @@ If STATUS.md, TODO.md, or CLAUDE.md exist:
 ### 5. Generate Files
 
 **CLAUDE.md** (project-specific):
-```markdown
+
+````markdown
 # <Project Name>
 
 ## Overview
+
 <extracted or ask user>
 
 ## Quick Commands
+
 ```bash
 npm run dev              # Start dev server
 npm run build            # Build for production
 npm run db:push          # Push schema (if applicable)
 ```
+````
 
 ## Tech Stack
+
 - **Framework**: <detected>
 - **Database**: <detected>
 - **Auth**: <detected>
 
 ## Key Paths
-| Path | Purpose |
-|------|---------|
-| src/app/ | Next.js pages |
+
+| Path                    | Purpose         |
+| ----------------------- | --------------- |
+| src/app/                | Next.js pages   |
 | src/server/db/schema.ts | Database schema |
-| ... | ... |
+| ...                     | ...             |
 
 ## Project-Specific Notes
+
 <any unique patterns, gotchas, or instructions>
 
 ## Current Status
+
 See STATUS.md for feature status and TODO.md for tracked work.
-```
+
+````
 
 **STATUS.md**:
 ```markdown
@@ -133,9 +149,10 @@ See STATUS.md for feature status and TODO.md for tracked work.
 | <today> | Initialized project standards |
 
 See `git log --oneline` for full history.
-```
+````
 
 **TODO.md**:
+
 ```markdown
 # TODO
 
@@ -157,16 +174,19 @@ See `git log --oneline` for full history.
 ```
 
 **ROADMAP.md** (if requested):
+
 ```markdown
 # Roadmap
 
 ## Phase 1: <name>
+
 **Status:** In Progress / Complete / Planned
 
 - [ ] Task 1
 - [ ] Task 2
 
 ## Phase 2: <name>
+
 **Status:** Planned
 
 - [ ] Task 1
@@ -175,6 +195,7 @@ See `git log --oneline` for full history.
 ### 6. Consolidate Existing Docs (if approved)
 
 If user approves consolidation:
+
 1. Create `docs/archive/` if doesn't exist
 2. Move superseded docs (CURRENT_STATE.md, NEXT_SESSION_PROMPT.md, etc.) to archive
 3. Extract useful content into STATUS.md/TODO.md first
@@ -211,6 +232,7 @@ See `~/.claude/FRAMEWORK.md` or run `/framework` for full standards.
 ```
 
 Optionally create a symlink for easy access:
+
 ```bash
 ln -sf ~/.claude/FRAMEWORK.md FRAMEWORK.md
 ```

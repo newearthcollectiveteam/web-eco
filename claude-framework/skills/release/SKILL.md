@@ -79,16 +79,19 @@ grep '"version"' package.json | head -1
 ```
 
 Use AskUserQuestion:
+
 1. **Patch** (0.1.0 → 0.1.1) — bug fixes, small changes
 2. **Minor** (0.1.0 → 0.2.0) — new features, enhancements
 3. **Major** (0.1.0 → 1.0.0) — breaking changes
 4. **Skip** — don't bump version
 
 If bumping, update:
+
 - `package.json` version field
 - `STATUS.md` version field
 
 Commit the version bump to dev first:
+
 ```bash
 git checkout dev
 git pull origin dev
@@ -137,6 +140,7 @@ EOF
 ```
 
 Use AskUserQuestion:
+
 1. **Merge and deploy** — merge the PR now
 2. **Just create the PR** — leave it open for manual merge later
 3. **Cancel** — abort the release
@@ -213,6 +217,7 @@ When the user seems new to releases, explain these concepts naturally:
 - **Preview deployment** = A test version of the website that Vercel creates for every branch. You can click around and make sure everything works before going live.
 
 When presenting the release summary, be clear about impact:
+
 - "This will update the live website immediately after merging."
 - "If something goes wrong, we can revert (undo) the release."
 - "It's good practice to check the live site after releasing to make sure everything looks right."
@@ -221,14 +226,15 @@ If the user seems nervous: "Releasing is safe because everything was already tes
 
 ## Relationship to Other Skills
 
-| Skill | Role |
-|-------|------|
-| `/review` | Review changes before releasing |
-| `/release` | Merge dev → main |
-| `/sync` | Resolve conflicts if dev/main diverged |
-| `/push` | Push individual commits (lower level) |
+| Skill      | Role                                   |
+| ---------- | -------------------------------------- |
+| `/review`  | Review changes before releasing        |
+| `/release` | Merge dev → main                       |
+| `/sync`    | Resolve conflicts if dev/main diverged |
+| `/push`    | Push individual commits (lower level)  |
 
 **Recommended pre-release flow:**
+
 ```
 /review         # Check what's in dev
 /release        # Ship it

@@ -1,15 +1,18 @@
 # Pattern: Bearer Token API Integration
 
 ## Problem
+
 You need to integrate with an external REST API that uses bearer token authentication (e.g., Mercury, Plaid, financial APIs). You want type-safe responses, graceful error handling, and a clean abstraction that doesn't leak implementation details.
 
 ## When to Use
+
 - Integrating with any REST API that uses `Authorization: Bearer <token>` auth
 - The API key comes from environment variables
 - You need typed responses and null-safe error handling
 - Multiple endpoints share the same auth/base URL
 
 ## When NOT to Use
+
 - OAuth2 flows (use a dedicated OAuth library)
 - GraphQL APIs (use a GraphQL client)
 - APIs with complex auth (HMAC signing, certificate pinning)
@@ -127,4 +130,5 @@ const totalRevenue = stripeRevenue + mercuryRevenue;
 ```
 
 ## Related Patterns
+
 - `api-external-linking.md` — Linking internal records to external service IDs

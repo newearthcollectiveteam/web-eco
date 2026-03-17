@@ -1,6 +1,10 @@
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
-import { createTRPCRouter, protectedProcedure, adminProcedure } from "~/server/api/trpc";
+import {
+  createTRPCRouter,
+  protectedProcedure,
+  adminProcedure,
+} from "~/server/api/trpc";
 import { userProfiles } from "~/server/db/schema";
 import { eq, ilike, or, count, sql, and, type SQL } from "drizzle-orm";
 import { createAdminClient } from "~/lib/supabase/admin";
@@ -48,10 +52,7 @@ export const teamRouter = createTRPCRouter({
           .limit(limit)
           .offset(offset)
           .orderBy(userProfiles.createdAt),
-        ctx.db
-          .select({ total: count() })
-          .from(userProfiles)
-          .where(where),
+        ctx.db.select({ total: count() }).from(userProfiles).where(where),
       ]);
 
       const total = totalRow?.total ?? 0;
@@ -84,7 +85,10 @@ export const teamRouter = createTRPCRouter({
         });
 
       if (authError) {
-        throw new TRPCError({ code: "BAD_REQUEST", message: `Failed to create auth user: ${authError.message}` });
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: `Failed to create auth user: ${authError.message}`,
+        });
       }
 
       // The handle_new_user trigger creates the profile.
@@ -137,17 +141,19 @@ export const teamRouter = createTRPCRouter({
       const adminClient = createAdminClient();
 
       // Delete from Supabase Auth (also cascades via trigger cleanup)
-      const { error: authError } =
-        await adminClient.auth.admin.deleteUser(input.id);
+      const { error: authError } = await adminClient.auth.admin.deleteUser(
+        input.id
+      );
 
       if (authError) {
-        throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: `Failed to delete auth user: ${authError.message}` });
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: `Failed to delete auth user: ${authError.message}`,
+        });
       }
 
       // Delete profile row
-      await ctx.db
-        .delete(userProfiles)
-        .where(eq(userProfiles.id, input.id));
+      await ctx.db.delete(userProfiles).where(eq(userProfiles.id, input.id));
 
       return { success: true };
     }),

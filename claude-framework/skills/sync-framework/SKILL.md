@@ -13,11 +13,13 @@ Copies the canonical framework files from `~/.claude/` into the project's `claud
 This skill is designed to run **automatically** as part of other skills — you rarely need to call it directly.
 
 **Auto-triggered by:**
+
 - `/handoff` — syncs framework before saving session state (if `claude-framework/` exists)
 - `/push` — syncs framework before pushing (if `claude-framework/` exists)
 - `/release` — syncs framework before release (if `claude-framework/` exists)
 
 **Manual trigger:**
+
 - User says "sync framework", "update framework distribution", "update setup script"
 - After manually editing skills or patterns and wanting to distribute them
 
@@ -109,6 +111,7 @@ If called standalone, just report — don't auto-stage.
 This skill is called as a **sub-step** inside these skills:
 
 ### In /handoff (add after step 7, before commit):
+
 ```
 7b. **Sync Framework Distribution**
     If `claude-framework/` exists in the project, sync it:
@@ -118,6 +121,7 @@ This skill is called as a **sub-step** inside these skills:
 ```
 
 ### In /push (add to Phase 2, after documentation freshness):
+
 ```
 2.4 **Framework Distribution Check**
     If `claude-framework/` exists:
@@ -127,6 +131,7 @@ This skill is called as a **sub-step** inside these skills:
 ```
 
 ### In /release (add to Phase 1, pre-flight):
+
 ```
 1.3 **Framework Distribution**
     If `claude-framework/` exists and versions differ:

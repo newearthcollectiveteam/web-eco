@@ -14,6 +14,7 @@ Generate a quality scorecard for a feature, page, or application. Provides objec
 ### Step 1: Identify Scope
 
 Ask user or infer from context:
+
 - Specific feature or page
 - Entire application
 - Comparison against previous version
@@ -23,47 +24,55 @@ Ask user or infer from context:
 Read relevant files and assess against the following categories:
 
 #### 2.1 Core Functionality (0-10)
+
 - All specified features work
 - Edge cases handled
 - No blocking bugs
 
 #### 2.2 Error Handling (0-10)
+
 - Validation errors show inline
 - API errors show user-friendly messages
 - Network failures handled gracefully
 - No console errors in production
 
 #### 2.3 Accessibility (0-10)
+
 - Icon buttons have aria-labels
 - Forms have proper labels
 - Keyboard navigation works
 - Focus management correct
 
 #### 2.4 Performance (0-10)
+
 - Loading states present
 - Appropriate caching (staleTime)
 - No unnecessary re-renders
 - Large data sets optimized
 
 #### 2.5 Polish (0-10)
+
 - Consistent styling
 - Smooth transitions
 - Feedback on interactions (toasts)
 - Empty states designed
 
 #### 2.6 Code Quality (0-10)
+
 - TypeScript types complete
 - No any types
 - Consistent patterns
 - DRY (no duplication)
 
 #### 2.7 Security (0-10)
+
 - Auth checks in place
 - Input validation
 - No sensitive data exposed
 - RBAC implemented correctly
 
 #### 2.8 Documentation (0-10)
+
 - CLAUDE.md up to date
 - STATUS.md reflects current state
 - TODO.md organized
@@ -96,9 +105,10 @@ Category weights:
 ---
 
 ## Overall Score: X.X / 10
-
 ```
+
 [████████░░] 8.2/10
+
 ```
 
 ---
@@ -238,26 +248,31 @@ Category weights:
 ## Scoring Guidelines
 
 ### 10/10 (Exceptional)
+
 - Exceeds all requirements
 - Production-ready, polished
 - Could serve as a reference implementation
 
 ### 8-9/10 (Good)
+
 - Meets all requirements
 - Minor improvements possible
 - Production-ready
 
 ### 6-7/10 (Adequate)
+
 - Core requirements met
 - Notable gaps
 - Needs work before production
 
 ### 4-5/10 (Needs Work)
+
 - Basic functionality works
 - Significant gaps
 - Not production-ready
 
 ### 1-3/10 (Incomplete)
+
 - Core functionality broken
 - Major issues
 - Requires substantial work

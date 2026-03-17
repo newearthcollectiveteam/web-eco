@@ -12,17 +12,22 @@ Generate a handoff summary for this session, update project status, and prepare 
 
 1. **Identify Developer**
    Detect the current developer:
+
    ```bash
    git config user.name
    ```
+
    Use this as the developer identity for tagging STATUS.md changes and TODO.md items.
    If the git user.name is generic or unclear, use AskUserQuestion:
+
    > "Who's working this session? (Name or initials — used to tag your changes)"
 
 2. **Detect Session Type**
+
    ```bash
    git worktree list
    ```
+
    - If in main worktree: standard handoff
    - If in feature worktree: worker handoff (also update WORKTREES.md)
 
@@ -66,22 +71,27 @@ Generate a handoff summary for this session, update project status, and prepare 
    - Check if ROADMAP.md exists and is 100% complete → suggest `/close-roadmap`
    - Check if TODO.md has `[x]` items that should be removed
    - Check if STATUS.md recent changes table exceeds 5 entries
-   Present findings inline with the summary (don't run full /tidy, just the quick checks).
+     Present findings inline with the summary (don't run full /tidy, just the quick checks).
 
 9. **Sync Framework Distribution**
    If `claude-framework/` exists in the project root:
+
    ```bash
    ls claude-framework/ 2>/dev/null
    ```
+
    If present, compare canonical vs distribution framework version:
+
    ```bash
    grep 'Version:' ~/.claude/FRAMEWORK.md | head -1
    grep 'Version:' claude-framework/FRAMEWORK.md | head -1
    ```
+
    If versions differ, sync using `/sync-framework` steps and stage the changes.
 
 10. **Commit Doc Updates**
     Commit the STATUS.md, TODO.md, and any claude-framework/ changes locally:
+
     ```bash
     git add STATUS.md TODO.md
     git add claude-framework/ 2>/dev/null || true

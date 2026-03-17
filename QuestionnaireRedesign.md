@@ -41,7 +41,7 @@
 
 ### 2.1 Primary Role/Calling
 
-_One sentence describing what you do:_ ******\_\_\_******
+_One sentence describing what you do:_ **\*\***\_\_\_**\*\***
 
 ### 2.2 Do you identify with any of these? (check all that apply)
 
@@ -69,7 +69,7 @@ _One sentence describing what you do:_ ******\_\_\_******
 - [ ] Content creator
 - [ ] Developer/technologist
 
-- [ ] Other: ******\_\_\_******
+- [ ] Other: **\*\***\_\_\_**\*\***
 
 ### 2.3 Top 3 skills you could contribute to community projects
 

@@ -14,6 +14,7 @@ Audit a page or component for accessibility issues. Checks WCAG 2.1 AA complianc
 ### Step 1: Identify Scope
 
 Ask user or infer from context:
+
 - Specific file path to audit
 - Entire route/page
 - Specific component
@@ -30,12 +31,14 @@ Use Grep to search for patterns in the target scope:
 ```
 
 Search for:
+
 - `<button` without `aria-label`
 - Buttons containing only `<Icon />` or `className="*icon*"`
 
 #### 2.2 Expandable Elements (Missing aria-expanded)
 
 Search for:
+
 - `useState` with `open` or `isOpen` or `expanded`
 - Toggle buttons without `aria-expanded`
 - Accordion/collapsible patterns
@@ -43,6 +46,7 @@ Search for:
 #### 2.3 Form Accessibility
 
 Search for:
+
 - `<input` without associated `<label htmlFor>`
 - `<input` without `id` attribute
 - Error messages without `role="alert"`
@@ -50,6 +54,7 @@ Search for:
 #### 2.4 Keyboard Navigation
 
 Search for:
+
 - `onClick` without corresponding `onKeyDown`
 - Custom interactive elements (`div onClick`) without `role="button"` and `tabIndex`
 - Modals/dialogs without Escape key handler
@@ -57,13 +62,14 @@ Search for:
 #### 2.5 Loading States
 
 Search for:
+
 - Loading spinners without `aria-busy` on parent
 - `isPending` or `isLoading` states
 - Disabled buttons during loading
 
 ### Step 3: Generate Report
 
-```markdown
+````markdown
 ## Accessibility Audit Report
 
 **Scope:** `path/to/file.tsx`
@@ -71,13 +77,13 @@ Search for:
 
 ### Summary
 
-| Category | Status | Issues |
-|----------|--------|--------|
-| Icon buttons | ⚠️ WARN | 3 missing aria-label |
-| Expandable | ✅ PASS | - |
-| Forms | ❌ FAIL | 2 missing labels |
-| Keyboard nav | ⚠️ WARN | 1 missing Escape handler |
-| Loading states | ✅ PASS | - |
+| Category       | Status  | Issues                   |
+| -------------- | ------- | ------------------------ |
+| Icon buttons   | ⚠️ WARN | 3 missing aria-label     |
+| Expandable     | ✅ PASS | -                        |
+| Forms          | ❌ FAIL | 2 missing labels         |
+| Keyboard nav   | ⚠️ WARN | 1 missing Escape handler |
+| Loading states | ✅ PASS | -                        |
 
 **Overall:** 2/5 categories need attention
 
@@ -88,6 +94,7 @@ Search for:
 #### Icon Buttons (3 issues)
 
 1. `src/components/header.tsx:42` — Close button missing aria-label
+
    ```tsx
    // Current
    <button onClick={onClose}><X /></button>
@@ -95,6 +102,7 @@ Search for:
    // Fix
    <button onClick={onClose} aria-label="Close menu"><X /></button>
    ```
+````
 
 2. ...
 
@@ -103,7 +111,8 @@ Search for:
 1. Add `aria-label` to all icon-only buttons
 2. Associate form inputs with labels using `htmlFor`
 3. Add Escape key handler to modal component
-```
+
+````
 
 ### Step 4: Offer Fixes
 
@@ -121,9 +130,10 @@ If fixing, apply targeted edits following the patterns in FRAMEWORK.md Accessibi
 <button aria-label="Description of action">
   <Icon />
 </button>
-```
+````
 
 ### Expandable Fix
+
 ```tsx
 <button aria-expanded={open} onClick={() => setOpen(!open)}>
   Toggle
@@ -131,17 +141,22 @@ If fixing, apply targeted edits following the patterns in FRAMEWORK.md Accessibi
 ```
 
 ### Form Label Fix
+
 ```tsx
 <label htmlFor="input-id">Label</label>
 <input id="input-id" />
 ```
 
 ### Error Message Fix
+
 ```tsx
-{error && <p role="alert">{error}</p>}
+{
+  error && <p role="alert">{error}</p>;
+}
 ```
 
 ### Escape Handler Fix
+
 ```tsx
 useEffect(() => {
   const handleEscape = (e: KeyboardEvent) => {

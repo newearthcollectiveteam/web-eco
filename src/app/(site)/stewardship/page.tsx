@@ -1,13 +1,6 @@
 import { type Metadata } from "next";
 import Image from "next/image";
-import {
-  ArrowRight,
-  Globe,
-  Heart,
-  Mail,
-  Sparkles,
-  Users,
-} from "lucide-react";
+import { ArrowRight, Globe, Heart, Mail, Sparkles, Users } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Stewardship | New Earth Collective",
@@ -63,7 +56,7 @@ export default function StewardshipPage() {
   return (
     <div className="bg-black">
       {/* Hero Section */}
-      <section className="relative overflow-hidden pb-16 pt-32">
+      <section className="relative overflow-hidden pt-32 pb-16">
         {/* Flower of Life Shader Background */}
         <div className="absolute inset-0 opacity-15">
           <iframe

@@ -9,6 +9,7 @@ allowed-tools: Read, Write, Edit, Bash, Glob
 Archive a completed (or substantially complete) ROADMAP.md, clean up TODO.md, and bump the project version. This is the focused roadmap lifecycle skill — a subset of what `/tidy` checks.
 
 **When to use:**
+
 - Manually when you know the roadmap is done
 - When `/tidy`, `/handoff`, or `/validate` suggest it
 
@@ -43,6 +44,7 @@ cp ROADMAP.md docs/archive/ROADMAP-$(date +%Y-%m-%d).md
 ```
 
 Then either:
+
 - **Delete ROADMAP.md** if the user confirms no new roadmap is needed
 - **Reset ROADMAP.md** with a fresh template if the user wants to start a new phase
 
@@ -67,6 +69,7 @@ Read TODO.md and clean up:
 Prompt the user:
 
 > Roadmap archived. Would you like to:
+>
 > 1. Start a new ROADMAP.md for the next phase
 > 2. Continue with just TODO.md for now
 > 3. Do nothing — I'll create a roadmap when needed

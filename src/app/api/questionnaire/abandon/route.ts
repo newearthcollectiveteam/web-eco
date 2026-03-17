@@ -124,8 +124,8 @@ export async function POST(request: NextRequest) {
       preferredName || (name ? name.split(" ")[0] : null) || "there";
 
     // Send reminder email (non-blocking)
-    getResend().emails
-      .send({
+    getResend()
+      .emails.send({
         from: "New Earth Collective <noreply@joinnewearthcollective.com>",
         to: email,
         subject: "You're almost there!",

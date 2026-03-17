@@ -572,8 +572,8 @@ export async function POST(request: NextRequest) {
 
     // Send confirmation email via Resend (non-blocking)
     const displayName = preferredName || name.split(" ")[0] || "there";
-    getResend().emails
-      .send({
+    getResend()
+      .emails.send({
         from: "New Earth Collective <noreply@joinnewearthcollective.com>",
         to: email,
         subject: "Welcome to the Collective",

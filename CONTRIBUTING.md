@@ -52,18 +52,28 @@ Fill in the values in `.env`. See `docs/ENVIRONMENT_SETUP.md` for a detailed wal
 
 ### 4. Set up Claude Code (optional but recommended)
 
-We use Claude Code with a unified development framework. To get the same setup:
+We use Claude Code with a unified development framework. The setup script lets you choose how much to install:
 
 ```bash
 ./scripts/setup-claude.sh
 ```
 
-This installs:
+Choose a preset when prompted:
 
-- Development framework and standards
-- 27 custom skills (code quality, session management, etc.)
-- 18 reusable patterns
-- Supabase MCP integration
+| Preset                     | Skills | Best for                                                             |
+| -------------------------- | ------ | -------------------------------------------------------------------- |
+| **Standard** (recommended) | 22     | Most developers — session management, git workflow, code quality     |
+| **Minimal**                | 11     | Just the essentials — session management + git workflow              |
+| **Full**                   | 34     | Framework maintainers — includes scaffolding, multi-agent, utilities |
+
+The script:
+
+- Backs up your existing `~/.claude/` before any changes
+- Only installs framework skills (preserves your custom skills and settings)
+- Tracks what was installed for easy updates later
+
+To update after pulling new code: `./scripts/setup-claude.sh --update`
+To restore a backup: `./scripts/setup-claude.sh --restore`
 
 ### 5. Verify everything works
 
@@ -195,8 +205,8 @@ cd web-eco
 npm install
 cp .env.example .env    # Then fill in values (ask project lead)
 
-# 2. Install Claude framework (optional)
-./scripts/setup-claude.sh
+# 2. Install Claude framework (optional — choose Standard preset)
+./scripts/setup-claude.sh --preset=standard
 
 # 3. Start developing
 npm run dev             # Visit http://localhost:3000

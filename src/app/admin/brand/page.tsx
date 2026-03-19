@@ -1554,7 +1554,7 @@ export default function BrandPage() {
                       {/* Background Colors & Download */}
                       <div className="flex items-center justify-between gap-2">
                         <div className="flex flex-wrap items-center gap-2">
-                          {/* eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any */}
+                          {/* eslint-disable-next-line @typescript-eslint/no-unsafe-call */}
                           {(logo as any).bgColors?.map(
                             (color: string, idx: number) => (
                               <div

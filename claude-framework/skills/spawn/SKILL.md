@@ -1,17 +1,28 @@
 ---
 name: spawn
-description: Plan parallel work, create worktrees, generate worker session prompts
+description: Plan parallel work, create feature branches, generate worker session prompts
 allowed-tools: Read, Write, Edit, Bash, Glob, Grep, AskUserQuestion
 ---
 
 # Spawn Parallel Workers
 
-Integrator skill to divide work into parallel tasks, create worktrees, and generate prompts for worker sessions.
+Integrator skill to divide work into parallel tasks, create feature branches, and generate prompts for worker sessions running in separate terminals.
+
+## Architecture
+
+Workers run in **separate terminal sessions** on the same repo, each on their own feature branch. No worktrees — every worker has full access to all project files, node_modules, .env, and build tooling.
+
+```
+Terminal 1 (Integrator)          Terminal 2 (Worker A)         Terminal 3 (Worker B)
+├── main repo                    ├── same repo                 ├── same repo
+├── dev branch                   ├── feature/auth branch       ├── feature/api branch
+└── coordinates                  └── does focused work         └── does focused work
+```
 
 ## Prerequisites
 
-- Must be run from main worktree
-- Project should have WORKTREES.md (will create if missing)
+- Must be run from the main repo (not a worktree)
+- Project should use git with a dev branch
 
 ## Steps
 
@@ -19,76 +30,44 @@ Integrator skill to divide work into parallel tasks, create worktrees, and gener
    Ask user what work needs to be parallelized, or read from:
    - User input (preferred)
    - TODO.md items
-   - Existing WORKTREES.md task queue
 
 2. **Analyze & Plan**
    For each task, determine:
-   - Branch name: `feature/<short-name>`
-   - Worktree path: `../<project>-<short-name>`
-   - Port assignment: 3001, 3002, etc.
+   - Branch name: `feature/<short-name>` (branched from dev)
+   - Port assignment: 3001, 3002, etc. (if workers need dev servers)
    - Dependencies between tasks (if any)
    - Acceptance criteria
+   - File ownership (which files each worker should modify to avoid conflicts)
 
    Present plan to user for approval before creating anything.
 
-3. **Create Worktrees**
+3. **Create Feature Branches**
    For each approved task:
 
    ```bash
-   git worktree add ../<project>-<name> -b feature/<name>
+   git branch feature/<name> dev
    ```
 
-4. **Create Context Files**
-   For each worktree, create `.worktree-context`:
-
-   ```markdown
-   # Worktree Context
-
-   **Branch:** feature/<name>
-   **Task:** <description>
-   **Assigned:** <today>
-   **Port:** <port>
-
-   ## Objective
-
-   <detailed task description>
-
-   ## Acceptance Criteria
-
-   - [ ] <criterion 1>
-   - [ ] <criterion 2>
-   - [ ] All changes committed to branch
-   - [ ] Tests passing
-
-   ## Constraints
-
-   <any constraints or dependencies>
-
-   ## Integration Notes
-
-   <notes for merge time>
-
-   ## Session Log
-   ```
-
-5. **Update WORKTREES.md**
-   Add all new worktrees to the coordination file with status "ready".
-
-6. **Generate Worker Prompts**
-   For each worktree, generate a copy-paste prompt:
+4. **Generate Worker Prompts**
+   For each task, generate a copy-paste prompt:
 
    ```
    ================================================================================
    WORKER SESSION: <name>
+   BRANCH: feature/<name>
    PORT: <port>
    ================================================================================
 
-   cd <absolute-worktree-path>
+   Open a new terminal, cd to the project, then start a Claude session:
 
-   Then start a new Claude session and paste:
+   cd <absolute-project-path>
+   git checkout feature/<name>
+   claude
+
+   Then paste this prompt:
 
    ---
-   I'm a worker session for this worktree. My task:
+   I'm a worker session for parallel development.
 
    **Branch:** feature/<name>
    **Port:** <port>
@@ -99,9 +78,15 @@ Integrator skill to divide work into parallel tasks, create worktrees, and gener
    **Acceptance Criteria:**
    - [ ] <criteria>
 
-   **IMPORTANT:** Commit all changes to the branch before finishing. The integrator merges commits, not working tree state.
+   **File Ownership:**
+   <files this worker should modify — avoid touching files owned by other workers>
 
-   Please run /claim to confirm setup, then start the dev server on port <port> and begin work.
+   **When done:**
+   1. Commit all changes to feature/<name>
+   2. Push the branch: `git push origin feature/<name>`
+   3. Let me know you're done
+
+   Please start the dev server on port <port> if needed: `PORT=<port> npm run dev`
    ---
    ```
 
@@ -112,57 +97,47 @@ Integrator skill to divide work into parallel tasks, create worktrees, and gener
 
 ### Tasks to Spawn
 
-| # | Task | Branch | Port | Path |
-|---|------|--------|------|------|
-| 1 | <desc> | feature/<name> | 3001 | ../<project>-<name> |
-| 2 | <desc> | feature/<name> | 3002 | ../<project>-<name> |
+| # | Task | Branch | Port |
+|---|------|--------|------|
+| 1 | <desc> | feature/<name> | 3001 |
+| 2 | <desc> | feature/<name> | 3002 |
+
+### File Ownership
+- Worker 1 owns: <files/dirs>
+- Worker 2 owns: <files/dirs>
+- Shared (coordinate): <files>
 
 ### Dependencies
-- Task 2 should not modify <file> (Task 1 owns it)
+- <any ordering constraints>
 
 Proceed with creation? [y/n]
 
 ---
 
-## Worktrees Created
+## Branches Created
 
-- ../<project>-<name> (feature/<name>)
-- ../<project>-<name> (feature/<name>)
+- feature/<name> (from dev)
+- feature/<name> (from dev)
 
 ## Worker Session Prompts
 
-Copy each prompt below into a new terminal + Claude session:
+Copy each prompt below into a new terminal:
 
 ================================================================================
 WORKER 1: <name>
+BRANCH: feature/<name>
 PORT: 3001
 ================================================================================
 
-cd <path>
+<instructions>
 
-Prompt to paste:
----
-<prompt>
----
-
-================================================================================
-WORKER 2: <name>
-PORT: 3002
-================================================================================
-
-cd <path>
-
-Prompt to paste:
----
-<prompt>
 ---
 
 ## Integrator Next Steps
 
 1. Open new terminals for each worker
 2. Start each worker session with the prompts above
-3. Monitor progress in WORKTREES.md
-4. Run /integrate when workers complete
+3. When workers push their branches, merge via PR or direct merge
 ```
 
 ## Task Division Guidelines
@@ -173,9 +148,18 @@ When dividing work:
 - Identify shared dependencies and assign clear ownership
 - Keep tasks roughly equal in scope
 - Flag any tasks that must be sequential (can't parallelize)
+- Workers have FULL repo access — they can read any file for context, but should only modify their owned files
+
+## Integration
+
+When workers are done:
+
+- Each worker pushes their feature branch
+- Integrator merges branches into dev (via PR or direct merge)
+- Resolve any conflicts in the merge
+- No special cleanup needed (no worktrees to remove)
 
 ## Error Handling
 
-- **Worktree exists**: Ask to reuse or pick new name
-- **Branch exists**: Ask to reuse, delete, or pick new name
+- **Branch exists**: Ask to reuse or pick new name
 - **Port conflict**: Auto-increment to next available

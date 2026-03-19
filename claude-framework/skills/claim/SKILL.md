@@ -1,89 +1,87 @@
 ---
 name: claim
-description: Claim a worktree assignment and set up worker session context
+description: Claim a feature branch assignment and set up worker session context
 allowed-tools: Read, Write, Edit, Bash, Glob
 ---
 
-# Claim Worktree
+# Claim Branch Assignment
 
-Claim a worktree assignment and set up worker session context.
+Set up a worker session on a feature branch for parallel development.
 
 ## Steps
 
-1. **Find Coordination File**
-   Look for WORKTREES.md in:
-   - Current directory
-   - Parent directory (if in a worktree)
-   - Main worktree (use `git worktree list` to find main)
-
-2. **Read Assignment**
-   - Parse WORKTREES.md for current directory's assignment
-   - If no assignment, list available idle worktrees
-   - If this is main worktree, inform user this is integrator role
-
-3. **Validate Worktree**
+1. **Detect Branch**
 
    ```bash
-   git worktree list
+   git branch --show-current
    ```
 
-   Confirm current directory is a valid worktree.
+   Confirm we're on a feature branch (not dev or main).
 
-4. **Read or Create Context**
-   - If .worktree-context exists, read it
-   - If not, create from WORKTREES.md assignment info
+2. **Read Project Context**
+   - Read CLAUDE.md for project overview and conventions
+   - Read STATUS.md for current state
+   - Read TODO.md for outstanding work
 
-5. **Report Session Setup**
-   Display:
-   - Worktree name and branch
-   - Assigned port
-   - Task summary
+3. **Understand Assignment**
+   The worker prompt (pasted by the user) contains:
+   - Branch name and objective
    - Acceptance criteria
-   - Any blockers or dependencies
+   - File ownership boundaries
+   - Port assignment
 
-6. **Start Dev Server** (if user confirms)
+   If no prompt was pasted, ask the user what task they're working on.
+
+4. **Verify Setup**
+
+   ```bash
+   # Confirm branch exists and is checked out
+   git branch --show-current
+
+   # Confirm clean working tree
+   git status --short
+
+   # Confirm dependencies installed
+   ls node_modules/.package-lock.json 2>/dev/null
+   ```
+
+5. **Start Dev Server** (if user confirms)
+
    ```bash
    PORT=<assigned-port> npm run dev
    ```
+
    Run in background so session can continue.
+
+6. **Report Ready**
 
 ## Output Format
 
 ```
-## Worker Session Claimed
+## Worker Session Ready
 
-**Worktree:** ../project-auth
-**Branch:** feature/auth
-**Port:** 3001
+**Branch:** feature/<name>
+**Port:** <port>
 
 ### Task
-Implement OAuth login with Google and GitHub providers.
+<objective from prompt>
 
 ### Acceptance Criteria
-- [ ] Google OAuth working
-- [ ] GitHub OAuth working
-- [ ] Session persistence
-- [ ] Tests passing
+- [ ] <criteria>
 
-### Dependencies
-- None
+### File Ownership
+<files this worker should modify>
 
 ### Ready to Start
-Run `PORT=3001 npm run dev` to start dev server.
+Dev server running on port <port>.
 ```
 
 ## Completion Protocol
 
-**CRITICAL**: Before marking work as done, workers MUST:
+**CRITICAL**: Before finishing, workers MUST:
 
-1. Commit all changes to the worktree branch (`git add` + `git commit`)
-2. Verify the commit landed: `git log --oneline -1`
-3. Run `/handoff` to update status
+1. Commit all changes: `git add <files>` + `git commit`
+2. Push the branch: `git push origin feature/<name>`
+3. Verify the push: `git log origin/feature/<name> --oneline -1`
 
-Workers that skip committing will leave their work as uncommitted changes that get lost when the integrator runs `/integrate` and cleans up worktrees. The integrator merges _commits_, not working tree state.
-
-## Edge Cases
-
-- **No WORKTREES.md found**: Inform user this project isn't set up for multi-agent work. Offer to create coordination file if in main worktree.
-- **Worktree not assigned**: Show available tasks from WORKTREES.md and let user pick.
-- **Already claimed**: Show current owner and status. Ask if user wants to take over.
+The integrator merges pushed branches — uncommitted or unpushed work will be lost.

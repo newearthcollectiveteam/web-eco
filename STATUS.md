@@ -1,6 +1,6 @@
 # Project Status
 
-**Version:** 0.1.0
+**Version:** 0.2.0
 **Last Updated:** 2026-03-19
 **Last Updated By:** @matthew
 

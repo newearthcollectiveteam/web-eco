@@ -1,5 +1,5 @@
 {
-  "version": "1.21.0",
+  "version": "1.22.0",
   "categories": {
     "session": {
       "description": "Session lifecycle — start, work, end",
@@ -36,11 +36,17 @@
     },
     "project_setup": {
       "description": "Scaffolding and initialization",
-      "skills": ["init-standards", "seed", "align", "onboarding"],
+      "skills": [
+        "init-standards",
+        "seed",
+        "align",
+        "onboarding",
+        "collab-setup"
+      ],
       "tier": "maintainer"
     },
     "multi_agent": {
-      "description": "Parallel worktree coordination",
+      "description": "Parallel branch coordination (optional)",
       "skills": ["spawn", "claim", "integrate"],
       "tier": "advanced"
     },
@@ -51,7 +57,8 @@
         "framework",
         "close-roadmap",
         "sync-framework",
-        "sync-to-global"
+        "sync-to-global",
+        "sync-all"
       ],
       "tier": "maintainer"
     }
@@ -74,7 +81,7 @@
         "multi_agent",
         "utilities"
       ],
-      "description": "Everything — framework maintenance included (34 skills)"
+      "description": "Everything — framework maintenance included (36 skills)"
     }
   },
   "core_docs": ["CLAUDE.md", "FRAMEWORK.md", "MULTIAGENT.md"]

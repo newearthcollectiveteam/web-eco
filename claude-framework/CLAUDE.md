@@ -47,15 +47,15 @@
 2. **Work**: Update inline TODOs as you go
 3. **End**: Run `/handoff` to document session and update status
 
-### Multi-Agent (parallel sessions)
+### Multi-Agent (parallel sessions — optional)
 
 See `~/.claude/MULTIAGENT.md` for full protocol.
 
-- **Integrator** (main worktree): Plans work, assigns tasks, merges results
-- **Workers** (feature worktrees): Execute assigned tasks in isolation
-- Coordination via `WORKTREES.md` in main worktree
+- **Integrator** (dev branch): Plans work, creates feature branches, merges results
+- **Workers** (separate terminals): Execute assigned tasks on feature branches with full repo access
+- Coordination via git branches (no extra files needed)
 
-**Trigger:** When user discusses parallelizing work, breaking tasks into parallel sessions, or setting up worktrees → plan the breakdown, then run `/spawn` to create worktrees and generate worker prompts.
+**Trigger:** When user discusses parallelizing work, breaking tasks into parallel sessions, or multiple terminals → plan the breakdown, then run `/spawn` to create feature branches and generate worker prompts.
 
 ### New Project Setup
 
@@ -117,11 +117,12 @@ Use `/seed` to scaffold new projects with this stack.
 - `/scorecard` - Quality scorecard with category breakdown
 - `/audit-sweep` - Full quality sweep: parallel audits, fix, and commit
 
-### Multi-Agent Workflow
+### Multi-Agent Workflow (Optional)
 
-- `/spawn` - Create worktrees and generate worker prompts (integrator)
-- `/claim` - Claim a worktree assignment (worker sessions)
-- `/integrate` - Merge completed worktrees (integrator session)
+- `/spawn` - Create feature branches and generate worker session prompts
+- `/claim` - Claim a branch assignment (worker sessions)
+- `/integrate` - Merge completed feature branches into dev
+- `/collab-setup` - Turn a single-dev project into multi-dev collaborative
 
 ### Documentation
 
@@ -135,6 +136,7 @@ Use `/seed` to scaffold new projects with this stack.
 - `/sync` - Pull latest upstream into current branch, resolve conflicts
 - `/release` - Merge dev into main for production deployment with safety checks
 - `/sync-framework` - Sync canonical ~/.claude/ framework into project's claude-framework/ distribution (auto-runs via /handoff, /push)
+- `/sync-all` - Bidirectional framework sync (crash recovery for when /handoff didn't run)
 
 ### Deployment
 
@@ -170,9 +172,11 @@ Use `/seed` to scaffold new projects with this stack.
 | "Audit routes" / "audit tools" / "inventory" / "what's missing" | → `/inventory`                                      |
 | After adding new routes or npm packages                         | → suggest `/inventory` during `/tidy` or `/handoff` |
 | Roadmap 100% complete (detected by /handoff or /tidy)           | → suggest `/close-roadmap`                          |
-| "Parallel work" / "multiple sessions" / "worktrees"             | → `/spawn`                                          |
+| "Parallel work" / "multiple sessions" / "multiple terminals"    | → `/spawn`                                          |
 | Worker session start / "I'm assigned to..."                     | → `/claim`                                          |
 | "Merge branches" / "reintegrate" / workers done                 | → `/integrate`                                      |
+| "Add collaboration" / "set up for team" / "multi-dev"           | → `/collab-setup`                                   |
+| "Sync everything" / "sync all" / session crashed                | → `/sync-all`                                       |
 | "Show me the framework" / "what are the standards"              | → `/framework`                                      |
 | "new feature" / "start working on" / "create a branch"          | → `/checkout`                                       |
 | "open a PR" / "pull request" / "ready for review"               | → `/pr`                                             |

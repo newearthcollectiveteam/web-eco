@@ -1,5 +1,5 @@
 **Welcome to the New Earth Collective Launch Party**
-*A Day-Long Transformational Festival of Heart, Harmony, and High Vibe Connection*
+_A Day-Long Transformational Festival of Heart, Harmony, and High Vibe Connection_
 
 **Date:** December 20th, 2025
 **Time:** 12 PM to 12 AM
@@ -26,16 +26,16 @@ This launch party is our first spark. A sacred celebration. A living ceremony. A
 
 **Heaven on Earth Vibes**
 
-* Soul-stirring workshops to awaken your gifts
-* Coded conversations & deep connective magic
-* Potluck community feast & visionary speech
-* Curated bass music to move your body & spirit
-* Integration lounges, tea service, tarot, cuddle zones
-* Acro, aerials, jugglers, and joyful circus energy
+- Soul-stirring workshops to awaken your gifts
+- Coded conversations & deep connective magic
+- Potluck community feast & visionary speech
+- Curated bass music to move your body & spirit
+- Integration lounges, tea service, tarot, cuddle zones
+- Acro, aerials, jugglers, and joyful circus energy
 
 We are weaving together the many beautiful threads of Boulder into one Flower of Life field.
 
-This isn’t *our* party. It’s *ours* to co-create.
+This isn’t _our_ party. It’s _ours_ to co-create.
 
 **[Say Yes to the Frequency →](#)**
 
@@ -43,16 +43,16 @@ This isn’t *our* party. It’s *ours* to co-create.
 
 ### **How to Attend**
 
-This party is free—because your presence *is* the gift.
+This party is free—because your presence _is_ the gift.
 
 **Your Entry = Joining the Skool Community + Bringing a Dish to Share**
 
 This Skool group will be the living ecosystem of the New Earth Collective—a digital temple and sanctuary where we:
 
-* Connect with soul-aligned beings
-* Share & receive healing, guidance, and support
-* Activate purpose & amplify service
-* Host weekly connection calls, men's & women's circles, and more
+- Connect with soul-aligned beings
+- Share & receive healing, guidance, and support
+- Activate purpose & amplify service
+- Host weekly connection calls, men's & women's circles, and more
 
 This in-person event is the **foundational heartbeat** of the digital New Earth Collective.
 YOU are the roots. And the world is waiting to bloom from what we grow together.

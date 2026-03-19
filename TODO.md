@@ -10,13 +10,8 @@ _None documented_
 
 ## Tech Debt (code quality)
 
-- [ ] Unstaged Prettier formatting changes across ~100 files (from quality-check run)
 - [ ] 227 emergence photos in public/ — consider Supabase Storage migration to reduce repo size
 - [ ] `drizzle-kit push` crashes on Node v24 (checkValue.replace bug) — use raw SQL for migrations
-- [ ] Remove `@libsql/client` from package.json (dead dependency, SQLite path removed)
-- [ ] Move `@types/pg`, `@types/react-datepicker`, `@types/react-signature-canvas` to devDependencies
-- [ ] Phone import modal needs ARIA treatment (dialog role, focus trap, label associations)
-- [ ] Login page password toggle needs `aria-label`
 
 ## CRM Enhancements
 

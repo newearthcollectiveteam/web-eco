@@ -445,6 +445,7 @@ function LoginPageContent() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
                   className="absolute top-1/2 right-3 -translate-y-1/2 text-neutral-400 hover:text-white"
                 >
                   {showPassword ? (

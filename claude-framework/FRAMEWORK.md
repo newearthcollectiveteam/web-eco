@@ -1,6 +1,6 @@
 # Unified Development Framework
 
-> **Version:** 1.21.0
+> **Version:** 1.22.0
 > **Last Updated:** 2026-03-19
 > **Location:** `~/.claude/FRAMEWORK.md`
 > **View from any project:** Run `/framework` or `cat ~/.claude/FRAMEWORK.md`
@@ -2017,7 +2017,9 @@ refactor/<area>         # Refactoring
 docs/<topic>            # Documentation
 ```
 
-### Collaborative Branching Strategy
+### Collaborative Branching Strategy (Optional)
+
+> This section applies to multi-developer projects. Solo projects can push directly to main without branch protection, PRs, or CI. Run `/collab-setup` to add this infrastructure when you're ready.
 
 For multi-developer projects, use a two-tier branching model:
 
@@ -2114,13 +2116,14 @@ Two complementary guardrails protect live projects from broken pushes:
 | `/release`  | Merge dev → main for production          | Ready to ship     |
 
 **Adding to a project:**
+Run `/collab-setup` to automate all of the following, or do manually:
 
-1. Copy `scripts/pre-push.sh` and `scripts/install-hooks.sh` from a reference project
-2. Add `"prepare": "bash scripts/install-hooks.sh"` to package.json scripts
-3. Run `npm install` or `bash scripts/install-hooks.sh`
-4. Set up GitHub Actions CI: `.github/workflows/ci.yml`
-5. Set up branch protection on `main` and `dev` via GitHub rulesets
-6. Add `.github/pull_request_template.md` and `.github/CODEOWNERS`
+1. Create `dev` branch from `main`
+2. Set up GitHub Actions CI: `.github/workflows/ci.yml`
+3. Set up branch protection on `main` (PR + CI + approval) and `dev` (CI)
+4. Add `.github/pull_request_template.md` and `CODEOWNERS`
+5. Add `CONTRIBUTING.md`
+6. Optionally add framework distribution (`claude-framework/` + setup script)
 
 ---
 
@@ -2267,33 +2270,27 @@ If a session crashes mid-plan:
 
 ---
 
-## Multi-Agent Workflow
+## Multi-Agent Workflow (Optional)
+
+> This section is optional. Most projects work fine with single-session development. Add multi-agent support when you need to parallelize large features across multiple Claude sessions.
+>
+> **Setup:** Run `/collab-setup` to add the collaboration infrastructure (CI, branch protection, PR templates) before using parallel workflows.
 
 ### Architecture Overview
 
+Workers run in **separate terminal sessions** on the same repo, each on their own feature branch. Every worker has full access to all project files, node_modules, .env, and build tooling.
+
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    MULTI-AGENT ARCHITECTURE                      │
+│               MULTI-AGENT ARCHITECTURE                          │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                  │
-│                    ┌─────────────────────┐                       │
-│                    │    INTEGRATOR       │                       │
-│                    │    (main worktree)  │                       │
-│                    │    Port: 3000       │                       │
-│                    └──────────┬──────────┘                       │
-│                               │                                  │
-│            ┌──────────────────┼──────────────────┐               │
-│            │                  │                  │               │
-│            ▼                  ▼                  ▼               │
-│  ┌─────────────────┐ ┌─────────────────┐ ┌─────────────────┐    │
-│  │   WORKER 1      │ │   WORKER 2      │ │   WORKER 3      │    │
-│  │   Port: 3001    │ │   Port: 3002    │ │   Port: 3003    │    │
-│  │   feature/auth  │ │   feature/api   │ │   feature/ui    │    │
-│  └─────────────────┘ └─────────────────┘ └─────────────────┘    │
+│  Terminal 1 (Integrator)     Terminal 2         Terminal 3       │
+│  ├── project repo            ├── same repo      ├── same repo   │
+│  ├── dev branch              ├── feature/auth   ├── feature/api │
+│  └── plans & merges          └── focused work   └── focused work│
 │                                                                  │
-│  COORDINATION FILES:                                             │
-│  • WORKTREES.md (main) - Source of truth                        │
-│  • .worktree-context (each worktree) - Task details             │
+│  COORDINATION: Git branches (no extra files needed)             │
 │                                                                  │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -2304,60 +2301,46 @@ If a session crashes mid-plan:
 1. PLAN (Integrator)
    └─→ Discuss tasks with user
    └─→ Identify parallelizable work
-   └─→ Run /spawn
+   └─→ Assign file ownership to avoid conflicts
 
-2. SPAWN (Integrator)
-   └─→ Creates worktrees
+2. SPAWN (Integrator — /spawn)
+   └─→ Creates feature branches from dev
    └─→ Assigns ports (3001, 3002, ...)
    └─→ Generates worker prompts
-   └─→ Updates WORKTREES.md
 
-3. CLAIM (Workers)
-   └─→ Each worker runs /claim
-   └─→ Reads .worktree-context
-   └─→ Starts dev server on assigned port
-   └─→ Begins work
+3. WORK (Workers — separate terminals)
+   └─→ User opens new terminal, cd to project
+   └─→ git checkout feature/<name>
+   └─→ Starts Claude session, pastes worker prompt
+   └─→ Worker runs /claim to confirm setup
+   └─→ Works on task, commits frequently
 
-4. WORK (Workers)
-   └─→ Stay in assigned worktree
-   └─→ Commit frequently
-   └─→ Update .worktree-context
+4. COMPLETE (Workers)
+   └─→ Commit all changes
+   └─→ Push branch: git push origin feature/<name>
+   └─→ Signal done to integrator
 
-5. COMPLETE (Workers)
-   └─→ Run /handoff
-   └─→ Updates WORKTREES.md status
-   └─→ Adds to Pending Integrations
-
-6. INTEGRATE (Integrator)
-   └─→ Run /integrate
-   └─→ Reviews and merges branches
-   └─→ Resolves conflicts
-   └─→ Cleans up worktrees
+5. INTEGRATE (Integrator — /integrate)
+   └─→ Reviews each feature branch
+   └─→ Merges into dev (--no-ff)
+   └─→ Resolves conflicts, runs quality checks
+   └─→ Cleans up merged branches
 ```
 
-### Worktree Environment
-
-Workers run in separate directories with their own git branch but share the codebase. Keep these in mind:
-
-- **MCP servers**: Workers don't automatically inherit MCP connections from the integrator session. If a worker needs MCP access (e.g., Supabase MCP for data extraction), the worker must be started in a fresh Claude session where the MCP is configured. The `/spawn` prompt should note any required MCPs.
-- **Environment variables**: Worktrees share the same `.env` / `.env.local` files (symlinked or copied). Workers that need additional env vars (e.g., `NEXT_PUBLIC_MAPBOX_TOKEN`) should have these documented in their `.worktree-context`.
-- **Ports**: Each worktree runs its dev server on a unique port (3001, 3002, ...) to avoid conflicts.
-
-### Hybrid Options
+### When to Use
 
 | Approach           | When to Use                    | Pros                 | Cons                  |
 | ------------------ | ------------------------------ | -------------------- | --------------------- |
-| **Single session** | Small tasks, < 2 hours         | Simple, full context | Sequential            |
+| **Single session** | Most tasks                     | Simple, full context | Sequential            |
 | **Multi-agent**    | Large features, parallelizable | Faster, focused      | Coordination overhead |
 | **Hybrid**         | Mixed work                     | Flexible             | Requires judgment     |
 
-**Hybrid Strategy:**
+### Key Principles
 
-1. Start with single session for planning
-2. Identify parallelizable chunks
-3. Spawn workers for independent work
-4. Return to single session for integration
-5. Use single session for tight coupling
+- **Full repo access**: Every worker can read any file for context — they just modify their owned files
+- **No coordination files**: Git branches are the source of truth, no WORKTREES.md or .worktree-context needed
+- **Port separation**: Each worker runs its dev server on a unique port (3001, 3002, ...) to avoid conflicts
+- **Push before done**: Workers must push their branch — the integrator merges pushed commits, not local state
 
 ---
 
@@ -2418,7 +2401,7 @@ Owner evaluates and incorporates into global framework.
 | --------------- | -------------------------- | ------------------------------- |
 | **Essential**   | Session, Collaboration     | Every developer                 |
 | **Recommended** | + Quality                  | Most developers                 |
-| **Advanced**    | + Multi-Agent              | Power users doing parallel work |
+| **Advanced**    | + Multi-Agent (optional)   | Power users doing parallel work |
 | **Maintainer**  | + Project Setup, Utilities | Framework owner only            |
 
 ### Installation Presets
@@ -2427,7 +2410,7 @@ Owner evaluates and incorporates into global framework.
 | -------- | ---------------------------- | --------------------------------------------- |
 | Minimal  | 11 (essential)               | `./scripts/setup-claude.sh --preset=minimal`  |
 | Standard | 22 (essential + recommended) | `./scripts/setup-claude.sh --preset=standard` |
-| Full     | 34 (all)                     | `./scripts/setup-claude.sh --preset=full`     |
+| Full     | 36 (all)                     | `./scripts/setup-claude.sh --preset=full`     |
 
 ### Version Management
 
@@ -2640,7 +2623,7 @@ Skills are organized by category and adoption tier. See [Framework Distribution]
 | `/smart-compact` | Interactive context capture before reset  |
 | `/snapshot`      | Quick read-only status snapshot           |
 
-**Collaboration** (6 skills) — Git workflow for team development
+**Collaboration** (6 skills) — Git workflow for team development (add via `/collab-setup`)
 
 | Skill       | Purpose                                 |
 | ----------- | --------------------------------------- |
@@ -2671,36 +2654,38 @@ Skills are organized by category and adoption tier. See [Framework Distribution]
 
 ### Advanced Tier — Power Users
 
-**Multi-Agent** (3 skills) — Parallel worktree coordination
+**Multi-Agent** (3 skills) — Parallel branch coordination (optional)
 
-| Skill        | Purpose                            |
-| ------------ | ---------------------------------- |
-| `/spawn`     | Create worktrees for parallel work |
-| `/claim`     | Claim worktree assignment          |
-| `/integrate` | Merge completed worktrees          |
+| Skill        | Purpose                                    |
+| ------------ | ------------------------------------------ |
+| `/spawn`     | Create feature branches and worker prompts |
+| `/claim`     | Claim branch assignment in worker session  |
+| `/integrate` | Merge completed feature branches into dev  |
 
 ### Maintainer Tier — Framework Owner
 
 **Project Setup** (4 skills) — Scaffolding and initialization
 
-| Skill             | Purpose                               |
-| ----------------- | ------------------------------------- |
-| `/init-standards` | Add CLAUDE.md, STATUS.md, TODO.md     |
-| `/seed`           | Scaffold new project                  |
-| `/align`          | Add missing stack to existing project |
-| `/onboarding`     | Full developer onboarding             |
+| Skill             | Purpose                                              |
+| ----------------- | ---------------------------------------------------- |
+| `/init-standards` | Add CLAUDE.md, STATUS.md, TODO.md                    |
+| `/seed`           | Scaffold new project                                 |
+| `/align`          | Add missing stack to existing project                |
+| `/onboarding`     | Full developer onboarding                            |
+| `/collab-setup`   | Turn single-dev project into multi-dev collaborative |
 
-**Utilities** (5 skills) — Framework maintenance and discovery
+**Utilities** (6 skills) — Framework maintenance and discovery
 
-| Skill             | Purpose                                |
-| ----------------- | -------------------------------------- |
-| `/discover`       | Dynamic search, analyze, install MCPs  |
-| `/framework`      | View this framework document           |
-| `/close-roadmap`  | Archive completed roadmap, cleanup     |
-| `/sync-framework` | Sync framework to project distribution |
-| `/sync-to-global` | Promote patterns to global config      |
+| Skill             | Purpose                                       |
+| ----------------- | --------------------------------------------- |
+| `/discover`       | Dynamic search, analyze, install MCPs         |
+| `/framework`      | View this framework document                  |
+| `/close-roadmap`  | Archive completed roadmap, cleanup            |
+| `/sync-framework` | Sync framework to project distribution        |
+| `/sync-to-global` | Promote patterns to global config             |
+| `/sync-all`       | Bidirectional framework sync (crash recovery) |
 
-**Total: 34 skills across 6 categories**
+**Total: 36 skills across 6 categories**
 
 ---
 
@@ -2708,14 +2693,12 @@ Skills are organized by category and adoption tier. See [Framework Distribution]
 
 All templates located in `~/.claude/templates/`:
 
-| Template              | Purpose                       |
-| --------------------- | ----------------------------- |
-| `CLAUDE.md`           | Project instructions template |
-| `STATUS.md`           | Feature status template       |
-| `TODO.md`             | Work tracking template        |
-| `ROADMAP.md`          | Phased development template   |
-| `WORKTREES.md`        | Multi-agent coordination      |
-| `worktree-context.md` | Worker task context           |
+| Template     | Purpose                       |
+| ------------ | ----------------------------- |
+| `CLAUDE.md`  | Project instructions template |
+| `STATUS.md`  | Feature status template       |
+| `TODO.md`    | Work tracking template        |
+| `ROADMAP.md` | Phased development template   |
 
 ---
 
@@ -2797,6 +2780,18 @@ rm -rf .next
 ---
 
 ## Changelog
+
+### v1.22.0 (2026-03-19)
+
+- Rewrote multi-agent workflow: feature branches instead of worktrees (workers get full repo access)
+- Marked multi-agent as optional in framework (not all projects need it)
+- Updated `/spawn` — creates feature branches, generates terminal-based worker prompts
+- Updated `/claim` — simplified for feature branch workflow
+- Updated `/integrate` — merges feature branches into dev
+- Updated `MULTIAGENT.md` — removed worktree-specific coordination files
+- Added `/collab-setup` — converts single-dev project to multi-dev (CI, branch protection, PR templates)
+- Added `/sync-all` — bidirectional framework sync for crash recovery
+- Total skills: 36
 
 ### v1.21.0 (2026-03-19)
 

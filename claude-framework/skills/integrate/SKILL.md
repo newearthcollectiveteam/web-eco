@@ -1,43 +1,45 @@
 ---
 name: integrate
-description: Orchestrate reintegration of completed worktree branches into main
+description: Merge completed feature branches back into dev
 allowed-tools: Read, Write, Edit, Bash, Glob, Grep
 ---
 
-# Integrate Worktrees
+# Integrate Feature Branches
 
-Orchestrate reintegration of completed worktree branches into main.
+Merge completed worker branches back into the dev branch.
 
 ## Prerequisites
 
-- Must be run from main worktree
-- WORKTREES.md must exist with Pending Integrations section
+- Must be on the dev branch
+- Workers should have pushed their feature branches
 
 ## Steps
 
-1. **Verify Integrator Role**
+1. **Verify on Dev**
 
    ```bash
-   git worktree list
+   git branch --show-current
    ```
 
-   Confirm current directory is the main worktree. If not, abort with instructions.
+   If not on dev, switch: `git checkout dev`
 
-2. **Read Coordination State**
-   - Parse WORKTREES.md
-   - List all worktrees and their status
-   - Identify Pending Integrations marked as ready
-
-3. **Pre-Integration Checks**
-   For each ready integration:
+2. **Find Ready Branches**
 
    ```bash
-   # Fetch the branch
-   git fetch . ../project-<name>:feature/<name>
+   # List feature branches
+   git branch -r | grep 'origin/feature/'
 
+   # Or list local feature branches
+   git branch | grep 'feature/'
+   ```
+
+3. **Pre-Integration Review**
+   For each feature branch:
+
+   ```bash
    # Show what will be merged
-   git log --oneline main..feature/<name>
-   git diff --stat main...feature/<name>
+   git log --oneline dev..feature/<name>
+   git diff --stat dev...feature/<name>
    ```
 
 4. **Present Integration Plan**
@@ -47,8 +49,8 @@ Orchestrate reintegration of completed worktree branches into main.
    - Recommended merge order (based on dependencies)
    - Any potential conflicts detected
 
-5. **Execute Integrations** (with user confirmation)
-   For each approved integration:
+5. **Execute Merges** (with user confirmation)
+   For each approved branch:
 
    ```bash
    git merge feature/<name> --no-ff -m "Merge feature/<name>: <description>"
@@ -60,22 +62,15 @@ Orchestrate reintegration of completed worktree branches into main.
    - After resolution, continue merge
 
 6. **Post-Integration**
-   - Run test suite: `npm test` or `npm run typecheck`
-   - Update WORKTREES.md:
-     - Remove from Pending Integrations
-     - Update worktree status to "merged"
-   - Optionally clean up worktrees:
+   - Run quality check: `npm run typecheck && npm run lint`
+   - Update STATUS.md and TODO.md if needed
+   - Clean up merged branches:
      ```bash
-     git worktree remove ../project-<name>
      git branch -d feature/<name>
+     git push origin --delete feature/<name>
      ```
 
 7. **Report Results**
-   Show:
-   - Successfully merged branches
-   - Any failures or skipped integrations
-   - Updated WORKTREES.md state
-   - Recommendations for next steps
 
 ## Output Format
 
@@ -83,26 +78,22 @@ Orchestrate reintegration of completed worktree branches into main.
 ## Integration Complete
 
 ### Merged
-- feature/auth (3 commits, 5 files)
-- feature/api (7 commits, 12 files)
+- feature/auth (3 commits, 5 files) ✓
+- feature/api (7 commits, 12 files) ✓
 
 ### Skipped
-- feature/ui (not ready - missing tests)
+- feature/ui (not ready — missing tests)
 
-### Tests
-All passing ✓
+### Quality Check
+Typecheck: ✓ | Lint: ✓
 
 ### Cleaned Up
-- Removed worktree: ../project-auth
-- Removed worktree: ../project-api
-
-### WORKTREES.md Updated
-- 2 integrations removed from pending
-- 2 worktrees marked as merged
+- Deleted branch: feature/auth (local + remote)
+- Deleted branch: feature/api (local + remote)
 
 ### Next Steps
-- feature/ui still needs test coverage before integration
-- Consider starting new parallel tasks
+- Push dev to remote: `git push origin dev`
+- feature/ui still needs work before integration
 ```
 
 ## Conflict Resolution
@@ -115,18 +106,13 @@ When merge conflicts occur:
    git diff --name-only --diff-filter=U
    ```
 
-2. **Categorize Conflicts**
-   - Trivial (whitespace, imports): Auto-resolve if possible
-   - Content (same lines modified): Show both versions, ask user
-   - Structural (file moved/deleted): Explain situation, get direction
-
-3. **Resolution Options**
+2. **Resolution Options**
    - Accept theirs (feature branch version)
-   - Accept ours (main version)
-   - Manual merge (show editor)
+   - Accept ours (dev version)
+   - Manual merge
    - Abort and defer
 
-4. **After Resolution**
+3. **After Resolution**
    ```bash
    git add <resolved-files>
    git commit
@@ -134,7 +120,7 @@ When merge conflicts occur:
 
 ## Safety Checks
 
-- Never force push to main
-- Always run tests after merge
-- Keep WORKTREES.md as source of truth
-- Don't delete worktrees until confirmed merged
+- Never force push
+- Always run quality checks after merge
+- Don't delete branches until confirmed merged
+- Ask before each merge — don't batch without confirmation

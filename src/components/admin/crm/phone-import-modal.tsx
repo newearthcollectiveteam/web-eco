@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import {
   X,
   Upload,
@@ -43,6 +43,39 @@ export function PhoneImportModal({
     errors: string[];
   } | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
+
+  // Focus trap: keep Tab/Shift+Tab within the modal
+  const handleKeyDown = useCallback(
+    (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        onClose();
+        return;
+      }
+      if (e.key !== "Tab" || !dialogRef.current) return;
+      const focusable = dialogRef.current.querySelectorAll<HTMLElement>(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      );
+      if (focusable.length === 0) return;
+      const first = focusable[0]!;
+      const last = focusable[focusable.length - 1]!;
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    },
+    [onClose]
+  );
+
+  useEffect(() => {
+    document.addEventListener("keydown", handleKeyDown);
+    // Focus the dialog on mount
+    dialogRef.current?.focus();
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [handleKeyDown]);
 
   const bulkMutation = api.crm.bulkCreateContacts.useMutation({
     onSuccess: (data) => {
@@ -210,16 +243,28 @@ export function PhoneImportModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
-      <div className="w-full max-w-2xl rounded-2xl border border-white/10 bg-neutral-900 shadow-2xl">
+      <div
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="phone-import-title"
+        tabIndex={-1}
+        className="w-full max-w-2xl rounded-2xl border border-white/10 bg-neutral-900 shadow-2xl focus:outline-none"
+      >
         {/* Header */}
         <div className="flex items-center justify-between border-b border-white/10 px-6 py-4">
           <h2
+            id="phone-import-title"
             className="text-lg font-bold text-white"
             style={{ fontFamily: "Airwaves, sans-serif" }}
           >
             Import Contacts
           </h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-white">
+          <button
+            onClick={onClose}
+            aria-label="Close dialog"
+            className="text-gray-400 hover:text-white"
+          >
             <X className="h-5 w-5" />
           </button>
         </div>
@@ -342,7 +387,10 @@ export function PhoneImportModal({
 
               {/* Tags */}
               <div>
-                <label className="mb-1 block text-xs text-gray-400">
+                <label
+                  htmlFor="phone-import-tag-input"
+                  className="mb-1 block text-xs text-gray-400"
+                >
                   Tags (optional)
                 </label>
                 <div className="mb-2 flex flex-wrap gap-1.5">
@@ -354,6 +402,7 @@ export function PhoneImportModal({
                       {tag}
                       <button
                         onClick={() => setTags(tags.filter((t) => t !== tag))}
+                        aria-label={`Remove tag ${tag}`}
                       >
                         <X className="h-3 w-3" />
                       </button>
@@ -362,6 +411,7 @@ export function PhoneImportModal({
                 </div>
                 <div className="flex gap-2">
                   <input
+                    id="phone-import-tag-input"
                     type="text"
                     value={tagInput}
                     onChange={(e) => setTagInput(e.target.value)}

@@ -2017,7 +2017,9 @@ refactor/<area>         # Refactoring
 docs/<topic>            # Documentation
 ```
 
-### Collaborative Branching Strategy
+### Collaborative Branching Strategy (Optional)
+
+> This section applies to multi-developer projects. Solo projects can push directly to main without branch protection, PRs, or CI. Run `/collab-setup` to add this infrastructure when you're ready.
 
 For multi-developer projects, use a two-tier branching model:
 
@@ -2114,13 +2116,14 @@ Two complementary guardrails protect live projects from broken pushes:
 | `/release`  | Merge dev → main for production          | Ready to ship     |
 
 **Adding to a project:**
+Run `/collab-setup` to automate all of the following, or do manually:
 
-1. Copy `scripts/pre-push.sh` and `scripts/install-hooks.sh` from a reference project
-2. Add `"prepare": "bash scripts/install-hooks.sh"` to package.json scripts
-3. Run `npm install` or `bash scripts/install-hooks.sh`
-4. Set up GitHub Actions CI: `.github/workflows/ci.yml`
-5. Set up branch protection on `main` and `dev` via GitHub rulesets
-6. Add `.github/pull_request_template.md` and `.github/CODEOWNERS`
+1. Create `dev` branch from `main`
+2. Set up GitHub Actions CI: `.github/workflows/ci.yml`
+3. Set up branch protection on `main` (PR + CI + approval) and `dev` (CI)
+4. Add `.github/pull_request_template.md` and `CODEOWNERS`
+5. Add `CONTRIBUTING.md`
+6. Optionally add framework distribution (`claude-framework/` + setup script)
 
 ---
 
@@ -2620,7 +2623,7 @@ Skills are organized by category and adoption tier. See [Framework Distribution]
 | `/smart-compact` | Interactive context capture before reset  |
 | `/snapshot`      | Quick read-only status snapshot           |
 
-**Collaboration** (6 skills) — Git workflow for team development
+**Collaboration** (6 skills) — Git workflow for team development (add via `/collab-setup`)
 
 | Skill       | Purpose                                 |
 | ----------- | --------------------------------------- |

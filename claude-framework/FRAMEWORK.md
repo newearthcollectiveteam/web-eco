@@ -1,7 +1,7 @@
 # Unified Development Framework
 
-> **Version:** 1.20.0
-> **Last Updated:** 2026-03-17
+> **Version:** 1.21.0
+> **Last Updated:** 2026-03-19
 > **Location:** `~/.claude/FRAMEWORK.md`
 > **View from any project:** Run `/framework` or `cat ~/.claude/FRAMEWORK.md`
 
@@ -29,12 +29,15 @@ This document defines the canonical development standards, patterns, and workflo
 16. [Session Workflow](#session-workflow)
 17. [Long Plan Context Management](#long-plan-context-management)
 18. [Multi-Agent Workflow](#multi-agent-workflow)
-19. [Tool Arsenal](#tool-arsenal)
-20. [Skills Reference](#skills-reference)
-21. [Templates](#templates)
-22. [Patterns Library](#patterns-library)
-23. [Troubleshooting](#troubleshooting)
-24. [Changelog](#changelog)
+19. [Framework Distribution](#framework-distribution)
+20. [Developer Onboarding](#developer-onboarding)
+21. [Codebase Maintenance](#codebase-maintenance)
+22. [Tool Arsenal](#tool-arsenal)
+23. [Skills Reference](#skills-reference)
+24. [Templates](#templates)
+25. [Patterns Library](#patterns-library)
+26. [Troubleshooting](#troubleshooting)
+27. [Changelog](#changelog)
 
 ---
 
@@ -2358,6 +2361,216 @@ Workers run in separate directories with their own git branch but share the code
 
 ---
 
+## Framework Distribution
+
+### Architecture
+
+The framework lives in two places per developer:
+
+```
+┌─────────────────────────────────────────────────┐
+│ ~/.claude/ (global — loaded by Claude Code)      │
+│  ├── CLAUDE.md        Global instructions        │
+│  ├── FRAMEWORK.md     This document              │
+│  ├── MULTIAGENT.md    Multi-agent protocol       │
+│  ├── settings.json    Claude Code settings       │
+│  ├── skills/          34 skill directories       │
+│  ├── patterns/        18 reference patterns      │
+│  └── .framework-manifest  Install tracking       │
+└─────────────────────────────────────────────────┘
+         ▲ setup-claude.sh installs from ▼
+┌─────────────────────────────────────────────────┐
+│ project/claude-framework/ (repo — distribution)  │
+│  ├── manifest.json    Categories & versions      │
+│  ├── CLAUDE.md        Mirror of global           │
+│  ├── FRAMEWORK.md     Mirror of global           │
+│  ├── MULTIAGENT.md    Mirror of global           │
+│  ├── skills/          Mirror of global           │
+│  └── patterns/        Mirror of global           │
+└─────────────────────────────────────────────────┘
+```
+
+### Roles
+
+| Role                | Who          | Responsibilities                                                    |
+| ------------------- | ------------ | ------------------------------------------------------------------- |
+| **Framework Owner** | Project lead | Updates `~/.claude/`, runs `/sync-framework` to push to repo        |
+| **Developer**       | Team member  | Runs `setup-claude.sh` to install, runs `--update` for new versions |
+| **Contributor**     | Anyone       | Can suggest changes via `/sync-to-global` (requires owner approval) |
+
+### Sync Flows
+
+**Owner → Repo (automatic):**
+`/handoff`, `/push`, `/release` auto-run `/sync-framework`.
+Copies `~/.claude/` → `claude-framework/` → committed to git.
+
+**Repo → Developer (manual):**
+Developer pulls latest → runs `./scripts/setup-claude.sh --update`.
+Copies `claude-framework/` → `~/.claude/` (merge-based, preserves custom skills).
+
+**Developer → Owner (collaborative):**
+Developer suggests pattern/improvement → `/sync-to-global` or PR discussion.
+Owner evaluates and incorporates into global framework.
+
+### Skill Categories & Adoption Tiers
+
+| Tier            | Categories                 | Who Should Install              |
+| --------------- | -------------------------- | ------------------------------- |
+| **Essential**   | Session, Collaboration     | Every developer                 |
+| **Recommended** | + Quality                  | Most developers                 |
+| **Advanced**    | + Multi-Agent              | Power users doing parallel work |
+| **Maintainer**  | + Project Setup, Utilities | Framework owner only            |
+
+### Installation Presets
+
+| Preset   | Skills                       | Command                                       |
+| -------- | ---------------------------- | --------------------------------------------- |
+| Minimal  | 11 (essential)               | `./scripts/setup-claude.sh --preset=minimal`  |
+| Standard | 22 (essential + recommended) | `./scripts/setup-claude.sh --preset=standard` |
+| Full     | 34 (all)                     | `./scripts/setup-claude.sh --preset=full`     |
+
+### Version Management
+
+- `manifest.json` tracks the framework version
+- `.framework-manifest` tracks what each dev installed (version, preset, skills, timestamp)
+- `--update` re-installs the same preset with the latest version
+- Version bumps follow semver: patch (fixes), minor (new skills/patterns), major (breaking changes)
+
+---
+
+## Developer Onboarding
+
+### Prerequisites
+
+- **Node.js 20** (not 24 — drizzle-kit bug)
+- **GitHub CLI** (`gh`)
+- **Claude Code CLI** (`claude`)
+
+### Quick Start (5 minutes)
+
+```bash
+# 1. Clone the repo
+git clone https://github.com/newearthcollectiveteam/web-eco.git
+cd web-eco
+
+# 2. Install Claude framework (choose Standard preset)
+./scripts/setup-claude.sh --preset=standard
+
+# 3. Set up environment
+cp .env.example .env   # Fill in credentials (ask project lead)
+
+# 4. Install dependencies and run
+npm install
+npm run dev            # Visit http://localhost:3000
+```
+
+### Full Onboarding (run /onboarding)
+
+The `/onboarding` skill walks through 8 phases interactively:
+
+1. **Orientation** — what will happen
+2. **GitHub & Git** — auth, remote URL, identity
+3. **Node & Dependencies** — version, install, hooks
+4. **Environment Variables** — `.env` setup with guidance
+5. **Claude Framework** — preset selection (see Framework Distribution)
+6. **Verification** — typecheck, lint, build, dev server smoke test
+7. **First Branch** — create a feature branch to start working
+8. **Summary** — quick reference card
+
+### Day 1 Checklist
+
+- [ ] GitHub access (added to org)
+- [ ] Clone repo, run setup
+- [ ] Claude framework installed (Standard preset recommended)
+- [ ] `.env` configured with Supabase credentials
+- [ ] Dev server runs locally
+- [ ] First feature branch created
+- [ ] Read `CLAUDE.md` (project-specific instructions)
+- [ ] Read `CONTRIBUTING.md` (team workflow)
+
+### Ongoing: Session Discipline
+
+Every developer session follows:
+
+```
+/resume → work → /handoff
+```
+
+This keeps `STATUS.md` and `TODO.md` current for the whole team.
+
+---
+
+## Codebase Maintenance
+
+### Routine Maintenance Schedule
+
+| Frequency         | Action                       | Skill                      | Who           |
+| ----------------- | ---------------------------- | -------------------------- | ------------- |
+| Every session end | Update STATUS.md + TODO.md   | `/handoff`                 | Every dev     |
+| Weekly            | Project hygiene check        | `/tidy`                    | Rotating      |
+| Weekly            | Sync TODO comments from code | `/sync-todos`              | Rotating      |
+| Before release    | Quality validation           | `/validate` + `/cohere`    | Release owner |
+| Before release    | Accessibility check          | `/a11y`                    | Release owner |
+| Monthly           | Full quality sweep           | `/audit-sweep`             | Lead          |
+| Monthly           | Dependency review            | Dependabot PRs             | Lead          |
+| Quarterly         | Framework version update     | `setup-claude.sh --update` | All devs      |
+
+### Dependency Management
+
+- Dependabot creates PRs automatically for outdated packages
+- **Patch bumps:** review CI, merge if green
+- **Minor bumps:** review changelog, test locally, merge
+- **Major bumps** (e.g., zod 3→4): create a feature branch, test thoroughly, may need code changes
+- Never merge dependency PRs during a release freeze
+
+### Quality Gates
+
+Every PR must pass:
+
+1. Prettier formatting
+2. ESLint (no warnings)
+3. TypeScript compilation (strict mode)
+4. Next.js production build
+
+Additional gates before release:
+
+5. `/validate` (standards compliance)
+6. `/cohere` (pattern coherence)
+7. Manual smoke test of affected features
+
+### Code Health Indicators
+
+Monitor these in `/tidy` and `/scorecard`:
+
+- TODO.md item count (target: <30 items)
+- STATUS.md freshness (updated within last 2 sessions)
+- Inline TODO/FIXME count (decreasing trend)
+- TypeScript strict mode compliance
+- Bundle size trends
+
+### Recovery Procedures
+
+**Broken build:**
+
+1. Check CI logs for the failing step
+2. If typecheck: fix type errors (don't use `@ts-ignore`)
+3. If lint: run `npm run lint:fix`
+4. If build: check for runtime imports in server code
+
+**Stale documentation:**
+
+1. Run `/tidy` to identify drift
+2. Update STATUS.md with current state
+3. Reconcile TODO.md with actual progress
+4. Archive completed roadmaps with `/close-roadmap`
+
+**Framework out of sync:**
+
+1. Owner: run `/sync-framework` to push latest to repo
+2. Devs: `git pull && ./scripts/setup-claude.sh --update`
+
+---
+
 ## Tool Arsenal
 
 ### Development Tools
@@ -2413,63 +2626,81 @@ npm run test:e2e      # E2E tests
 
 ## Skills Reference
 
-### Complete Skill List
+Skills are organized by category and adoption tier. See [Framework Distribution](#framework-distribution) for how presets map to categories.
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                        SKILLS REFERENCE                          │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  SESSION MANAGEMENT                                              │
-│  ├── /init-session  Load project context (architecture, docs)   │
-│  ├── /resume        Full resume (context + session state)       │
-│  ├── /handoff       Save session state at session end           │
-│  ├── /smart-compact Interactive context capture before reset    │
-│  └── /snapshot      Quick read-only status snapshot             │
-│                                                                  │
-│  PROJECT SETUP                                                   │
-│  ├── /init-standards  Add CLAUDE.md, STATUS.md, TODO.md         │
-│  ├── /seed            Scaffold new project                      │
-│  ├── /align           Add missing stack to existing project     │
-│  ├── /sync-to-global  Promote patterns to global config         │
-│  └── /validate        Double-check project follows standards    │
-│                                                                  │
-│  CODE QUALITY & HYGIENE                                          │
-│  ├── /sync-todos      Sync inline comments to TODO.md           │
-│  ├── /cohere          Deep pattern coherence check               │
-│  ├── /brand           Brand lifecycle (init/extract/audit/whitelist)│
-│  ├── /tidy            Project hygiene (stale docs, roadmap)     │
-│  ├── /close-roadmap   Archive completed roadmap, cleanup        │
-│  ├── /a11y            Accessibility audit for pages/components  │
-│  ├── /responsive      Mobile responsiveness audit               │
-│  ├── /qa              Generate QA checklists for features       │
-│  ├── /scorecard       Quality scorecard with category breakdown │
-│  └── /audit-sweep     Full quality sweep: audit, fix, commit   │
-│                                                                  │
-│  MULTI-AGENT WORKFLOW                                            │
-│  ├── /spawn       Create worktrees for parallel work            │
-│  ├── /claim       Claim worktree assignment                     │
-│  └── /integrate   Merge completed worktrees                     │
-│                                                                  │
-│  DOCUMENTATION                                                   │
-│  └── /framework   View this framework document                  │
-│                                                                  │
-│  DISCOVERY & INTEGRATION                                         │
-│  └── /discover    Dynamic search, analyze, install MCPs         │
-│                                                                  │
-│  COLLABORATION                                                   │
-│  ├── /checkout        Create/switch feature branch from dev      │
-│  ├── /pr              Push branch + open pull request             │
-│  ├── /review          Review a PR with quality checks             │
-│  ├── /sync            Pull latest upstream, resolve conflicts     │
-│  ├── /release         Merge dev → main for production             │
-│  └── /sync-framework  Sync framework to project distribution     │
-│                                                                  │
-│  DEPLOYMENT                                                      │
-│  └── /push        Quality gate + review + confirmed push        │
-│                                                                  │
-└─────────────────────────────────────────────────────────────────┘
-```
+### Essential Tier — Every Developer
+
+**Session** (5 skills) — Session lifecycle: start, work, end
+
+| Skill            | Purpose                                   |
+| ---------------- | ----------------------------------------- |
+| `/init-session`  | Load project context (architecture, docs) |
+| `/resume`        | Full resume (context + session state)     |
+| `/handoff`       | Save session state at session end         |
+| `/smart-compact` | Interactive context capture before reset  |
+| `/snapshot`      | Quick read-only status snapshot           |
+
+**Collaboration** (6 skills) — Git workflow for team development
+
+| Skill       | Purpose                                 |
+| ----------- | --------------------------------------- |
+| `/checkout` | Create/switch feature branch from dev   |
+| `/pr`       | Push branch + open pull request         |
+| `/review`   | Review a PR with quality checks         |
+| `/sync`     | Pull latest upstream, resolve conflicts |
+| `/release`  | Merge dev → main for production         |
+| `/push`     | Quality gate + review + confirmed push  |
+
+### Recommended Tier — Most Developers
+
+**Quality** (11 skills) — Code quality, auditing, and hygiene
+
+| Skill          | Purpose                                        |
+| -------------- | ---------------------------------------------- |
+| `/validate`    | Double-check project follows standards         |
+| `/cohere`      | Deep pattern coherence check                   |
+| `/tidy`        | Project hygiene (stale docs, roadmap)          |
+| `/brand`       | Brand lifecycle (init/extract/audit/whitelist) |
+| `/a11y`        | Accessibility audit for pages/components       |
+| `/responsive`  | Mobile responsiveness audit                    |
+| `/qa`          | Generate QA checklists for features            |
+| `/scorecard`   | Quality scorecard with category breakdown      |
+| `/audit-sweep` | Full quality sweep: audit, fix, commit         |
+| `/sync-todos`  | Sync inline comments to TODO.md                |
+| `/inventory`   | Audit routes and technology inventory          |
+
+### Advanced Tier — Power Users
+
+**Multi-Agent** (3 skills) — Parallel worktree coordination
+
+| Skill        | Purpose                            |
+| ------------ | ---------------------------------- |
+| `/spawn`     | Create worktrees for parallel work |
+| `/claim`     | Claim worktree assignment          |
+| `/integrate` | Merge completed worktrees          |
+
+### Maintainer Tier — Framework Owner
+
+**Project Setup** (4 skills) — Scaffolding and initialization
+
+| Skill             | Purpose                               |
+| ----------------- | ------------------------------------- |
+| `/init-standards` | Add CLAUDE.md, STATUS.md, TODO.md     |
+| `/seed`           | Scaffold new project                  |
+| `/align`          | Add missing stack to existing project |
+| `/onboarding`     | Full developer onboarding             |
+
+**Utilities** (5 skills) — Framework maintenance and discovery
+
+| Skill             | Purpose                                |
+| ----------------- | -------------------------------------- |
+| `/discover`       | Dynamic search, analyze, install MCPs  |
+| `/framework`      | View this framework document           |
+| `/close-roadmap`  | Archive completed roadmap, cleanup     |
+| `/sync-framework` | Sync framework to project distribution |
+| `/sync-to-global` | Promote patterns to global config      |
+
+**Total: 34 skills across 6 categories**
 
 ---
 
@@ -2566,6 +2797,19 @@ rm -rf .next
 ---
 
 ## Changelog
+
+### v1.21.0 (2026-03-19)
+
+- Added `manifest.json` — source of truth for framework categories, skill tiers, and installation presets
+- Rewrote `setup-claude.sh` — safe, selective, merge-based installer with backup, presets, --update, --restore
+- Added Framework Distribution section — documents how the framework travels between machines (architecture, roles, sync flows, version management)
+- Added Developer Onboarding section — quick start, full /onboarding walkthrough, day 1 checklist, session discipline
+- Added Codebase Maintenance section — routine schedule, dependency management, quality gates, code health indicators, recovery procedures
+- Reorganized Skills Reference by category and adoption tier (essential → recommended → advanced → maintainer)
+- Updated `/onboarding` Phase 5 — replaced misleading A/B/C options with honest preset-based choices
+- Updated `/sync-framework` — includes manifest.json in sync, validates skills against manifest
+- Updated CONTRIBUTING.md — references preset-based setup script
+- Total skills: 34
 
 ### v1.20.0 (2026-03-17)
 

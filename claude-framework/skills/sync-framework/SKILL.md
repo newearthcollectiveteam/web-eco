@@ -77,6 +77,42 @@ mkdir -p claude-framework/patterns
 cp ~/.claude/patterns/* claude-framework/patterns/ 2>/dev/null || true
 ```
 
+### Phase 3b: Update Manifest
+
+If `manifest.json` exists in the distribution, update the version to match FRAMEWORK.md:
+
+```bash
+# Get current version from FRAMEWORK.md
+VERSION=$(grep 'Version:' ~/.claude/FRAMEWORK.md | head -1 | sed 's/.*: //')
+
+# Update version in manifest.json if it exists
+if [ -f claude-framework/manifest.json ]; then
+  sed -i '' "s/\"version\": \".*\"/\"version\": \"$VERSION\"/" claude-framework/manifest.json
+fi
+```
+
+### Phase 3c: Validate Manifest
+
+If `manifest.json` exists, verify every skill listed in it has a corresponding directory:
+
+```bash
+if [ -f claude-framework/manifest.json ]; then
+  # Extract all skill names from manifest
+  MANIFEST_SKILLS=$(grep -o '"[a-z_-]*"' claude-framework/manifest.json | grep -v '"version"\|"description"\|"tier"\|"skills"\|"categories"\|"presets"\|"core_docs"\|"session"\|"collaboration"\|"quality"\|"project_setup"\|"multi_agent"\|"utilities"\|"minimal"\|"standard"\|"full"' | tr -d '"' | sort -u)
+
+  MISSING=""
+  for skill in $MANIFEST_SKILLS; do
+    if [ ! -d "claude-framework/skills/$skill" ]; then
+      MISSING="$MISSING $skill"
+    fi
+  done
+
+  if [ -n "$MISSING" ]; then
+    echo "⚠ Skills in manifest.json but missing from distribution:$MISSING"
+  fi
+fi
+```
+
 ### Phase 4: Report
 
 ```bash

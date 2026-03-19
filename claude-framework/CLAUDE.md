@@ -101,6 +101,7 @@ Use `/seed` to scaffold new projects with this stack.
 - `/align` - Add missing stack components to an existing project
 - `/sync-to-global` - Promote a pattern from current project to global
 - `/validate` - Double-check that project follows standards
+- `/onboarding` - Full new developer setup (GitHub, env, deps, framework, verification)
 
 ### Code Quality & Hygiene
 
@@ -155,6 +156,7 @@ Use `/seed` to scaffold new projects with this stack.
 | Context getting long / before `/compact`                        | → `/smart-compact`                                  |
 | New project directory with no CLAUDE.md                         | → `/init-standards`                                 |
 | "Create new project" / "scaffold" / "start fresh"               | → `/seed`                                           |
+| "I'm new" / "set me up" / "onboard" / "first time"              | → `/onboarding`                                     |
 | "Add tRPC" / "add auth" / "upgrade this project"                | → `/align`                                          |
 | "This pattern is useful" / "save this globally"                 | → `/sync-to-global`                                 |
 | Before release / "check quality" / periodic review              | → `/validate` then `/cohere`                        |

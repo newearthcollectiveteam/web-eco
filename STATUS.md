@@ -1,7 +1,7 @@
 # Project Status
 
 **Version:** 0.1.0
-**Last Updated:** 2026-03-17
+**Last Updated:** 2026-03-19
 **Last Updated By:** @matthew
 
 ## Feature Status
@@ -35,7 +35,8 @@
 | Task Management        | Working | Kanban board with drag-and-drop, custom status categories, tab persistence                                 |
 | Ideas Board            | Working | Collaborative idea board with rich text, categories, edit history tracking                                 |
 | Dev Pipeline           | Working | GitHub Actions CI, branch protection (main/dev), PR templates, CODEOWNERS                                  |
-| Framework Distribution | Working | claude-framework/ + setup script for developer onboarding                                                  |
+| Framework Distribution | Working | manifest.json, preset-based installer, version tracking, auto-sync                                         |
+| Dependency Management  | Working | Dependabot (security immediate, version bumps monthly grouped), Zod 4 ignored until ecosystem ready        |
 
 ## Known Limitations
 
@@ -45,12 +46,12 @@
 
 ## Recent Changes
 
-| Date       | Description                                                                                | Author   |
-| ---------- | ------------------------------------------------------------------------------------------ | -------- |
-| 2026-03-17 | Dev pipeline: CI, branch protection, PR templates, framework distribution, onboarding docs | @matthew |
-| 2026-03-17 | 6 new collaboration skills + multi-dev updates to handoff/resume (framework v1.20.0)       | @matthew |
-| 2026-03-17 | Ideas board: collaborative idea board with rich text, categories, edit history             | @matthew |
-| 2026-03-17 | Team nav consolidation: Team/Tasks merged into expandable Team section                     | @matthew |
-| 2026-03-16 | Quality sweep: SQL injection fix, a11y, dead code removal                                  | @matthew |
+| Date       | Description                                                                                    | Author   |
+| ---------- | ---------------------------------------------------------------------------------------------- | -------- |
+| 2026-03-19 | Framework v1.21.0: manifest.json, preset installer, 3 new FRAMEWORK.md sections, skill updates | @matthew |
+| 2026-03-19 | Dependabot cleanup: merged 6 dep PRs, closed Zod 4, configured hybrid security+monthly mode    | @matthew |
+| 2026-03-17 | Dev pipeline: CI, branch protection, PR templates, framework distribution, onboarding docs     | @matthew |
+| 2026-03-17 | Ideas board: collaborative idea board with rich text, categories, edit history                 | @matthew |
+| 2026-03-16 | Quality sweep: SQL injection fix, a11y, dead code removal                                      | @matthew |
 
 See `git log --oneline` for full history.

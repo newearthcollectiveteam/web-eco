@@ -232,7 +232,7 @@ export const tasksRouter = createTRPCRouter({
           .from(taskStatuses)
           .orderBy(asc(taskStatuses.sortOrder));
         const lastStatus = allStatuses[allStatuses.length - 1];
-        if (lastStatus && updates.status === lastStatus.slug) {
+        if (updates.status === lastStatus?.slug) {
           data.completedAt = new Date();
         } else {
           data.completedAt = null;

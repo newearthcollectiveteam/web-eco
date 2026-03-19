@@ -1,0 +1,81 @@
+{
+  "version": "1.21.0",
+  "categories": {
+    "session": {
+      "description": "Session lifecycle — start, work, end",
+      "skills": [
+        "init-session",
+        "resume",
+        "handoff",
+        "smart-compact",
+        "snapshot"
+      ],
+      "tier": "essential"
+    },
+    "collaboration": {
+      "description": "Git workflow for team development",
+      "skills": ["checkout", "pr", "review", "sync", "release", "push"],
+      "tier": "essential"
+    },
+    "quality": {
+      "description": "Code quality, auditing, and hygiene",
+      "skills": [
+        "validate",
+        "cohere",
+        "tidy",
+        "brand",
+        "a11y",
+        "responsive",
+        "qa",
+        "scorecard",
+        "audit-sweep",
+        "sync-todos",
+        "inventory"
+      ],
+      "tier": "recommended"
+    },
+    "project_setup": {
+      "description": "Scaffolding and initialization",
+      "skills": ["init-standards", "seed", "align", "onboarding"],
+      "tier": "maintainer"
+    },
+    "multi_agent": {
+      "description": "Parallel worktree coordination",
+      "skills": ["spawn", "claim", "integrate"],
+      "tier": "advanced"
+    },
+    "utilities": {
+      "description": "Framework maintenance and discovery",
+      "skills": [
+        "discover",
+        "framework",
+        "close-roadmap",
+        "sync-framework",
+        "sync-to-global"
+      ],
+      "tier": "maintainer"
+    }
+  },
+  "presets": {
+    "minimal": {
+      "categories": ["session", "collaboration"],
+      "description": "Git workflow + session management (11 skills)"
+    },
+    "standard": {
+      "categories": ["session", "collaboration", "quality"],
+      "description": "Recommended for all developers (22 skills)"
+    },
+    "full": {
+      "categories": [
+        "session",
+        "collaboration",
+        "quality",
+        "project_setup",
+        "multi_agent",
+        "utilities"
+      ],
+      "description": "Everything — framework maintenance included (34 skills)"
+    }
+  },
+  "core_docs": ["CLAUDE.md", "FRAMEWORK.md", "MULTIAGENT.md"]
+}

@@ -1,6 +1,6 @@
 ---
 name: sync-to-global
-description: Promote a pattern or standard from current project to global ~/.claude/
+description: Promote a pattern, skill, or standard from current project to global ~/.claude/ and update manifest
 allowed-tools: Read, Write, Edit, Bash, Glob, AskUserQuestion
 ---
 
@@ -148,17 +148,36 @@ mkdir -p ~/.claude/templates
 
 ### 6. Update Global Index
 
-If adding a new skill, update BOTH:
+If adding a new skill, update ALL THREE:
 
 **~/.claude/CLAUDE.md:**
 
-- Add to "Available Skills" section
+- Add to "Available Skills" section under the appropriate category
 
 **~/.claude/FRAMEWORK.md:**
 
-- Add to "Skills Reference" section (the ASCII box table)
-- Format: `│  ├── /<skill-name>   <description padded to align>  │`
-- Place under the appropriate category (Session Management, Project Setup, Code Maintenance, Multi-Agent Workflow, Documentation)
+- Add to "Skills Reference" section under the appropriate category/tier table
+- Format: `| /skill-name | Description |`
+
+**manifest.json (in project repo):**
+
+- If `claude-framework/manifest.json` exists in the current project, add the skill to the appropriate category
+- Ask the user which category it belongs to if unclear:
+
+```
+Which category should this skill belong to?
+
+1. Session (essential) — session lifecycle: start, work, end
+2. Collaboration (essential) — git workflow for team development
+3. Quality (recommended) — code quality, auditing, hygiene
+4. Project Setup (maintainer) — scaffolding and initialization
+5. Multi-Agent (advanced) — parallel worktree coordination
+6. Utilities (maintainer) — framework maintenance and discovery
+```
+
+- Add the skill name to that category's `"skills"` array
+- Update the preset descriptions if the skill count changed (e.g., "11 skills" → "12 skills")
+- Update the total count in the FRAMEWORK.md Skills Reference footer
 
 ### 7. Update FRAMEWORK.md Changelog (for framework changes)
 
@@ -220,9 +239,11 @@ User: /sync-to-global
 Claude: What would you like to sync? → "A new skill"
 Claude: Skill name? → "validate-env"
 Claude: Description? → "Check all env vars are set before deploy"
+Claude: Which category? → "Quality (recommended)"
 Claude: [Creates ~/.claude/skills/validate-env/SKILL.md]
 Claude: [Updates ~/.claude/CLAUDE.md skills list]
 Claude: [Updates ~/.claude/FRAMEWORK.md Skills Reference section]
+Claude: [Updates manifest.json — adds to quality category, updates skill counts]
 Claude: [Updates FRAMEWORK.md Changelog with new version]
 ```
 

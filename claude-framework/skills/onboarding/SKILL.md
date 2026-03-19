@@ -1,6 +1,6 @@
 ---
 name: onboarding
-description: Full developer onboarding — GitHub, env, dependencies, Claude framework (local or global), and verification
+description: Full developer onboarding — GitHub, env, dependencies, Claude framework (preset-based), and verification
 allowed-tools: Read, Write, Edit, Bash, Glob, Grep, AskUserQuestion, Agent
 ---
 
@@ -173,49 +173,51 @@ This is the key decision point. Ask the developer:
 
 > **Claude Code Framework Setup**
 >
-> This project uses a unified development framework with custom skills, patterns, and standards for Claude Code. You have two options:
+> This project includes a development framework with custom skills for Claude Code.
+> Skills install to `~/.claude/` (Claude Code's global config directory).
+> Your existing custom skills and settings are preserved — only framework skills are updated.
 >
-> **Option A: Project-only (local)** — recommended for new Claude Code users
+> **A) Standard** (recommended) — 22 skills
+> Session management + Git workflow + Code quality.
+> Covers: `/resume`, `/handoff`, `/checkout`, `/pr`, `/review`, `/validate`, `/cohere`, and more.
 >
-> - Installs to `~/.claude/` so it works with this project
-> - No impact on other projects
-> - Easy to remove later
+> **B) Minimal** — 11 skills
+> Session management + Git workflow only.
+> Covers: `/resume`, `/handoff`, `/checkout`, `/pr`, `/review`, `/sync`, `/release`, `/push`.
 >
-> **Option B: Global** — recommended if you use Claude Code across multiple projects
+> **C) Full** — 34 skills
+> Everything including project scaffolding and multi-agent coordination.
+> Best for framework maintainers or power users.
 >
-> - Same install location (`~/.claude/`), but you'll also get the framework
->   for any project you work on
-> - Skills like `/resume`, `/handoff`, `/checkout` work everywhere
-> - You can always customize per-project via each project's CLAUDE.md
+> **D) Skip** — No framework installation
+> You can work fine without it. Run `./scripts/setup-claude.sh` later.
 >
-> **Option C: Skip** — use Claude Code without the framework
->
-> - You can still work on this project fine
-> - You just won't have the custom skills and patterns
->
-> Which would you prefer? (A/B/C)
+> Which would you prefer? (A/B/C/D)
 
-#### Option A or B: Run the setup script
+#### Option A, B, or C: Run the setup script
+
+Map the user's choice to a preset and run:
 
 ```bash
-./scripts/setup-claude.sh
+# A → standard, B → minimal, C → full
+./scripts/setup-claude.sh --preset=standard   # or minimal, full
 ```
 
-The script handles everything — it copies framework files, skills, and patterns to `~/.claude/`.
+The script:
 
-For **Option A** specifically, after running the script, note:
+- Creates a backup of any existing `~/.claude/` directory
+- Installs only the skills in the chosen preset (preserves custom skills)
+- Writes a tracking file (`~/.claude/.framework-manifest`) for future updates
+- Never overwrites `settings.json` if it already exists
 
-> The framework is installed. It works with all projects by default since it lives in `~/.claude/`. If you ever want to limit it to just this project, you can move the files. But for most people, having it globally is fine — the project's `CLAUDE.md` handles project-specific overrides.
+After install, note:
 
-For **Option B**, the messaging is the same — the script installs globally by design.
+> The framework is installed. Update later with `./scripts/setup-claude.sh --update`.
+> Skills work in any project since they live in `~/.claude/`.
 
-**Actually, both A and B use the same install.** The real difference is awareness. For Option A people, add a note:
+#### Option D: Skip
 
-> If you work on other projects with Claude Code, the framework skills will be available there too. If you don't want that, you can remove `~/.claude/FRAMEWORK.md` and `~/.claude/skills/` later.
-
-#### Option C: Skip
-
-Just note:
+Note:
 
 > No problem. You can always run `./scripts/setup-claude.sh` later if you change your mind.
 

@@ -22,20 +22,9 @@ _None documented_
 
 - [ ] Intelligent community detection improvements (fuzzy matching, abbreviations, common misspellings)
 
-## Admin Hub Refactor (multi-session)
-
-### Session 1: Foundation (DONE)
-
-### Session 3: CRM Refactor (DONE)
-
-### Session 3b: CRM Community Overhaul (DONE)
-
-### Session 4: Team + Finance (SCAFFOLDED)
+## Admin Hub (remaining work)
 
 - [ ] Finance pages — build out with Mercury connection
-
-### Session 5: CMS + Assets + Ecosystem + Tooling (SCAFFOLDED)
-
 - [ ] CMS Email Testing page
 - [ ] Build out CMS Gallery with real data
 - [ ] Build out Tooling pages with real data

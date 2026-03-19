@@ -1,24 +1,40 @@
 version: 2
 updates:
+  # NPM dependencies — monthly, grouped into one PR
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
-      interval: "weekly"
-      day: "monday"
+      interval: "monthly"
     target-branch: "dev"
     open-pull-requests-limit: 5
     labels:
       - "dependencies"
     commit-message:
       prefix: "chore(deps):"
+    groups:
+      # All non-security bumps land in a single PR
+      all-dependencies:
+        patterns: ["*"]
+        update-types: ["minor", "patch"]
+      # Major versions get their own PR (they need careful review)
+      major-versions:
+        patterns: ["*"]
+        update-types: ["major"]
+    ignore:
+      # Zod 4 blocked until full ecosystem support
+      - dependency-name: "zod"
+        versions: [">=4.0.0"]
 
+  # GitHub Actions — monthly, grouped
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "weekly"
-      day: "monday"
+      interval: "monthly"
     target-branch: "dev"
     labels:
       - "dependencies"
     commit-message:
       prefix: "chore(ci):"
+    groups:
+      ci-actions:
+        patterns: ["*"]
